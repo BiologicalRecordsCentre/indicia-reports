@@ -91,6 +91,10 @@
     <param name="trait_term_id" display="Parent trait term ID" datatype="integer" default="">
       <where>filtv.int_value=#trait_term_id#</where>
     </param>
+    <param name="trait_term" display="Parent trait term" datatype="text" default="">
+      <join>join cache_termlists_terms filtt on filtt.term='#trait_term#'</join>
+      <where>filtt.id=filtv.int_value</where>
+    </param>
     <param name="all_trait_attr_ids" display="All traits" default="0"  datatype="integer[]"
            description="List of IDs of all traits to consider as analysed"/>
     <param name="has_any_designation" display="Has any designation" default="" datatype="boolean">
