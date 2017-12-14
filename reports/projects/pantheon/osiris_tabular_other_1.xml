@@ -4,6 +4,7 @@
     select #columns#
     from (
       select
+        string_agg(distinct t_l1.id::varchar, ',') as term_id,
         t_l1.term as "term",
         count(distinct cttl.preferred_taxa_taxon_list_id) as "speciescount",
         round(
@@ -81,8 +82,8 @@
   <columns>
     <column name="sample_id" sql="#sample_id#" visible="false" />
     <column name="sample_type" sql="'#sample_type#'" visible="false" />
+	<column name="term_id" sql="term_id" visible="false" />
     <column name="term" sql="term" display="Classification L1" datatype="text" in_count="true" />
-    <column name="term_encoded" sql="replace(replace(term, ' ', '%20'), '&amp;', '%26')" visible="false" />
     <column name="count" sql="speciescount" display="No. of species" datatype="integer" />
     <column name="rep" display="% representation" sql="case when sub.rep&lt;1 then '&lt;1' else round(sub.rep)::varchar end" />
     <column name="sqi" sql="sqi" display="SQI" datatype="float" />

@@ -3,7 +3,10 @@
   <query website_filter_field="cttl.website_id">
     select #columns#
     from (
-      select t_l1.term as "l1_term",
+      select string_agg(distinct t_l1.id::varchar, ',') as l1_term_id,
+        string_agg(distinct t_l2.id::varchar, ',') as l2_term_id,
+        string_agg(distinct t_l3.id::varchar, ',') as term_id,
+        t_l1.term as "l1_term",
         t_l2.term as "l2_term",
         t_l3.term as "term",
         count(distinct cttl.preferred_taxa_taxon_list_id) as "speciescount",
@@ -97,12 +100,12 @@
   <columns>
     <column name="sample_id" sql="#sample_id#" visible="false" />
     <column name="sample_type" sql="'#sample_type#'" visible="false" />
+    <column name="l1_term_id" sql="l1_term_id" visible="false" />
+    <column name="l2_term_id" sql="l2_term_id" visible="false" />
+    <column name="term_id" sql="term_id" visible="false" />
     <column name="l1_term" sql="l1_term" display="Classification L1" datatype="text" in_count="true" />
-    <column name="l1_term_encoded" sql="replace(replace(l1_term, ' ', '%20'), '&amp;', '%26')" visible="false" />
     <column name="l2_term" sql="l2_term" display="Classification L2" datatype="text" in_count="true" />
-    <column name="l2_term_encoded" sql="replace(replace(l2_term, ' ', '%20'), '&amp;', '%26')" visible="false" />
     <column name="term" sql="term" display="Classification L3" datatype="text" in_count="true" />
-    <column name="term_encoded" sql="replace(replace(term, ' ', '%20'), '&amp;', '%26')" visible="false" />
     <column name="count" sql="speciescount" display="No. of species" datatype="integer" />
     <column name="rep" display="% representation" sql="case when sub.rep&lt;1 then '&lt;1' else round(sub.rep)::varchar end" />
     <column name="sqi" sql="sqi" display="SQI" datatype="float" />

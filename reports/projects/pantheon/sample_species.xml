@@ -88,12 +88,17 @@
       <join>join taxa_taxon_list_attribute_values filtv on filtv.taxa_taxon_list_id=ttl.id and filtv.deleted=false
         and filtv.taxa_taxon_list_attribute_id=#trait_attr_id#</join>
     </param>
-    <param name="trait_term_id" display="Parent trait term ID" datatype="integer" default="">
-      <where>filtv.int_value=#trait_term_id#</where>
+    <param name="trait_term_id" display="Trait term ID(s)" datatype="integer[]" default="">
+      <where>filtv.int_value in (#trait_term_id#)</where>
     </param>
-    <param name="trait_term" display="Parent trait term" datatype="text" default="">
-      <join>join cache_termlists_terms filtt on filtt.term='#trait_term#'</join>
-      <where>filtt.id=filtv.int_value</where>
+	<param name="parent_trait_term_id" display="Parent trait term IDs" datatype="integer[]" default="">
+      <join>join cache_termlists_terms t_trait on t_trait.id=filtv.int_value
+	  join cache_termlists_terms t_trait_p on t_trait_p.id=t_trait.parent_id and t_trait_p.id in (#parent_trait_term_id#)
+      join taxa_taxon_list_attribute_values av_trait_p on av_trait_p.int_value=t_trait_p.id and av_trait_p.taxa_taxon_list_id=filtv.taxa_taxon_list_id</join>
+    </param>
+	<param name="grandparent_trait_term_id" display="Grandparent trait term IDs" datatype="integer[]" default="">
+      <join>join cache_termlists_terms t_trait_gp on t_trait_gp.id=t_trait_p.parent_id and t_trait_gp.id in (#grandparent_trait_term_id#)
+      join taxa_taxon_list_attribute_values av_trait_gp on av_trait_gp.int_value=t_trait_gp.id and av_traitg_p.taxa_taxon_list_id=filtv.taxa_taxon_list_id</join>
     </param>
     <param name="all_trait_attr_ids" display="All traits" default="0"  datatype="integer[]"
            description="List of IDs of all traits to consider as analysed"/>
