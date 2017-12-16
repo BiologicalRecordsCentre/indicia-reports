@@ -5,7 +5,7 @@
 >
   <query>
   SELECT #field_sql# FROM (
-	SELECT DISTINCT ON (id) name, taxon, common, taxon_group, image_path, image_caption, date_start, date_end, date_type, month,
+	SELECT name, taxon, common, taxon_group, image_path, image_caption, date_start, date_end, date_type, month,
 		geom, entered_sref, entered_sref_system, recorder, external_key, created_on
 	FROM naturespot.vw_occurrences_by_location
 	WHERE name='#site_name#'
@@ -25,7 +25,6 @@
     <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
     <param name='month' display='Month' description='Month to filter records by (1-12) or 0 for all months' datatype='integer' />
     <param name='taxon_group' display='Taxon Group' description='Exact name of the taxon group, or all' datatype='text' />
-
   </params>
   <columns>
     <column name='geom' visible='false' />
