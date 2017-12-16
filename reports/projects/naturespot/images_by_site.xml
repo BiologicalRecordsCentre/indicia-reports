@@ -6,7 +6,7 @@
   <query>
   SELECT #field_sql# FROM (
 	SELECT name, taxon, common, taxon_group, image_path, image_caption, date_start, date_end, date_type, month,
-		geom, entered_sref, entered_sref_system, recorder, external_key, created_on
+		geom, entered_sref, entered_sref_system, recorder, external_key, created_on, verified_on
 	FROM naturespot.vw_occurrences_by_location
 	WHERE name='#site_name#'
 	AND ('#taxon_group#'='all' OR taxon_group='#taxon_group#')
