@@ -12,8 +12,8 @@
 	WHERE name='#site_name#'
 	AND ('#taxon_group#'='all' OR taxon_group='#taxon_group#')
 	AND ('#month#'='0' OR month='#month#')
-	AND image_path IS NOT NULL) foo
-  AND record_status='V'
+	AND image_path IS NOT NULL
+  AND record_status='V') foo
   #order_by#
   </query>
   <field_sql>name, taxon, common, coalesce(common || '&lt;br/&gt;', '') || '&lt;em&gt;' || taxon || '&lt;/em&gt;' as formatted_taxon,
