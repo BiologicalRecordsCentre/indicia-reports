@@ -1,0 +1,41 @@
+<report
+    title="Occurrences for a NatureSpot site"
+    description="Lists the occurrences at a NatureSpot Wild Place."
+    row_class="biota"
+>
+  <query>
+  SELECT DISTINCT #columns#
+	FROM naturespot.vw_occurrences_by_location
+	WHERE name='#site_name#'
+	AND ('#taxon_group#'='all' OR taxon_group='#taxon_group#')
+	AND ('#month#'='0' OR month='#month#')
+  AND (record_status='V')
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>date_start DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
+    <param name='month' display='Month' description='Month to filter records by (1-12) or 0 for all months' datatype='integer' />
+    <param name='taxon_group' display='Taxon Group' description='Exact name of the taxon group, or all' datatype='text' />
+
+  </params>
+  <columns>
+    <column name='id' sql='id' visible="false" in_count="true" />
+    <column name='name' sql='name' datatype='text' />
+	<column name='taxon' sql='taxon' datatype='text' />
+	<column name='common' sql='common' datatype='text' />
+	<column name='taxon_group' sql='taxon_group' datatype='text' />
+	<column name='date_start' sql='date_start' />
+	<column name='date_end' sql='date_end' />
+	<column name='date_type' sql='date_type' />
+	<column name='date' datatype='date' />
+	<column name='month' sql='month' datatype='text' />
+	<column name='geom' visible='false' />
+	<column name='entered_sref' sql='entered_sref' datatype='text' />
+	<column name='entered_sref_system' sql='entered_sref_system' datatype='text' />
+	<column name='recorder' sql='recorder' datatype='text' />
+    <column name='external_key' sql='external_key' datatype='text' />
+  </columns>
+</report>
