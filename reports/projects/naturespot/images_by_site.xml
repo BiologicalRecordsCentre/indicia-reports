@@ -6,12 +6,14 @@
   <query>
   SELECT #field_sql# FROM (
 	SELECT name, taxon, common, taxon_group, image_path, image_caption, date_start, date_end, date_type, month,
-		geom, entered_sref, entered_sref_system, recorder, external_key, created_on, verified_on
+		geom, entered_sref, entered_sref_system, recorder, external_key, created_on, verified_on,
+    record_status
 	FROM naturespot.vw_occurrences_by_location
 	WHERE name='#site_name#'
 	AND ('#taxon_group#'='all' OR taxon_group='#taxon_group#')
 	AND ('#month#'='0' OR month='#month#')
 	AND image_path IS NOT NULL) foo
+  AND record_status='V'
   #order_by#
   </query>
   <field_sql>name, taxon, common, coalesce(common || '&lt;br/&gt;', '') || '&lt;em&gt;' || taxon || '&lt;/em&gt;' as formatted_taxon,
