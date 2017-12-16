@@ -1,0 +1,34 @@
+<report
+    title="Occurrence images for a NatureSpot site"
+    description="Lists the images uploaded for occurrences at a NatureSpot Wild Place."
+    row_class="biota"
+>
+  <query>
+  SELECT #field_sql# FROM (
+	SELECT DISTINCT ON (id) name, taxon, common, taxon_group, image_path, image_caption, date_start, date_end, date_type, month,
+		geom, entered_sref, entered_sref_system, recorder, external_key, created_on
+	FROM naturespot.vw_occurrences_by_location
+	WHERE name='#site_name#'
+	AND ('#taxon_group#'='all' OR taxon_group='#taxon_group#')
+	AND ('#month#'='0' OR month='#month#')
+	AND image_path IS NOT NULL) foo
+  #order_by#
+  </query>
+  <field_sql>name, taxon, common, coalesce(common || '&lt;br/&gt;', '') || '&lt;em&gt;' || taxon || '&lt;/em&gt;' as formatted_taxon,
+      taxon_group, lower(replace(replace(image_path, '''', ''), '.', '')) as image_link, image_path, image_caption,
+	  date_start, date_end, date_type, month,
+	  geom, entered_sref, entered_sref_system, recorder, external_key</field_sql>
+  <order_bys>
+    <order_by>coalesce(verified_on, created_on) DESC, image_path ASC</order_by>
+  </order_bys>
+  <params>
+    <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
+    <param name='month' display='Month' description='Month to filter records by (1-12) or 0 for all months' datatype='integer' />
+    <param name='taxon_group' display='Taxon Group' description='Exact name of the taxon group, or all' datatype='text' />
+
+  </params>
+  <columns>
+    <column name='geom' visible='false' />
+    <column name='image_link' visible='false' />
+  </columns>
+</report>
