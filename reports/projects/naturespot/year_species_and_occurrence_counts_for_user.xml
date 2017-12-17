@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Species &amp; Occurrence Counts for user"
+    description="Gives a total number of species and occurrences recorded by a user identified by their warehouse user ID.">
+  <query website_filter_field="o.website_id">
+    SELECT cast(date_part('year', o.date_start) as character varying) as year, count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count
+    FROM cache_occurrences_functional o
+    WHERE o.website_id=8 and o.survey_id=15
+    AND o.zero_abundance='f'
+    AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR o.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+    AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR o.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date))
+    AND o.date_start is not null
+    AND (trim('#site_name#')='' OR o.location_name ilike '%#site_name#%')
+    AND (CAST(o.taxon_group_id AS character varying)='#taxon_group_id#' OR '#taxon_group_id#'='')
+    AND o.created_by_id=#user_id#
+    GROUP BY year, website_id
+    UNION
+    SELECT 'Total' as year, count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count
+    FROM cache_occurrences_functional o
+    WHERE o.website_id=8 and o.survey_id=15
+    AND o.zero_abundance='f'
+    AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR o.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+    AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR o.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date))
+    AND o.date_start is not null
+    AND (trim('#site_name#')='' OR o.location_name ilike '%#site_name#%')
+    AND (CAST(o.taxon_group_id AS character varying)='#taxon_group_id#' OR '#taxon_group_id#'='')
+    AND o.created_by_id=#user_id#
+  </query>
+  <params>
+    <param name='user_id' display='User ID' datatype='integer' />
+    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:naturespot/used_taxon_groups:id:title' />
+    <param name='site_name' display='Site name contains' datatype='text' />
+    <param name='date_from' display='Date From' datatype='date' />
+    <param name='date_to' display='Date To' datatype='date' />
+  </params>
+  <order_bys>
+    <order_by>year DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name="year" display="Year" />
+    <column name="species_count" display="Total no. of Species" />
+    <column name="occurrences_count" display="Total no. of Records" />
+  </columns>
+</report>
