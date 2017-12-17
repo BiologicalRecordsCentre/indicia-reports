@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="User contribution summary" description="Number of records and species, plus percentage of total.">
+  <query website_filter_field="o.website_id">
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+    WHERE o.website_id=8
+    AND o.zero_abundance='f'
+    AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR o.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+    AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR o.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date))
+    AND o.date_start is not null
+    AND o.record_status&lt;&gt;'R'
+    AND (trim('#site_name#')='' OR o.location_name ilike '%#site_name#%')
+    AND (CAST(o.taxon_group_id AS character varying)='#taxon_group_id#' OR '#taxon_group_id#'='')
+      </query>
+  <params>
+    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:naturespot/used_taxon_groups:id:title' />
+    <param name='site_name' display='Site name contains' datatype='text' />
+    <param name='date_from' display='Date From' datatype='date' />
+    <param name='date_to' display='Date To' datatype='date' />
+  <param name='user_id' display='Date To' datatype='integer' />
+  </params>
+  <columns>
+    <column name="species_count" display="Total no. of Species" datatype='integer'
+      sql="COUNT(DISTINCT CASE o.created_by_id WHEN #user_id# THEN o.taxon_meaning_id ELSE null END)" />
+    <column name="occurrences_count" display="Total no. of Occurrences" datatype='integer'
+      sql="COUNT(DISTINCT CASE o.created_by_id WHEN #user_id# THEN o.id ELSE null END)" />
+    <column name="species_percent" display="% of total species" datatype='integer'
+      sql="ROUND(COUNT(DISTINCT CASE o.created_by_id WHEN #user_id# THEN o.taxon_meaning_id ELSE null END)::numeric
+        / COUNT(DISTINCT o.taxon_meaning_id) * 100, 2)" />
+  </columns>
+</report>
