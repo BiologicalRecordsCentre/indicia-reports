@@ -12,6 +12,7 @@
     AND (trim('#site_name#')='' OR o.location_name ilike '%#site_name#%')
     AND (CAST(o.taxon_group_id AS character varying)='#taxon_group_id#' OR '#taxon_group_id#'='')
     AND o.created_by_id=#user_id#
+    AND o.record_status&lt;&gt;'R'
     GROUP BY year, website_id
     UNION
     SELECT 'Total' as year, count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count
