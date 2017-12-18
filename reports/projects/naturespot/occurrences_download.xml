@@ -1,0 +1,129 @@
+<report
+    title="NatureSpot Download range of records"
+    description="Download NatureSpot Occurrences."
+    row_class="biota"
+>
+  <query>
+SELECT #field_sql#
+FROM samples lt0
+INNER JOIN occurrences lt4 ON (lt4.sample_id = lt0.id AND  lt4.deleted = FALSE)
+LEFT JOIN locations l on l.id=lt0.location_id
+LEFT JOIN sample_attribute_values recorder on recorder.sample_id=lt0.id and recorder.deleted=false and recorder.sample_attribute_id=22
+LEFT JOIN occurrence_attribute_values abund on abund.occurrence_id=lt4.id and abund.deleted=false and abund.occurrence_attribute_id=16
+LEFT JOIN occurrence_attribute_values verif on verif.occurrence_id=lt4.id and verif.deleted=false and verif.occurrence_attribute_id=19
+LEFT JOIN occurrence_attribute_values det on det.occurrence_id=lt4.id and det.deleted=false and det.occurrence_attribute_id=18
+LEFT JOIN (occurrence_attribute_values conf
+	INNER JOIN termlists_terms tlt on tlt.id=conf.int_value AND tlt.deleted=false
+	INNER JOIN terms t on t.id=tlt.term_id and t.deleted=false
+) on conf.occurrence_id=lt4.id and conf.deleted=false and conf.occurrence_attribute_id=17
+JOIN cache_taxa_taxon_lists ttl on ttl.id=lt4.taxa_taxon_list_id
+LEFT JOIN users uv on uv.id=lt4.verified_by_id and uv.deleted=false
+LEFT JOIN people pv on pv.id=uv.person_id and pv.deleted=false
+LEFT JOIN occurrence_comments oc
+  ON oc.occurrence_id=lt4.id AND oc.deleted=false AND oc.record_status IS NOT NULL
+#joins#
+WHERE lt0.survey_id = 15 and lt0.deleted = FALSE
+AND (lt4.id&gt;=#from_id# OR #from_id# = 0)
+AND (lt4.id&lt;=#to_id# OR #to_id# = 0)
+GROUP BY lt4.id,
+ttl.taxon_group,
+ttl.taxon,
+ttl.preferred_taxon,
+ttl.default_common_name,
+ttl.external_key,
+lt0.entered_sref,
+CASE WHEN lt0.location_name='' THEN l.name ELSE COALESCE(lt0.location_name, l.name) END,
+COALESCE(recorder.text_value, lt0.recorder_names),
+det.text_value,
+verif.int_value,
+t.term,
+abund.text_value,
+lt4.comment,
+lt0.comment,
+lt4.created_on,
+lt4.updated_on,
+lt0.date_start,
+lt0.date_end,
+lt0.date_type,
+lt4.record_status,
+lt4.record_substatus,
+pv.surname,
+pv.first_name,
+lt4.verified_on
+#order_by#
+  </query>
+<field_sql>
+lt4.id AS lt4_id,
+ttl.taxon_group AS lt7_title,
+ttl.taxon AS lt6_taxon,
+ttl.preferred_taxon AS latin,
+ttl.default_common_name AS common,
+ttl.external_key AS lt6_external_key,
+'' AS lt0_date,
+lt0.entered_sref AS lt0_entered_sref,
+CASE WHEN lt0.location_name='' THEN l.name ELSE COALESCE(lt0.location_name, l.name) END AS lt0_location_name,
+COALESCE(recorder.text_value, lt0.recorder_names) AS lt0_recorder_names,
+det.text_value as determiner,
+verif.int_value as verification,
+t.term as confidence,
+abund.text_value as abundance,
+lt4.comment AS lt4_comment,
+lt0.comment AS lt0_comment,
+lt4.created_on AS lt4_created_on,
+lt4.updated_on AS lt4_updated_on,
+lt0.date_start AS lt0_date_start,
+lt0.date_end AS lt0_date_end,
+lt0.date_type AS lt0_date_type,
+case lt4.record_status || coalesce(lt4.record_substatus::varchar, '')
+  when 'V' then 'accepted'
+  when 'V1' then 'accepted as correct'
+  when 'V2' then 'accepted as considered correct'
+  when 'C' then 'not reviewed'
+  when 'C3' then 'plausible'
+  when 'D' then 'queried'
+  when 'R' then 'not accepted'
+  when 'R4' then 'not accepted as unable to review'
+  when 'R5' then 'not accepted as incorrect'
+end as record_status,
+pv.surname || ', ' || pv.first_name as verifier,
+lt4.verified_on,
+string_agg(oc.comment, '; ') as verifier_comment,
+'https://warehouse1.indicia.org.uk/index.php/occurrence/edit/' || lt4.id::varchar as record_link
+</field_sql>
+<order_bys>
+  <order_by>lt4.id ASC</order_by>
+</order_bys>
+<params>
+<param name='from_id' display='Start Record ID' description='Enter the ID of the first record in the range to include.' datatype='integer' emptyvalue='0' />
+<param name='to_id' display='End Record ID' description='Enter the ID of the last record in the range to include.' datatype='integer' emptyvalue='0' />
+<param name='site' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8'>
+  <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, lt0.geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
+  JOIN locations_websites lw on lw.location_id=lfilt.id and lw.deleted=false and lw.website_id=8</join>
+</param>
+</params>
+<columns>
+<column name='lt4_id' display='Record ID' />
+<column name='lt7_title' display='Taxon Group' />
+<column name='lt6_taxon' display='Input species' />
+<column name='latin' display='Latin' />
+<column name='common' display='Common' />
+<column name='lt6_external_key' display='NBN Key' />
+<column name='lt0_date' display='Date' />
+<column name='lt0_entered_sref' display='Grid Ref' />
+<column name='lt0_location_name' display='Location Name' />
+<column name='lt0_recorder_names' display='Recorder' />
+<column name='determiner' display='Determiner' />
+<column name='verification' display='Verification' />
+<column name='confidence' display='Confidence' />
+<column name='abundance' display='Abundance' />
+<column name='lt4_comment' display='Record comment' />
+<column name='lt0_comment' display='Sample Comment' />
+<column name='lt4_created_on' display='Input date' />
+<column name='lt4_updated_on' display='Last changed date' />
+<column name='record_status' display='Record status' />
+<column name='verifier' display='Verifier' />
+<column name='verified_on' display='Verified on' />
+<column name='verifier_comment' display='Verifier comment' />
+<column name='record_link' display='Record link' />
+</columns>
+</report>
