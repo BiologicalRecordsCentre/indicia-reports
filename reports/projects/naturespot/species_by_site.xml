@@ -21,12 +21,12 @@ WHERE 1=1
     <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
   </params>
   <columns>
-    <column name='taxon_group' sql='taxon_group' datatype='text' />
-    <column name='taxon' sql='taxon' datatype='text' />
-    <column name='common' sql='common' datatype='text' />
+    <column name='taxon_group' sql='taxon_group' display="Group" datatype='text' />
+    <column name='common' sql='common' datatype='text' display="Common name" />
+    <column name='taxon' sql='taxon' datatype='text' display="Latin name" />
     <column name='date_start' sql='date_start' visible="false" />
     <column name='date_end' sql='date_end' visible="false" />
     <column name='date_type' sql='date_type' visible="false" />
-    <column name='date' datatype='date' />
+    <column name='date' datatype='date' display="Last seen" />
   </columns>
 </report>
