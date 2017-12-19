@@ -1,0 +1,32 @@
+<report
+    title="Species images for a NatureSpot site"
+    description="Lists distinct species at a NatureSpot Wild Place."
+    row_class="biota">
+  <query>
+SELECT #columns#
+FROM (
+  SELECT DISTINCT ON (taxon_group, taxon) external_key, taxon_group, taxon_group_id, taxon, common, image_path, image_caption, date_start, date_end, date_type
+  FROM (
+    SELECT * FROM naturespot.vw_occurrences_by_location
+    WHERE name='#site_name#'
+    ORDER BY date_start desc
+  ) sub
+) foo
+WHERE 1=1
+  </query>
+  <order_bys>
+    <order_by>taxon_group, taxon</order_by>
+  </order_bys>
+  <params>
+    <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
+  </params>
+  <columns>
+    <column name='taxon_group' sql='taxon_group' datatype='text' />
+    <column name='taxon' sql='taxon' datatype='text' />
+    <column name='common' sql='common' datatype='text' />
+    <column name='date_start' sql='date_start' visible="false" />
+    <column name='date_end' sql='date_end' visible="false" />
+    <column name='date_type' sql='date_type' visible="false" />
+    <column name='date' datatype='date' />
+  </columns>
+</report>
