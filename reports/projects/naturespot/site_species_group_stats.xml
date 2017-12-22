@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Species &amp; occurrence counts by taxon group for site"
+    description="Lists taxon groups for a named site and the number of recorded species and occurrences within them. Optional date range and survey filters.">
+  <query>
+    SELECT cttl.taxon_group as taxongroup, count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count, #website_id# as website_id
+      FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
+      JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id AND length(snf.public_entered_sref)>6
+      JOIN (locations l
+        JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
+      ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
+      WHERE o.website_id=#website_id#
+      AND o.record_status='V'
+      GROUP BY taxongroup
+    UNION
+      SELECT 'Total' as taxongroup, count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count, #website_id# as website_id
+      FROM cache_occurrences_functional o
+      JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id AND length(snf.public_entered_sref)>6
+      JOIN (locations l
+        JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
+      ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
+      WHERE o.website_id=#website_id#
+      AND o.record_status='V'
+      AND '#include_total#'!='no'
+  </query>
+  <params>
+    <param name='website_id' display='Website ID' description='Select the website to return data for' datatype='integer' />
+    <param name='site_name' display='Site' description='Enter the exact name of the site to search.' datatype='text' />
+    <param name='include_total' display='Include Total' datatype='lookup' lookup_values='yes:Yes,no:No' />
+  </params>
+  <order_bys>
+    <order_by>species_count DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name="taxongroup" display="Taxon Group" style="background-color: #e7e7e7;" />
+    <column name="species_count" display="Total no. of Species" />
+    <column name="occurrences_count" display="Total no. of Occurrences" />
+    <column name="website_id" visible="false" />
+  </columns>
+</report>
