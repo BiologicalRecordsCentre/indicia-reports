@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS Location Verification Report " description="Checks to see if a location intersects with the geometry from a verification rule.">
+  <query website_filter_field="lw.website_id" >
+  SELECT #columns#
+  FROM locations l
+  JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+  JOIN verification_rule_data vrd on vrd.verification_rule_id=#verification_rule_id#
+    AND vrd.header_name='geom' 
+    AND st_intersects(vrd.value_geom, coalesce(l.boundary_geom, l.centroid_geom))
+  WHERE l.id = #location_id# AND l.deleted = false
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Enter the ID of the location" datatype="integer" />
+    <param name="verification_rule_id" display="Verification Rule ID" description="Enter the ID of the Verification Rule" datatype="integer" />
+  </params>
+  <columns>
+    <column name='location_id' display='Location ID' sql='l.id' datatype="integer" />
+  </columns>
+</report>
