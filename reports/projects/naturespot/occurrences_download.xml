@@ -88,7 +88,7 @@ end as record_status,
 pv.surname || ', ' || pv.first_name as verifier,
 lt4.verified_on,
 string_agg(oc.comment, '; ') as verifier_comment,
-'https://warehouse1.indicia.org.uk/index.php/occurrence/edit/' || lt4.id::varchar as record_link
+'https://www.brc.ac.uk/irecord/record-details?occurrence_id=' || lt4.id::varchar as record_link
 </field_sql>
 <order_bys>
   <order_by>lt4.id ASC</order_by>
