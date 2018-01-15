@@ -65,7 +65,7 @@
     <order_by>count desc</order_by>
   </order_bys>
   <params>
-    <param name="sample_id" display="Sample or scratchpad ID"  datatype="integer"/>
+    <param name="sample_id" display="Sample or scratchpad ID"  datatype="integer[]"/>
     <param name="sample_type" display="Sample type" datatype="lookup" default="sample"
            lookupValues="sample:Sample,scratchpad:Scratchpad list">
       <joins>
