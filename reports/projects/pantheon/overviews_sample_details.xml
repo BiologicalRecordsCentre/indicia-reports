@@ -10,11 +10,11 @@
     LEFT JOIN cache_occurrences_functional o on o.sample_id = s.id and o.survey_id=su.id and o.website_id=su.website_id
     LEFT JOIN taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=o.preferred_taxa_taxon_list_id and ttlav.deleted=false
       and ttlav.taxa_taxon_list_attribute_id in (#all_trait_attr_ids#)
-  WHERE s.id = #sample_id# and '#sample_type#' = 'sample'
+  WHERE s.id in (#sample_id#) and '#sample_type#' = 'sample'
   AND #website_filter#
   </query>
   <params>
-    <param name='sample_id' display='Sample' description='Sample id to retrieve data for.' datatype='integer'/>
+    <param name='sample_id' display='Sample' description='Sample IDs to retrieve data for.' datatype='integer[]'/>
     <param name="sample_type" display="Sample type" datatype="lookup" default="sample"
            lookupValues="sample:Sample,scratchpad:Scratchpad list" />
     <param name='all_trait_attr_ids' display='Trait Attribute Ids' datatype='text'
