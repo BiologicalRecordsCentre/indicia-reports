@@ -21,7 +21,9 @@
            description='Comma separated list of the taxa taxon list attribute ids that hold species traits.' />
   </params>
   <columns>
-    <column name='sample_id' sql='s.id' display='Sample ID' in_count='true'/>
+    <!-- The group_by_this columnn provides a dummy integer value to group everything into a single row. -->
+    <column name="group_by_this" sql="1" visible="false" in_count="true"/>
+    <column name="sample_id" sql="'#sample_id#'" display="Sample ID" aggregate="true"/>
     <column name='sample_type' sql="'sample'" aggregate="true" />
     <column name='site_name' sql='coalesce(l.name,s.location_name)' display='Site Name' />
     <column name='date_of_survey' sql='vague_date_to_string(s.date_start, s.date_end, s.date_type)' display='Date of Survey' />
