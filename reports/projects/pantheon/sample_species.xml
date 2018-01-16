@@ -3,7 +3,7 @@
     description="A report which lists all Pantheon species along with trait data."
 >
   <query website_filter_field="cttl.website_id">
-    select #columns#
+    select distinct #columns#
     from cache_taxa_taxon_lists cttl
 	join cache_taxa_taxon_lists cttlpref on cttlpref.id=cttl.preferred_taxa_taxon_list_id
 	left join pantheon.species_index si on si.preferred_taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id
@@ -84,9 +84,9 @@ end</where>
     <param name='taxon_list_id' display='Taxon list' description='Main taxon list ID used.' datatype='integer'/>
   </params>
   <columns>
-    <column name="species" sql="cttl.preferred_taxon" display="Species" in_count="true" datatype="text" />
-    <column name="family_taxon" sql="cttl.family_taxon" display="Family" in_count="true" datatype="text" />
-    <column name="order_taxon" sql="cttl.order_taxon" display="Order" in_count="true" datatype="text" />
+    <column name="species" sql="cttlpref.taxon" display="Species" in_count="true" datatype="text" />
+    <column name="family_taxon" sql="cttlpref.family_taxon" display="Family" in_count="true" datatype="text" />
+    <column name="order_taxon" sql="cttlpref.order_taxon" display="Order" in_count="true" datatype="text" />
     <column name="rarity_score" sql="si.rarity_score" display="SQS" datatype="integer" />
     <column name="designations" sql="si.designations" display="Conservation status" datatype="text" />
     <column name="larval_guild" sql="si.larval_guild" display="Larval feeding guild" datatype="text"
@@ -98,7 +98,7 @@ end</where>
     <column name="resource" sql="lexicon_resource" display="Resources" datatype="text" />
     <column name="isis_sat_code" sql="si.isis_sat_code" display="Specific assemblage type" datatype="text" />
     <column name="horus_indices" sql="horus_indices" display="Habitat score" datatype="text" />
-    <column name="taxon_meaning_id" sql="cttl.taxon_meaning_id" visible="false" />
+    <column name="taxon_meaning_id" sql="cttlpref.taxon_meaning_id" visible="false" />
     <column name="associations" sql="si.associations" display="Associations" datatype="text" />
   </columns>
 </report>
