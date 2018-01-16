@@ -26,7 +26,7 @@
     <order_by>cttlto.kingdom_taxon, count(distinct cttl.taxon_meaning_id) desc</order_by>
   </order_bys>
   <params>
-    <param name="sample_id" display="Sample or scratchpad ID"  datatype="integer[]"/>
+    <param name="sample_id" display="Sample or scratchpad ID" datatype="integer[]"/>
     <param name="sample_type" display="Sample type" datatype="lookup" default="sample"
            lookupValues="sample:Sample,scratchpad:Scratchpad list">
       <joins>
@@ -45,7 +45,7 @@
     <param name='taxon_list_id' display='Taxon list' description='Main taxon list ID used.' datatype='integer'/>
   </params>
   <columns>
-    <column name="sample_id" sql="#sample_id#" visible="false" aggregate="true" />
+    <column name="sample_id" sql="'#sample_id#'" visible="false" aggregate="true" />
     <column name="sample_type" sql="'#sample_type#'" visible="false" aggregate="true" />
     <column name="taxon_meaning_id" sql="cttlto.taxon_meaning_id" visible="false"/>
     <column name="kingdom_taxon" display="Kingdom" sql="cttlto.kingdom_taxon" distincton="true" />

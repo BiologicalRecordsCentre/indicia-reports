@@ -88,7 +88,7 @@
     <param name='rarity_score_attr_id' display='Rarity score attribute ID' datatype='integer'/>
   </params>
   <columns>
-    <column name="sample_id" sql="#sample_id#" visible="false" />
+    <column name="sample_id" sql="'#sample_id#'" visible="false" />
     <column name="sample_type" sql="'#sample_type#'" visible="false" />
     <column name="l1_term_id" sql="l1_term_id" visible="false" />
     <column name="term_id" sql="term_id" visible="false" />

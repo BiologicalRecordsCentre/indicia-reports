@@ -107,7 +107,7 @@
   </params>
   <columns>
     <column name="id" sql="id" visible="false" in_count="true" />
-    <column name="sample_id" sql="#sample_id#" visible="false" />
+    <column name="sample_id" sql="'#sample_id#'" visible="false" />
     <column name="sample_type" sql="'#sample_type#'" visible="false" />
     <column name="term_id" sql="term_id" visible="false" />
     <column name="bb_term" sql="bb_term" display="Broad biotope" datatype="text" />
