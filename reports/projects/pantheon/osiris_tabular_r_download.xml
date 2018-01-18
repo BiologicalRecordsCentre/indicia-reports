@@ -8,7 +8,7 @@
         case when p.id=t_sb.id then 0 else t_r.parent_id end as "parent_r_id",
         t_bb.term as "bb_term",
         t_sb.term as "sb_term",
-        case when p.id=t_sb.id then '' else 'p.term || ' &gt;&gt; ' end || t_r.term as "term",
+        case when p.id=t_sb.id then '' else p.term || ' &gt;&gt; ' end || t_r.term as "term",
         count(distinct cttl.preferred_taxa_taxon_list_id) as "speciescount",
         count(distinct cttl.preferred_taxa_taxon_list_id)::float * 100 / (
           select count(distinct ttlsub.preferred_taxa_taxon_list_id)
