@@ -9,6 +9,8 @@ FROM samples lt0
 INNER JOIN occurrences lt4 ON (lt4.sample_id = lt0.id AND  lt4.deleted = FALSE)
 LEFT JOIN locations l on l.id=lt0.location_id
 LEFT JOIN sample_attribute_values recorder on recorder.sample_id=lt0.id and recorder.deleted=false and recorder.sample_attribute_id=22
+LEFT JOIN sample_attribute_values savfirst on savfirst.sample_id=lt0.id and savfirst.deleted=false and savfirst.sample_attribute_id=36
+LEFT JOIN sample_attribute_values savlast on savlast.sample_id=lt0.id and savlast.deleted=false and savlast.sample_attribute_id=58
 LEFT JOIN occurrence_attribute_values abund on abund.occurrence_id=lt4.id and abund.deleted=false and abund.occurrence_attribute_id=16
 LEFT JOIN occurrence_attribute_values verif on verif.occurrence_id=lt4.id and verif.deleted=false and verif.occurrence_attribute_id=19
 LEFT JOIN occurrence_attribute_values det on det.occurrence_id=lt4.id and det.deleted=false and det.occurrence_attribute_id=18
@@ -33,7 +35,11 @@ ttl.default_common_name,
 ttl.external_key,
 lt0.entered_sref,
 CASE WHEN lt0.location_name='' THEN l.name ELSE COALESCE(lt0.location_name, l.name) END,
-COALESCE(recorder.text_value, lt0.recorder_names),
+COALESCE(
+  coalesce(savfirst.text_value || ' ', '') || savlast.text_value,
+  recorder.text_value,
+  lt0.recorder_names
+),
 det.text_value,
 verif.int_value,
 t.term,
@@ -62,7 +68,11 @@ ttl.external_key AS lt6_external_key,
 '' AS lt0_date,
 lt0.entered_sref AS lt0_entered_sref,
 CASE WHEN lt0.location_name='' THEN l.name ELSE COALESCE(lt0.location_name, l.name) END AS lt0_location_name,
-COALESCE(recorder.text_value, lt0.recorder_names) AS lt0_recorder_names,
+COALESCE(
+  coalesce(savfirst.text_value || ' ', '') || savlast.text_value,
+  recorder.text_value,
+  lt0.recorder_names
+) AS lt0_recorder_names,
 det.text_value as determiner,
 verif.int_value as verification,
 t.term as confidence,
