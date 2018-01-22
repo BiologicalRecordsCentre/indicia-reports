@@ -38,7 +38,7 @@
     </param>
     <param name="trait_attr_id" display="Trait attribute Id" default=""
            description="Trait attribute id to filter to species having this trait." datatype="integer">
-      <join>join taxa_taxon_list_attribute_values filtv on filtv.taxa_taxon_list_id=ttlpref.id and filtv.deleted=false
+      <join>join taxa_taxon_list_attribute_values filtv on filtv.taxa_taxon_list_id=cttlpref.id and filtv.deleted=false
         and filtv.taxa_taxon_list_attribute_id=#trait_attr_id#</join>
     </param>
     <param name="trait_term_id" display="Trait term ID(s)" datatype="integer[]" default="">
