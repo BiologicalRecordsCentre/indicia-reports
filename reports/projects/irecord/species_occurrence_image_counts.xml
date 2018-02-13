@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Species, Occurrence and Image Counts" description="Gives a total number of species, occurrence and photos.">
+  <query website_filter_field="c.website_id" >
+    SELECT #columns#
+    FROM custom_cache_tables.counts_by_website c
+    WHERE c.website_id in (#sharing_website_ids#)
+    AND c.training=#training#
+  </query>
+  <columns>
+        <column name="species_count" display="Species" sql="sum(c.species_count)"  />
+        <column name="occurrences_count" display="Records" sql="sum(c.occurrences_count)" />
+        <column name="photos_count" display="Photos" sql="sum(c.photos_count)" />
+  </columns>
+</report>
