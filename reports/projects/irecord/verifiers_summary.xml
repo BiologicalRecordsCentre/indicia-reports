@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Verifiers Summary" definition="Displays the count of records user has verified, rejected etc.">
+<!-- This report is iRecord specific, but could easily be generic by uncommenting the few lines -->
+	<query website_filter_field="o.website_id" samples_id_field="o.sample_id" >
+		SELECT #columns#
+		FROM cache_occurrences_functional o
+		JOIN occurrences oc on oc.id=o.id and oc.deleted=false
+		JOIN users vu on vu.id=oc.verified_by_id
+		JOIN people vp on vp.id=vu.person_id
+		#agreements_join#
+		#joins#
+		WHERE #sharing_filter#
+		AND o.website_id = 23 --iRecord only
+	</query>
+	<params>
+		<param name='date_from' display='Date From' datatype='date'>
+		   <where>o.date_start &gt;= '#date_from#'</where>
+		</param>
+        <param name='date_to' display='Date To' datatype='date'>
+		  <where>o.date_start &lt;= '#date_from#'</where>
+		</param>
+		<param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='direct:taxon_group:id:title'
+			   description='Select the taxon group to return data for, or leave for all groups'>
+		  <where>o.taxon_group_id=#taxon_group_id#</where>
+		</param>
+		<param name='location_type' display='Location Type' description='Please provide the location type.' datatype='lookup' population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id='/>
+		<param name='location_id' display='Location' description='Select the location to return data for' datatype='lookup'
+               population_call='direct:location:id:name'  linked_to='location_type' linked_filter_field='location_type_id'>
+	      <join value="Please select a Location Type first" operator="notequal">JOIN locations l on l.id=#location_id# AND ST_Intersects(o.public_geom, l.boundary_geom)</join>
+	    </param>
+    </params>
+	<order_bys>
+		<order_by>verified DESC</order_by>
+	</order_bys>
+
+	<columns>
+		<column name="verified_by_id" sql="oc.verified_by_id" visible="false" in_count="true" />
+		<column name="date_from" sql="'#date_from#'" visible="false" aggregate="true" />
+		<column name="date_to" sql="'#date_to#'" visible="false" aggregate="true" />
+		<column name="location_id" sql="'#location_id#'" visible="false" aggregate="true" />
+		<column name="last_verified_date" sql="MAX(o.verified_on) " visible="false" aggregate="true" />
+		<column name="name" display="NAME" sql="vp.surname || COALESCE(', ' || vp.first_name, '')"
+				template="&lt;a href='#' onclick='alert(&quot;Verifier ID: {verified_by_id}\nLast Verified: {last_verified_date}&quot;);' &gt; &lt;b&gt;{name}&lt;/b&gt; &lt;/a&gt;" datatype="text"/>
+		<column name="verified" display="VERIFIED" sql="SUM(CASE WHEN o.record_status = 'V' THEN 1 ELSE 0 END)" datatype="text" aggregate="true"
+				template="&lt;a href='verified-occurrences?report-verified_by_id={verified_by_id}&amp;report-record_status=V&amp;report-date_from={date_from}&amp;report-date_to={date_to}&amp;report-location_id={location_id}'&gt;{verified}&lt;/a&gt;"/>
+		<column name="dubious" display="DUBIOUS" sql="SUM(CASE WHEN o.record_status = 'D' THEN 1 ELSE 0 END)" datatype="text" aggregate="true"
+				template="&lt;a href='verified-occurrences?report-verified_by_id={verified_by_id}&amp;report-record_status=D&amp;report-date_from={date_from}&amp;report-date_to={date_to}&amp;report-location_id={location_id}'&gt;{dubious}&lt;/a&gt;"/>
+		<column name="rejected" display="REJECTED" sql="SUM(CASE WHEN o.record_status = 'R' THEN 1 ELSE 0 END)" datatype="text" aggregate="true"
+				template="&lt;a href='verified-occurrences?report-verified_by_id={verified_by_id}&amp;report-record_status=R&amp;report-date_from={date_from}&amp;report-date_to={date_to}&amp;report-location_id={location_id}'&gt;{rejected}&lt;/a&gt;"/>
+		<column name="sent" display="SENT" sql="SUM(CASE WHEN o.record_status = 'S' THEN 1 ELSE 0 END)" datatype="text" aggregate="true"
+				template="&lt;a href='verified-occurrences?report-verified_by_id={verified_by_id}&amp;report-record_status=S&amp;report-date_from={date_from}&amp;report-date_to={date_to}&amp;report-location_id={location_id}'&gt;{sent}&lt;/a&gt;"/>
+		<column name="count" display="TOTAL" sql="COUNT(*)" datatype="integer" aggregate="true"
+				template="&lt;a href='verified-occurrences?report-verified_by_id={verified_by_id}&amp;report-record_status=&amp;report-date_from={date_from}&amp;report-date_to={date_to}&amp;report-location_id={location_id}'&gt;{count}&lt;/a&gt;"/>
+	</columns>
+
+</report>
