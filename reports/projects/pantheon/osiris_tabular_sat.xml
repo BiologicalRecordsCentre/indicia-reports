@@ -34,8 +34,10 @@
       join cache_termlists_terms tcode on tcode.meaning_id=t_sat.meaning_id and tcode.preferred=false
 
       -- Join via the species data linked to the SAT term to the appropriate scratchpad list
-      join cache_taxa_taxon_lists cttl on cttl.preferred_taxa_taxon_list_id=av_sat.taxa_taxon_list_id
-      #joins#
+      join (select distinct preferred_taxa_taxon_list_id
+        from cache_taxa_taxon_lists cttl
+        #joins#
+      ) cttl on cttl.preferred_taxa_taxon_list_id=av_sat.taxa_taxon_list_id
       join taxa_taxon_lists ttl on ttl.id=cttl.preferred_taxa_taxon_list_id
 
       -- Include the specific biotopes
