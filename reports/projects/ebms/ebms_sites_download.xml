@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="UKBMS Site Download Report" description="Lists saved sites and their attributes.">
+<report title="EBMS Sites Download Report" description="Lists saved sites and their attributes.">
   <query website_filter_field="l.website_id">
   SELECT #field_sql#
   FROM detail_locations l
