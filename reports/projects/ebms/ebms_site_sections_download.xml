@@ -6,7 +6,7 @@
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
   JOIN detail_locations l2 ON l2.parent_id=l.id
   #joins#
-  WHERE #website_filter# AND l.parent_id IS NULL
+  WHERE #website_filter#
   #filters#
   #order_by#
   </query>
