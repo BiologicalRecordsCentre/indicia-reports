@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="UKBMS Site Download Report" description="Lists saved sites and their attributes.">
+<report title="EBMS Site Sections Download Report" description="Lists saved site sections and their attributes.">
   <query website_filter_field="l.website_id">
   SELECT #field_sql#
   FROM detail_locations l
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
   JOIN detail_locations l2 ON l2.parent_id=l.id
   #joins#
-  WHERE #website_filter# AND l.parent_id IS NULL
+  WHERE #website_filter#
   #filters#
   #order_by#
   </query>
