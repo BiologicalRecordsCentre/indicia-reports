@@ -115,6 +115,6 @@ end" />
     <column name='fo' visible='false' feature_style="fillOpacity" aggregate="true" sql="0.7" />
     <column name="reference" display="Ref." on_demand="true" sql="occ.metadata->>'GBNNSIP reference'" datatype="text"/>
     <column name="status" display="Status" on_demand="true" datatype="text"
-      sql="CASE occ.metadata->>'GBNNSIP status' WHEN 'P' THEN 'Pending' WHEN 'I' THEN 'In progress' WHEN 'C' THEN 'Complete' ELSE '' END"/>
+      sql="CASE occ.metadata->>'Statutory body status' WHEN 'P' THEN 'Pending' WHEN 'I' THEN 'In progress' WHEN 'C' THEN 'Complete' ELSE '' END"/>
   </columns>
 </report>
