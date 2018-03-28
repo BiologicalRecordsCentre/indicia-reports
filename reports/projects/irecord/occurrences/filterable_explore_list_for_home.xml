@@ -1,0 +1,46 @@
+<report
+    title="Explore occurrences (standard filters) optimised for iRecord home"
+    description="A list of occurrences designed for tabular output."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
+         standard_params="occurrences" count_field="o.*">
+  SELECT #columns#
+  FROM cache_occurrences_functional o
+  JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
+  JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
+  JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  </query>
+  <order_bys>
+    <order_by>o.id DESC</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
+        template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
+
+    <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
+    <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
+    <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
+    <column name="output_sref" sql="onf.output_sref" display="Grid ref" datatype="text" />
+    <column name='date_start' sql='o.date_start' visible='false' />
+    <column name='date_end' sql='o.date_end' visible='false' />
+    <column name='date_type' sql='o.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name='recorder' display='Recorder' sql="CASE WHEN (TRIM(snf.recorders) !~ ' ' AND LENGTH(snf.recorders)>30) THEN 'Recorder' ELSE snf.recorders END" datatype="text" />
+    <column name='zero_abundance' display='Zero abundance' sql='o.zero_abundance' visible="false" />
+    <column name='record_status' display='State' sql='o.record_status' visible="false" />
+    <column name='record_substatus' display='State' sql='o.record_substatus' visible="false" />
+    <column name='release_status' display='State' sql='o.release_status' visible="false" />
+    <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
+    <column name='status_hint' visible="false"
+            sql="case o.record_status when 'V' then 'Accepted' when 'R' then 'Not accepted' when 'T' then 'Test'
+              when 'C' then case when record_substatus=3 then 'Plausible' when o.certainty='C' then 'Recorder considered this certain' when o.certainty='L' then 'Recorder considered this likely' when o.certainty='U' then 'Recorder considered this uncertain' else 'Not reviewed' end
+            end ||
+            case o.record_substatus when 1 then ' as correct' when 2 then ' as considered correct' when 4 then ' as unable to verify' when 5 then ' as incorrect' else '' end ||
+            case o.query when 'A' then ', query raised and answered' when 'Q' then ', query raised' else '' end" />
+  </columns>
+</report>
