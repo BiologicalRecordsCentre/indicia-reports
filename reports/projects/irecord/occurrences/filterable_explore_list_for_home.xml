@@ -23,7 +23,7 @@
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
 
     <column name='taxon' display='Species' datatype="species"
-      sql="CASE WHEN cttl.preferred_taxon=cttl.default_common_name THEN '' ELSE cttl.default_common_name || '&lt;br/&gt;' END
+      sql="CASE WHEN cttl.default_common_name IS NULL OR cttl.preferred_taxon=cttl.default_common_name THEN '' ELSE cttl.default_common_name || '&lt;br/&gt;' END
   || CASE cttl.preferred_language_iso WHEN 'lat' THEN '&lt;em&gt;' ELSE '' END
   || cttl.preferred_taxon
   || CASE cttl.preferred_language_iso WHEN 'lat' THEN '&lt;/em&gt;' ELSE '' END"
