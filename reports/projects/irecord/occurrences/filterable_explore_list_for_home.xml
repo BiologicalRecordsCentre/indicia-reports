@@ -22,8 +22,12 @@
     <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
 
-    <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
-    <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
+    <column name='taxon' display='Species' datatype="species"
+      sql="CASE WHEN cttl.preferred_taxon=cttl.default_common_name THEN '' ELSE cttl.default_common_name || '&lt;br/&gt;' END
+  || CASE cttl.preferred_language_iso WHEN 'lat' THEN '&lt;em&gt;' ELSE '' END
+  || cttl.preferred_taxon
+  || CASE cttl.preferred_language_iso WHEN 'lat' THEN '&lt;/em&gt;' ELSE '' END"
+      template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
     <column name="output_sref" sql="onf.output_sref" display="Grid ref" datatype="text" />
     <column name='date_start' sql='o.date_start' visible='false' />
