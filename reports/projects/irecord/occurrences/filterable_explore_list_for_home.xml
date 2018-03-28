@@ -40,7 +40,7 @@
     <column name='record_substatus' display='State' sql='o.record_substatus' visible="false" />
     <column name='release_status' display='State' sql='o.release_status' visible="false" />
     <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
-    <column name='geom' visible="false" sql="o.public_geom" />
+    <column name='geom' visible="false" sql="st_astext(o.public_geom)" mappable="true" />
     <column name='status_hint' visible="false"
             sql="case o.record_status when 'V' then 'Accepted' when 'R' then 'Not accepted' when 'T' then 'Test'
               when 'C' then case when record_substatus=3 then 'Plausible' when o.certainty='C' then 'Recorder considered this certain' when o.certainty='L' then 'Recorder considered this likely' when o.certainty='U' then 'Recorder considered this uncertain' else 'Not reviewed' end
