@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Sample history by user" definition="Lists all samples for the user and their status.">
+	<query>
+		SELECT #columns#
+		FROM cache_samples_functional s
+		#joins#
+		WHERE s.survey_id = #survey_id#
+		AND s.created_by_id = #user_id#
+	</query>
+	<params>
+		<param name='user_id' display='User' description='Enter the user id' datatype='text'></param>
+		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+    </params>
+	<order_bys>
+		<order_by>s.id DESC</order_by>
+	</order_bys>
+
+	<columns>
+		<column name="Sample number" sql="s.id" visible="true" />
+		<column name="Status" sql="CASE WHEN s.record_status = 'I' THEN 'Pack Requested'
+								        WHEN s.record_status = 'C' THEN 'Sample Submitted'
+								   END" visible="true" />
+		<column name="Last updated" sql="to_char(s.updated_on, 'DD/MM/YYYY')" visible="true" />
+	</columns>
+
+</report>
