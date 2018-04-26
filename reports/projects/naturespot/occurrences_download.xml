@@ -121,6 +121,7 @@ string_agg(oc.comment, '; ') as verifier_comment,
 <column name='lt0_date' display='Date' />
 <column name='lt0_entered_sref' display='Grid Ref' />
 <column name='lt0_location_name' display='Location Name' />
+<column name='vc_code' display='VC Code' />
 <column name='lt0_recorder_names' display='Recorder' />
 <column name='determiner' display='Determiner' />
 <column name='verification' display='Verification' />
