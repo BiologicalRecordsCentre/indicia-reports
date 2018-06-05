@@ -7,7 +7,7 @@
   FROM samples s
   JOIN surveys su on su.id=s.survey_id and su.deleted=false
   LEFT JOIN locations l ON l.id=s.location_id
-  JOIN users u on u.id=s.user_id
+  JOIN users u on u.id=s.created_by_id
   JOIN people p on p.id=u.person_id
   #agreements_join#
   #joins#
