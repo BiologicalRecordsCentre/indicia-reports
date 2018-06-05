@@ -1,8 +1,8 @@
 <report
-    title="List of INNS Mapper treatments"
-    description="List of INNS Mapper treatment samples"
+    title="Mapping of INNS Mapper treatments"
+    description="Mapping of INNS Mapper treatment samples"
 >
-<query website_filter_field="" training_filter_field="" >
+<query website_filter_field="" training_filter_field="">
   SELECT #columns#
   FROM samples s
   JOIN surveys su on su.id=s.survey_id and su.deleted=false
@@ -12,14 +12,10 @@
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
-  AND s.deleted=false
+  AND s.deleted = FALSE
   AND s.parent_id IS NULL
   AND su.website_id in (#website_ids#)
   </query>
-  <order_bys>
-    <order_by>s.id DESC</order_by>
-    <order_by>s.date_start DESC</order_by>
-  </order_bys>
   <params>
     <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"
         population_call="direct:survey:id:title">
@@ -43,17 +39,18 @@
     </param>
   </params>
   <columns>
-    <column name="sample_id" visible="true" sql="s.id" datatype="integer" />
+    <column name="sample_id" visible="true" sql="s.id" datatype="integer" on_demand="true"/>
     <column name="survey" display="Survey" sql="su.title" datatype="text" />
-    <column name="location_name" display="Site name" sql="COALESCE(l.name, s.location_name)" datatype="text" />
-    <column name="location_id" display="Location ID" visible="false" sql="l.id" datatype="integer" />
-    <column name="code" display="Site code" sql="l.code" datatype="text" />
-    <column name="entered_sref" display="SRef" sql="s.entered_sref" datatype="text" />
-    <column name='date_start' sql='s.date_start' visible="false" />
-    <column name='date_end' sql='s.date_end' visible="false" />
-    <column name='date_type' sql='s.date_type' visible="false" />
-    <column name='date' display='Date' datatype="date" />
-    <column name='input_by' display='Input by' sql="p.surname || coalesce(', ' || p.first_name, '')" datatype='text' />
-    <column name='input_form' sql='s.input_form' visible="false" />
+    <column name="location_name" display="Site name" sql="COALESCE(l.name, s.location_name)" datatype="text" on_demand="true"/>
+    <column name="location_id" display="Location ID" visible="false" sql="l.id" datatype="integer" on_demand="true"/>
+    <column name="code" display="Site code" sql="l.code" datatype="text" on_demand="true"/>
+    <column name="entered_sref" display="SRef" sql="s.entered_sref" datatype="text" on_demand="true"/>
+    <column name='date_start' sql='s.date_start' visible="false" on_demand="true"/>
+    <column name='date_end' sql='s.date_end' visible="false" on_demand="true"/>
+    <column name='date_type' sql='s.date_type' visible="false" on_demand="true"/>
+    <column name='date' display='Date' datatype="date" on_demand="true"/>
+    <column name='input_by' display='Input by' sql="p.surname || coalesce(', ' || p.first_name, '')" datatype='text' on_demand="true"/>
+    <column name="sample_ids" visible="false" sql="array_to_string(array_agg(s.id), ',')" aggregate="true" />
+    <column name="geom" visible="false" mappable="true" sql="st_astext(geom)" in_count="true" />
   </columns>
 </report>
