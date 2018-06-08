@@ -1,6 +1,6 @@
 <report
-    title="Explore records using index_locations_samples for home page"
-    description="Report designed for the home page of LERC Wales websites. 
+    title="Explore records using index_locations_samples"
+    description="Library report modified for the LERC Wales websites. 
         It adds the survey parameter to the standard library report to allow selection of a 
         combination of the LERC surveys and the iRecord Wales app. This version depends on the
         Spatial Index Builder module to index the list of locations that users can set in their preferences
