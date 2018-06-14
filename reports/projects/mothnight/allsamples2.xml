@@ -1,0 +1,63 @@
+<report
+    title="Moth Night list of all samples 2"
+    description="A list of all samples.
+      Includes a parameter for selecting survey."
+>
+  <query>
+    SELECT #field_sql#
+    FROM samples s 
+    LEFT JOIN sample_attribute_values savSite ON savSite.sample_id = s.id AND savSite.sample_attribute_id = 151 AND savSite.deleted = FALSE
+    LEFT JOIN sample_attribute_values savPublic ON savPublic.sample_id = s.id AND savPublic.sample_attribute_id = 146 AND savPublic.deleted = FALSE
+    LEFT JOIN sample_attribute_values savParts ON savParts.sample_id = s.id AND savParts.sample_attribute_id = 147 AND savParts.deleted = FALSE
+    LEFT JOIN sample_attribute_values savBrown ON savBrown.sample_id = s.id AND savBrown.sample_attribute_id = 148 AND savBrown.deleted = FALSE
+    LEFT JOIN sample_attribute_values savType ON savType.sample_id = s.id AND savType.sample_attribute_id = 149 AND savType.deleted = FALSE
+    LEFT JOIN list_termlists_terms lttType ON lttType.id = savType.int_value
+    LEFT JOIN sample_attribute_values savOther ON savOther.sample_id = s.id AND savOther.sample_attribute_id = 150 AND savOther.deleted = FALSE
+    LEFT JOIN sample_attribute_values savName1 ON savName1.sample_id = s.id AND savName1.sample_attribute_id = 36 AND savName1.deleted = FALSE
+    LEFT JOIN sample_attribute_values savName2 ON savName2.sample_id = s.id AND savName2.sample_attribute_id = 58 AND savName2.deleted = FALSE
+    #joins#
+    WHERE s.deleted = FALSE
+    AND s.survey_id  = #survey_id#
+    #order_by#
+  </query>
+  <field_sql>
+	s.id AS id, 
+	to_char(s.date_start, 'DD/MM/YYYY') AS date,
+	savSite.text_value AS site,
+	s.entered_sref AS gridref,
+        CASE 
+          WHEN savPublic.int_value = 0 THEN 'N'
+          WHEN savPublic.int_value = 1 THEN 'Y'
+        END AS public,
+        savParts.int_value as participants,
+        CASE 
+          WHEN savBrown.int_value = 0 THEN 'N'
+          WHEN savBrown.int_value = 1 THEN 'Y'
+        END AS brownfield,
+        CASE
+          WHEN lttType.term like 'Other%' THEN 'Other - ' || savOther.text_value
+          ELSE lttType.term
+        END AS type,
+	s.comment,
+        savName1.text_value || ' ' || savName2.text_value as sender
+  </field_sql>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='survey_id' display='Survey' description='Select the survey, or leave for all surveys' datatype='lookup'
+        population_call='direct:survey:id:title' />
+  </params>
+  <columns>
+    <column name='id' display='Samp.' />
+    <column name='date' display='Date' />
+    <column name='site' display='Site' />
+    <column name='gridref' display='Gridref' />
+    <column name='public' display='Pub.' />
+    <column name='participants' display='No.' />
+    <column name='brownfield' display='Brn.' />
+    <column name='type'  display='Type'/>
+    <column name='comment' display='Comment' />
+    <column name='sender'  display='Name'/>
+  </columns>
+</report>

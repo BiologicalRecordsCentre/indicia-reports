@@ -1,0 +1,64 @@
+<report
+    title="Moth Night occurrence list for export"
+    description="A list of records filtered according to the ID of the user designed for exporting to MapMate."
+>
+  <query website_filter_field="o.website_id">
+    SELECT #field_sql#
+    FROM occurrences o
+    JOIN samples s ON s.id = o.sample_id AND s.deleted = FALSE
+    JOIN taxa_taxon_lists ttl ON ttl.id = o.taxa_taxon_list_id AND ttl.deleted = FALSE
+    JOIN taxa_taxon_lists ttlpref ON ttlpref.taxon_meaning_id = ttl.taxon_meaning_id AND ttlpref.preferred = 't' AND ttlpref.deleted = FALSE
+    JOIN taxa tpref ON tpref.id = ttlpref.taxon_id AND tpref.deleted = FALSE
+    LEFT JOIN sample_attribute_values savSite ON savSite.sample_id = s.id AND savSite.sample_attribute_id = 151 AND savSite.deleted = FALSE
+    LEFT JOIN locations l ON l.location_type_id = 15 AND ST_Contains(l.boundary_geom, ST_Centroid(s.geom)) AND l.deleted = FALSE
+    LEFT JOIN occurrence_attribute_values oavStg ON oavStg.occurrence_id = o.id AND oavStg.occurrence_attribute_id = 63 AND oavStg.deleted = FALSE
+    LEFT JOIN list_termlists_terms lttStg ON lttStg.id = oavStg.int_value
+    LEFT JOIN occurrence_attribute_values oavQty ON oavQty.occurrence_id = o.id AND oavQty.occurrence_attribute_id = 64 AND oavQty.deleted = FALSE
+    LEFT JOIN occurrence_attribute_values oavRec ON oavRec.occurrence_id = o.id AND oavRec.occurrence_attribute_id = 65 AND oavRec.deleted = FALSE
+    LEFT JOIN occurrence_attribute_values oavDet ON oavDet.occurrence_id = o.id AND oavDet.occurrence_attribute_id = 66 AND oavDet.deleted = FALSE
+    LEFT JOIN occurrence_attribute_values oavMtd ON oavMtd.occurrence_id = o.id AND oavMtd.occurrence_attribute_id = 67 AND oavMtd.deleted = FALSE
+    LEFT JOIN list_termlists_terms lttMtd ON lttMtd.id = oavMtd.int_value
+    #joins#
+    WHERE o.deleted = FALSE
+    AND #website_filter#
+    AND s.survey_id  = 41
+    AND CAST(o.created_by_id AS character varying)='#user_id#'
+    #order_by#
+  </query>
+  <field_sql>
+	tpref.taxon,
+	savSite.text_value AS site,
+	s.entered_sref AS gridref,
+        l.code as vc,
+	oavRec.text_value AS recorder,
+	oavDet.text_value AS determiner, 
+	to_char(s.date_start, 'DD/MM/YYYY') AS date,
+	oavQty.int_value AS quantity,
+	lttMtd.term AS method,
+        'u' AS sex,
+	lttStg.term AS stage,
+        'Not recorded' AS status,
+	o.comment
+  </field_sql>
+  <order_bys>
+    <order_by>o.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='user_id' display='Indicia User ID' description='Something has gone wrong as you are logged in to the system but do not have an ID' datatype='int' />
+  </params>
+  <columns>
+    <column name='taxon' display='Taxon' />    
+    <column name='site' display='Site' />
+    <column name='gridref' display='Gridref' />
+    <column name='vc' display='VC' />
+    <column name='recorder' display='Recorder' />
+    <column name='determiner' display='Determiner' />
+    <column name='date' display='Date' />
+    <column name='quantity'  display='Quantity'/>
+    <column name='method'  display='Method'/>
+    <column name='sex'  display='Sex'/>
+    <column name='stage'  display='Stage'/>
+    <column name='status'  display='Status'/>
+    <column name='comment'  display='Comment'/>
+  </columns>
+</report>

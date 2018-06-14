@@ -1,0 +1,28 @@
+<report
+    title="Moth Night Summary"
+    description="Some simple stats of participation in moth night."
+>
+  <query>
+
+    SELECT 
+      (SELECT COUNT(*) FROM samples s WHERE s.survey_id = 41 AND s.deleted = FALSE) AS nrSamples,
+      (SELECT COUNT(*) FROM occurrences o 
+        JOIN samples s ON s.id = o.sample_id AND s.deleted = FALSE AND s.survey_id = 41 
+        WHERE o.deleted = FALSE) AS nrOccurrences,
+      (SELECT sum(int_value) FROM occurrence_attribute_values oav
+        JOIN occurrences o ON o.id = oav.occurrence_id AND o.deleted = FALSE
+        JOIN samples s ON s.id = o.sample_id AND s.deleted = FALSE AND s.survey_id = 41
+        WHERE oav.deleted = FALSE AND oav.occurrence_attribute_id = 64) AS sumSightings,
+      (SELECT COUNT(distinct ttl.taxon_meaning_id) FROM taxa_taxon_lists ttl
+        JOIN occurrences o ON o.taxa_taxon_list_id = ttl.id AND o.deleted = FALSE
+        JOIN samples s ON s.id = o.sample_id AND s.deleted = FALSE 
+        WHERE ttl.deleted = FALSE AND s.survey_id = 41) AS nrSpecies
+    
+  </query>
+  <columns>
+    <column name='nrSamples' display='Number of report forms submitted' />    
+    <column name='nrOccurrences' display='Total number of species records from all forms' />
+    <column name='sumSightings' display='Total quantity of moths reported' />
+    <column name='nrSpecies' display='Number of distinct species reported' />
+  </columns>
+</report>

@@ -1,0 +1,64 @@
+<report
+    title="Moth Night list of all weather"
+    description="A list of weather for all samples."
+>
+  <query>
+    SELECT #field_sql#
+    FROM samples s 
+    LEFT JOIN sample_attribute_values savWDir ON savWDir.sample_id = s.id AND savWDir.sample_attribute_id = 152 AND savWDir.deleted = FALSE
+    LEFT JOIN termlists_terms tltWDir ON tltWDir.id = savWDir.int_value AND tltWDir.deleted = FALSE
+    LEFT JOIN terms tWDir ON tWDir.id = tltWDir.term_id AND tWDir.deleted = FALSE
+    LEFT JOIN termlists_terms tltWDirX ON tltWDirX.meaning_id = tltWDir.meaning_id AND tltWDirX.preferred = FALSE AND tltWDirX.deleted = FALSE
+    LEFT JOIN terms tWDirX ON tWDirX.id = tltWDirX.term_id AND tWDirX.deleted = FALSE
+    LEFT JOIN sample_attribute_values savWSpd ON savWSpd.sample_id = s.id AND savWSpd.sample_attribute_id = 153 AND savWSpd.deleted = FALSE
+    LEFT JOIN termlists_terms tltWSpd ON tltWSpd.id = savWSpd.int_value AND tltWSpd.deleted = FALSE
+    LEFT JOIN terms tWSpd ON tWSpd.id = tltWSpd.term_id AND tWSpd.deleted = FALSE
+    LEFT JOIN termlists_terms tltWSpdX ON tltWSpdX.meaning_id = tltWSpd.meaning_id AND tltWSpdX.preferred = FALSE AND tltWSpdX.deleted = FALSE
+    LEFT JOIN terms tWSpdX ON tWSpdX.id = tltWSpdX.term_id AND tWSpdX.deleted = FALSE
+    LEFT JOIN sample_attribute_values savWthr ON savWthr.sample_id = s.id AND savWthr.sample_attribute_id = 154 AND savWthr.deleted = FALSE
+    LEFT JOIN termlists_terms tltWthr ON tltWthr.id = savWthr.int_value AND tltWthr.deleted = FALSE
+    LEFT JOIN terms tWthr ON tWthr.id = tltWthr.term_id AND tWthr.deleted = FALSE
+    LEFT JOIN termlists_terms tltWthrX ON tltWthrX.meaning_id = tltWthr.meaning_id AND tltWthrX.preferred = FALSE AND tltWthrX.deleted = FALSE
+    LEFT JOIN terms tWthrX ON tWthrX.id = tltWthrX.term_id AND tWthrX.deleted = FALSE
+    LEFT JOIN sample_attribute_values savCloud ON savCloud.sample_id = s.id AND savCloud.sample_attribute_id = 155 AND savCloud.deleted = FALSE
+    LEFT JOIN termlists_terms tltCloud ON tltCloud.id = savCloud.int_value AND tltCloud.deleted = FALSE
+    LEFT JOIN terms tCloud ON tCloud.id = tltCloud.term_id AND tCloud.deleted = FALSE
+    LEFT JOIN termlists_terms tltCloudX ON tltCloudX.meaning_id = tltCloud.meaning_id AND tltCloudX.preferred = FALSE AND tltCloudX.deleted = FALSE
+    LEFT JOIN terms tCloudX ON tCloudX.id = tltCloudX.term_id AND tCloudX.deleted = FALSE
+    LEFT JOIN sample_attribute_values savMaxT ON savMaxT.sample_id = s.id AND savMaxT.sample_attribute_id = 156 AND savMaxT.deleted = FALSE
+    LEFT JOIN sample_attribute_values savMinT ON savMinT.sample_id = s.id AND savMinT.sample_attribute_id = 157 AND savMinT.deleted = FALSE
+    #joins#
+    WHERE s.deleted = FALSE
+    AND s.survey_id  = 41
+    #order_by#
+  </query>
+  <field_sql>
+	s.id AS id,
+        tWDir.term AS wdir,
+        tWDirX.term AS wdirx,
+        tWSpd.term AS wspd,
+        tWSpdX.term AS wspdx,
+        tWthr.term AS wthr,
+        tWthrX.term AS wthrx,
+        tCloud.term AS cloud,
+        tCloudX.term AS cloudx,
+        savMaxT.int_value AS maxt,
+        savMinT.int_value AS mint
+  </field_sql>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name='id' display='Samp.' />
+    <column name='wdir' display='Wind Drn.' />
+    <column name='wdirx' display='WD' />
+    <column name='wspd' display='Wind Spd.' />
+    <column name='wspdx' display='WS' />
+    <column name='wthr' display='Rainfall' />
+    <column name='wthrx' display='R' />
+    <column name='cloud' display='Cloud' />
+    <column name='cloudx' display='C' />
+    <column name='maxt' display='Max Temp.' />
+    <column name='mint' display='Min Temp.' />
+  </columns>
+</report>
