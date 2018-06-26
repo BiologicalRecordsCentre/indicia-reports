@@ -21,7 +21,7 @@
     AND o.website_id=23
     AND (
       o.survey_id IN (97, 509)
-      OR o.group_id in (973, 978, 1120, 1275)
+      OR o.group_id in (973, 978, 982, 992, 1120, 1143, 1275)
     )
     #idlist#
   </query>
