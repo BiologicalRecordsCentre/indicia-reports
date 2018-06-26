@@ -1,0 +1,22 @@
+<report
+    title="List of INNS Mapper regions for a user"
+    description="List of INNS Mapper regions according to the groups the user belongs to."
+>
+  <query website_filter_field="" training_filter_field="" >
+  select l.id, l.name
+  from groups g
+  join groups_users gu on gu.group_id=g.id and g.deleted=false
+  join locations l on l.name=g.title and l.location_type_id=14228 and l.deleted=false
+  where gu.user_id=#user_id#
+  and g.group_type_id=14237
+  order by l.name
+  </query>
+  <params>
+    <param name="user_id" datatype="integer" />
+  </params>
+  <columns>
+    <column name="location_id" sql="l.id" datatype="integer" />
+    <column name="location_name" sql="l.name" datatype="text" />
+  </columns>
+</report>
+
