@@ -1,0 +1,17 @@
+<report
+    title="Time lapse species list"
+    description="Report to populate the list of species available for a time-lapse map."
+>
+  <query website_filter_field="o.website_id">
+    SELECT DISTINCT #columns#
+    FROM cache_taxa_taxon_lists cttl
+    WHERE cttl.taxon_list_id=169
+  </query>
+  <order_bys>
+    <order_by>coalesce(cttl.default_common_name, cttl.taxon)</order_by>
+  </order_bys>
+  <columns>
+    <column name="taxon" sql="coalesce(cttl.default_common_name, cttl.taxon)" datatype="text"/>
+    <column name="species_id" sql="cttl.external_key" datatype="text"/>
+  </columns>
+</report>

@@ -1,6 +1,6 @@
 <report
-    title="List of INNS Mapper regions for a user"
-    description="List of INNS Mapper regions according to the groups the user belongs to."
+    title="List of INNS Mapper regions for a user with geometry"
+    description="List of INNS Mapper regions according to the groups the user belongs to with geom for mapping."
 >
   <query website_filter_field="" training_filter_field="" >
   select #columns#
@@ -17,6 +17,6 @@
   <columns>
     <column name="location_id" sql="l.id" datatype="integer" />
     <column name="location_name" sql="l.name" datatype="text" />
+    <column name="geom" sql="st_astext(l.boundary_geom)" mappable="true" />
   </columns>
 </report>
-
