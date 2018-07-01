@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Group members" description="Lists members of a group which you administer.">
+      <query website_filter_field="g.website_id">
+      SELECT #columns#
+      FROM groups g
+      JOIN groups_users gu ON gu.group_id = g.id AND gu.deleted = false
+      JOIN users u ON u.id = gu.user_id AND u.deleted = false
+      JOIN people p ON p.id = u.person_id and p.deleted = false
+      LEFT JOIN person_attribute_values optin ON optin.person_id=p.id
+        AND optin.deleted=false
+        AND optin.text_value='1'
+      #joins#
+      WHERE g.id = #group_id#
+      AND #website_filter#
+      AND g.group_type_id=14237
+      </query>
+  <params>
+    <param name="group_id" display="Group" description="Select the group to administer" datatype="lookup"
+        population_call="report:my_groups:id:title"/>
+  </params>
+  <order_bys>
+    <order_by>gu.administrator, p.surname, p.first_name</order_by>
+  </order_bys>
+  <columns>
+    <column name="id" display="User ID" visible="false" sql="u.id" datatype="integer" />
+    <column name="groups_user_id" display="Groups user ID" visible="false" sql="gu.id" datatype="integer" />
+    <column name="name" display="Name" sql="p.surname || ', ' || p.first_name" datatype="text" />
+    <column name="email" display="Email" sql="CASE WHEN optin.id IS null THEN 'Not available' ELSE p.email_address END" datatype="text" />
+    <column name="role" display="Role" sql="CASE WHEN gu.administrator=true THEN 'Administrator'
+    WHEN gu.id IS NOT NULL AND gu.pending=false THEN 'Member'
+    WHEN gu.id IS NOT NULL AND gu.pending=true
+    THEN 'Awaiting approval' ELSE 'Non-member' END" datatype="text" />
+    <column name="pending" visible="false" sql="gu.pending" datatype="boolean" />
+    <column name="member" visible="false" sql="NOT gu.administrator" datatype="boolean" />
+    <column name="administrator" visible="false" sql="gu.administrator" datatype="boolean" />
+  </columns>
+</report>
