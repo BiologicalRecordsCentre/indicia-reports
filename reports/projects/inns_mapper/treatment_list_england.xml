@@ -17,6 +17,7 @@
   AND s.deleted=false
   AND s.parent_id IS NULL
   AND su.website_id in (#website_ids#)
+  #idlist#
   </query>
   <order_bys>
     <order_by>s.id DESC</order_by>
@@ -42,6 +43,8 @@
     </param>
     <param name='region_location_id' display='Region' description='Select the region to show.' datatype='lookup'
       lookup_values="0:-loading-" />
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.'
+      datatype='idlist' fieldname='s.id' alias='sample_id' default="" />
   </params>
   <columns>
     <column name="sample_id" visible="true" sql="s.id" datatype="integer" />
