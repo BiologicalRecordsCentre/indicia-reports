@@ -15,6 +15,8 @@
   LEFT JOIN locations vc on vc.id=o.location_id_vice_county and vc.deleted=false
   JOIN users u ON u.id=o.created_by_id
   JOIN people p ON p.id=u.person_id
+  LEFT JOIN sample_attribute_values ref on ref.sample_id=o.sample_id AND ref.deleted=false
+    AND ref.sample_attribute_id=1144
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -43,6 +45,7 @@
     <column name='recordkey' display='RecordKey' sql="'#warehouse_id#' || o.id" datatype="text" />
     <column name='external_key' display='External Key' sql="o.external_key" datatype="text" />
     <column name='source' display='Source' sql="snf.website_title || ' | ' || snf.survey_title || coalesce(' | ' || snf.group_title, '')" datatype="text" />
+    <column name='survey_ref' display='Survey reference code' sql='ref.text_value' datatype='text' />
     <column name='sample_id' visible='false' sql='case when onf.sensitivity_precision is null then o.sample_id else null end' datatype='integer' />
     <column name='taxon' display='Species'
       template="&lt;div class='zero-{zero_abundance}'&gt;{taxon}&lt;/div&gt;"
