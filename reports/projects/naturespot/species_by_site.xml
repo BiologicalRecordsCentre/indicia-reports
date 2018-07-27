@@ -8,7 +8,7 @@ FROM (
   SELECT DISTINCT ON (taxon_group, taxon) external_key, taxon_group, taxon_group_id, taxon, common, image_path, image_caption, date_start, date_end, date_type
   FROM (
     SELECT * FROM naturespot.vw_occurrences_by_location
-    WHERE name='#site_name#'
+    WHERE name='#site_name#' AND record_status='V'
     ORDER BY date_start desc
   ) sub
 ) foo
