@@ -29,7 +29,7 @@
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" in_count="true"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='source' display='Source' datatype="text"
-        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title" />
+        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
     <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
     <column name='date_start' sql='s.date_start' visible='false' />
