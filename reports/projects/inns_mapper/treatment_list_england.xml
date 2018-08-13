@@ -7,8 +7,6 @@
   FROM samples s
   JOIN surveys su on su.id=s.survey_id and su.deleted=false
   LEFT JOIN locations l ON l.id=s.location_id
-  JOIN locations lr ON lr.location_type_id=14228 and st_intersects(lr.boundary_geom, s.geom)
-    AND lr.id=#region_location_id#
   JOIN users u on u.id=s.created_by_id
   JOIN people p on p.id=u.person_id
   #agreements_join#
@@ -42,7 +40,14 @@
       </join>
     </param>
     <param name='region_location_id' display='Region' description='Select the region to show.' datatype='lookup'
-      lookup_values="0:-loading-" />
+      lookup_values="0:-loading-">
+      <join>
+        JOIN locations lr
+          ON lr.location_type_id=14228
+          AND st_intersects(lr.boundary_geom, s.geom)
+          AND lr.id=#region_location_id#
+      </join>
+    </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.'
       datatype='idlist' fieldname='s.id' alias='sample_id' default="" />
   </params>
