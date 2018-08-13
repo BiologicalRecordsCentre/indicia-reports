@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Users not in a region" description="Lists users not in a region.">
+  <query website_filter_field="g.website_id">
+    select #columns#
+    from people p
+    join users u on u.person_id=p.id and u.deleted=false
+    join users_websites uw on uw.user_id=u.id and uw.website_id=73
+    left join (groups_users gu
+      join groups g on g.id=gu.group_id and g.deleted=false and g.group_type_id=14237 -- region
+    ) on gu.user_id=u.id and gu.deleted=false
+    where p.deleted=false
+    and gu.id is null
+  </query>
+  <order_bys>
+    <order_by>p.surname, p.first_name</order_by>
+  </order_bys>
+  <columns>
+    <column name="id" display="User ID" visible="false" sql="u.id" datatype="integer" />
+    <column name="name" display="Name" sql="p.surname || ', ' || p.first_name" datatype="text" />
+    <column name="registered_on" display="Registered on" sql="u.created_on" datatype="date" />
+  </columns>
+</report>

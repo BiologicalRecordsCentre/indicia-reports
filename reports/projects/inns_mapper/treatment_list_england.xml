@@ -25,10 +25,10 @@
   </order_bys>
   <params>
     <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"
-        population_call="direct:survey:id:title">
+        population_call="direct:survey:id:title" default="">
       <where>s.survey_id=#survey_id#</where>
     </param>
-    <param name="year" display="Year" datatype="integer">
+    <param name="year" display="Year" datatype="integer" default="" >
       <where>extract(year from s.date_start)=#year#</where>
     </param>
     <param name='user_id' display='Warehouse User ID' description='Enter the ID of the warehouse user' datatype='int'>
