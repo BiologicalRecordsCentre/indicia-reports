@@ -16,14 +16,14 @@
       and lrb.deleted=false
       and lrb.location_type_id=14245
       union
-      select st_astext(s.geom), 2 as sequence, 'green' as sc, 3 as sw, 0 as fo
+      select st_astext(s.geom), 2 as sequence, 'green' as sc, 6 as sw, 0 as fo
       from samples s
       join locations l on l.id=#catchment# and st_intersects(s.geom, l.boundary_geom) and not st_touches(s.geom, l.boundary_geom)
       where s.survey_id=285
       and s.deleted=false and s.parent_id is null
       and s.date_start>now() - '3 years'::interval
       union
-      select st_astext(s.geom), 3 as sequence, '#ff66ff' as sc, 4 as sw, 0 as fo
+      select st_astext(s.geom), 3 as sequence, '#ff66ff' as sc, 6 as sw, 0 as fo
       from samples s
       join locations l on l.id=#catchment# and st_intersects(s.geom, l.boundary_geom) and not st_touches(s.geom, l.boundary_geom)
       where s.survey_id=286
