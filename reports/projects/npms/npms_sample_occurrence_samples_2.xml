@@ -27,7 +27,7 @@
       JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = #s1AttrID# AND sav.int_value = 0
       JOIN users u on u.id=#iUserID# AND u.deleted=false
       JOIN person_attribute_values pav on pav.person_id=u.person_id AND pav.person_attribute_id=#person_square_attr_id# 
-        AND pav.int_value=plot.parent_id AND pav.deleted=false
+        AND pav.int_value=plot.parent_id AND pav.created_by_id != pav.updated_by_id AND pav.deleted=false
       #joins#
       WHERE s.survey_id = #survey_id# AND s.deleted = FALSE
     ), samples2 AS (
@@ -39,7 +39,7 @@
       JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = #s1AttrID# AND sav.int_value != 0
       JOIN users u on u.id=#iUserID# AND u.deleted=false
       JOIN person_attribute_values pav on pav.person_id=u.person_id AND pav.person_attribute_id=#person_square_attr_id# 
-        AND pav.int_value=plot.parent_id AND pav.deleted=false
+        AND pav.int_value=plot.parent_id AND pav.created_by_id != pav.updated_by_id AND pav.deleted=false
       WHERE s.survey_id = #survey_id# AND s.deleted = FALSE
     ) 
     SELECT s1.*,
