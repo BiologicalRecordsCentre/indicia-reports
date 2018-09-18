@@ -8,8 +8,7 @@
   JOIN cache_samples_nonfunctional snf on snf.id=s.id
   #agreements_join#
   #joins#
-  WHERE s.deleted=false
-  AND #sharing_filter#
+  WHERE #sharing_filter#
   #idlist#
   </query>
   <order_bys>
