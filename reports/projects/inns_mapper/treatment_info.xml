@@ -29,5 +29,6 @@
     <column name='date' display='Date' datatype="date" />
     <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
     <column name='created_by_id' visible='false' sql='s.created_by_id' datatype="integer" />
+    <column name="comment" sql="s.comment" datatype="text" />
   </columns>
 </report>
