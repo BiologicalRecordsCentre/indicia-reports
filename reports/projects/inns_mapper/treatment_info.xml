@@ -3,31 +3,73 @@
 >
   <query website_filter_field="s.website_id"
          created_by_field="s.created_by_id" training_filter_field="">
-  SELECT #columns#
+  SELECT s.id as "sample_id",
+s.location_name as "location_name",
+snf.public_entered_sref as "entered_sref",
+s.date_start as "date_start",
+s.date_end as "date_end",
+s.date_type as "date_type",
+snf.recorders as "recorder",
+s.created_by_id as "created_by_id",
+snf.comment as "comment",
+sample572.int_value as duration,
+ltt573.term as method,
+ltt574.term as species,
+ltt575.term as removal,
+ltt576.term as treatment,
+sample577.text_value as materials,
+ltt578.term as duration_units,
+'INNS Mapper treatments' as source
   FROM cache_samples_functional s
   JOIN cache_samples_nonfunctional snf on snf.id=s.id
-  #agreements_join#
-  #joins#
-  WHERE #sharing_filter#
-  #idlist#
+  LEFT JOIN sample_attribute_values sample572 ON sample572.sample_id=s.id AND sample572.sample_attribute_id=572 AND sample572.deleted=false
+ LEFT JOIN sample_attribute_values sample573 ON sample573.sample_id=s.id AND sample573.sample_attribute_id=573 AND sample573.deleted=false
+ LEFT JOIN cache_termlists_terms ltt573 ON ltt573.id=sample573.int_value
+ LEFT JOIN sample_attribute_values sample574 ON sample574.sample_id=s.id AND sample574.sample_attribute_id=574 AND sample574.deleted=false
+ LEFT JOIN cache_termlists_terms ltt574 ON ltt574.id=sample574.int_value
+ LEFT JOIN sample_attribute_values sample575 ON sample575.sample_id=s.id AND sample575.sample_attribute_id=575 AND sample575.deleted=false
+ LEFT JOIN cache_termlists_terms ltt575 ON ltt575.id=sample575.int_value
+ LEFT JOIN sample_attribute_values sample576 ON sample576.sample_id=s.id AND sample576.sample_attribute_id=576 AND sample576.deleted=false
+ LEFT JOIN cache_termlists_terms ltt576 ON ltt576.id=sample576.int_value
+ LEFT JOIN sample_attribute_values sample577 ON sample577.sample_id=s.id AND sample577.sample_attribute_id=577 AND sample577.deleted=false
+ LEFT JOIN sample_attribute_values sample578 ON sample578.sample_id=s.id AND sample578.sample_attribute_id=578 AND sample578.deleted=false
+ LEFT JOIN cache_termlists_terms ltt578 ON ltt578.id=sample578.int_value
+  WHERE s.website_id=73
+  AND s.id = #sample_id#
+UNION
+SELECT s.id as "sample_id",
+s.location_name as "location_name",
+snf.public_entered_sref as "entered_sref",
+s.date_start as "date_start",
+s.date_end as "date_end",
+s.date_type as "date_type",
+snf.recorders as "recorder",
+s.created_by_id as "created_by_id",
+snf.comment as "comment",
+null as duration,
+null as method,
+coalesce(cttl.default_common_name, cttl.preferred_taxon) as species,
+null as removal,
+t.term as treatment,
+null as materials,
+null as duration_units,
+'Plant Tracker' as source
+  FROM cache_samples_functional s
+  JOIN cache_samples_nonfunctional snf on snf.id=s.id
+  JOIN occurrences o ON o.sample_id=s.id AND o.deleted=false
+  JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
+  JOIN occurrence_attribute_values v ON v.occurrence_id=o.id and v.occurrence_attribute_id=458 and v.deleted=false and v.int_value not in (5502, 5494)
+  JOIN cache_termlists_terms t ON t.id=v.int_value
+WHERE s.website_id=17
+  AND s.id = #sample_id#
   </query>
-  <order_bys>
-    <order_by>s.id DESC</order_by>
-  </order_bys>
   <params>
-    <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
-           description='Comma separated list of sample attribute IDs to include as columns in the report' />
+    <param name="sample_id" datatype="integer" />
   </params>
   <columns>
-    <column name='sample_id' display='ID' sql='s.id' datatype="integer" />
-    <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
-    <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
-    <column name='date_start' sql='s.date_start' visible='false' />
-    <column name='date_end' sql='s.date_end' visible='false' />
-    <column name='date_type' sql='s.date_type' visible='false' />
+    <column name='date_start' visible="false" />
+    <column name='date_end' visible="false" />
+    <column name='date_type' visible="false" />
     <column name='date' display='Date' datatype="date" />
-    <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
-    <column name='created_by_id' visible='false' sql='s.created_by_id' datatype="integer" />
-    <column name="comment" sql="snf.comment" datatype="text" />
   </columns>
 </report>

@@ -4,65 +4,82 @@
 >
   <query website_filter_field="" training_filter_field="" >
   SELECT #columns#
-  FROM samples s
-  JOIN surveys su on su.id=s.survey_id and su.deleted=false
-  LEFT JOIN locations l ON l.id=s.location_id
-  JOIN users u on u.id=s.created_by_id
-  JOIN people p on p.id=u.person_id
-  #agreements_join#
-  #joins#
-  WHERE #sharing_filter#
-  AND s.deleted=false
-  AND s.parent_id IS NULL
-  AND su.website_id in (#website_ids#)
+  FROM (
+    SELECT f.id,
+      snf.public_entered_sref as entered_sref,
+      f.date_start,
+      f.date_end,
+      f.date_type,
+      ltt573.term as method,
+      ltt574.term as species,
+      f.created_by_id,
+      snf.recorders as input_by
+    FROM cache_samples_functional f
+    JOIN cache_samples_nonfunctional snf on snf.id=f.id
+    LEFT JOIN sample_attribute_values sample573 ON sample573.sample_id=f.id AND sample573.sample_attribute_id=573 AND sample573.deleted=false
+    LEFT JOIN cache_termlists_terms ltt573 ON ltt573.id=sample573.int_value
+    LEFT JOIN sample_attribute_values sample574 ON sample574.sample_id=f.id AND sample574.sample_attribute_id=574 AND sample574.deleted=false
+    LEFT JOIN cache_termlists_terms ltt574 ON ltt574.id=sample574.int_value
+    #joins#
+    WHERE f.website_id=73
+    AND f.survey_id=286
+    AND f.location_id_country=1605
+    UNION
+    SELECT distinct f.sample_id,
+      snf.public_entered_sref,
+      f.date_start,
+      f.date_end,
+      f.date_type,
+      t.term as method,
+      coalesce(cttl.default_common_name, cttl.preferred_taxon) as species,
+      f.created_by_id,
+      snf.recorders as input_by
+    FROM cache_occurrences_functional f
+    JOIN cache_samples_nonfunctional snf ON snf.id=f.sample_id
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id=f.taxa_taxon_list_id
+    JOIN occurrence_attribute_values v ON v.occurrence_id=f.id and v.occurrence_attribute_id=458 and v.deleted=false and v.int_value not in (5502, 5494)
+    JOIN cache_termlists_terms t ON t.id=v.int_value
+    #joins#
+    WHERE f.website_id=17
+    AND f.survey_id=44
+    AND f.date_start > now() - '5 years'::interval
+    AND f.location_id_country=1605
+  ) AS sub
+  WHERE 1=1
+  #filters#
   #idlist#
   </query>
   <order_bys>
-    <order_by>s.id DESC</order_by>
-    <order_by>s.date_start DESC</order_by>
+    <order_by>id DESC</order_by>
   </order_bys>
   <params>
-    <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"
-        population_call="direct:survey:id:title" default="">
-      <where>s.survey_id=#survey_id#</where>
-    </param>
     <param name="year" display="Year" datatype="integer" default="" >
-      <where>extract(year from s.date_start)=#year#</where>
+      <where>extract(year from date_start)=#year#</where>
     </param>
     <param name='user_id' display='Warehouse User ID' description='Enter the ID of the warehouse user' datatype='int'>
-      <where>s.created_by_id=#user_id#</where>
-    </param>
-    <param name='smpattrs' display='Sample attribute list' description='Comma separated list of sample attribute IDs to include' datatype='smpattrs' />
-    <param name='sample_method_id' display='Sample Method' description='Select the sample method, or leave blank to not filter by sample method.' datatype='lookup'
-            population_call='report:library/terms/terms_list:id:term:termlist_external_key=indicia:sample_methods,termlist_id=' >
-      <join>JOIN termlists_terms ttl1 ON ttl1.id=s.sample_method_id
-      INNER JOIN termlists_terms ttl2 ON ttl2.meaning_id=ttl1.meaning_id and ttl2.id=#sample_method_id#
-      </join>
+      <where>created_by_id=#user_id#</where>
     </param>
     <param name='region_location_id' display='Region' description='Select the region to show.' datatype='lookup'
       lookup_values="0:-loading-">
       <join>
         JOIN locations lr
           ON lr.location_type_id=14228
-          AND st_intersects(lr.boundary_geom, s.geom)
+          AND st_intersects(lr.boundary_geom, f.public_geom)
           AND lr.id=#region_location_id#
       </join>
     </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.'
-      datatype='idlist' fieldname='s.id' alias='sample_id' default="" />
+      datatype='idlist' fieldname='id' alias='sample_id' default="" />
   </params>
   <columns>
-    <column name="sample_id" visible="true" sql="s.id" datatype="integer" />
-    <column name="survey" display="Survey" sql="su.title" datatype="text" />
-    <column name="location_name" display="Site name" sql="COALESCE(l.name, s.location_name)" datatype="text" />
-    <column name="location_id" display="Location ID" visible="false" sql="l.id" datatype="integer" />
-    <column name="code" display="Site code" sql="l.code" datatype="text" />
-    <column name="entered_sref" display="SRef" sql="s.entered_sref" datatype="text" />
-    <column name='date_start' sql='s.date_start' visible="false" />
-    <column name='date_end' sql='s.date_end' visible="false" />
-    <column name='date_type' sql='s.date_type' visible="false" />
+    <column name="sample_id" visible="false" sql="id" datatype="integer" />
+    <column name="entered_sref" display="SRef" sql="entered_sref" datatype="text" />
+    <column name='date_start' sql='date_start' visible="false" />
+    <column name='date_end' sql='date_end' visible="false" />
+    <column name='date_type' sql='date_type' visible="false" />
     <column name='date' display='Date' datatype="date" />
-    <column name='input_by' display='Input by' sql="p.surname || coalesce(', ' || p.first_name, '')" datatype='text' />
-    <column name='input_form' sql='s.input_form' visible="false" />
+    <column name='method' sql='method' display='Method' datatype="text" />
+    <column name='species' sql='species' display='Species' datatype="text" />
+    <column name='input_by' display='Input by' sql="input_by" datatype='text' />
   </columns>
 </report>
