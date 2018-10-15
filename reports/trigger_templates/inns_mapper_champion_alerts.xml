@@ -1,0 +1,50 @@
+<report
+    title="INNS Mapper champion alerts"
+    description="INNS Mapper alerts for regional champions."
+>
+  <query>
+    SELECT 'system' as username, 'http://ywt-data.org/inns-mapper/details/record?group_id=' || g.id::text || '&amp;occurrence_id=' || o.id::text as id,
+      CASE
+        WHEN o.record_status='C' AND o.record_substatus IS NULL THEN
+          'Record ' || o.id::text || ' of ' || cttl.preferred_taxon || ' was entered. '
+        ELSE
+          'Record ' || o.id::text || ' of ' || cttl.preferred_taxon || ' was flagged as ' ||
+          CASE o.record_status || COALESCE(o.record_substatus::text, null)
+            WHEN 'V' THEN 'accepted'
+            WHEN 'V1' THEN 'accepted - correct'
+            WHEN 'V2' THEN 'accepted - considered correct'
+            WHEN 'C3' THEN 'plausible'
+            ELSE 'unknown status'
+          END
+      END || ' You are being notified because you are the regional champion for ' || g.title || '.' as event,
+      string_agg(case when st_intersects(l.boundary_geom, o.public_geom) then gu.user_id::text else null end, ',') as notify_user_ids,
+      o.id as occurrence_id,
+      o.website_id
+    from groups g
+    join filters f on f.id=g.filter_id and f.deleted=false
+    join groups_users gu on gu.group_id=g.id and gu.deleted=false and gu.administrator=true
+    join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json-&gt;'taxa_taxon_list_list')::text), ',') @&gt; ARRAY[cttl.id::text]
+    join cache_taxa_taxon_lists cttlany on cttlany.external_key=cttl.external_key
+    join cache_occurrences_functional o on o.taxa_taxon_list_id=cttlany.id 
+      and o.updated_on&gt;'#date#'
+    join locations l on l.id=(f.definition::json->>'location_list')::integer and l.deleted=false 
+    join users u on u.id=gu.user_id and u.deleted=false
+    join people p on p.id=u.person_id and p.deleted=false
+    where g.group_type_id=#group_type_id#
+    and g.deleted=false
+    group by g.id, g.title, cttl.preferred_taxon, o.id, o.record_status, o.record_substatus
+    having string_agg(case when st_intersects(l.boundary_geom, o.public_geom) then gu.user_id::text else null end, ',') is not null
+  </query>
+  <params>
+    <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
+    <param name="group_type_id" datatype="integer" description="ID of group type that will receive notifications." />
+  </params>
+  <columns>
+    <column name="id" display="ID" />
+    <column name="event" display="Event" />
+    <column name="notify_user_ids" />
+    <column name="log_comment" />
+    <column name="occurrence_id" />
+    <column name="website_id" visible="false" />
+  </columns>
+</report>

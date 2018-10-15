@@ -1,0 +1,44 @@
+<report
+    title="Updates to honey samples WORK IN PROGRESS"
+    description="Notifications of sample status on updates to sample record."
+>
+  <query>
+  SELECT #columns#
+  FROM  cache_samples_functional s
+  JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sample_attribute_id = 922
+  JOIN cache_termlists_terms tlt on tlt.id = sav.int_value
+  WHERE s.website_id = 136
+  AND sav.updated_on > '#date#'
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>sav.int_value, s.id</order_by>
+  </order_bys>
+  <params>
+    <param name='date' display='Date' description='Date &amp; time of last check' datatype='datetime' />
+  </params>
+  <columns>
+	<column name="id" display="Sample ID" sql="s.id"/>
+    <column name="website_id" visible='false' sql="s.website_id" />
+    <column name="created_by_id" display="notify_user_ids" sql="s.created_by_id" />
+    <column name="term" display="Status" sql="tlt.term" />
+	<column name="message" display="Message" 
+	  sql="
+		concat(
+		  'Notification from the National Honey Monitoring Scheme.',
+		  E'\n',
+		  '&lt;br&gt;&lt;br&gt;',
+		  E'\n',
+		  CASE 
+			WHEN sav.int_value = 15006 THEN
+			  'We have received your request and will send out your pack within 2 weeks. We will notify you when it is sent.'
+			WHEN sav.int_value = 15007 THEN
+			  'We have dispatched your sample pack. We will notify you when we receive your honey sample back.'
+			WHEN sav.int_value = 15008 THEN
+			  'We have received your sample pack for analysis. Density and sugar/water content measurements will be available within one month. We will notify you when they are available.'
+		  END
+		)
+	  " 
+	/>
+  </columns>
+</report>

@@ -1,0 +1,115 @@
+<report
+    title="Statutory body events"
+    description="Notifies statutory body members of alert species record verifications."
+>
+  <query>
+    SELECT 'system' as username, 'https://www.brc.ac.uk/gbnnsip/record/permitted-stat-body-details?group_id=' || g.id::text || '&amp;occurrence_id=' || o.id::text as id,
+      CASE
+        WHEN wm.log_all_communications='f' THEN 
+          NULL
+        ELSE 
+          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' || 
+          CASE
+            WHEN oc.record_status IS NULL THEN
+              'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was released (action=' || oc.comment || '). '
+            ELSE
+              'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was flagged as ' ||
+              CASE oc.record_status || COALESCE(oc.record_substatus::text, '')
+                WHEN 'V' THEN '"accepted"'
+                WHEN 'V1' THEN '"accepted - correct"'
+                WHEN 'V2' THEN '"accepted - considered correct"'
+                WHEN 'C3' THEN '"plausible"'
+                ELSE 'unknown status'
+              END
+          END || 
+          CASE 
+            WHEN (o.record_status || COALESCE(o.record_substatus::text, ''))&lt;&gt;(oc.record_status || COALESCE(oc.record_substatus::text, '')) THEN
+              ' but has since been flagged as ' ||
+              CASE o.record_status || COALESCE(o.record_substatus::text, '')
+                WHEN 'V' THEN '"accepted"'
+                WHEN 'V1' THEN '"accepted - correct"'
+                WHEN 'V2' THEN '"accepted - considered correct"'
+                WHEN 'C' THEN '"unreviewed"'
+                WHEN 'C3' THEN '"plausible"'
+                WHEN 'R' THEN '"rejected"'
+                WHEN 'R4' THEN '2rejected - unable to verify"'
+                WHEN 'R5' THEN '"rejected - incorrect"'
+                ELSE '"unknown status"'
+              END
+            ELSE '' 
+          END 
+          || '. You are being notified because you are a member of ' || g.title || '.'
+      END as event,
+      string_agg(gu.user_id::text, ',') as notify_user_ids,
+      CASE
+        WHEN wm.log_all_communications='f' THEN 
+          NULL
+        ELSE 
+          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' || 
+          CASE
+            WHEN oc.record_status IS NULL THEN
+              'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was released (action=' || oc.comment || '). '
+            ELSE
+              'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was flagged as ' ||
+              CASE oc.record_status || COALESCE(oc.record_substatus::text, '')
+                WHEN 'V' THEN '"accepted"'
+                WHEN 'V1' THEN '"accepted - correct"'
+                WHEN 'V2' THEN '"accepted - considered correct"'
+                WHEN 'C3' THEN '"plausible"'
+                ELSE 'unknown status'
+              END
+          END || 
+          CASE 
+            WHEN (o.record_status || COALESCE(o.record_substatus::text, ''))&lt;&gt;(oc.record_status || COALESCE(oc.record_substatus::text, '')) THEN
+              ' but has since been flagged as ' ||
+              CASE o.record_status || COALESCE(o.record_substatus::text, '')
+                WHEN 'V' THEN '"accepted"'
+                WHEN 'V1' THEN '"accepted - correct"'
+                WHEN 'V2' THEN '"accepted - considered correct"'
+                WHEN 'C' THEN '"unreviewed"'
+                WHEN 'C3' THEN '"plausible"'
+                WHEN 'R' THEN '"rejected"'
+                WHEN 'R4' THEN '2rejected - unable to verify"'
+                WHEN 'R5' THEN '"rejected - incorrect"'
+                ELSE '"unknown status"'
+              END
+            ELSE '' 
+          END 
+          || '. You are being notified because you are a member of ' || g.title || '.'
+      END as log_comment,
+      o.id as occurrence_id,
+      o.website_id
+    from groups g
+    join filters f on f.id=g.filter_id and f.deleted=false
+    join groups_users gu on gu.group_id=g.id and gu.deleted=false
+    join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json-&gt;'taxa_taxon_list_list')::text), ',') @&gt; ARRAY[cttl.id::text]
+    join cache_occurrences_functional o on o.taxa_taxon_list_external_key=cttl.external_key
+      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_id_vice_county = (f.definition::json->>'indexed_location_list')::integer)
+    join occurrence_comments oc on oc.occurrence_id=o.id and oc.deleted=false
+      and (oc.record_status='V' or oc.record_substatus=3)
+      and oc.created_on&gt;'#date#'
+    join users u on u.id=gu.user_id and u.deleted=false
+    join people p on p.id=u.person_id and p.deleted=false
+    join workflow_metadata wm on wm.key_value=cttl.external_key and wm.key='taxa_taxon_list_external_key' and wm.deleted=false
+    -- are there any redeterminations since the verification comment was added? If so, need to work out what the taxon was
+    -- at the point it was verified.
+    left join determinations d on d.occurrence_id=o.id and d.deleted=false and d.updated_on>oc.created_on
+      and d.id = (select min(id) from determinations where occurrence_id=o.id and deleted=false and updated_on>oc.created_on)
+    left join cache_taxa_taxon_lists cttld on cttld.id=d.taxa_taxon_list_id
+    where g.group_type_id=#group_type_id#
+    and g.deleted=false
+    group by g.id, g.title, cttl.preferred_taxon, cttld.preferred_taxon, o.id, oc.record_status, oc.record_substatus, oc.comment, wm.id
+  </query>
+  <params>
+    <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
+    <param name="group_type_id" datatype="integer" description="ID of group type that will receive notifications." />
+  </params>
+  <columns>
+    <column name="id" display="ID" />
+    <column name="event" display="Event" />
+    <column name="notify_user_ids" />
+    <column name="log_comment" />
+    <column name="occurrence_id" />
+    <column name="website_id" visible="false" />
+  </columns>
+</report>

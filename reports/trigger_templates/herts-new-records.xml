@@ -1,0 +1,47 @@
+<report
+    title="New herts records"
+    description="Notifications for new records added to Herts Flora."
+>
+  <query>
+  select  snf.survey_title, o.website_id, o.id  as  occurrence_id, o.date_start, o.date_end, o.date_type, cttl.taxon, 
+  snf.public_entered_sref, o.location_name, oi.path, 
+  CASE o.record_status 
+    WHEN 'C' THEN 'Data Entry Complete' 
+    WHEN 'V' THEN 'Verified'
+    WHEN 'R' THEN 'Rejected'
+    WHEN 'I' THEN 'In Progress'
+    WHEN 'T' THEN 'Test'
+    ELSE ''
+  END  as  record_status,
+  onf.verifier  as  verified_by
+   from  cache_occurrences_functional o
+   join cache_occurrences_nonfunctional onf on onf.id=o.id
+   join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+   join cache_samples_nonfunctional snf on snf.id=o.sample_id
+  LEFT JOIN occurrence_images oi ON oi.occurrence_id=o.id
+  WHERE o.website_id=25 and o.survey_id = '#survey#'
+  AND o.created_on > '#date#'
+  AND o.record_status NOT IN ('I','T')
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>o.date_start DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='survey' display='Survey' description='Select the survey to return data for' datatype='lookup'
+        query='SELECT id, title as caption FROM surveys' population_call='direct:survey:id:title' />
+    <param name='date' display='Date' description='Date &amp; time of last check' datatype='datetime' />
+  </params>
+  <columns>
+    <column name='survey_title' display='Survey' />
+    <column name='website_id' visible='false' />
+    <column name='occurrence_id' display="Record ID" />
+    <column name='date' display='Date' orderby='date_start' />
+    <column name='taxon' display='Taxon' class='sci binomial' />
+    <column name='entered_sref' display='Spatial Ref.' />
+    <column name='location_name' display='Location' />
+    <column name='path' display='Photo' img='true' />
+    <column name='record_status' display='Record Status' />
+    <column name='verified_by' display='Verified By' />
+  </columns>
+</report>
