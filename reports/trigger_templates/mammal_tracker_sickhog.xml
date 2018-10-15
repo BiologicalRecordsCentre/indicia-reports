@@ -6,21 +6,24 @@
   <query>
   SELECT 
     co.sample_id,
-    co.taxon,
+    ttl.taxon,
     co.date_start, 
-    co.public_entered_sref, 
+    snf.public_entered_sref, 
     co.location_name,
     o.comment,
     ctlt1.term AS hedgehogill,
     oav2.text_value AS hedgehogfreetext,
 	co.website_id
-  FROM cache_occurrences co
+  FROM cache_occurrences_functional co
+  JOIN cache_samples_functional s on s.id = co.sample_id AND s.survey_id = co.survey_id AND s.website_id = co.website_id
+  JOIN cache_samples_nonfunctional snf on snf.id = s.id
+  JOIN cache_taxa_taxon_lists ttl ON ttl.id = co.taxa_taxon_list_id
   JOIN occurrences o ON o.id = co.id
   JOIN occurrence_attribute_values oav1 ON oav1.occurrence_id = co.id AND oav1.occurrence_attribute_id = 319
   JOIN cache_termlists_terms ctlt1 ON ctlt1.id = oav1.int_value
   LEFT JOIN occurrence_attribute_values oav2 ON oav2.occurrence_id = co.id AND oav2.occurrence_attribute_id = 336
   WHERE co.survey_id = 183
-  AND o.created_on &gt; '#date#'
+  AND co.created_on &gt; '#date#'
   AND co.record_status NOT IN ('I','T')
   AND ctlt1.term != 'No'
   #order_by#
