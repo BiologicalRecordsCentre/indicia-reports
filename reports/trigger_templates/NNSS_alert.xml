@@ -1,7 +1,7 @@
 <report
-    title="Report for triggers against NNSS alert species"
+    title="Occurrence creation of NNSS alert species"
     description="Lists the most recent recordings for
-      all species in the survey."
+      alert species via the RISC or iRecord websites on warehouse1."
 >
   <query>
   SELECT  

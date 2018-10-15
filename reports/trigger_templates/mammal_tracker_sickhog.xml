@@ -1,7 +1,7 @@
 <report
-    title="Report for trigger against Mammal Tracker hedgehog reported ill"
+    title="Occurrence creation with hedgehog ill attribute in iRecord mammal survey"
     description="Lists the most recent recordings for
-      the Mammal Tracker survey where the Hedgehog Ill attribute has a value."
+      the iRecord Mammal survey where the Hedgehog Ill attribute has a value."
 >
   <query>
   SELECT 

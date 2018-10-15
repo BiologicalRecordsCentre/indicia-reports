@@ -1,6 +1,7 @@
 <report
-    title="Verified herts records"
-    description="Notifications for verified records on Herts Flora."
+    title="Occurrence verification ni survey with image field"
+    description="Lists the most recent record verifications for
+      all species in the selected survey."
 >
   <query>
   select  snf.survey_title, o.website_id, o.id  as  occurrence_id, o.date_start, o.date_end, o.date_type, cttl.taxon, 

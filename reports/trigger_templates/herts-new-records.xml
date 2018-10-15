@@ -1,6 +1,7 @@
 <report
-    title="New herts records"
-    description="Notifications for new records added to Herts Flora."
+    title="Occurrence creation in survey with image field"
+    description="Lists the most recent recordings for
+      all species in the selected survey."
 >
   <query>
   select  snf.survey_title, o.website_id, o.id  as  occurrence_id, o.date_start, o.date_end, o.date_type, cttl.taxon, 
