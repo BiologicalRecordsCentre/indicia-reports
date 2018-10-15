@@ -6,17 +6,20 @@
   <query>
   SELECT 
     co.sample_id,
-    co.survey_title, 
-    co.taxon,
+    snf.survey_title, 
+    ttl.taxon,
     co.date_start, 
-    co.public_entered_sref, 
+    snf.public_entered_sref, 
     co.location_name,
     o.comment,
     co.website_id
-  FROM cache_occurrences co
+  FROM cache_occurrences_functional co
+  JOIN cache_samples_functional s on s.id = co.sample_id AND s.survey_id = co.survey_id AND s.website_id = co.website_id
+  JOIN cache_samples_nonfunctional snf on snf.id = s.id
+  JOIN cache_taxa_taxon_lists ttl ON ttl.id = co.taxa_taxon_list_id
   JOIN occurrences o ON o.id = co.id
   WHERE co.survey_id = '#survey#'
-  AND o.created_on > '#date#'
+  AND co.created_on > '#date#'
   AND co.record_status NOT IN ('I','T')
   AND co.zero_abundance = TRUE
   #order_by#
