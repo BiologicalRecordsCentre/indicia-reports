@@ -1,7 +1,7 @@
 <report
-    title="Occurrence verification ni survey with image field"
+    title="Occurrence verification in Herts survey with image field"
     description="Lists the most recent record verifications for
-      all species in the selected survey."
+      all species in the Herts Flora Group survey."
 >
   <query>
   select  snf.survey_title, o.website_id, o.id  as  occurrence_id, o.date_start, o.date_end, o.date_type, cttl.taxon, 
@@ -20,7 +20,7 @@
    join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
    join cache_samples_nonfunctional snf on snf.id=o.sample_id
   LEFT JOIN occurrence_images oi ON oi.occurrence_id=o.id
-  WHERE o.survey_id = '#survey#'
+  WHERE o.website_id = 25 AND o.survey_id = '#survey#'
   AND o.verified_on > '#date#'
   AND o.record_status NOT IN ('I','T')
   #order_by#

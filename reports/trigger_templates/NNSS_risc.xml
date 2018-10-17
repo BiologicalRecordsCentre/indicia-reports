@@ -1,7 +1,7 @@
 <report
-    title="Report for triggers against RISC surveys"
+    title="Occurrence creation in RISC survey"
     description="Lists the most recent recordings for
-      all species in the selected survey."
+      all species in the selected RISC survey."
 >
   <query>
   SELECT 
@@ -13,10 +13,13 @@
     co.location_name,
     o.comment,
     co.website_id
-  FROM cache_occurrences co
+  FROM cache_occurrences_functional co
+  JOIN cache_samples_nonfunctional snf on snf.id = co.sample_id
+  JOIN cache_taxa_taxon_lists ttl ON ttl.id = co.taxa_taxon_list_id
   JOIN occurrences o ON o.id = co.id
   WHERE co.survey_id = '#survey#'
-  AND o.created_on > '#date#'
+  AND co.website_id = 3
+  AND co.created_on > '#date#'
   AND co.record_status NOT IN ('I','T')
   AND co.zero_abundance = FALSE
   #order_by#
