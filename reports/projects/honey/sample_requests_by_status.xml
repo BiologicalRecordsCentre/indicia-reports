@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Sample pack requests by status" definition="Admin report listing sample packs for all users by status.">
+	<query>
+		SELECT #columns#
+		FROM cache_samples_functional s
+		JOIN cache_samples_nonfunctional sn ON sn.id = s.id
+		LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
+		#joins#
+		WHERE s.website_id = #website_id#
+		AND s.survey_id = #survey_id#
+		AND s.record_status = '#record_status#'
+		AND CASE 
+				WHEN #pack_status# = 0 THEN sav.int_value IS NULL
+				ELSE sav.int_value = #pack_status#
+			END
+	</query>
+	<params>
+		<param name='website_id' display='Website' description='Enter the website id' datatype='text'></param>
+		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+		<param name="record_status" display="Record status" datatype="lookup"
+			  description="Status of data entry."
+			  lookup_values="V:Lab data complete,C:Collection data complete,I:Pack requested"></param>
+		<param name="pack_status" display="Pack status" datatype="lookup"
+			   description="Status of sample pack."
+			   lookup_values="14150:Sent to beekeeeper,14151:Received from beekeeper"
+			   emptyvalue="0"></param>
+			</params>
+	<order_bys>
+		<order_by>s.id ASC</order_by>
+	</order_bys>
+
+	<columns>
+		<column name="id" display="Sample number" sql="s.id" visible="true" />
+		<column name="created_by_id" display="User number" sql="s.created_by_id" visible="false" />
+		<column name="recorders" display="Bee keeper" sql="sn.recorders" visible="true" />
+		<column name="created_on_date" display="Created" sql="to_char(s.created_on, 'DD/MM/YYYY')" visible="true" />
+		<column name="updated_on_date" display="Updated" sql="to_char(s.updated_on, 'DD/MM/YYYY')" visible="true" />
+	</columns>
+
+</report>
