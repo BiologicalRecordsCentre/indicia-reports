@@ -28,6 +28,7 @@
        co.taxon_meaning_id IN (97131,19763,68122,68971,41788,38421,91237,72435,63841,104860,77225,97224,42913,134903))
     ))
   AND co.created_on > '#date#'
+  AND co.updated_on > '#date#'
   AND co.record_status NOT IN ('I','T')
   AND co.zero_abundance = FALSE
   #order_by#
