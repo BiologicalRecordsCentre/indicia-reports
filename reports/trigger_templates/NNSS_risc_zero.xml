@@ -18,7 +18,7 @@
   JOIN cache_taxa_taxon_lists ttl ON ttl.id = co.taxa_taxon_list_id
   JOIN occurrences o ON o.id = co.id
   WHERE co.survey_id = '#survey#'
-  AND co,website_id = 3
+  AND co.website_id = 3
   AND co.created_on > '#date#'
   AND co.record_status NOT IN ('I','T')
   AND co.zero_abundance = TRUE
