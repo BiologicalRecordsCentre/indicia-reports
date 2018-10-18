@@ -6,10 +6,10 @@
   <query>
   SELECT 
     co.sample_id,
-    co.survey_title, 
-    co.taxon,
+    snf.survey_title, 
+    ttl.taxon,
     co.date_start, 
-    co.public_entered_sref, 
+    snf.public_entered_sref, 
     co.location_name,
     o.comment,
     co.website_id
