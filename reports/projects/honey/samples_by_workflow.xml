@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Sample pack requests by status" definition="Admin report listing sample packs for all users by status.">
+	<query>
+		SELECT #columns#
+		FROM cache_samples_functional s
+		LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
+		#joins#
+		WHERE s.website_id = #website_id#
+		AND s.survey_id = #survey_id#
+		AND CASE 
+				WHEN #workflow_status# = 0 THEN sav.int_value IS NULL
+				ELSE sav.int_value = #workflow_status#
+			END
+		AND CASE 
+				WHEN '#record_status#' = 'A' THEN s.record_status IN ('I', 'C')
+				ELSE s.record_status = '#record_status#'
+			END
+		AND CASE 
+				WHEN #year# = 1 THEN date_part('year', s.created_on) = date_part('year', now())
+				WHEN #year# = 2 THEN date_part('year', s.created_on) = date_part('year', now() - interval '1 year')
+			END
+			
+	</query>
+	<params>
+		<param name='website_id' display='Website' description='Enter the website id' datatype='text'></param>
+		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+		<param name="workflow_status" display="Workflow status" datatype="lookup"
+			   description="Status of sample."
+			   lookup_values="14412: Pack requested,14150:Pack sent,14151:Sample received"
+			   emptyvalue="0"></param>
+		<param name="record_status" display="Record status" datatype="lookup"
+			  description="Status of data entry."
+			  lookup_values="A:All,I:Incomplete,C:Complete"></param>
+		<param name="year" display="Year" datatype="lookup"
+			   description="Year of sample."
+			   lookup_values="1: This year,2:Last year,3:All years"></param>
+			</params>
+	<order_bys>
+		<order_by>s.id ASC</order_by>
+	</order_bys>
+
+	<columns>
+		<column name="id" display="Sample number" sql="s.id" visible="true" />
+		<column name="created_by_id" display="User number" sql="s.created_by_id" visible="false" />
+	</columns>
+
+</report>
