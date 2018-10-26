@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="Sample pack requests by status" definition="Admin report listing sample packs for all users by status.">
+<report title="Sample pack requests by workflow status" definition="Admin report listing sample packs for all users by status.">
 	<query>
 		SELECT #columns#
 		FROM cache_samples_functional s
+		JOIN cache_samples_nonfunctional snf ON snf.id = s.id
 		LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
+		LEFT JOIN cache_termlists_terms tlt ON tlt.id = sav.int_value
 		#joins#
 		WHERE s.website_id = #website_id#
 		AND s.survey_id = #survey_id#
+		AND (#workflow_status# = sav.int_value OR #workflow_status# = 0)
+		AND ('#record_status#' = s.record_status OR '#record_status#' = '0')
 		AND CASE 
-				WHEN #workflow_status# = 0 THEN sav.int_value IS NULL
-				ELSE sav.int_value = #workflow_status#
-			END
-		AND CASE 
-				WHEN '#record_status#' = 'A' THEN s.record_status IN ('I', 'C')
-				ELSE s.record_status = '#record_status#'
-			END
-		AND CASE 
+				WHEN #year# = 0 THEN true
 				WHEN #year# = 1 THEN date_part('year', s.created_on) = date_part('year', now())
 				WHEN #year# = 2 THEN date_part('year', s.created_on) = date_part('year', now() - interval '1 year')
 			END
@@ -26,22 +23,30 @@
 		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
 		<param name="workflow_status" display="Workflow status" datatype="lookup"
 			   description="Status of sample."
-			   lookup_values="14412: Pack requested,14150:Pack sent,14151:Sample received"
+			   lookup_values="14412:Pack requested,14150:Pack sent,14151:Sample received,
+					14413:Sugar results added,14414:Sequencing complete,14415:Species results added"
 			   emptyvalue="0"></param>
 		<param name="record_status" display="Record status" datatype="lookup"
 			  description="Status of data entry."
-			  lookup_values="A:All,I:Incomplete,C:Complete"></param>
+			  lookup_values="A:All,I:Incomplete,C:Complete"
+			  emptyvalue="0"></param>
 		<param name="year" display="Year" datatype="lookup"
 			   description="Year of sample."
-			   lookup_values="1: This year,2:Last year,3:All years"></param>
+			   lookup_values="1: This year,2:Last year"
+			   emptyvalue="0"></param>
 			</params>
 	<order_bys>
 		<order_by>s.id ASC</order_by>
 	</order_bys>
 
 	<columns>
-		<column name="id" display="Sample number" sql="s.id" visible="true" />
-		<column name="created_by_id" display="User number" sql="s.created_by_id" visible="false" />
+		<column name="id" display="Sample number" sql="s.id" />
+		<column name="recorders" display="Recorder" sql="snf.recorders" />
+		<column name="workflow_status" display="Workflow status" sql="tlt.term" />
+		<column name="record_status" display="Record status" 
+			sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
+		<column name="created_by_id" sql="s.created_by_id" visible="false" />
+		<column name="workflow_attr_id" sql="sav.id"  visible="false" />
 	</columns>
 
 </report>
