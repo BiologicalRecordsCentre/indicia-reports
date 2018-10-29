@@ -40,13 +40,19 @@
 	</order_bys>
 
 	<columns>
-		<column name="id" display="Sample number" sql="s.id" />
+		<column name="id" visible="false" sql="s.id" />
+		<column name="edit" display="Sample number" 
+					sql="'&lt;a href=''/indicia/honey-sample-submission?sample_id=' ||
+						s.id ||
+						'''&gt;' || 
+						s.id || 
+						'&lt;/a&gt;'" />
 		<column name="recorders" display="Recorder" sql="snf.recorders" />
 		<column name="workflow_status" display="Workflow status" sql="tlt.term" />
 		<column name="record_status" display="Record status" 
 			sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
-		<column name="created_by_id" sql="s.created_by_id" visible="false" />
-		<column name="workflow_attr_id" sql="sav.id"  visible="false" />
+		<column name="created_by_id" visible="false" sql="s.created_by_id" />
+		<column name="workflow_attr_id"  visible="false" sql="sav.id" />
 	</columns>
 
 </report>
