@@ -5,9 +5,9 @@
   <query>
   SELECT #columns#
   FROM  cache_samples_functional s
-  JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sample_attribute_id = 922
+  JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sample_attribute_id = 1161
   JOIN cache_termlists_terms tlt on tlt.id = sav.int_value
-  WHERE s.website_id = 136
+  WHERE s.website_id = 113
   AND sav.updated_on > '#date#'
   #order_by#
   </query>
@@ -30,12 +30,18 @@
 		  '&lt;br&gt;&lt;br&gt;',
 		  E'\n',
 		  CASE 
-			WHEN sav.int_value = 15006 THEN
+			WHEN sav.int_value = 14412 THEN
 			  'We have received your request and will send out your pack within 2 weeks. We will notify you when it is sent.'
-			WHEN sav.int_value = 15007 THEN
+			WHEN sav.int_value = 14150 THEN
 			  'We have dispatched your sample pack. We will notify you when we receive your honey sample back.'
-			WHEN sav.int_value = 15008 THEN
+			WHEN sav.int_value = 14150 THEN
 			  'We have received your sample pack for analysis. Density and sugar/water content measurements will be available within one month. We will notify you when they are available.'
+			WHEN sav.int_value = 14413 THEN
+			  'We have updated your records with density and sugar/water content measurements from your honey sample. Your sample will be batched with others for DNA analysis with results from spring samples available in December and autumn samples in June of the following year.'
+			WHEN sav.int_value = 14414 THEN
+			  'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. Results from spring samples will be available in December and autumn samples in June of the following year.'
+			WHEN sav.int_value = 14415 THEN
+			  'We have updated your records with plant species data obtained from DNA analysis of your honey sample.'
 		  END
 		)
 	  " 
