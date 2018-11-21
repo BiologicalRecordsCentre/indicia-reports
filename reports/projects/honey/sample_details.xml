@@ -1,0 +1,37 @@
+<report
+    title="Record data for verification"
+    description="Report used to retrieve details of a record excluding custom attributes for the verification 3 prebuilt form."
+>
+  <query website_filter_field="sf.website_id">
+  select #columns#
+  from cache_samples_functional sf
+  join cache_samples_nonfunctional snf on snf.id = sf.id
+  join samples s on s.id = sf.id and s.deleted = false
+  left join (users u
+    join people p on p.id = u.person_id and p.deleted = false
+  ) on u.id = sf.created_by_id and u.id&lt;&gt;1 and u.deleted = false
+  #joins#
+  where s.id = #sample_id#
+  </query>
+  <params>
+    <param name='sample_id' display='Sample ID' description='ID of the sample to load' datatype='text' />
+  </params>
+  <columns>
+    <column name='sample_id' display='Key facts:Record:ID' sql='sf.id' />
+    <column name='record_status' display="Record:Record status" 
+		sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
+    <column name='entered_sref' display='Record:Map ref.' sql='s.entered_sref' />
+    <column name='date_start' visible='false' sql='sf.date_start' />
+    <column name='date_end' visible='false' sql='sf.date_end' />
+    <column name='date_type' visible='false' sql='sf.date_type' />
+    <column name='date' display='Record:Date' datatype="date" />
+    <column name='sample_comment' display='Record:Sample comment' sql='s.comment' />
+    <!--The following output columns are hidden but available to the system-->
+    <column name='wkt' visible="false" sql='st_astext(s.geom)' />
+    <column name='created_on' visible="false" sql="to_char(sf.created_on,'DD/MM/YYYY HH24:MI')" />
+    <column name='updated_on' visible="false" sql="to_char(sf.updated_on,'DD/MM/YYYY HH24:MI')" />
+    <column name="created_by_id" visible="false" sql="sf.created_by_id" />
+    <column name="survey_id" visible="false" sql="sf.survey_id" />
+    <column name='website_id' visible="false" sql="sf.website_id" />
+  </columns>
+</report>
