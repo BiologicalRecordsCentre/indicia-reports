@@ -1,0 +1,88 @@
+<report
+    title="Cornwall Wildlife Trust download format 1"
+    description="Data organised by taxonomy."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
+         standard_params="occurrences" count_field="o.*">
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
+    JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id
+    JOIN samples s ON s.id=o.sample_id AND s.deleted=false
+    LEFT JOIN locations l on l.id=s.location_id AND l.deleted=false
+    LEFT JOIN sample_attribute_values hv ON hv.sample_id=o.sample_id AND hv.deleted=false
+      AND hv.sample_attribute_id in (1225, 262)
+    LEFT JOIN cache_termlists_terms ht ON ht.id=hv.int_value
+    #agreements_join#
+    #joins#
+    WHERE #sharing_filter#
+    AND o.website_id=31
+    #idlist#
+  </query>
+  <order_bys>
+    <order_by>cttl.kingdom_taxon in ('Plantae', 'Fungi', 'Chromista') desc, cttl.order_taxon, cttl.family_taxon, cttl.preferred_taxon</order_by>
+  </order_bys>
+  <params>
+    <param name="smpattrs"
+           display="Sample attribute list"
+           datatype="smpattrs"
+           default=""
+           description="Comma separated list of sample attribute IDs to include as columns in the report" />
+    <param name="occattrs"
+           display="Occurrence attribute list"
+           datatype="occattrs"
+           default=""
+           description="Comma separated list of occurrence attribute IDs to include as columns in the report" />
+  </params>
+  <columns>
+    <column name="recorder"
+            display="Recorder"
+            sql="snf.recorders"
+            datatype="text" />
+    <column name="grid_ref"
+            display="Grid ref"
+            sql="s.entered_sref"
+            datatype="text" />
+    <column name="date_start"
+            sql="o.date_start"
+            visible="false" />
+    <column name="date_end"
+            sql="o.date_end"
+            visible="false" />
+    <column name="date_type"
+            sql="o.date_type"
+            visible="false" />
+    <column name="date"
+            display="Date"
+            datatype="date" />
+    <column name="site_name"
+            display="Site name"
+            sql="COALESCE(l.name, s.location_name)"
+            datatype="text" />
+    <column name="common_name"
+            display="Common name"
+            sql="cttl.default_common_name"
+            datatype="text" />
+    <column name="latin_name"
+            display="Latin name"
+            sql="cttl.preferred_taxon"
+            datatype="text" />
+    <column name="kingdom_taxon"
+            sql="cttl.kingdom_taxon"
+            datatype="text"
+            visible="false" />
+    <column name="order_taxon"
+            sql="cttl.order_taxon"
+            datatype="text"
+            visible="false" />
+    <column name="family_taxon"
+            sql="cttl.family_taxon"
+            datatype="text"
+            visible="false" />
+    <column name="habitat"
+            display="Habitat(s)"
+            sql="string_agg(ht.term, '; ')"
+            datatype="text"
+            aggregate="true" />
+  </columns>
+</report>
