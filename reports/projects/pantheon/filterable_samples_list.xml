@@ -6,13 +6,8 @@
          created_by_field="s.created_by_id" training_filter_field="">
   SELECT #columns#
   FROM cache_samples_functional s
-  JOIN cache_samples_nonfunctional snf on snf.id=s.id
-  LEFT JOIN (sample_attribute_values savrecorder
-      JOIN sample_attributes sarecorder on sarecorder.id=savrecorder.sample_attribute_id and sarecorder.deleted=false
-           and sarecorder.system_function='full_name'
-  ) on savrecorder.sample_id=s.id and savrecorder.deleted=false
-  LEFT JOIN locations l on l.id=s.location_id and l.deleted=false
-  LEFT JOIN cache_occurrences_functional o on o.website_id=s.website_id and o.survey_id=s.survey_id and o.sample_id=s.id
+  JOIN cache_samples_nonfunctional snf ON snf.id=s.id
+  LEFT JOIN cache_occurrences_functional o on o.sample_id=s.id
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -22,11 +17,12 @@
     <order_by>s.id DESC</order_by>
   </order_bys>
   <params>
-    <param name='smpattrs' display='Sample attribute list' description='Comma separated list of sample attribute IDs to include' datatype='smpattrs' />
+    <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
+           description='Comma separated list of sample attribute IDs to include as columns in the report' />
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
   </params>
   <columns>
-    <column name='sample_id' display='ID' sql='s.id' datatype="integer" in_count="true"
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='source' display='Source' datatype="text"
         sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
@@ -36,7 +32,7 @@
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
-    <column name='recorder' display='Recorder' sql="savrecorder.text_value" datatype="text" />
+    <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
     <column name='created_by_id' visible='false' sql='s.created_by_id' datatype="integer" />
     <column name='records' display="Species" sql="count(distinct o.taxa_taxon_list_external_key)"
             datatype="integer" aggregate="true" />
