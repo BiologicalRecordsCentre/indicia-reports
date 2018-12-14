@@ -5,8 +5,8 @@
          created_by_field="s.created_by_id" training_filter_field="">
   SELECT #columns#
   FROM cache_samples_functional s
-  JOIN cache_samples_nonfunctional snf ON snf.id=s.id
-  LEFT JOIN cache_occurrences_functional o ON o.website_id=s.website_id and o.survey_id=s.survey_id and o.sample_id=s.id
+  JOIN samples sm ON sm.id=s.id
+  LEFT JOIN cache_occurrences_functional o ON o.sample_id=s.id
   #agreements_join#
   #joins#
   AND #sharing_filter#
@@ -24,7 +24,7 @@
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
 
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
-    <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
+    <column name='entered_sref' display='Grid ref' sql="sm.entered_sref" datatype="text" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
