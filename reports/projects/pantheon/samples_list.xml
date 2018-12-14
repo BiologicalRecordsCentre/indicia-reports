@@ -5,12 +5,8 @@
          created_by_field="s.created_by_id" training_filter_field="">
   SELECT #columns#
   FROM cache_samples_functional s
-  JOIN samples sm ON sm.id=s.id
   LEFT JOIN cache_occurrences_functional o ON o.sample_id=s.id
-  #agreements_join#
-  #joins#
-  AND #sharing_filter#
-  #idlist#
+  WHERE s.website_id=93
   </query>
   <order_bys>
     <order_by>s.id DESC</order_by>
@@ -24,7 +20,6 @@
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
 
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
-    <column name='entered_sref' display='Grid ref' sql="sm.entered_sref" datatype="text" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
