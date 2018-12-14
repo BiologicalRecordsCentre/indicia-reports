@@ -11,7 +11,7 @@
     JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
     JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
     JOIN samples smp on smp.id=o.sample_id and smp.deleted=false
-    LEFT JOIN locations vc on vc.id=o.location_id_vice_county and vc.deleted=false
+    LEFT JOIN locations vc on o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15 and vc.deleted=false
     LEFT JOIN occurrence_attribute_values verif on verif.occurrence_id=o.id and verif.deleted=false and verif.occurrence_attribute_id=19
     JOIN users u ON u.id=o.created_by_id
     JOIN people p ON p.id=u.person_id

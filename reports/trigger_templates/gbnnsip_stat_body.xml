@@ -5,10 +5,10 @@
   <query>
     SELECT 'system' as username, 'https://www.brc.ac.uk/gbnnsip/record/permitted-stat-body-details?group_id=' || g.id::text || '&amp;occurrence_id=' || o.id::text as id,
       CASE
-        WHEN wm.log_all_communications='f' THEN 
+        WHEN wm.log_all_communications='f' THEN
           NULL
-        ELSE 
-          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' || 
+        ELSE
+          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' ||
           CASE
             WHEN oc.record_status IS NULL THEN
               'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was released (action=' || oc.comment || '). '
@@ -21,8 +21,8 @@
                 WHEN 'C3' THEN '"plausible"'
                 ELSE 'unknown status'
               END
-          END || 
-          CASE 
+          END ||
+          CASE
             WHEN (o.record_status || COALESCE(o.record_substatus::text, ''))&lt;&gt;(oc.record_status || COALESCE(oc.record_substatus::text, '')) THEN
               ' but has since been flagged as ' ||
               CASE o.record_status || COALESCE(o.record_substatus::text, '')
@@ -36,16 +36,16 @@
                 WHEN 'R5' THEN '"rejected - incorrect"'
                 ELSE '"unknown status"'
               END
-            ELSE '' 
-          END 
+            ELSE ''
+          END
           || '. You are being notified because you are a member of ' || g.title || '.'
       END as event,
       string_agg(gu.user_id::text, ',') as notify_user_ids,
       CASE
-        WHEN wm.log_all_communications='f' THEN 
+        WHEN wm.log_all_communications='f' THEN
           NULL
-        ELSE 
-          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' || 
+        ELSE
+          'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' ||
           CASE
             WHEN oc.record_status IS NULL THEN
               'Record ' || o.id::text || ' of ' || COALESCE(cttld.preferred_taxon || ' (now redetermined as ' || cttl.preferred_taxon || ')', cttl.preferred_taxon) || ' was released (action=' || oc.comment || '). '
@@ -58,8 +58,8 @@
                 WHEN 'C3' THEN '"plausible"'
                 ELSE 'unknown status'
               END
-          END || 
-          CASE 
+          END ||
+          CASE
             WHEN (o.record_status || COALESCE(o.record_substatus::text, ''))&lt;&gt;(oc.record_status || COALESCE(oc.record_substatus::text, '')) THEN
               ' but has since been flagged as ' ||
               CASE o.record_status || COALESCE(o.record_substatus::text, '')
@@ -73,8 +73,8 @@
                 WHEN 'R5' THEN '"rejected - incorrect"'
                 ELSE '"unknown status"'
               END
-            ELSE '' 
-          END 
+            ELSE ''
+          END
           || '. You are being notified because you are a member of ' || g.title || '.'
       END as log_comment,
       o.id as occurrence_id,
@@ -84,7 +84,7 @@
     join groups_users gu on gu.group_id=g.id and gu.deleted=false
     join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json-&gt;'taxa_taxon_list_list')::text), ',') @&gt; ARRAY[cttl.id::text]
     join cache_occurrences_functional o on o.taxa_taxon_list_external_key=cttl.external_key
-      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_id_vice_county = (f.definition::json->>'indexed_location_list')::integer)
+      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_ids @> ARRAY[(f.definition::json->>'indexed_location_list')::integer])
     join occurrence_comments oc on oc.occurrence_id=o.id and oc.deleted=false
       and (oc.record_status='V' or oc.record_substatus=3)
       and oc.created_on&gt;'#date#'

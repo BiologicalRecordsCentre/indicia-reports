@@ -4,10 +4,10 @@
 >
   <query>
     SELECT 'system' as username, 'https://www.brc.ac.uk/gbnnsip/record/permitted-details?group_id=' || g.id::text || '&amp;occurrence_id=' || o.id::text as id,
-      CASE 
-        WHEN oc.record_status IS NULL THEN 
+      CASE
+        WHEN oc.record_status IS NULL THEN
           'Record ' || o.id::text || ' of ' || cttl.preferred_taxon || ' was released (action=' || oc.comment || '). '
-        ELSE 
+        ELSE
           'Record ' || o.id::text || ' of ' || cttl.preferred_taxon || ' was flagged as ' ||
           CASE oc.record_status || COALESCE(oc.record_substatus::text, null)
             WHEN 'V' THEN 'accepted'
@@ -24,7 +24,7 @@
     join groups_users gu on gu.group_id=g.id and gu.deleted=false
     join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json->'taxa_taxon_list_list')::text), ',') @> ARRAY[cttl.id::text]
     join cache_occurrences_functional o on o.taxa_taxon_list_external_key=cttl.external_key
-      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_id_vice_county = (f.definition::json->>'indexed_location_list')::integer)
+      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_ids @> ARRAY[(f.definition::json->>'indexed_location_list')::integer])
     join occurrence_comments oc on oc.occurrence_id=o.id and oc.deleted=false
       and (oc.comment in ('Stakeholder release', 'Public release') or oc.record_status='V')
       and oc.created_on&gt;'#date#'

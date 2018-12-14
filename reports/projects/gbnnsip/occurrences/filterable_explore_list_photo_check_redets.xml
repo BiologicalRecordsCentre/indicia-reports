@@ -1,7 +1,6 @@
 <report
     title="Explore occurrences (standard filters), checked photos skipped"
     description="A list of occurrences designed for tabular output. Skips records with a Photos checked comment."
-    featured="true"
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
          standard_params="occurrences" count_field="o.*">
@@ -45,9 +44,7 @@
       osub.training,
       osub.zero_abundance,
       osub.licence_id,
-      osub.location_id_vice_county,
-      osub.location_id_lrc_boundary,
-      osub.location_id_country,
+      osub.location_ids,
       osub.identification_difficulty,
       osub.import_guid,
       osub.confidential
