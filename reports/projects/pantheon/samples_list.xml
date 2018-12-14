@@ -1,16 +1,14 @@
 <report
     title="Samples list for the home page"
 >
-  <query website_filter_field="su.website_id" standard_params="samples"
+  <query website_filter_field="s.website_id" standard_params="samples"
          created_by_field="s.created_by_id" training_filter_field="">
   SELECT #columns#
-  FROM samples s
-  JOIN surveys su on su.id=s.survey_id and su.deleted=false
-  LEFT JOIN locations l on l.id=s.location_id and l.deleted=false
-  LEFT JOIN cache_occurrences_functional o on o.website_id=su.website_id and o.survey_id=su.id and o.sample_id=s.id
+  FROM cache_samples_functional s
+  JOIN cache_samples_nonfunctional snf ON snf.id=s.id
+  LEFT JOIN cache_occurrences_functional o ON o.website_id=s.website_id and o.survey_id=s.survey_id and o.sample_id=s.id
   #agreements_join#
   #joins#
-  WHERE s.deleted=false
   AND #sharing_filter#
   #idlist#
   </query>
@@ -25,8 +23,8 @@
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" in_count="true"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
 
-    <column name='location_name' display='Site name' sql='coalesce(s.location_name, l.name)' datatype="text" />
-    <column name='entered_sref' display='Grid ref' sql="s.entered_sref" datatype="text" />
+    <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
+    <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
