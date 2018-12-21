@@ -1,6 +1,6 @@
 <report
     title="Get samples and creator for samples user has rights to"
-    description="Simplified version of NPMS Sample Occurrence Samples 3 which just gets the 
+    description="Simplified version of NPMS Sample Occurrence Samples 3 which just gets the
     sample ID and creator ID of samples a user has rights to see.">
   <query website_filter_field="csf.website_id">
     SELECT #columns#
@@ -15,7 +15,6 @@
         AND plot.deleted=false
       JOIN cache_samples_functional csf
         ON csf.location_id = plot.id
-        AND csf.website_id IN (#website_ids#)
         AND csf.survey_id = #survey_id#
       WHERE u.id=#iUserID# AND u.deleted=false
       #order_by#
