@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="UKBMS specific species and occurrence counts by site" description="UKBMS specific: Lists locations and the number of species and occurrences within them. This report includes the location code, and relies on the record being input with a link to the site and will not pick up records where the spatial reference is in the site boundary but without a direct reference to the site.">
+      <query website_filter_field='lw.website_id'>
+      SELECT #columns#
+      FROM locations l
+      JOIN locations_websites lw ON l.id=lw.location_id AND lw.deleted=false
+      LEFT JOIN (
+            SELECT section.parent_id as id,
+                COUNT(DISTINCT o.id) AS occurrences,
+                COUNT(DISTINCT o.taxon_meaning_id) AS taxa,
+                COUNT(DISTINCT o.taxon_group_id) AS groups
+            FROM cache_occurrences_functional o
+            JOIN locations section ON o.location_id=section.id AND section.deleted=FALSE
+            WHERE o.zero_abundance='f' AND o.website_id in (#website_ids#) 
+            GROUP BY section.parent_id
+      ) AS lsub on l.id=lsub.id
+      #joins#
+      WHERE l.deleted=false
+        AND (l.code = '' OR l.code IS NULL OR '#blank_code#'!='yes')
+        AND l.location_type_id=#location_type_id#
+        AND #website_filter#
+      </query>
+      <order_bys>
+            <order_by>occurrences DESC</order_by>
+            <order_by>taxa DESC</order_by>
+            <order_by>name</order_by>
+      </order_bys>
+      <params>
+         <param name='location_type_id' display='Site Type' description='Select the site type, or leave blank to not filter by site type.' datatype='lookup'
+            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=' />
+        <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
+        <param name='blank_code' display='Restrict to blank code values' datatype='lookup' lookup_values='no:No,yes:Yes' />
+      </params>
+      <columns>
+            <column name="id" display="ID" sql="l.id" in_count="true" datatype="integer" />
+            <column name="name" display="Site Name" style="background-color: #e7e7e7;" sql="l.name" datatype="text" />
+            <column name="centroid_sref" display="Site Sref" sql="l.centroid_sref" datatype="text" />
+            <column name="occurrences" display="No. of Occurrences" sql="CASE WHEN lsub.occurrences IS NULL THEN 0 ELSE lsub.occurrences END" datatype="integer" />
+            <column name="taxa" display="No. of Taxa" sql="CASE WHEN lsub.taxa IS NULL THEN 0 ELSE lsub.taxa END" datatype="integer" />
+            <column name="groups" display="No. of Taxon Groups" sql="CASE WHEN lsub.groups IS NULL THEN 0 ELSE lsub.groups END" datatype="integer" />
+            <column name="code" display="Code" sql="l.code" datatype="text" />
+      </columns>
+</report>
