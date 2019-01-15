@@ -1,0 +1,27 @@
+<report
+    title="Samples list for map"
+    description="A very simple map for the samples in UKBMS"
+>
+  <query website_filter_field="su.website_id">
+  SELECT #columns#
+  FROM samples sp
+  JOIN surveys su on su.id=sp.survey_id and su.deleted=false
+  WHERE #website_filter#
+  AND sp.deleted=false AND sp.parent_id is null
+  AND (sp.location_id IS NULL OR 
+      sp.location_id not in (select location_id from location_attribute_values WHERE location_attribute_id=#sensAttr# and deleted=false and int_value=1))
+  </query>
+  <params>
+    <param name="sensAttr" display="Sensitivity Location Attr ID" datatype="integer" />
+  </params>
+  <columns>
+    <column name='entered_sref' sql='sp.entered_sref' />
+    <column name='geom' visible='false' mappable="true" sql='st_astext(st_centroid(sp.geom))' />
+    <column name='pr' visible='false' feature_style="pointRadius" sql='5' aggregate='true'/>
+    <column name='sc' visible='false' feature_style="strokeColor" sql="'black'" aggregate='true'/>
+    <column name='gn' visible='false' feature_style="graphicName" sql="'circle'" aggregate='true'/>
+    <column name='year' aggregate='true' sql='extract(year from max(sp.date_start))' />
+    <column name='fo' visible='false' feature_style="fillOpacity" sql="case extract(year from max(sp.date_start)) when extract(year from now()) then 0.6 else 0.4 end" aggregate='true'/>
+    <column name='fc' visible='false' feature_style="fillColor" sql="case extract(year from max(sp.date_start)) when extract(year from now()) then 'red' else 'blue' end" aggregate='true'/>
+  </columns>
+</report>
