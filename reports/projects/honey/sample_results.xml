@@ -27,5 +27,7 @@
     <column name="weight" display="Weight" datatype="float" sql="(snf.attrs_json->>'1219')::float" />
     <column name="initials" display="Initials" datatype="text" sql="snf.attrs_json->>'1221'" />
     <column name="comments" display="Comments" datatype="text" sql="snf.attrs_json->>'1222'" />
+    <column name="species_count" display="Plants in sample" datatype="integer"
+      sql="(select count(*) from cache_occurrences_functional where sample_id=s.id and taxa_taxon_list_id&lt;&gt;430915)"/>
   </columns>
 </report>

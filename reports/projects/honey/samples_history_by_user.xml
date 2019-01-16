@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="Sample history by user" definition="Lists all samples for the user and their status.">
-	<query>
-		SELECT #columns#
-		FROM cache_samples_functional s
-		LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
-		LEFT JOIN cache_termlists_terms tlt ON tlt.id = sav.int_value
-		#joins#
-		WHERE s.survey_id = #survey_id#
-		AND s.created_by_id = #user_id#
-	</query>
-	<params>
-		<param name='user_id' display='User' description='Enter the user id' datatype='text'></param>
-		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+  <query>
+    SELECT #columns#
+    FROM cache_samples_functional s
+    LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
+    LEFT JOIN cache_termlists_terms tlt ON tlt.id = sav.int_value
+    #joins#
+    WHERE s.survey_id = #survey_id#
+    AND s.created_by_id = #user_id#
+  </query>
+  <params>
+    <param name='user_id' display='User' description='Enter the user id' datatype='text'></param>
+    <param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
     </params>
-	<order_bys>
-		<order_by>s.id DESC</order_by>
-	</order_bys>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
 
-	<columns>
-		<column name="Sample number" sql="s.id" />
-		<column name="workflow_status" display="Workflow status" sql="tlt.term" />
-		<column name="record_status" display="Data entry" 
-			sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
-		<column name="Last updated" sql="to_char(s.updated_on, 'DD/MM/YYYY')" />
-	</columns>
-
+  <columns>
+    <column name="sample_id" display="Sample number" sql="s.id" />
+    <column name="workflow_status" display="Workflow status" sql="tlt.term" />
+    <column name="record_status" display="Data entry"
+      sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
+    <column name="Last updated" sql="to_char(s.updated_on, 'DD/MM/YYYY')" />
+    <column name="results_ready" visible="false" sql="CASE WHEN tlt.sort_order &gt;= 40 THEN true ELSE false END" />
+  </columns>
 </report>
