@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Outstanding sample pack requests" definition="Admin report listing requested sample packs for all users.">
+  <query>
+    SELECT #columns#
+    FROM sample_attribute_values v
+    JOIN sample_attributes a
+      ON a.id=v.sample_attribute_id
+      AND a.deleted=false
+      AND (a.caption like 'LandCover_%' OR a.caption like 'Crop_%')
+    WHERE v.sample_id=#sample_id#
+    AND v.deleted=false
+    AND v.int_value&lt;&gt;0
+  </query>
+  <order_bys>
+    <order_by>a.caption</order_by>
+  </order_bys>
+  <params>
+    <param name="sample_id" display="Sqmpls ID" description="ID of the sample to show species for" datatype="integer" />
+  </params>
+  <columns>
+    <column name="name" display="Attribute name" datatype="text" sql="a.caption" />
+    <column name="value" display="Value" datatype="integer" sql="v.int_value" />
+  </columns>
+</report>
