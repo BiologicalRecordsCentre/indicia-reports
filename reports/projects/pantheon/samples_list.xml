@@ -16,7 +16,7 @@
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
   </params>
   <columns>
-    <column name='sample_id' display='ID' sql='s.id' datatype="integer" in_count="true"
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
 
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
