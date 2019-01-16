@@ -43,7 +43,7 @@
     WHERE f.website_id=17
     AND f.survey_id=44
     AND f.date_start > now() - '5 years'::interval
-    AND f.location_id_country=1605
+    AND f.location_ids @> ARRAY[1605]
   ) AS sub
   WHERE 1=1
   #filters#
