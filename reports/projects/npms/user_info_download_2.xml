@@ -10,7 +10,7 @@ an event filter to return users associated with a particular event."
   JOIN users_websites uw on u.id=uw.user_id 
     LEFT JOIN person_attribute_values pavAddr ON pavAddr.person_id=u.person_id AND pavAddr.person_attribute_id=#address_attr_id# AND pavAddr.deleted=false
     LEFT JOIN person_attribute_values pavAddr2 ON pavAddr2.person_id=u.person_id AND pavAddr2.person_attribute_id=#address_attr_line_2_id# AND pavAddr2.deleted=false 
-    LEFT JOIN person_attribute_values pavAddr3 ON pavAddr3.person_id=u.person_id AND pavAddr3.person_attribute_id=#address_attr_line_3_id# AND pavAddr3.deleted=false 
+    LEFT JOIN person_attribute_values pavAddr3 ON pavAddr3.person_id=u.person_id AND pavAddr3.person_attribute_id=#address_attr_line_3_id# AND pavAddr3.deleted=false
     LEFT JOIN person_attribute_values pavTown ON pavTown.person_id=u.person_id AND pavTown.person_attribute_id=#town_attr_id# AND pavTown.deleted=false 
     LEFT JOIN person_attribute_values pavCounty ON pavCounty.person_id=u.person_id AND pavCounty.person_attribute_id=#county_attr_id# AND pavCounty.deleted=false 
     LEFT JOIN person_attribute_values pavCountry ON pavCountry.person_id=u.person_id AND pavCountry.person_attribute_id=#country_attr_id# AND pavCountry.deleted=false 
@@ -109,9 +109,28 @@ an event filter to return users associated with a particular event."
         sql="p.first_name || ' ' || p.surname" 
     datatype='text'/> 
     <column name='email_address' display='Email address' sql='p.email_address' datatype='text' in_count='true'/>
-    <column name='address' display='Address' sql='pavAddr.text_value' datatype='text' />
-    <column name='address_line_2' display='Address Line 2' sql='pavAddr2.text_value' datatype='text' /> 
-    <column name='address_line_3' display='Address Line 3' sql='pavAddr3.text_value' datatype='text' /> 
+    <!--If we replace all new lines with commas, then we know we only need to deal with commas as address separator -->
+    <column name='address' display='Address' sql="
+    trim(
+      split_part(
+        REPLACE(pavAddr.text_value, E'\n', ',' )
+      ,',',1)
+    )" datatype='text' />
+    <column name='address_line_2' display='Address Line 2' sql="
+    trim(
+      split_part(
+        REPLACE(pavAddr.text_value, E'\n', ',' )
+      ,',',2)
+    )
+    " datatype='text' />
+    <!--Get everthing after second comma-->
+    <column name='address_line_3' display='Address Line 3' sql="
+    trim(
+      substring(
+        REPLACE(pavAddr.text_value, E'\n', ',' ), '[^,]*,[^,]*,(.*)'
+      )
+    )
+    " datatype='text' />
     <column name='town' display='Town' sql='pavTown.text_value' datatype='text' />
     <column name='county' display='County' sql='pavCounty.text_value' datatype='text' />
     <column name='country' display='Country' sql='pavCountry.text_value' datatype='text' />
