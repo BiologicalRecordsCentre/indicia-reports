@@ -83,6 +83,10 @@ an event filter to return users associated with a particular event."
     <param name="registration_date_end" display="User registered before this date" description="Only return users who registered before this date." datatype="date" emptyvalue="">
       <where>(uw.created_on &lt;= CAST(COALESCE('#registration_date_end#','1500-01-01') as date))</where>
     </param>
+    <param name="ignore_registration_dates_before" display="Ignore Registration Dates Before" description="Ignore anyone who registered earlier than this date.
+        Useful if old users are left on the system but are not currently active." datatype="date" emptyvalue="" default="">
+      <where>uw.created_on &gt;= CAST(COALESCE('#ignore_registration_dates_before#','1500-01-01') as date)</where>
+    </param>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
         Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
     <param name="address_attr_id" display="Address attribute id" description="Person attribute id that holds the user address." datatype="text"/>

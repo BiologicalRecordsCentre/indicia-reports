@@ -27,6 +27,10 @@ about the square e.g. number of samples recorded in 2015."
     <order_by>l.name ASC</order_by>
   </order_bys>
   <params>
+    <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
+        Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default="">
+      <where>l.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
+    </param>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name="2015_start_date" description="Start date of the 2015 season." datatype="date"/>
     <param name="2016_start_date" description="Start date of the 2016 season." datatype="date"/>
