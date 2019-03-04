@@ -2,11 +2,14 @@
 <report title="EBMS Site Sections Download Report" description="Lists saved site sections and their attributes.">
   <query website_filter_field="l.website_id">
   SELECT #field_sql#
-  FROM detail_locations l
+  FROM locations l
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
-  JOIN detail_locations l2 ON l2.parent_id=l.id
+  JOIN locations l2 ON l2.parent_id=l.id
+  LEFT JOIN locations_websites lw ON l.id = lw.location_id AND lw.deleted = FALSE
   #joins#
   WHERE #website_filter#
+    AND l.deleted = false AND l2.deleted = false
+    AND (l.public=TRUE OR lw.website_id IS NOT NULL);
   #filters#
   #order_by#
   </query>
