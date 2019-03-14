@@ -31,17 +31,23 @@
 		  E'\n',
 		  CASE
 			WHEN sav.int_value = 14412 THEN
-			  'We have received your request and will send out your pack within 2 weeks. We will notify you when it is sent.'
+			  'We have received your request. A sample pack will be with you within 2 weeks.'
 			WHEN sav.int_value = 14150 THEN
-			  'We have dispatched your sample pack. We will notify you when we receive your honey sample back.'
-			WHEN sav.int_value = 14150 THEN
-			  'We have received your sample pack for analysis. Density and sugar/water content measurements will be available within one month. We will notify you when they are available.'
+			  'We have dispatched your sample pack.'
+			WHEN sav.int_value = 14151 THEN
+			  'We have received your sample pack for analysis. Sugar/water measurements will be available within one month. '
 			WHEN sav.int_value = 14413 THEN
-			  'We have updated your records with density and sugar/water content measurements from your honey sample. Your sample will be batched with others for DNA analysis with results from spring samples available in December and autumn samples in June of the following year.'
+			  'We have updated your records with sugar/water measurements from your honey sample. Your sample will be ' ||
+        'batched with others for DNA analysis with results from spring samples available in December and autumn ' ||
+        'samples in June of the following year. '
 			WHEN sav.int_value = 14414 THEN
-			  'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. Results from spring samples will be available in December and autumn samples in June of the following year.'
+			  'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. ' ||
+        'Results from spring samples will be available in December and autumn samples in June of the following year. ' ||
+        'Please update your online form to include yield and other information you feel is relevant to your honey sample.'
 			WHEN sav.int_value = 14415 THEN
-			  'We have updated your records with plant species data obtained from DNA analysis of your honey sample.'
+			  'We have updated your records with plant identification data obtained from DNA analysis of your honey ' ||
+        'sample. If you have not yet done so, please update your online form to include yield and other information ' ||
+        'you feel is relevant to your honey sample.'
 		  END
 		)
 	  "
