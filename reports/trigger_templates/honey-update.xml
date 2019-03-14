@@ -20,16 +20,16 @@
   <columns>
 	<column name="id" display="Sample ID" sql="s.id"/>
     <column name="website_id" visible='false' sql="s.website_id" />
-    <column name="created_by_id" display="notify_user_ids" sql="s.created_by_id" />
+    <column name="notify_user_ids" display="notify_user_ids" sql="s.created_by_id" />
     <column name="term" display="Status" sql="tlt.term" />
-	<column name="message" display="Message" 
+	<column name="message" display="Message"
 	  sql="
 		concat(
 		  'Notification from the National Honey Monitoring Scheme.',
 		  E'\n',
 		  '&lt;br&gt;&lt;br&gt;',
 		  E'\n',
-		  CASE 
+		  CASE
 			WHEN sav.int_value = 14412 THEN
 			  'We have received your request and will send out your pack within 2 weeks. We will notify you when it is sent.'
 			WHEN sav.int_value = 14150 THEN
@@ -44,7 +44,7 @@
 			  'We have updated your records with plant species data obtained from DNA analysis of your honey sample.'
 		  END
 		)
-	  " 
+	  "
 	/>
   </columns>
 </report>
