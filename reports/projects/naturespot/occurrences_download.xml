@@ -21,13 +21,15 @@
     #joins#
     WHERE #sharing_filter#
     AND o.website_id=8 AND o.survey_id = 15
-    AND (o.id&gt;=#from_id# OR #from_id# = 0)
-    AND (o.id&lt;=#to_id# OR #to_id# = 0)
     #idlist#
   </query>
   <params>
-    <param name='from_id' display='Start Record ID' description='Enter the ID of the first record in the range to include.' datatype='integer' emptyvalue='0' />
-    <param name='to_id' display='End Record ID' description='Enter the ID of the last record in the range to include.' datatype='integer' emptyvalue='0' />
+    <param name='from_id' display='Start Record ID' description='Enter the ID of the first record in the range to include.' datatype='integer'>
+      <where>o.id&gt;=#from_id#</where>
+    </param>
+    <param name='to_id' display='End Record ID' description='Enter the ID of the last record in the range to include.' datatype='integer'>
+      <where>o.id&lt;=#to_id#</where>
+    </param>
     <param name='site' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8'>
       <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, smp.geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
       JOIN locations_websites lw on lw.location_id=lfilt.id and lw.deleted=false and lw.website_id=8</join>
