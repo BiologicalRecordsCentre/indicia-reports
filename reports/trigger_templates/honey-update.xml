@@ -18,17 +18,13 @@
     <param name='date' display='Date' description='Date &amp; time of last check' datatype='datetime' />
   </params>
   <columns>
-	<column name="id" display="Sample ID" sql="s.id"/>
+	<column name="id" display="Sample barcode ID" sql="s.id"/>
     <column name="website_id" visible='false' sql="s.website_id" />
     <column name="notify_user_ids" display="notify_user_ids" sql="s.created_by_id" />
-    <column name="term" display="Status" sql="tlt.term" />
+    <column name="term" display="Change in status for your honey sample(s)" sql="tlt.term" />
 	<column name="message" display="Message"
 	  sql="
 		concat(
-		  'Notification from the National Honey Monitoring Scheme.',
-		  E'\n',
-		  '&lt;br&gt;&lt;br&gt;',
-		  E'\n',
 		  CASE
 			WHEN sav.int_value = 14412 THEN
 			  'We have received your request. A sample pack will be with you within 2 weeks.'
@@ -48,7 +44,10 @@
 			  'We have updated your records with plant identification data obtained from DNA analysis of your honey ' ||
         'sample. If you have not yet done so, please update your online form to include yield and other information ' ||
         'you feel is relevant to your honey sample.'
-		  END
+		  END,
+		  '&lt;br&gt;&lt;br&gt;',
+      'Thank you for taking part in the National Honey Monitoring Scheme. This is an auto-generated notification; ' ||
+        'if you have any queries please contact &lt;a href=&quot;honey@ceh.ac.uk&quot;&gt;honey@ceh.ac.uk&lt;/a&gt;.'
 		)
 	  "
 	/>
