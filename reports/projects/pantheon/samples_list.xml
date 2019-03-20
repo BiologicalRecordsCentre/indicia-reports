@@ -7,9 +7,10 @@
   FROM cache_samples_functional s
   LEFT JOIN cache_occurrences_functional o ON o.sample_id=s.id
   WHERE s.website_id=93
+  AND s.updated_on>now() - '4 months'::interval
   </query>
   <order_bys>
-    <order_by>s.id DESC</order_by>
+    <order_by>s.updated_on DESC</order_by>
   </order_bys>
   <params>
     <param name='smpattrs' display='Sample attribute list' description='Comma separated list of sample attribute IDs to include' datatype='smpattrs' />
