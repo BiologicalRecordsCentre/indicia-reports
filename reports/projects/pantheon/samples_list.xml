@@ -5,7 +5,7 @@
          created_by_field="s.created_by_id" training_filter_field="">
   SELECT #columns#
   FROM cache_samples_functional s
-  LEFT JOIN cache_occurrences_functional o ON o.sample_id=s.id
+  JOIN cache_occurrences_functional o ON o.sample_id=s.id
   WHERE s.website_id=93
   AND s.updated_on>now() - '4 months'::interval
   </query>
@@ -19,7 +19,6 @@
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
-
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
