@@ -1,0 +1,60 @@
+<report
+    title="Download occurrences (standard filters)"
+    description="A list of GBNNSIP records for download."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
+         standard_params="occurrences" count_field="o.*">
+  select #columns#
+  from cache_occurrences_functional o
+  join cache_occurrences_nonfunctional onf on onf.id=o.id
+  join samples s on s.id=o.sample_id and s.deleted=false
+  join cache_samples_nonfunctional snf on snf.id=o.sample_id
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>o.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
+           description='Comma separated list of sample attribute IDs to include as columns in the report' />
+    <param name='occattrs' display='Occurrence attribute list' datatype='occattrs' default=''
+           description='Comma separated list of occurrence attribute IDs to include as columns in the report' />
+  </params>
+  <columns>
+    <column name="id" display="Warehouse ID" datatype="integer" sql="o.id" />
+    <column name='date_start' sql='o.date_start' visible='false' />
+    <column name='date_end' sql='o.date_end' visible='false' />
+    <column name='date_type' sql='o.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name="created_on" display="Date record added" datatype="date" sql="o.created_on" />
+    <column name="entered_sref" display="Grid ref" datatype="text" sql="s.entered_sref" />
+    <column name="vice_county" display="Vice county" datatype="text" sql="(select string_agg(vc.name, ', ') as vcnames from locations vc where o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15)" />
+    <column name="title" display="Title" datatype="text" sql="snf.attrs_json->>'5'" />
+    <column name="first_name" display="First name" datatype="text" sql="snf.attrs_json->>'6'" />
+    <column name="surname" display="Last name" datatype="text" sql="snf.attrs_json->>'7'" />
+    <column name="email" display="Email" datatype="text" sql="snf.attrs_json->>'8'" />
+    <column name="tel_no" display="Phone number" datatype="text" sql="snf.attrs_json->>'20'" />
+    <column name="comment" display="Comment" datatype="text" sql="onf.comment" />
+    <column name="images_provided" display="Images proveded" datatype="text" sql="case when o.media_count > 0 then 'y' else 'n' end" />
+    <column name="record_status" display="Record status" datatype="text" sql="case o.record_status || coalesce(o.record_substatus::text, '')
+      when 'V' then 'Accepted'
+      when 'V1' then 'Accepted as correct'
+      when 'V2' then 'Accepted as considered correct'
+      when 'C3' then 'Plausible'
+      when 'C' then 'Pending review'
+      when 'R' then 'Rejected'
+      when 'R4' then 'Rejected as unable to verify'
+      when 'R5' then 'Rejected as incorrect'
+      when 'I' then 'Data entry in progress'
+      when 'D' then 'Dubious'
+      else 'Unknown'
+    end" />
+    <column name="verified_on" display="Checked on" datatype="date" sql="o.verified_on" />
+    <column name="verifier" display="Verified by" datatype="text" sql="onf.verifier" />
+    <column name="source" display="Source" datatype="text" sql="snf.website_title || ' | ' || snf.survey_title" />
+    <column name="location_name" display="Site name" datatype="text" sql="o.location_name" />
+  </columns>
+</report>
