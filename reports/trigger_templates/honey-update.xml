@@ -18,33 +18,40 @@
     <param name='date' display='Date' description='Date &amp; time of last check' datatype='datetime' />
   </params>
   <columns>
-	<column name="id" display="Sample ID" sql="s.id"/>
+  <column name="id" display="Sample barcode ID" sql="s.id"/>
     <column name="website_id" visible='false' sql="s.website_id" />
-    <column name="created_by_id" display="notify_user_ids" sql="s.created_by_id" />
-    <column name="term" display="Status" sql="tlt.term" />
-	<column name="message" display="Message" 
-	  sql="
-		concat(
-		  'Notification from the National Honey Monitoring Scheme.',
-		  E'\n',
-		  '&lt;br&gt;&lt;br&gt;',
-		  E'\n',
-		  CASE 
-			WHEN sav.int_value = 14412 THEN
-			  'We have received your request and will send out your pack within 2 weeks. We will notify you when it is sent.'
-			WHEN sav.int_value = 14150 THEN
-			  'We have dispatched your sample pack. We will notify you when we receive your honey sample back.'
-			WHEN sav.int_value = 14150 THEN
-			  'We have received your sample pack for analysis. Density and sugar/water content measurements will be available within one month. We will notify you when they are available.'
-			WHEN sav.int_value = 14413 THEN
-			  'We have updated your records with density and sugar/water content measurements from your honey sample. Your sample will be batched with others for DNA analysis with results from spring samples available in December and autumn samples in June of the following year.'
-			WHEN sav.int_value = 14414 THEN
-			  'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. Results from spring samples will be available in December and autumn samples in June of the following year.'
-			WHEN sav.int_value = 14415 THEN
-			  'We have updated your records with plant species data obtained from DNA analysis of your honey sample.'
-		  END
-		)
-	  " 
-	/>
+    <column name="notify_user_ids" display="notify_user_ids" sql="s.created_by_id" />
+    <column name="term" display="Change in status for your honey sample(s)" sql="tlt.term" />
+  <column name="message" display="Message"
+    sql="
+    concat(
+      CASE
+      WHEN sav.int_value = 14412 THEN
+        'We have received your request. A sample pack will be with you within 2 weeks.'
+      WHEN sav.int_value = 14150 THEN
+        'We have dispatched your sample pack.'
+      WHEN sav.int_value = 14151 THEN
+        'We have received your sample pack for analysis. Sugar/water measurements will be available within one month. '
+      WHEN sav.int_value = 14413 THEN
+        'We have updated your records with sugar/water measurements from your honey sample. Your sample will be ' ||
+        'batched with others for DNA analysis with results from spring samples available in December and autumn ' ||
+        'samples in June of the following year. '
+      WHEN sav.int_value = 14414 THEN
+        'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. ' ||
+        'Results from spring samples will be available in December and autumn samples in June of the following year. ' ||
+        'Please update your online form to include yield and other information you feel is relevant to your honey sample.'
+      WHEN sav.int_value = 14415 THEN
+        'We have updated your records with plant identification data obtained from DNA analysis of your honey ' ||
+        'sample. If you have not yet done so, please update your online form to include yield and other information ' ||
+        'you feel is relevant to your honey sample.'
+      WHEN sav.int_value = 14683 THEN
+        'Your sample was discounted from further analysis. Please log in to your account for further details.'
+      END,
+      '&lt;br&gt;&lt;br&gt;',
+      'Thank you for taking part in the National Honey Monitoring Scheme. This is an auto-generated notification; ' ||
+        'if you have any queries please contact &lt;a href=&quot;honey@ceh.ac.uk&quot;&gt;honey@ceh.ac.uk&lt;/a&gt;.'
+    )
+    "
+  />
   </columns>
 </report>

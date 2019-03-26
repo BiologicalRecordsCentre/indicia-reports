@@ -11,12 +11,12 @@
 		AND s.survey_id = #survey_id#
 		AND (#workflow_status# = sav.int_value OR #workflow_status# = 0)
 		AND ('#record_status#' = s.record_status OR '#record_status#' = '0')
-		AND CASE 
+		AND CASE
 				WHEN #year# = 0 THEN true
 				WHEN #year# = 1 THEN date_part('year', s.created_on) = date_part('year', now())
 				WHEN #year# = 2 THEN date_part('year', s.created_on) = date_part('year', now() - interval '1 year')
 			END
-			
+
 	</query>
 	<params>
 		<param name='website_id' display='Website' description='Enter the website id' datatype='text'></param>
@@ -24,7 +24,7 @@
 		<param name="workflow_status" display="Workflow status" datatype="lookup"
 			   description="Status of sample."
 			   lookup_values="14412:Pack requested,14150:Pack sent,14151:Sample received,
-					14413:Sugar results added,14414:Sequencing complete,14415:Species results added"
+					14413:Sugar results added,14414:Sequencing complete,14415:Species results added,14683:Sample discounted"
 			   emptyvalue="0"></param>
 		<param name="record_status" display="Record status" datatype="lookup"
 			  description="Status of data entry."
@@ -43,9 +43,9 @@
 		<column name="id" display="Sample number" datatype="integer" sql="s.id" />
 		<column name="recorders" display="Recorder" datatype="text" sql="snf.recorders" />
 		<column name="workflow_status" display="Workflow status" sql="tlt.term" />
-		<column name="record_status" display="Data entry" 
+		<column name="record_status" display="Data entry"
 			sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
-		<column name="edit" display="Action" 
+		<column name="edit" display="Action"
 					sql="'&lt;a href=''/indicia/honey-sample-submission?sample_id=' ||
 						s.id ||
 						'''&gt; Edit &lt;/a&gt;'" />
