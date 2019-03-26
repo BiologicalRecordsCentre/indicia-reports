@@ -1,0 +1,32 @@
+<report
+    title="Locations list"
+    description="A general purpose list of locations."
+>
+  <query website_filter_field="lw.website_id">
+  SELECT #columns#
+  FROM locations l
+  JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+  LEFT JOIN locations region ON region.location_type_id = #region_location_type_id# AND region.deleted = false AND
+      st_intersects(region.boundary_geom, coalesce(l.boundary_geom, l.centroid_geom))
+  #joins#
+  WHERE l.deleted=false
+  AND #website_filter#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name='region_location_type_id' display='Region Location Type' description='location_type_id of regions.' datatype="integer" default='0' emptyvalue='0' />
+    <param name="location_type_ids" display="Location Type Ids" description="Comma separated list of location type ids we want to return results for."
+        datatype="text" default='' emptyvalue=''>
+      <where>l.location_type_id in (#location_type_ids#)</where>
+    </param>
+    <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
+  </params>
+  <columns>
+    <column name="location_id" display="ID" sql="l.id" />
+    <column name="name" display="Name" sql="l.name" />
+    <column name="region_name" display="Region name" sql="region.name" />
+  </columns>
+</report>
