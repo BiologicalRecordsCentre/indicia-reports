@@ -6,6 +6,7 @@
          standard_params="occurrences" count_field="o.*">
   select #columns#
   from cache_occurrences_functional o
+  join occurrences occ on occ.id=o.id
   join cache_occurrences_nonfunctional onf on onf.id=o.id
   join samples s on s.id=o.sample_id and s.deleted=false
   join cache_samples_nonfunctional snf on snf.id=o.sample_id
@@ -37,7 +38,7 @@
     <column name="surname" display="Last name" datatype="text" sql="snf.attrs_json->>'7'" />
     <column name="email" display="Email" datatype="text" sql="snf.attrs_json->>'8'" />
     <column name="tel_no" display="Phone number" datatype="text" sql="snf.attrs_json->>'20'" />
-    <column name="comment" display="Comment" datatype="text" sql="onf.comment" />
+    <column name="comment" display="Comment" datatype="text" sql="occ.comment" />
     <column name="images_provided" display="Images proveded" datatype="text" sql="case when o.media_count > 0 then 'y' else 'n' end" />
     <column name="record_status" display="Record status" datatype="text" sql="case o.record_status || coalesce(o.record_substatus::text, '')
       when 'V' then 'Accepted'
@@ -56,5 +57,18 @@
     <column name="verifier" display="Verified by" datatype="text" sql="onf.verifier" />
     <column name="source" display="Source" datatype="text" sql="snf.website_title || ' | ' || snf.survey_title" />
     <column name="location_name" display="Site name" datatype="text" sql="o.location_name" />
+    <column name="recorder_profession" display="Recorder profession" datatype="text" sql="snf.attrs_json->>'1304'" />
+    <column name="investigation_status" display="Investigation status" datatype="text"
+      sql="case occ.metadata->>'Statutory body status'
+        when 'P' then 'Pending'
+        when 'I' then 'In progress'
+        when 'C' then 'Complete'
+        when 'FI' then 'Awaiting further information from recorder'
+        when 'FOB' then 'Forwarded to FOB'
+        when 'NBU' then 'NBU visit requested'
+        when 'SR' then 'Sample requested'
+        when 'O' then 'Other'
+        when 'RC' then 'Record closed'
+      end" />
   </columns>
 </report>
