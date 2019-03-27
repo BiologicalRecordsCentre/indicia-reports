@@ -27,6 +27,7 @@ where 1=1
   </params>
   <columns>
     <column name="species" sql="si.species" display="Species" in_count="true" datatype="text" />
+    <column name="vernacular" sql="si.vernacular" display="Vernacular" in_count="true" datatype="text" />
     <column name="family" sql="si.family" display="Family" in_count="true" datatype="text" />
     <column name="order" sql="si.order" display="Order" in_count="true" datatype="text" />
     <column name="rarity_score" sql="si.rarity_score" display="SQS" datatype="integer" />
