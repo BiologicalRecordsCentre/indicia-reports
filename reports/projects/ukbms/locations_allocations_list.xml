@@ -22,6 +22,11 @@
         datatype="text" default='' emptyvalue=''>
       <where>l.location_type_id in (#location_type_ids#)</where>
     </param>
+    <param name="region_id" display="Region Location Id"
+        description="Location id of the region we want to return results for."
+        datatype="integer" default=''>
+      <where>region.id = #region_id#</where>
+    </param>
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
   </params>
   <columns>
