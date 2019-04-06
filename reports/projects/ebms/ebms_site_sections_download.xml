@@ -9,7 +9,7 @@
   #joins#
   WHERE #website_filter#
     AND l.deleted = false AND l2.deleted = false
-    AND (l.public=TRUE OR lw.website_id IS NOT NULL);
+    AND (l.public=TRUE OR lw.website_id IS NOT NULL)
   #filters#
   #order_by#
   </query>
