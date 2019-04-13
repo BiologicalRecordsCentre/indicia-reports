@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS Site Sections Download Report" description="Lists saved site sections and their attributes.">
-  <query website_filter_field="l.website_id">
+  <query website_filter_field="lw.website_id">
   SELECT #field_sql#
   FROM locations l
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
