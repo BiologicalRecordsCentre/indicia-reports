@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Branch sites list for UKBMS"
+    description="Lists sites and count of samples.">
+      <query website_filter_field="lw.website_id">
+      SELECT #columns#
+      FROM locations l
+      JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
+      JOIN location_attribute_values mvattr_location_81 ON mvattr_location_81.location_id=l.id
+        AND mvattr_location_81.location_attribute_id=81 AND mvattr_location_81.deleted = FALSE
+        AND mvattr_location_81.int_value = #user_id#
+      LEFT JOIN samples sp ON sp.location_id=l.id
+      #joins#
+      WHERE #website_filter#
+      AND l.deleted=false
+      </query>
+      <order_bys>
+        <order_by>samples DESC</order_by>
+        <order_by>name ASC</order_by>
+      </order_bys>
+      <params>
+        <param name='location_type_id' display='Site type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
+            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id='>
+          <where>l.location_type_id=#location_type_id#</where>
+        </param>
+        <param name="user_id" display="User ID" datatype="integer"/>
+      </params>
+      <columns>
+            <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
+            <column name="name" display="Site Name" sql="l.name" />
+            <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
+      </columns>
+</report>
