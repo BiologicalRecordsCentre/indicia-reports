@@ -6,9 +6,9 @@
       SELECT #columns#
       FROM locations l
       JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
-      JOIN location_attribute_values mvattr_location_81 ON mvattr_location_81.location_id=l.id
-        AND mvattr_location_81.location_attribute_id=81 AND mvattr_location_81.deleted = FALSE
-        AND mvattr_location_81.int_value = #user_id#
+      JOIN location_attribute_values vUserLink ON vUserLink.location_id=l.id
+        AND vUserLink.location_attribute_id=#user_link_attr_id# AND vUserLink.deleted = FALSE
+        AND vUserLink.int_value = #user_id#
       LEFT JOIN samples sp ON sp.location_id=l.id
       #joins#
       WHERE #website_filter#
@@ -24,6 +24,7 @@
           <where>l.location_type_id=#location_type_id#</where>
         </param>
         <param name="user_id" display="User ID" datatype="integer"/>
+        <param name="user_link_attr_id" display="User link location attribute ID" datatype="integer" />
       </params>
       <columns>
             <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
