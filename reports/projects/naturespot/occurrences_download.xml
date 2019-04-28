@@ -20,7 +20,7 @@
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
-    AND o.website_id=8 AND o.survey_id = 15
+    AND o.survey_id = 15
     #idlist#
   </query>
   <params>
