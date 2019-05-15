@@ -24,7 +24,7 @@
     join groups_users gu on gu.group_id=g.id and gu.deleted=false
     join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json->'taxa_taxon_list_list')::text), ',') @> ARRAY[cttl.id::text]
     join cache_occurrences_functional o on o.taxa_taxon_list_external_key=cttl.external_key
-      and ((f.definition::json->>'indexed_location_list')::integer is null or o.location_ids @> ARRAY[(f.definition::json->>'indexed_location_list')::integer])
+      and (f.definition::json->>'indexed_location_list' is null or o.location_ids && string_to_array(trim(both '"' from (f.definition::json->'indexed_location_list')::text), ',')::integer[])
     join occurrence_comments oc on oc.occurrence_id=o.id and oc.deleted=false
       and (oc.comment in ('Stakeholder release', 'Public release') or oc.record_status='V')
       and oc.created_on&gt;'#date#'
