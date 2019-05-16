@@ -40,7 +40,7 @@
 	</order_bys>
 
 	<columns>
-		<column name="id" display="Sample number" datatype="integer" sql="s.id" />
+		<column name="id" display="Sample no." datatype="integer" sql="s.id" />
 		<column name="recorders" display="Recorder" datatype="text" sql="snf.recorders" />
 		<column name="workflow_status" display="Workflow status" sql="tlt.term" />
 		<column name="record_status" display="Data entry"
