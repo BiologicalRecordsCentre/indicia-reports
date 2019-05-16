@@ -48,7 +48,9 @@
 		<column name="edit" display="Action"
 					sql="'&lt;a href=''/indicia/honey-sample-submission?sample_id=' ||
 						s.id ||
-						'''&gt; Edit &lt;/a&gt;'" />
+						'''&gt; Edit &lt;/a&gt; &lt;a href=''/indicia/honey-sample-results-submission?sample_id=' ||
+						s.id ||
+						'''&gt; Edit results &lt;/a&gt;'" />
 		<column name="created_by_id" visible="false" sql="s.created_by_id" />
 		<column name="workflow_attr_id"  visible="false" sql="sav.id" />
 	</columns>
