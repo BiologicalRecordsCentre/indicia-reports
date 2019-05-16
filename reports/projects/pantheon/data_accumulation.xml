@@ -1,0 +1,55 @@
+<report
+    title="HORUS summary"
+    description="Summary view of a sample for HORUS."
+>
+  <query website_filter_field="">
+    -- Outer CTE allows us to do a cumulative sum of the total counts.
+    with data as (
+      select coalesce(l.created_month, s.created_month) as created_month, coalesce(sample_count, 0) as sample_count, coalesce(list_count, 0) as list_count
+      from (
+        -- Subquery to aggregate sample count by month
+        select created_month, count(*) as sample_count
+        from (
+          -- Subquery to limit to samples with at least 5 occurrences
+          select extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0') as created_month, sample_id, count(*)
+          from cache_occurrences_functional
+          where website_id in (#website_list#)
+          group by extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0'), sample_id
+          having count(*) &gt;= 5
+        ) as subquery
+        group by created_month
+        order by created_month
+      ) as s
+      -- Use full outer join so we get full set of both types of data
+      full outer join (
+        -- Subquery to aggregate list count by month
+        select created_month, count(*) as list_count
+        from (
+          -- Subquery to limit to lists with at least 5 occurrences
+          select extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0') as created_month, l.id, count(*)
+          from scratchpad_list_entries e
+          join scratchpad_lists l on l.id=e.scratchpad_list_id and l.website_id in (#website_list#)
+          group by extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0'), l.id
+          having count(*) &gt;= 5
+        ) as subquery
+        group by created_month
+        order by created_month
+      ) as l on l.created_month=s.created_month
+    )
+    select
+      created_month,
+      sample_count,
+      list_count,
+      sum(coalesce(sample_count, 0) + coalesce(list_count, 0)) over (order by created_month asc rows between unbounded preceding and current row) as total_count
+    from data
+  </query>
+  <order_bys>
+    <order_by>created_month ASC</order_by>
+  </order_bys>
+  <columns>
+    <column name="created_month" display="Month" sql="created_month" datatype="text" />
+    <column name="sample_count" display="No. of samples" sql="sample_count" datatype="integer" />
+    <column name="list_count" display="No. of lists" sql="list_count" datatype="integer" />
+    <column name="total_count" display="Cumulative sum" sql="total_count" datatype="integer" />
+  </columns>
+</report>
