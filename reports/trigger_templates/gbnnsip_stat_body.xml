@@ -107,6 +107,12 @@
   <columns>
     <column name="id" display="ID" />
     <column name="event" display="Event" />
+    <column name="vicecounty" display="Vice county" datatype="text"
+      sql="(SELECT string_agg(vc.name, '; ')
+        FROM locations vc
+        WHERE vc.location_type_id=15
+        AND vc.name NOT LIKE '%+%'
+        AND vc.id = ANY(o.location_ids))" />
     <column name="notify_user_ids" />
     <column name="log_comment" />
     <column name="occurrence_id" />
