@@ -13,7 +13,7 @@
           -- Subquery to limit to samples with at least 5 occurrences
           select extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0') as created_month, sample_id, count(*)
           from cache_occurrences_functional
-          where website_id in (#website_list#)
+          where website_id in (#website_ids#)
           group by extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0'), sample_id
           having count(*) &gt;= 5
         ) as subquery
@@ -28,7 +28,7 @@
           -- Subquery to limit to lists with at least 5 occurrences
           select extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0') as created_month, l.id, count(*)
           from scratchpad_list_entries e
-          join scratchpad_lists l on l.id=e.scratchpad_list_id and l.website_id in (#website_list#)
+          join scratchpad_lists l on l.id=e.scratchpad_list_id and l.website_id in (#website_ids#)
           group by extract(year from created_on)::text || '-' || lpad(extract(month from created_on)::text, 2, '0'), l.id
           having count(*) &gt;= 5
         ) as subquery
