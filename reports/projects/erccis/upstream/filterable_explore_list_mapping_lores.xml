@@ -55,7 +55,7 @@
     <column name='taxon_group' sql='cttl.taxon_group' on_demand="true" datatype="text" />
     <column name='taxon_group_id' sql='o.taxon_group_id' on_demand="true" datatype="integer" />
     <column name='taxa_taxon_list_id' sql='o.taxa_taxon_list_id' on_demand="true" datatype="integer" />
-    <column name='location_name' sql='COALESCE(l.name, s.location_name)' on_demand="true" datatype="text" />
+    <column name='location_full_name' sql='COALESCE(l.name, s.location_name)' on_demand="true" datatype="text" />
     <column name='entered_sref' on_demand="true" display='Original grid ref' datatype="text" visible="false" sql="s.entered_sref" />
     <column name="output_sref" sql="onf.output_sref" on_demand="true" display="Grid ref" datatype="text" />
     <column name='date_start' sql='o.date_start' on_demand="true" visible='false' />
