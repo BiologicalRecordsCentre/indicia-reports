@@ -36,9 +36,11 @@
     <column name="title" display="Title" datatype="text" sql="snf.attrs_json->>'5'" />
     <column name="first_name" display="First name" datatype="text" sql="snf.attrs_json->>'6'" />
     <column name="surname" display="Last name" datatype="text" sql="snf.attrs_json->>'7'" />
-    <column name="email" display="Email" datatype="text" sql="snf.attrs_json->>'8'" />
+    <column name="full_name" display="Full name" datatype="text" sql="snf.attrs_json->>'127'" />
+    <column name="email" display="Email" datatype="text" sql="COALESCE(snf.attrs_json->>'8', snf.attrs_json->>'35')" />
     <column name="tel_no" display="Phone number" datatype="text" sql="snf.attrs_json->>'20'" />
-    <column name="comment" display="Comment" datatype="text" sql="occ.comment" />
+    <column name="comment" display="Comment" datatype="text"
+      sql="TRIM(LEADING E'\n' FROM COALESCE(occ.comment, s.comment, '') || COALESCE(E'\nAdmin comment:\n' || (snf.attrs_json->>'1140'), '') || COALESCE(E'\nCorrespondence:\n' || (snf.attrs_json->>'1141'), ''))" />
     <column name="images_provided" display="Images proveded" datatype="text" sql="case when o.media_count > 0 then 'y' else 'n' end" />
     <column name="record_status" display="Record status" datatype="text" sql="case o.record_status || coalesce(o.record_substatus::text, '')
       when 'V' then 'Accepted'
