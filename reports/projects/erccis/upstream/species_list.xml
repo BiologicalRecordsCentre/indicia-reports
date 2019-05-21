@@ -1,0 +1,33 @@
+<report
+    title="Cornwall Wildlife Trust download format 1"
+    description="Data organised by taxonomy."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
+         count_field="o.*">
+    select #columns#
+    from cache_occurrences_functional o
+    join samples s on s.id=o.sample_id and s.deleted=false
+    join cache_samples_nonfunctional snf on snf.id=o.sample_id
+    join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+    left join cache_taxa_taxon_lists cttl_phylum on ARRAY[cttl_phylum.taxon_meaning_id] &amp;&amp; o.taxon_path and cttl_phylum.taxon_rank_sort_order=30
+      and cttl_phylum.preferred=true and cttl_phylum.taxon_list_id=15
+    where o.group_id=943
+  </query>
+  <order_bys>
+    <order_by>cttl.kingdom_taxon, cttl_phylum.taxon, cttl.order_taxon, cttl.family_taxon, cttl.default_common_name, cttl.preferred_taxon</order_by>
+  </order_bys>
+  <params>
+    <param name="location_name" display="Farm name starts with">
+      <where>s.location_name ilike '#location_name#%'</where>
+    </param>
+  </params>
+  <columns>
+    <column name="kingdom_taxon" sql="cttl.kingdom_taxon" visible="false" />
+    <column name="phylum_taxon" sql="cttl_phylum.taxon" visible="false" />
+    <column name="order_taxon" sql="cttl.order_taxon" visible="false" />
+    <column name="family_taxon" sql="cttl.family_taxon" visible="false" />
+    <column name="default_common_name" sql="cttl.default_common_name" display="Common name" />
+    <column name="preferred_taxon" sql="cttl.preferred_taxon" display="Species" />
+    <column name="habitat" sql="string_agg(snf.attrs_json->>'1225', ' | ')" display="Habitat" aggregate="true" />
+  </columns>
+</report>
