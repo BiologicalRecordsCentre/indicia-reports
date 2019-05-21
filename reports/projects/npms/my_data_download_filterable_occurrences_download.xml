@@ -1,0 +1,70 @@
+<report
+    title="My data download - occurrences Download (standard filters)"
+    description="My records download for NPMS, simplified version of Indicia Filterable Occurrences Download report."
+    featured="true"
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
+         standard_params="occurrences" count_field="o.*">
+  SELECT #columns#
+  FROM cache_occurrences_functional o
+  JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
+  JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
+  JOIN cache_samples_functional sf on sf.id=snf.id
+  JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+  JOIN websites w on w.id=o.website_id and w.deleted=false
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>o.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="smpattrs" display="Sample attribute list" datatype="smpattrs" default=""
+           description="Comma separated list of sample attribute IDs to include" />
+    <param name="occattrs" display="Occurrence attribute list" datatype="occattrs" default=""
+           description="Comma separated list of occurrence attribute IDs to include" />
+    <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
+           description="Image upload folder on the warehouse including the trailing slash" />
+    <param name="warehouse_id" display="Warehouse unique ID" default="iBRC"
+           description="Unique identifier code for the warehouse which can be prepended to occurrence IDs to make a globally unique record key"/>
+    <param name='vice_county_location_type_term' default='Vice County'
+           preprocess="SELECT id FROM cache_termlists_terms WHERE termlist_title='Location types' AND term='#vice_county_location_type_term#'" />
+  </params>
+  <columns>
+    <column name='occurrence_id' display='ID' sql='o.id' datatype='integer' distincton="true" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" visible="false"/>
+    <column name='sample_id' visible='false' sql='case when onf.sensitivity_precision is null then o.sample_id else null end' datatype='integer' />
+    <column name='taxon' display='Species'
+      template="&lt;div class='zero-{zero_abundance}'&gt;{taxon}&lt;/div&gt;"
+      sql="cttl.preferred_taxon" datatype='species' />
+    <column name='common' display='Common name'
+      template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
+      sql="cttl.default_common_name" datatype='text' />
+    <column name='taxa_taxon_list_id' visible='false' sql='o.taxa_taxon_list_id' datatype='integer' />
+    <column name='location_name' display='Site name' sql="case when onf.sensitivity_precision is null and onf.privacy_precision is null then o.location_name else 'Sensitive. Lat long is approximate.' end" datatype='text' />
+    <column name="entered_sref" display="Spatial reference" sql="snf.public_entered_sref" datatype="text" />
+    <column name='projection' display='Spatial reference system'
+        sql="case snf.entered_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(snf.entered_sref_system) end"
+        datatype="text" />
+    <column name="date" display="Visit date" datatype="date" />
+    <column name="date_start" display="Date from" sql="sf.date_start" visible="false" />
+    <column name="date_end" display="Date to" sql="sf.date_end" visible="false" />
+    <column name="date_type" display="Date type" sql="sf.date_type" visible="false" />
+    <column name='sample_comment' display='Additional Comments' sql="snf.comment" datatype="text" />
+    <column name='input_date' sql="to_char(o.created_on, 'DD/MM/YYYY')" display='Input on date' datatype='date' />
+    <column name='record_status' display='Verification status'
+        sql="CASE o.record_status
+        WHEN 'V' THEN 'Verified'
+        WHEN 'C' THEN 'Unconfirmed'
+        WHEN 'R' THEN 'Rejected'
+        WHEN 'I' THEN 'Input still in progress'
+        WHEN 'D' THEN 'Queried'
+        WHEN 'S' THEN 'Awaiting check'
+        ELSE o.record_status
+        END" />
+    <column name="query" display="Query" sql="case o.query when 'A' then 'Answered' when 'Q' then 'Queried' end" visible="false"/>
+    <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
+    <column name='verified_on' display='Verified on' sql="to_char(o.verified_on, 'DD/MM/YYYY')" datatype="text" />
+  </columns>
+</report>
