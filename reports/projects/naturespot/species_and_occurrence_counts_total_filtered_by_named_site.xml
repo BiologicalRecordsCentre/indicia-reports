@@ -8,17 +8,19 @@
       JOIN (locations l
         JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
       ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
-      WHERE o.website_id=#website_id#
+      WHERE survey_id=8
 	  AND length(snf.public_entered_sref)&gt;=8
       AND o.record_status='V'
       AND (CAST(o.survey_id AS character varying)='#survey_id#' OR '#survey_id#'='')
-      AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR o.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
-      AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR o.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date))
       </query>
   <params>
     <param name='website_id' display='Website ID' description='Select the website to return data for' datatype='integer' />
-    <param name='date_from' display='Date From' datatype='date' />
-    <param name='date_to' display='Date To' datatype='date' />
+    <param name="date_from" display="Date From" datatype="date">
+        <where>o.date_start&gt;='#date_from#'</where>
+    </param>
+    <param name="date_to" display="Date To" datatype="date">
+      <where>o.date_start&lt;='#date_to#'</where>
+    </param>
     <param name='site_name' display='Site' description='Enter the exact name of the site to search.' datatype='text' />
     <param name='survey_id' display='Survey' description='Select the survey to return data for, or leave for all surveys' datatype='lookup'
         query='SELECT id, title as caption FROM surveys' population_call='direct:survey:id:title' />

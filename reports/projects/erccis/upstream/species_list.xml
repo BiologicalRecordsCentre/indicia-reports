@@ -1,5 +1,5 @@
 <report
-    title="Cornwall Wildlife Trust download format 1"
+    title="Upstream thinking species list"
     description="Data organised by taxonomy."
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
@@ -29,5 +29,9 @@
     <column name="default_common_name" sql="cttl.default_common_name" display="Common name" />
     <column name="preferred_taxon" sql="cttl.preferred_taxon" display="Species" />
     <column name="habitat" sql="string_agg(snf.attrs_json->>'1225', ' | ')" display="Habitat" aggregate="true" />
+    <column name="farm_name" sql="s.location_name" display="Farm name" />
+    <column name="recorder" sql="snf.recorders" display="Recorder" />
+    <column name="grid_ref" sql="s.entered_sref" display="Grid ref" />
+    <column name="date" sql="s.date_start" display="Date" />
   </columns>
 </report>
