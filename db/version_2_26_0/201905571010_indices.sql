@@ -1,3 +1,4 @@
+-- #slow script#
 -- Optimise the most common searches on UKSI on iRecord.
 CREATE INDEX ix_cache_taxon_searchterms_fulltext_filtered
   ON cache_taxon_searchterms
