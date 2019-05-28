@@ -1,6 +1,6 @@
 <report
-    title="List of taxa for the Quick Species Maps form"
-    description="A list of distinct taxa."
+    title="List of taxa for the iRecord app"
+    description="A list of distinct taxa with names."
 >
   <query website_filter_field="">
 -- Get all english taxon names (taxa_taxon_list + taxa)
