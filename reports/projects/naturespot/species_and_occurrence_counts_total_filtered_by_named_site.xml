@@ -8,10 +8,9 @@
       JOIN (locations l
         JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
       ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
-      WHERE survey_id=8
+      WHERE survey_id=15
 	  AND length(snf.public_entered_sref)&gt;=8
       AND o.record_status='V'
-      AND (CAST(o.survey_id AS character varying)='#survey_id#' OR '#survey_id#'='')
       </query>
   <params>
     <param name='website_id' display='Website ID' description='Select the website to return data for' datatype='integer' />
@@ -22,9 +21,7 @@
       <where>o.date_start&lt;='#date_to#'</where>
     </param>
     <param name='site_name' display='Site' description='Enter the exact name of the site to search.' datatype='text' />
-    <param name='survey_id' display='Survey' description='Select the survey to return data for, or leave for all surveys' datatype='lookup'
-        query='SELECT id, title as caption FROM surveys' population_call='direct:survey:id:title' />
-  </params>
+   </params>
       <columns>
             <column name="species_count" display="Total no. of Species" />
             <column name="occurrences_count" display="Total no. of Occurrences" />
