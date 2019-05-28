@@ -51,7 +51,7 @@ SELECT #columns# FROM main
   <order_by>taxon ASC</order_by>
 </order_bys>
 <params>
-  <param name="taxon_list_id" datatype="integer" />
+  <param name="taxon_list_id" display="Taxon list ID" datatype="integer" />
 </params>
 <columns>
   <column name="id" sql="id" datatype="integer" />
