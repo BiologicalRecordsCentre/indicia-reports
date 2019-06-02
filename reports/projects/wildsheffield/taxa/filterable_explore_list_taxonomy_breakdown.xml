@@ -1,0 +1,39 @@
+<report
+    title="Explore taxonomy breakdown with standard filters"
+    description="Report designed for the explore records facility in iRecord, with standardised filtering parameters. Breakdown of species counts down to the family level"
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id" standard_params="occurrences">
+  SELECT #columns#
+  FROM (SELECT o.*
+    FROM cache_occurrences_functional o
+    JOIN locations l
+      ON (l.id=o.location_id)
+      AND l.location_type_id=14689
+    UNION
+    SELECT o.*
+    FROM cache_occurrences_functional o
+    JOIN locations l
+      ON st_intersects(l.boundary_geom, o.public_geom)
+        AND (st_geometrytype(o.public_geom)='ST_Point' OR NOT st_touches(l.boundary_geom, o.public_geom))
+        AND (o.map_sq_2km_id&lt;&gt;o.map_sq_10km_id)
+      AND l.location_type_id=14689
+    ) as o
+  JOIN cache_taxa_taxon_lists ttl on ttl.id=o.preferred_taxa_taxon_list_id
+  JOIN websites w on w.id=o.website_id and w.deleted=false
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  AND ttl.kingdom_taxon IS NOT NULL
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>ttl.kingdom_taxon, ttl.order_taxon, ttl.family_taxon</order_by>
+  </order_bys>
+  <columns>
+    <column name='kingdom' display='Kingdom' sql='ttl.kingdom_taxon' datatype="text" in_count="true" />
+    <column name='order' display='Order' sql='ttl.order_taxon' datatype="text" in_count="true" />
+    <column name='family' display='Family' sql='ttl.family_taxon' datatype="text" in_count="true" />
+    <column name="count" display="Number of Records" sql="count(distinct o.id)" datatype="integer" aggregate="true" />
+    <column name="taxon_count" display="Number of Taxa" sql="count(distinct o.taxa_taxon_list_external_key)" datatype="integer" aggregate="true" />
+  </columns>
+</report>
