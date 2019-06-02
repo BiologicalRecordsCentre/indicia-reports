@@ -7,8 +7,7 @@
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
          standard_params="occurrences" count_field="o.*">
   SELECT #columns#
-  FROM
-    (SELECT o.*
+  FROM (SELECT o.*
     FROM cache_occurrences_functional o
     JOIN locations l
       ON (l.id=o.location_id)
