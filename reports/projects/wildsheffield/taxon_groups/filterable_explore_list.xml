@@ -6,17 +6,16 @@
   SELECT #columns#
   FROM (SELECT o.*
     FROM cache_occurrences_functional o
-    JOIN locations l
-      ON (l.id=o.location_id)
-      AND l.location_type_id=14689
+    WHERE website_id=119
     UNION
     SELECT o.*
     FROM cache_occurrences_functional o
     JOIN locations l
-      ON st_intersects(l.boundary_geom, o.public_geom)
-        AND (st_geometrytype(o.public_geom)='ST_Point' OR NOT st_touches(l.boundary_geom, o.public_geom))
-        AND (o.map_sq_2km_id&lt;&gt;o.map_sq_10km_id)
-      AND l.location_type_id=14689
+      ON o.website_id&lt;&gt;119
+        AND (st_intersects(l.boundary_geom, o.public_geom)
+          AND (st_geometrytype(o.public_geom)='ST_Point' OR NOT st_touches(l.boundary_geom, o.public_geom))
+          AND (o.map_sq_2km_id&lt;&gt;o.map_sq_10km_id)
+        AND l.location_type_id=14689)
     ) as o
   JOIN cache_taxa_taxon_lists countcttl on countcttl.id=o.preferred_taxa_taxon_list_id
   #agreements_join#
