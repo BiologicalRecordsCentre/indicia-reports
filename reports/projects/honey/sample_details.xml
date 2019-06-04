@@ -1,6 +1,6 @@
 <report
-    title="Record data for verification"
-    description="Report used to retrieve details of a record excluding custom attributes for the verification 3 prebuilt form."
+    title="Basic details of honey samples"
+    description="Summary details."
 >
   <query website_filter_field="sf.website_id">
   select #columns#
@@ -18,7 +18,7 @@
   </params>
   <columns>
     <column name='sample_id' display='Key facts:Record:ID' sql='sf.id' />
-    <column name='record_status' display="Record:Record status" 
+    <column name='record_status' display="Record:Record status"
 		sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
     <column name='entered_sref' display='Record:Map ref.' sql='s.entered_sref' />
     <column name='date_start' visible='false' sql='sf.date_start' />
