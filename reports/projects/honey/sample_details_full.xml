@@ -7,15 +7,8 @@
   from cache_samples_functional sf
   join cache_samples_nonfunctional snf on snf.id = sf.id
   join samples s on s.id = sf.id and s.deleted = false
-  left join (users u
-    join people p on p.id = u.person_id and p.deleted = false
-  ) on u.id = sf.created_by_id and u.id&lt;&gt;1 and u.deleted = false
   #joins#
-  where s.id = #sample_id#
   </query>
-  <params>
-    <param name="sample_id" display="Sample ID" description="ID of the sample to load" datatype="text" />
-  </params>
   <columns>
     <column name="sample_id" sql="sf.id" />
     <column name="record_status" sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
