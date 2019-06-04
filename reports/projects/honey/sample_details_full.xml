@@ -7,7 +7,7 @@
   from cache_samples_functional sf
   join cache_samples_nonfunctional snf on snf.id = sf.id
   join samples s on s.id = sf.id and s.deleted = false
-  #joins#
+  where website_id in (#website_ids#)
   </query>
   <columns>
     <column name="sample_id" sql="sf.id" />
