@@ -26,7 +26,7 @@
   </params>
   <columns>
     <column name="species_count" display="Total no. of Species" datatype='integer'
-      sql="COUNT(o.taxon_meaning_id)" />
+      sql="COUNT(DISTINCT o.taxon_meaning_id)" />
     <column name="occurrences_count" display="Total no. of Occurrences" datatype='integer'
       sql="COUNT(*)" />
     <column name="species_percent" display="% of total species" datatype='integer'
