@@ -7,7 +7,6 @@
   SELECT #columns#
   FROM cache_samples_functional s
   JOIN cache_samples_nonfunctional snf ON snf.id=s.id
-  LEFT JOIN locations l on s.location_ids @> ARRAY[l.id] AND l.location_type_id=15
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -15,7 +14,7 @@
   #idlist#
   </query>
   <order_bys>
-    <order_by>s.id DESC</order_by>
+    <order_by>s.id+0 DESC</order_by>
   </order_bys>
   <params>
     <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
@@ -26,7 +25,8 @@
     <column name='sample_id' display='ID' sql='s.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='point' display='Point' sql="format_geom_as_latlong(public_geom, 4326, 1)" datatype="text" />
-    <column name='vc' display='Vice county' sql="l.name" datatype="text" />
+    <column name='vc' display='Vice county' datatype="text"
+            sql="(select string_agg(l.name, '; ') from locations l where s.location_ids @> array[l.id] and l.location_type_id=15 and l.code not like '%+%')" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
