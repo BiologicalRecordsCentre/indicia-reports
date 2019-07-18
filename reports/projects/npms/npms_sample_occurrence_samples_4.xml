@@ -56,12 +56,12 @@
     <param name='plot_id' description='ID of plot to limit results to' datatype='integer' emptyvalue="0" default="0"/>
     <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>
     <param name='year_termlist_id' Display='NPMS years termlist ID' datatype="int"/>
-    <param name='square_id' Display='Square'
+    <param name='square_id' Display='Square' description='Select a square, or leave blank for all squares'
         population_call='report:projects/npms/get_my_squares_that_have_plots_2:id:name:
             core_square_location_type_id=#core_square_location_type_id#,additional_square_location_type_id=#core_square_location_type_id#,current_user_id=#iUserID#,
             no_vice_county_found_message=0,vice_county_location_attribute_id=0,pss_mode=1,user_square_attr_id=#person_square_attr_id#' datatype="lookup"
         emptyvalue='0'/>
-    <param name='year' Display='Year'
+    <param name='year' Display='Year' description='Select a year, or leave blank for all years'
     population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
 </params>
   <columns>
