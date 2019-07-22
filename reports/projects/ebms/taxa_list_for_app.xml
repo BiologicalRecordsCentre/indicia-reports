@@ -21,5 +21,7 @@
   <column name="preferred" sql="preferred" datatype="boolean" />
   <column name="parent_id" sql="parent_id" datatype="integer" />
   <column name="external_key" sql="external_key" datatype="text" />
+  <column name="preferred_taxa_taxon_list_id" sql="preferred_taxa_taxon_list_id" datatype="integer" />
+  <column name="preferred_taxon" sql="preferred_taxon" datatype="string" />
 </columns>
 </report>
