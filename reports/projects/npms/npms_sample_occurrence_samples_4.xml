@@ -1,0 +1,89 @@
+<report
+    title="Samples List for npms_sample_occurrences form 4"
+    description="Used by the Samples grid to retrieve the samples associated with a survey and user. User can be identified by
+        their Indicia User ID. A second sample may be linked to a first sample, the id of which is stored in a custom attribute. The id
+        of that custom attribute is passed as a parameter to the report. New version of the report only returns data for squares you
+        are assigned to.">
+  <query website_filter_field="csf.website_id">
+    SELECT #columns#
+      FROM users u
+      JOIN person_attribute_values pav
+        ON pav.person_id = u.person_id
+        AND pav.person_attribute_id = #person_square_attr_id#
+        AND pav.updated_by_id &lt;&gt; u.id
+        AND pav.deleted = false
+      JOIN locations plot
+        ON plot.parent_id=pav.int_value
+        AND plot.deleted=false
+      JOIN locations square
+        ON square.id=plot.parent_id
+        AND (square.id=#square_id# OR #square_id#=0)
+        AND square.deleted=false
+      JOIN cache_samples_functional csf
+        ON csf.location_id = plot.id
+        AND csf.survey_id = #survey_id#
+      JOIN cache_samples_nonfunctional csnf
+        ON csnf.id = csf.id
+      LEFT JOIN location_attribute_values lavPlotName
+        ON lavPlotName.location_attribute_id=#plot_number_attr_id#
+        AND lavPlotName.location_id=plot.id
+        AND lavPlotName.deleted=false
+      JOIN cache_termlists_terms termPlotType
+        ON termPlotType.id = plot.location_type_id
+      LEFT JOIN sample_attribute_values savLinkToSurveyOne
+        ON savLinkToSurveyOne.sample_id = csf.id
+        AND savLinkToSurveyOne.sample_attribute_id = #s1AttrID#
+        AND savLinkToSurveyOne.int_value &lt;&gt; 0
+        AND savLinkToSurveyOne.deleted=false
+      WHERE u.id=#iUserID# 
+      AND (csf.location_id=#plot_id# OR #plot_id#=0)
+      AND 
+        ((trim('#year#') = '' OR '#year#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#year#' || '-01-01','1500-01-01') as date))
+        AND (trim('#year#')  = '' OR '#year#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#year#' || '-12-31','1500-01-01') as date)))
+      AND u.deleted=false
+      #order_by#
+  </query>
+  <order_bys>
+    <order_by>sample_1_id desc, csf.id desc</order_by>
+  </order_bys>
+  <params>
+    <param name='survey_id' display='Survey: ' description='Select the survey to return data for?' datatype='lookup'
+        query='SELECT id, title as caption FROM surveys' />
+    <param name='iUserID' display='Indicia User ID' description='Indicia User ID: use 0 to ignore' datatype='int' />
+    <param name='s1AttrID' display='Sample 1 Attribute ID' description='The ID of the sample attribute that links a second sample to a first' datatype='int' />
+    <param name='plot_number_attr_id' display='Plot number attribute Id' description='Id of the location attribute that holds the plot number label' datatype='int' default='0' empytvalue='0'/>
+    <param name='person_square_attr_id' description='Id of the person attribute that holds user squares' datatype='integer'/>
+    <param name='plot_id' description='ID of plot to limit results to' datatype='integer' emptyvalue="0" default="0"/>
+    <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>
+    <param name='year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name='square_id' display='Square' description='Select a square, or leave blank for all squares'
+        population_call='report:projects/npms/get_my_squares_that_have_plots_2:id:name:
+            core_square_location_type_id=#core_square_location_type_id#,additional_square_location_type_id=#core_square_location_type_id#,current_user_id=#iUserID#,
+            no_vice_county_found_message=0,vice_county_location_attribute_id=0,pss_mode=1,user_square_attr_id=#person_square_attr_id#' datatype="lookup"
+        emptyvalue='0'/>
+    <param name='year' display='Year' description='Select a year, or leave blank for all years'
+    population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+</params>
+  <columns>
+    <column name='sample_id' sql='csf.id' display='ID' visible='false' in_count="true"/>
+    <column name='sample_1_id' sql="coalesce(savLinkToSurveyOne.int_value,csf.id)" display='ID' datatype="integer"/>
+    <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
+    <column name='square' sql="square.name" display='Square'/>
+    <column name='location_name'
+    sql="
+    COALESCE(
+        case
+        when lavPlotName.text_value IS null
+          then '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
+        else
+          '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
+        end
+        , csf.location_name, csnf.public_entered_sref)
+    " display='Plot' />
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='survey_number' sql="'Survey ' || case when savLinkToSurveyOne.int_value IS NOT NULL THEN '2 ' ELSE '1' END" display=' '/>
+  </columns>
+</report>
