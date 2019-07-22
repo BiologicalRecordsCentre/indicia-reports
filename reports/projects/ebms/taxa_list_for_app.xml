@@ -1,0 +1,25 @@
+<report
+    title="List of taxa for the ABLE app"
+    description="A list of distinct taxa with names."
+>
+  <query website_filter_field="">
+  SELECT #columns#
+  FROM cache_taxa_taxon_lists
+  WHERE taxon_list_id=#taxon_list_id#
+  </query>
+<order_bys>
+  <order_by>family_taxon ASC, taxon ASC</order_by>
+</order_bys>
+<params>
+  <param name="taxon_list_id" display="Taxon list ID" datatype="integer" />
+</params>
+<columns>
+  <column name="id" sql="id" datatype="integer" />
+  <column name="taxon_group" sql="taxon_group" datatype="string" />
+  <column name="taxon" sql="taxon" datatype="string" />
+  <column name="language_iso" sql="language_iso" datatype="string" />
+  <column name="preferred" sql="preferred" datatype="boolean" />
+  <column name="parent_id" sql="parent_id" datatype="integer" />
+  <column name="external_key" sql="external_key" datatype="text" />
+</columns>
+</report>
