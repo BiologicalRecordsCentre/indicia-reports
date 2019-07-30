@@ -8,7 +8,7 @@
   from cache_occurrences_functional o
   join occurrences occ on occ.id=o.id
   join cache_occurrences_nonfunctional onf on onf.id=o.id
-  join samples s on s.id=o.sample_id and s.deleted=false
+  join samples smp on smp.id=o.sample_id and smp.deleted=false
   join cache_samples_nonfunctional snf on snf.id=o.sample_id
   #agreements_join#
   #joins#
@@ -31,7 +31,7 @@
     <column name='date_type' sql='o.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
     <column name="created_on" display="Date record added" datatype="date" sql="o.created_on" />
-    <column name="entered_sref" display="Grid ref" datatype="text" sql="s.entered_sref" />
+    <column name="entered_sref" display="Grid ref" datatype="text" sql="smp.entered_sref" />
     <column name="vice_county" display="Vice county" datatype="text" sql="(select string_agg(vc.name, ', ') as vcnames from locations vc where o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15)" />
     <column name="title" display="Title" datatype="text" sql="snf.attrs_json->>'5'" />
     <column name="first_name" display="First name" datatype="text" sql="snf.attrs_json->>'6'" />
@@ -40,7 +40,7 @@
     <column name="email" display="Email" datatype="text" sql="COALESCE(snf.attrs_json->>'8', snf.attrs_json->>'35')" />
     <column name="tel_no" display="Phone number" datatype="text" sql="snf.attrs_json->>'20'" />
     <column name="comment" display="Comment" datatype="text"
-      sql="TRIM(LEADING E'\n' FROM COALESCE(occ.comment, s.comment, '') || COALESCE(E'\nAdmin comment:\n' || (snf.attrs_json->>'1140'), '') || COALESCE(E'\nCorrespondence:\n' || (snf.attrs_json->>'1141'), ''))" />
+      sql="TRIM(LEADING E'\n' FROM COALESCE(occ.comment, smp.comment, '') || COALESCE(E'\nAdmin comment:\n' || (snf.attrs_json->>'1140'), '') || COALESCE(E'\nCorrespondence:\n' || (snf.attrs_json->>'1141'), ''))" />
     <column name="images_provided" display="Images proveded" datatype="text" sql="case when o.media_count > 0 then 'y' else 'n' end" />
     <column name="record_status" display="Record status" datatype="text" sql="case o.record_status || coalesce(o.record_substatus::text, '')
       when 'V' then 'Accepted'
