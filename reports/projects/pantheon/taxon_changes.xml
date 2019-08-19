@@ -1,0 +1,43 @@
+<report
+    title="List changes to taxa"
+    description="Displays the log of taxon changes."
+>
+  <query website_filter_field="cttl.website_id" training_filter_field="">
+    select #columns#
+    from taxa_taxon_list_attribute_values v
+    join cache_taxa_taxon_lists cttl on cttl.id=v.taxa_taxon_list_id
+    join users u on u.id=v.created_by_id
+    join people p on p.id=u.person_id
+    where v.taxa_taxon_list_attribute_id=#attr_id#
+    and (cttl.website_id IS NULL OR cttl.website_id IN (#website_ids#))
+  </query>
+  <order_bys>
+    <order_by>v.created_on desc</order_by>
+  </order_bys>
+  <params>
+    <param name="taxon_list_id" datatype="integer" display="Taxon List ID" default=""
+        description="Limit to the list with this ID.">
+      <where>cttl.taxon_list_id=#taxon_list_id#</where>
+    </param>
+    <param name="attr_id" datatype="integer" display="Logged changes attribute ID" default="">
+      <where>cttl.taxon_list_id=#taxon_list_id#</where>
+    </param>
+
+  </params>
+  <columns>
+    <column name="id" display="ID"
+            sql="v.id" in_count="true" datatype="integer" />
+	<column name="taxa_taxon_list_id"
+            sql="cttl.id" visible="false" datatype="integer" />
+    <column name="family" display="Family"
+            sql="cttl.family_taxon" datatype="text" />
+    <column name="species" display="Species"
+            sql="cttl.preferred_taxon" datatype="text" />
+    <column name="date" display="Date"
+            sql="v.created_on" datatype="date" />
+    <column name="changed_by" display="Changed by"
+            sql="p.surname || ', ' || p.first_name" datatype="text" />
+    <column name="annotation" display="Change annotation"
+            sql="v.text_value" datatype="text" />
+  </columns>
+</report>
