@@ -7,7 +7,6 @@
       #joins#
       WHERE so.location_id = #location_id#
       AND so.user_id = 0
-      AND so.count is NOT NULL
       AND #website_filter#
   </query>
   <params>
@@ -22,6 +21,6 @@
     <column name="preferred_taxon" display="Preferred Taxon" sql="so.preferred_taxon" datatype="text" />
     <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="so.taxon_meaning_id" datatype="text" />
     <column name="year" display="Year" sql="so.year" datatype="text" />
-    <column name="summarised_data " display="Data" sql="so.summarised_data" datatype="text" />
+    <column name="summarised_data" display="Data" sql="so.summarised_data" datatype="text" />
   </columns>
 </report>
