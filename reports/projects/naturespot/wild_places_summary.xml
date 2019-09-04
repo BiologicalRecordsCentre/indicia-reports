@@ -11,7 +11,7 @@
     and length(snf.public_entered_sref::text)>=8
   ) on o.website_id=8
     and st_intersects(l.boundary_geom, o.public_geom)
-    and o.record_status&lt;&gt;"R"
+    and o.record_status&lt;&gt;'R'
   where l.location_type_id=14
   and l.deleted=false
   </query>
