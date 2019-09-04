@@ -3,7 +3,7 @@
     description="Lists the occurrences at a NatureSpot Wild Place."
     row_class="biota"
 >
-  <query>
+  <query count_field="DISTINCT id">
   SELECT DISTINCT #columns#
   FROM naturespot.vw_occurrences_by_location
   WHERE name='#site_name#'
@@ -22,7 +22,7 @@
 
   </params>
   <columns>
-    <column name='id' sql='id' visible="false" in_count="true" />
+    <column name='id' sql='id' visible="false" />
     <column name='name' sql='name' datatype='text' />
     <column name='taxon' sql='taxon' datatype='text' />
     <column name='common' sql='common' datatype='text' />
