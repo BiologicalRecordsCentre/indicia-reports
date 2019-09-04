@@ -2,7 +2,7 @@
     title="Wild places summary"
     description="Lists the wild places with basic metadata."
 >
-  <query>
+  <query count_field="distinct l.id">
   select #columns#
   from locations l
   join locations_websites lw on lw.location_id=l.id and lw.website_id=8 and lw.deleted=false
