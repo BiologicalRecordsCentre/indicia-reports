@@ -1,0 +1,20 @@
+<report
+    title="Wild places overview map"
+    description="Retrieves the boundaries for all wild places."
+    row_class="biota"
+>
+  <query>
+    SELECT DISTINCT #columns#
+    FROM locations l
+    JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=8 AND lw.deleted=false
+    WHERE l.location_type_id=14
+    AND l.deleted=false
+  </query>
+  <params>
+  </params>
+  <columns>
+    <column name='id' visible='false' sql="l.id" datatype="integer" />
+    <column name='name' visible='false' sql="l.name" datatype="text" />
+    <column name='geom' visible='false' mappable="true" sql="st_astext(l.boundary_geom)" />
+  </columns>
+</report>
