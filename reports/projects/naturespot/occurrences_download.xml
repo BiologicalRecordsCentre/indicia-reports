@@ -30,6 +30,11 @@
     <param name='to_id' display='End Record ID' description='Enter the ID of the last record in the range to include.' datatype='integer'>
       <where>o.id&lt;=#to_id#</where>
     </param>
+    <param name="status" display="Status" description="Filter on verification status" datatype="lookup"
+           lookup_values="all:All records,V:Accepted only,C:Pending review only">
+      <where value="V" operator="equal">o.record_status='V'</where>
+      <where value="C" operator="equal">o.record_status='C'</where>
+    </param>
     <param name='site' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8'>
       <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, smp.geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
       JOIN locations_websites lw on lw.location_id=lfilt.id and lw.deleted=false and lw.website_id=8</join>
