@@ -47,7 +47,9 @@
       osub.location_ids,
       osub.identification_difficulty,
       osub.import_guid,
-      osub.confidential
+      osub.confidential,
+      osub.blocked_sharing_tasks,
+      osub.taxon_path
     FROM cache_occurrences_functional as osub
     JOIN determinations dsub on dsub.occurrence_id=osub.id and dsub.deleted=false
     JOIN cache_taxa_taxon_lists cttlsub on cttlsub.id in (dsub.taxa_taxon_list_id )
