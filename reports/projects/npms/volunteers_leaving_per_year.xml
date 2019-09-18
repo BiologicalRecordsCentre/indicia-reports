@@ -1,0 +1,94 @@
+<report
+    title="Volunteers leaving per year"
+    description="List numbers of volunteers who leave each NPMS year. This is no hard definition of the term leaving so we assume they have left if they recorded samples and no longer have a square."
+>
+  <query>
+  SELECT #columns#
+  FROM people p
+  -- Think join here should speed things up else we end up left joining on everything, can't use a users_websites filter as we are interested in people who might not have a record for the wesbite anymore
+  JOIN person_attribute_values pavRemovedAlloc on pavRemovedAlloc.person_id = p.id
+      AND pavRemovedAlloc.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc.deleted=true
+
+  -- Note here that the deleted=true check is deliberate as we are only interested in removals
+  LEFT JOIN person_attribute_values pavRemovedAlloc15 on pavRemovedAlloc15.id = pavRemovedAlloc.id
+      AND pavRemovedAlloc15.updated_on &gt;= '#2015_start_date#' AND pavRemovedAlloc15.updated_on &lt; '#2016_start_date#'
+      AND pavRemovedAlloc15.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc15.deleted=true
+      -- Need to only take into account the latest removal date, as that is when they left
+      AND pavRemovedAlloc15.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc16 on pavRemovedAlloc16.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc16.updated_on &gt;= '#2016_start_date#' AND pavRemovedAlloc16.updated_on &lt; '#2017_start_date#'
+    AND pavRemovedAlloc16.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc16.deleted=true
+    AND pavRemovedAlloc16.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc17 on pavRemovedAlloc17.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc17.updated_on &gt;= '#2017_start_date#' AND pavRemovedAlloc17.updated_on &lt; '#2018_start_date#'
+    AND pavRemovedAlloc17.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc17.deleted=true
+    AND pavRemovedAlloc17.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc18 on pavRemovedAlloc18.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc18.updated_on &gt;= '#2018_start_date#' AND pavRemovedAlloc18.updated_on &lt; '#2019_start_date#'
+    AND pavRemovedAlloc18.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc18.deleted=true
+    AND pavRemovedAlloc18.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc19 on pavRemovedAlloc19.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc19.updated_on &gt;= '#2019_start_date#' AND pavRemovedAlloc19.updated_on &lt; '#2020_start_date#'
+    AND pavRemovedAlloc19.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc19.deleted=true
+    AND pavRemovedAlloc19.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc20 on pavRemovedAlloc20.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc20.updated_on &gt;= '#2020_start_date#' AND pavRemovedAlloc20.updated_on &lt; '#2021_start_date#'
+    AND pavRemovedAlloc20.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc20.deleted=true
+    AND pavRemovedAlloc20.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  LEFT JOIN person_attribute_values pavRemovedAlloc21 on pavRemovedAlloc21.id = pavRemovedAlloc.id
+    AND pavRemovedAlloc21.updated_on &gt;= '#2021_start_date#' AND pavRemovedAlloc21.updated_on &lt; '#2022_start_date#'
+    AND pavRemovedAlloc21.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc21.deleted=true
+    AND pavRemovedAlloc21.id in (select id from person_attribute_values where person_id=p.id AND person_attribute_id=#user_square_attr_id# AND deleted=true order by updated_on desc limit 1)
+
+  JOIN locations square on (
+    square.id = pavRemovedAlloc15.int_value OR
+    square.id = pavRemovedAlloc16.int_value OR
+    square.id = pavRemovedAlloc17.int_value OR
+    square.id = pavRemovedAlloc18.int_value OR
+    square.id = pavRemovedAlloc19.int_value OR
+    square.id = pavRemovedAlloc20.int_value OR
+    square.id = pavRemovedAlloc21.int_value)
+  AND square.location_type_id=#core_square_type_id# AND square.deleted=false
+
+  JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
+  -- Only interested in people who actually made some recordings (i.e. used the scheme_)
+  JOIN samples s on s.location_id=plot.id AND s.deleted=false
+  where 
+    --If a user is deallocated, then check they haven't been re-allocated, if they have been re-allocated then they don't count as having left.
+    p.id NOT in
+      (select pavAlloc.person_id
+         from person_attribute_values pavAlloc
+          where pavAlloc.int_value=square.id AND pavAlloc.person_attribute_id=#user_square_attr_id# AND pavAlloc.deleted=false)
+  </query>
+  <params>
+    <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
+    <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
+    <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
+        Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default="">
+      <where>square.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
+    </param>
+    <param name="2015_start_date" description="Start date of the 2015 season." datatype="date"/>
+    <param name="2016_start_date" description="Start date of the 2016 season." datatype="date"/>
+    <param name="2017_start_date" description="Start date of the 2017 season." datatype="date"/>
+    <param name="2018_start_date" description="Start date of the 2018 season." datatype="date"/>
+    <param name="2019_start_date" description="Start date of the 2019 season." datatype="date"/>
+    <param name="2020_start_date" description="Start date of the 2020 season." datatype="date"/>
+    <param name="2021_start_date" description="Start date of the 2021 season." datatype="date"/>
+    <param name="2022_start_date" description="Start date of the 2022 season." datatype="date"/>
+  </params>
+  <columns>
+    <column name='number_leaving_2015' display='2015' sql='count(distinct(pavRemovedAlloc15.person_id))' datatype='integer' aggregate='true'/>  
+    <column name='number_leaving_2016' display='2016' sql='count(distinct(pavRemovedAlloc16.person_id))' datatype='integer' aggregate='true'/>  
+    <column name='number_leaving_2017' display='2017' sql='count(distinct(pavRemovedAlloc17.person_id))' datatype='integer' aggregate='true'/> 
+    <column name='number_leaving_2018' display='2018' sql='count(distinct(pavRemovedAlloc18.person_id))' datatype='integer' aggregate='true'/>   
+    <column name='number_leaving_2019' display='2019' sql='count(distinct(pavRemovedAlloc19.person_id))' datatype='integer' aggregate='true'/> 
+    <column name='number_leaving_2020' display='2020' sql='count(distinct(pavRemovedAlloc20.person_id))' datatype='integer' aggregate='true'/> 
+    <column name='number_leaving_2021' display='2021' sql='count(distinct(pavRemovedAlloc21.person_id))' datatype='integer' aggregate='true'/>       
+  </columns>
+</report>
