@@ -78,6 +78,7 @@
   when 'R4' then 'not accepted as unable to review'
   when 'R5' then 'not accepted as incorrect'
 end"/>
+  <column name="query_status" display="Query status" sql="o.query" datatype="text" />
   <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
   <column name='verified_on' display='Verified on' sql='o.verified_on' datatype="text" />
   <column name="verifier_comment" display="Verifier comment" sql="string_agg(oc.comment, '; ')" aggregate="true" />
