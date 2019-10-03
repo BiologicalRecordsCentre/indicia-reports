@@ -1,0 +1,31 @@
+<report
+    title="Wild places summary"
+    description="Lists the wild places with basic metadata."
+>
+  <query count_field="distinct l.id">
+  select #columns#
+  from locations l
+  join locations_websites lw on lw.location_id=l.id and lw.website_id=8 and lw.deleted=false
+  left join (cache_occurrences_functional o
+    join cache_samples_nonfunctional snf on snf.id=o.sample_id
+    and length(snf.public_entered_sref::text)>=8
+  ) on o.website_id=8
+    and st_intersects(l.boundary_geom, o.public_geom)
+    and o.record_status&lt;&gt;'R'
+  where l.location_type_id=14
+  and l.deleted=false
+  </query>
+  <order_bys>
+    <order_by>l.name</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="id" sql="l.id" visible="false" />
+    <column name="name" sql="l.name" datatype="text" />
+    <column name="record_count" sql="count(distinct o.id)" datatype="integer" aggregate="true" />
+    <column name="species_count" sql="count(distinct o.taxa_taxon_list_external_key)" datatype="integer" aggregate="true"  />
+    <column name="record_count_verified" sql="count(distinct case when o.record_status='V' then o.id else null end)" datatype="integer" aggregate="true" />
+    <column name="species_count_verified" sql="count(distinct case when o.record_status='V' then o.taxa_taxon_list_external_key else null end)" datatype="integer" aggregate="true" />
+  </columns>
+</report>

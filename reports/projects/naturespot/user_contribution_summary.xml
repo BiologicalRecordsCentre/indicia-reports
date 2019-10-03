@@ -30,6 +30,6 @@
     <column name="occurrences_count" display="Total no. of Occurrences" datatype='integer'
       sql="COUNT(*)" />
     <column name="species_percent" display="% of total species" datatype='integer'
-      sql="COUNT(o.taxon_meaning_id) / 6491" />
+      sql="COUNT(DISTINCT o.taxon_meaning_id)*100 / 6675" />
   </columns>
 </report>
