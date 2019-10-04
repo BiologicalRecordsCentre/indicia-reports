@@ -8,6 +8,7 @@
   JOIN users u on u.person_id=p.id
   -- Think join here should speed things up else we end up left joining on everything, can't use a users_websites filter as we are interested in people who might not have a record for the wesbite anymore
   JOIN person_attribute_values pavRemovedAlloc on pavRemovedAlloc.person_id = p.id
+      AND (EXTRACT(epoch from age(pavRemovedAlloc.updated_on::DATE, pavRemovedAlloc.created_on::DATE)) / 86400)::int &gt;&#61; #min_time_between_alloc_and_dealloc#
       AND pavRemovedAlloc.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc.deleted=true
   -- Note here that the deleted=true check is deliberate as we are only interested in removals
   LEFT JOIN person_attribute_values pavRemovedAlloc15 on pavRemovedAlloc15.id = pavRemovedAlloc.id
@@ -84,11 +85,13 @@
     <param name="2020_start_date" description="Start date of the 2020 season." datatype="date"/>
     <param name="2021_start_date" description="Start date of the 2021 season." datatype="date"/>
     <param name="2022_start_date" description="Start date of the 2022 season." datatype="date"/>
-    <param name="created_data_only" display="Only include users who have created data (samples)"
-        description="Only include users who have created data (samples)." datatype="checkbox"/>
+    <param name="created_data_only" display="Only include squares that have had data (samples) created for them" datatype="checkbox"/>
+    <param name='min_time_between_alloc_and_dealloc' description='Minimum time (in days) between when the 
+    square was allocated and deallocated, this allows squares which were allocated and deallocated immeditaely
+    (e.g. due to a mistake) to be ignored.' datatype='integer'/>  
   </params>
   <columns>
-    <column name='id' display='Person ID' sql='p.id' visible='false' datatype='integer' in_count='true'/> 
+    <column name='id' display='Person ID' sql='p.id' datatype='integer' visible="false" in_count='true'/> 
     <column name='surname' display='Surname' sql='p.surname' datatype='string' in_count='true'/>     
     <column name='first_name' display='First name' sql='p.first_name' datatype='string' in_count='true'/>  
     <column name='email_address' display='Email' sql='p.email_address' datatype='string' in_count='true'/> 
