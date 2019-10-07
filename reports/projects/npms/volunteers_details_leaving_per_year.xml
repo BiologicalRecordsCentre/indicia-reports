@@ -92,9 +92,9 @@
   </params>
   <columns>
     <column name='id' display='Person ID' sql='p.id' datatype='integer' visible="false" in_count='true'/> 
-    <column name='surname' display='Surname' sql='p.surname' datatype='string' in_count='true'/>     
-    <column name='first_name' display='First name' sql='p.first_name' datatype='string' in_count='true'/>  
-    <column name='email_address' display='Email' sql='p.email_address' datatype='string' in_count='true'/> 
+    <column name='surname' display='Surname' sql='p.surname' datatype='text' in_count='true'/>     
+    <column name='first_name' display='First name' sql='p.first_name' datatype='text' in_count='true'/>  
+    <column name='email_address' display='Email' sql='p.email_address' datatype='text' in_count='true'/> 
     <column name='year_left' display='Year left' sql="
     case 
       WHEN pavRemovedAlloc15.id IS NOT NULL THEN 2015
