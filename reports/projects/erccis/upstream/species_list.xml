@@ -28,10 +28,10 @@
     <column name="family_taxon" sql="cttl.family_taxon" visible="false" />
     <column name="default_common_name" sql="cttl.default_common_name" display="Common name" />
     <column name="preferred_taxon" sql="cttl.preferred_taxon" display="Species" />
-    <column name="habitat" sql="string_agg(snf.attrs_json->>'1225', ' | ')" display="Habitat" aggregate="true" />
+    <column name="habitat" sql="string_agg(distinct snf.attrs_json->>'1225', ' | ')" display="Habitat" aggregate="true" />
     <column name="farm_name" sql="s.location_name" display="Farm name" />
     <column name="recorder" sql="snf.recorders" display="Recorder" />
-    <column name="grid_ref" sql="string_agg(s.entered_sref, ' | ')" display="Grid ref" aggregate="true" />
+    <column name="grid_ref" sql="string_agg(distinct s.entered_sref, ' | ')" display="Grid ref" aggregate="true" />
     <column name="date" sql="s.date_start" display="Date" />
   </columns>
 </report>
