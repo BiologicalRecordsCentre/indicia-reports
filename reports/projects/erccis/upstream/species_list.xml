@@ -31,7 +31,7 @@
     <column name="habitat" sql="string_agg(snf.attrs_json->>'1225', ' | ')" display="Habitat" aggregate="true" />
     <column name="farm_name" sql="s.location_name" display="Farm name" />
     <column name="recorder" sql="snf.recorders" display="Recorder" />
-    <column name="grid_ref" sql="s.entered_sref" display="Grid ref" />
+    <column name="grid_ref" sql="string_agg(s.entered_sref, ' | ')" display="Grid ref" aggregate="true" />
     <column name="date" sql="s.date_start" display="Date" />
   </columns>
 </report>
