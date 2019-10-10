@@ -33,6 +33,7 @@
     <column name="location_id" display="ID" sql="l.id" datatype="integer" />
     <column name="name" display="Name" sql="l.name" datatype="text" />
     <column name="region" display="Region" sql="region.name" datatype="text" />
+    <column name="region_location_id" display="Region ID" sql="region.id" datatype="integer" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" datatype="integer" />
     <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" datatype="text" />
   </columns>
