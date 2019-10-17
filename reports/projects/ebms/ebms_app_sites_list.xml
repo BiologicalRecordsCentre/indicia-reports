@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS App sites list report" description="Lists sites to be used in the App.">
+  <query website_filter_field="l.website_id">
+  SELECT #field_sql#
+  FROM detail_locations l
+  JOIN location_attributes la
+      ON la.caption = 'CMS User ID'
+      AND la.deleted=false
+  JOIN location_attribute_values lav
+      ON lav.location_id = l.id
+      AND lav.location_attribute_id = la.id
+      AND lav.int_value = #userID#
+      AND lav.deleted=false
+  JOIN location_attributes la2
+      ON la2.caption = 'No. of sections'
+      AND la2.deleted=false
+  JOIN location_attribute_values lav2
+      ON lav2.location_id = l.id
+      AND lav2.location_attribute_id = la2.id
+      AND lav2.deleted=false
+  #joins#
+  WHERE #website_filter#
+  AND EXISTS (SELECT id FROM location_attributes_websites law
+      WHERE law.website_id = #website_id#
+      AND law.location_attribute_id = la.id
+      AND law.deleted = FALSE)
+  AND EXISTS (SELECT id FROM location_attributes_websites law2
+      WHERE law2.website_id = #website_id#
+      AND law2.location_attribute_id = la2.id
+      AND law2.deleted = FALSE)
+  #filters#
+  #order_by#
+  </query>
+  <field_sql>
+      l.id AS id,
+      l.name AS name,
+      lav2.int_value AS sections
+  </field_sql>
+  <order_bys>
+    <order_by>l.name</order_by>
+  </order_bys>
+  <params>
+    <!-- Legacy: EBMS and UKBMS assign locations via an attribute holding the CMS user ID, not the Indicia ID -->
+    <param name="website_id" display="Website Id for the occurrence record." datatype="integer"/>
+    <param name="userID" display="CMS User ID" description="CMS User ID" datatype="integer" />
+    <param name="locattrs" display="Location attribute list" description="Comma separated list of location attribute IDs to include" datatype="locattrs" />
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name="id" display="Site ID" />
+    <column name="name" display="Site Name" />
+    <column name="sections" display="Section count" />
+  </columns>
+</report>
