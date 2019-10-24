@@ -95,6 +95,22 @@
     <column name='surname' display='Surname' sql='p.surname' datatype='text' in_count='true'/>     
     <column name='first_name' display='First name' sql='p.first_name' datatype='text' in_count='true'/>  
     <column name='email_address' display='Email' sql='p.email_address' datatype='text' in_count='true'/> 
+    <column name='date_left' display='Date left' sql="
+    to_char(
+      cast (
+        case 
+          WHEN pavRemovedAlloc15.id IS NOT NULL THEN pavRemovedAlloc15.updated_on
+          WHEN pavRemovedAlloc16.id IS NOT NULL THEN pavRemovedAlloc16.updated_on
+          WHEN pavRemovedAlloc17.id IS NOT NULL THEN pavRemovedAlloc17.updated_on
+          WHEN pavRemovedAlloc18.id IS NOT NULL THEN pavRemovedAlloc18.updated_on
+          WHEN pavRemovedAlloc19.id IS NOT NULL THEN pavRemovedAlloc19.updated_on
+          WHEN pavRemovedAlloc20.id IS NOT NULL THEN pavRemovedAlloc20.updated_on
+          WHEN pavRemovedAlloc21.id IS NOT NULL THEN pavRemovedAlloc21.updated_on
+          ELSE NULL
+        END
+    as date)
+    , 'DD/MM/YYYY')
+    " datatype='date' in_count='true'/>     
     <column name='year_left' display='Year left' sql="
     case 
       WHEN pavRemovedAlloc15.id IS NOT NULL THEN 2015
