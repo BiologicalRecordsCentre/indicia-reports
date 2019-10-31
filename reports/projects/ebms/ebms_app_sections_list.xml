@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS App sections list report" description="Lists sections to be used in the App.">
+  <query website_filter_field="l.website_id">
+  SELECT #field_sql#
+  FROM detail_locations l
+  #joins#
+  WHERE #website_filter#
+  AND l.parent_id IN (#location_list#) 
+  #filters#
+  #order_by#
+  </query>
+  <field_sql>
+      l.id AS id,
+      l.name AS name,
+      l.code AS code,
+      l.centroid_sref AS centroid_sref,
+      l.centroid_sref_system AS sref_system,
+      CASE WHEN boundary_geom IS NULL THEN st_asgeojson(centroid_geom) ELSE st_asgeojson(boundary_geom) END as geom
+  </field_sql>
+  <order_bys>
+    <order_by>l.parent_id</order_by>
+    <order_by>l.id</order_by>
+  </order_bys>
+  <params>
+    <!-- Legacy: EBMS and UKBMS assign locations via an attribute holding the CMS user ID, not the Indicia ID -->
+    <param name="website_id" display="Website Id for the occurrence record." datatype="integer"/>
+    <param name="location_list" display="Comma separated list of parent location ids." datatype="integer[]" empty="0" />
+  </params>
+  <columns>
+    <column name="id" display="Site ID" />
+    <column name="name" display="Site Name" />
+    <column name="code" display="Code" />
+    <column name="sref_system" display="SRef system" />
+    <column name="centroid_sref" display="Centroid SRef" />
+    <column name="geom" display="Geometry" datatype="text" />
+  </columns>
+</report>
