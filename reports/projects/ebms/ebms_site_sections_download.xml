@@ -22,7 +22,8 @@
       l.centroid_sref_system, 
       l2.id AS section_id,
       l2.name AS section_name,
-      l2.code AS section_code
+      l2.code AS section_code,
+      (COALESCE(l.code, l.name)::text || '.'::text) || substring(l2.code::text, 2) AS unique_code
   </field_sql>
   <order_bys>
     <order_by>l.name, l2.id</order_by>
@@ -52,6 +53,6 @@
     <column name="section_id" display="Section ID" />
     <column name="section_name" display="Section Name" />
     <column name="section_code" display="Section Code" />
-    <column name="section_type" display="Section Type" />
+    <column name="unique_code" display="Unique Section Code" />
   </columns>
 </report>
