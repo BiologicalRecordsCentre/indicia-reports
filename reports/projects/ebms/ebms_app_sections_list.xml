@@ -10,6 +10,7 @@
   #order_by#
   </query>
   <field_sql>
+      l.parent_id AS parent_id,
       l.id AS id,
       l.name AS name,
       l.code AS code,
@@ -27,6 +28,7 @@
     <param name="location_list" display="Comma separated list of parent location ids." datatype="integer[]" empty="0" />
   </params>
   <columns>
+    <column name="parent_id" display="Transect ID" />
     <column name="id" display="Site ID" />
     <column name="name" display="Site Name" />
     <column name="code" display="Code" />
