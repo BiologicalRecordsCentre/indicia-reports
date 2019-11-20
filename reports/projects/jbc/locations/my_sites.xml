@@ -40,6 +40,5 @@
         <column name="groups" display="No. of Taxon Groups" sql="COUNT(DISTINCT o.taxon_group_id)" aggregate="true" datatype="integer" />
         <column name="geom" visible="false" mappable="true" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
         <column name="created_by_user" visible="false" sql="CASE l.created_by_id WHEN #user_id# THEN true ELSE false END" />
-        <column name="linked_to_user" visible="false" sql="CASE WHEN pav.id IS NOT NULL THEN true ELSE false END" />
       </columns>
 </report>
