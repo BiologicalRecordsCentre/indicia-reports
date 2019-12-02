@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="UKBMS Occurrence Download Report" description="Lists saved occurrences. Normally invoked from download tab on annual summary page.">
-  <query website_filter_field="o.website_id" samples_id_field="parent.id" samples2_id_field="s.id" >
+  <query website_filter_field="o.website_id" samples_id_field="parent.id" samples2_id_field="o.sample_id" >
     SELECT #field_sql#
       FROM cache_occurrences_functional o
       JOIN samples parent ON parent.id = o.parent_sample_id
@@ -31,11 +31,11 @@
   </order_bys>
   <params>
     <param name="survey_list" display="Survey IDs" description="Comma separated list of survey IDs" datatype="integer[]" default="" >
-      <where>s.survey_id in (#survey_list#)</where>
+      <where>parent.survey_id in (#survey_list#)</where>
     </param>
     <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup" default="" 
         population_call="direct:survey:id:title">
-	    <where>s.survey_id=#survey_id#</where>
+	    <where>parent.survey_id=#survey_id#</where>
 	  </param>
     <param name="date_from" display="Date From" datatype="date" default="">
       <where>parent.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date)</where>
