@@ -2,17 +2,16 @@
 <report title="Sample status summary" definition="Sample status summary for admins.">
   <query>
     SELECT #columns#
-    from cache_samples_functional s
-    join cache_samples_nonfunctional snf on snf.id=s.id
-    left join cache_occurrences_functional o on o.sample_id=s.id
-    and o.survey_id=512
-    where s.survey_id=512;
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf ON snf.id=s.id
+    LEFT JOIN cache_occurrences_functional o ON o.sample_id=s.id
+    AND o.survey_id=512
+    WHERE s.survey_id=512
   </query>
   <order_bys>
     <order_by>s.id ASC</order_by>
   </order_bys>
   <params>
-    <param name="sample_id" display="Sample ID" description="ID of the sample to show species for" datatype="integer" />
   </params>
   <columns>
     <column name="id" display="Sample ID" datatype="integer" sql="s.id" distincton="true" />
