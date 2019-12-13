@@ -18,11 +18,12 @@
       l.name AS site_name,
       l.code AS site_code,
       ctt.term AS site_type,
-      l.centroid_sref,
+      l.centroid_sref AS site_sref,
       l.centroid_sref_system, 
       l2.id AS section_id,
       l2.name AS section_name,
       l2.code AS section_code,
+      l2.centroid_sref AS section_sref,
       (COALESCE(l.code, l.name)::text || '.'::text) || substring(l2.code::text, 2) AS unique_code
   </field_sql>
   <order_bys>
@@ -48,11 +49,12 @@
     <column name="site_name" display="Site Name" />
     <column name="site_code" display="Site Code" />
     <column name="site_type" display="Site Type" />
-    <column name="centroid_sref" display="SRef" />
+    <column name="site_sref" display="SiteRef" />
     <column name="centroid_sref_system" display="System" />
     <column name="section_id" display="Section ID" />
     <column name="section_name" display="Section Name" />
     <column name="section_code" display="Section Code" />
+    <column name="section_sref" display="SectionRef" />
     <column name="unique_code" display="Unique Section Code" />
   </columns>
 </report>
