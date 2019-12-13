@@ -7,12 +7,17 @@
   from cache_samples_functional sf
   join cache_samples_nonfunctional snf on snf.id = sf.id
   join samples s on s.id = sf.id and s.deleted = false
+  left join locations l on sf.location_ids && ARRAY[l.id] AND l.deleted=false AND l.location_type_id=16517
+  left join occurrences o on o.sample_id=s.id and o.deleted=false
+  left join occurrence_attribute_values v ON v.occurrence_id=o.id AND v.occurrence_attribute_id=751 AND v.deleted=false
+  left join cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
   where website_id in (#website_ids#)
   </query>
   <columns>
     <column name="sample_id" sql="sf.id" />
     <column name="record_status" sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
     <column name="entered_sref" sql="s.entered_sref" />
+    <column name="nuts_region" aggregate="true" sql="string_agg(distinct l.name, '; ')" />
     <column name="date_start" visible="false" sql="sf.date_start" />
     <column name="date_end" visible="false" sql="sf.date_end" />
     <column name="date_type" visible="false" sql="sf.date_type" />
@@ -67,17 +72,9 @@
     <column name="LandCover_SupralittoralSediment" sql="snf.attrs_json->>'1259'" />
     <column name="LandCover_BroadleafWoodland" sql="snf.attrs_json->>'1260'" />
     <column name="LandCover_ArableAndHorticulture" sql="snf.attrs_json->>'1261'" />
-    <column name="infections" sql="(
-      SELECT string_agg(cttl.preferred_taxon, ', ')
-      FROM occurrences o
-      LEFT JOIN occurrence_attribute_values v ON v.occurrence_id=o.id AND v.occurrence_attribute_id=751 AND v.deleted=false
-      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
-      WHERE o.sample_id=s.id AND o.deleted=false AND v.id IS NULL)" />
-    <column name="pollen_analysis_species" sql="(
-      SELECT string_agg(cttl.preferred_taxon, ', ')
-      FROM occurrences o
-      JOIN occurrence_attribute_values v ON v.occurrence_id=o.id AND v.occurrence_attribute_id=751 AND v.deleted=false
-      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
-      WHERE o.sample_id=s.id AND o.deleted=false)" />
+    <column name="infections" aggregate="true"
+      sql="string_agg(case when v.id is null then cttl.preferred_taxon else null end, ', ')" />
+    <column name="pollen_analysis_species" aggregate="true"
+      sql="string_agg(case when v.id is null then null else cttl.preferred_taxon end, ', ')" />
   </columns>
 </report>
