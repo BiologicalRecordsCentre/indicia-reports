@@ -20,7 +20,7 @@
     <column name='sample_id' display='Key facts:Record:ID' sql='sf.id' />
     <column name='record_status' display="Record:Record status"
       sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
-    <column name="status" display="Status" datatype="text" sql="snf.attrs_json->>'1161'" />
+    <column name="status" display="Status" datatype="text" visible="false" sql="snf.attrs_json->>'1161'" />
     <column name='entered_sref' display='Record:Map ref.' sql='s.entered_sref' />
     <column name='date_start' visible='false' sql='sf.date_start' />
     <column name='date_end' visible='false' sql='sf.date_end' />
