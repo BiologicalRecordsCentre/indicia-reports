@@ -1,0 +1,42 @@
+<report
+    title="Get record data per square per year"
+    description="List record data per square per year. Used to give users a simple overview of data which
+        might relate to notifications they have received."
+>
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations square
+      LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
+      JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
+      JOIN users u on u.id=#current_user_id#
+      JOIN samples s on s.location_id = plot.id and s.created_by_id = u.id AND s.deleted=false
+      JOIN occurrences o on o.sample_id = s.id AND o.deleted=false
+    WHERE (square.location_type_id=#core_square_location_type_id#)
+    AND 
+      ((trim('#year#') = '' OR s.date_start &gt;= CAST(COALESCE('#year#' || '-01-01','1500-01-01') as date))
+      AND (trim('#year#')  = '' OR s.date_start &lt;= CAST(COALESCE('#year#' || '-12-31','1500-01-01') as date)))
+    AND #website_filter# AND square.deleted=false
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>square.centroid_sref</order_by>
+  </order_bys>
+  <params>
+    <param name='year_termlist_id' display='NPMS years termlist ID' datatype="integer"/>
+    <param name='year' display='Year' description='Select a year, or leave blank for all years'
+        population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>
+    <param name="current_user_id" display="Id of the currently logged in user" datatype="integer"/>
+    <param name="ignore_dates_before" display="Ignore Dates Before" description="Ignore samples whose date is before this date (we can ignore transition years data)." datatype="date" emptyvalue="" default="">
+      <where>s.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date)</where>
+    </param>
+  </params>
+  <columns>
+    <column name='id' display='Square ID' sql="square.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
+    <column name='untouched' display='Untouched' sql="COUNT(DISTINCT CASE WHEN o.record_status = 'C' OR o.record_status = 'I' THEN o.id END)" datatype='integer' aggregate="true"/>
+    <column name='verified' display='Verified' sql="COUNT(DISTINCT CASE WHEN o.record_status = 'V' THEN o.id END) || 
+        ' (' || COUNT(DISTINCT CASE WHEN o.record_status = 'V' AND  (o.record_decision_source != 'M' OR o.record_decision_source IS NULL) THEN o.id END) || ' human, ' ||
+        COUNT(DISTINCT CASE WHEN o.record_status = 'V' AND  o.record_decision_source = 'M' THEN o.id END) || ' machine)'" datatype='text' aggregate="true"/>
+  </columns>
+</report>
