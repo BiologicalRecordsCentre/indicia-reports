@@ -1,8 +1,9 @@
 <report
     title="NPMS Notifications list for notifications centre"
     description="A list of notifications for use with the notifications centre extension, 
-                 slightly simplified source types for NPMS.">
-  <query>
+slightly simplified source types for NPMS. 
+Note this version also has a website filter to attempt to limit to NPMS where possible.">
+  <query website_filter_field="o.website_id">
   SELECT #columns#
     FROM notifications n
       LEFT JOIN cache_occurrences_functional o ON o.id=n.linked_id AND (n.source='Verifications and comments' OR n.source_type='S')
@@ -12,6 +13,7 @@
       and n.user_id=#user_id#  
       and (o.training=#training# or o.id is null)
       and n.source_type&lt;&gt;'T' -- skip trigger notifications which don't display correctly in the grid
+      AND #website_filter#
     #order_by#
   </query>  
   <order_bys>
