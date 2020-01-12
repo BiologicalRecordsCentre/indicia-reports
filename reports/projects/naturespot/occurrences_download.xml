@@ -57,6 +57,7 @@
     <column name="vc_name" display="VC Name" sql="vc.name" datatype="text" />
     <column name="recorders" display="Recorder" sql="rtrim(snf.recorders, ', ')" datatype="text" />
     <column name="email_address" display="Email" sql="p.email_address" datatype="text" />
+    <column name="warehouse_user_id" display="Warehouse user ID" sql="o.created_by_id" datatype="integer" />
     <column name="determiner" display="Determiner" datatype="text"
       sql="CASE WHEN onf.attr_det_full_name IS NULL THEN
         CASE WHEN onf.attr_det_last_name IS NULL THEN NULL ELSE onf.attr_det_last_name || COALESCE(', ' || onf.attr_det_first_name, '') END
