@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Info to support query click on catchment detail.">
+    <query website_filter_field="s.website_id">
+    select
+      json_build_object(
+        'samples', json_agg(
+          json_build_object(
+            'id', s.id,
+            'date', s.date_start,
+            'recorder', snf.recorders,
+            'type', case s.survey_id when 285 then 'Survey' else 'Treatment' end,
+            'occurrences', occs,
+            'attrs', snf.attrs_json
+          )
+        )
+      ) samples
+    from cache_samples_functional s
+    join cache_samples_nonfunctional snf on snf.id=s.id
+    left join (
+        select
+            parent_sample_id,
+            json_agg(
+                json_build_object(
+                    'id', o.id,
+            'species', cttl.default_common_name
+                    )
+                ) occs
+        from cache_occurrences_functional o
+      join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+      where o.parent_sample_id in (#sample_ids#)
+      group by o.parent_sample_id
+    ) i on i.parent_sample_id=s.id
+    where s.id in (#sample_ids#)
+    </query>
+    <params>
+        <param name="sample_ids" display="Sample ID list"
+               description="Comma separated list of survey and treatment sample IDs." datatype="integer[]" />
+    </params>
+    <columns>
+      <column name="samples" />
+    </columns>
+</report>

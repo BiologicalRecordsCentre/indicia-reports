@@ -4,26 +4,26 @@
         description="Requires a set of locations (with given location type) to define the river stretches, plus samples
         which define where recording has taken place. Shows just the unsurveyed stretches of river.">
     <query website_filter_field="lw.website_id">
-      select st_astext(lrbc.boundary_geom) as geom, 0 as sequence, 'grey' as sc, 2 as sw, 0.2 as fo
+      select 'catchment' as type, lrbc.id, st_astext(lrbc.boundary_geom) as geom, 0 as sequence, 'grey' as sc, 2 as sw, 0 as fo
       from locations lrbc
       where lrbc.id=#catchment#
       and lrbc.location_type_id=14243
       and lrbc.deleted=false
       union
-      select st_astext(lrb.boundary_geom) as geom, 1 as sequence, 'blue' as sc, 2 as sw, 0 as fo
+      select 'river' as type, lrb.id, st_astext(lrb.boundary_geom) as geom, 1 as sequence, 'blue' as sc, 2 as sw, 0 as fo
       from locations lrb
       where lrb.parent_id=#catchment#
       and lrb.deleted=false
       and lrb.location_type_id=14245
       union
-      select st_astext(s.geom), 2 as sequence, 'green' as sc, 6 as sw, 0 as fo
+      select 'observations' as type, s.id, st_astext(s.geom), 2 as sequence, 'green' as sc, 6 as sw, 0 as fo
       from samples s
       join locations l on l.id=#catchment# and st_intersects(s.geom, l.boundary_geom) and not st_touches(s.geom, l.boundary_geom)
       where s.survey_id=285
       and s.deleted=false and s.parent_id is null
       and s.date_start>now() - '3 years'::interval
       union
-      select st_astext(s.geom), 3 as sequence, '#ff66ff' as sc, 6 as sw, 0 as fo
+      select 'treatments' as type, s.id, st_astext(s.geom), 3 as sequence, '#ff66ff' as sc, 6 as sw, 0 as fo
       from samples s
       join locations l on l.id=#catchment# and st_intersects(s.geom, l.boundary_geom) and not st_touches(s.geom, l.boundary_geom)
       where s.survey_id=286
@@ -36,10 +36,12 @@
                description="ID of the river body catchment to show."/>
     </params>
     <columns>
-        <column name="geom" mappable="true" />
-        <!-- 0% red 1%-50%, amber 50%-75%, green 75%-99%, and purple 100% -->
-        <column name="sc" feature_style="strokeColor" />
-        <column name="sw" feature_style="strokeWidth" />
-        <column name="fo" feature_style="fillOpacity" />
+      <column name="type" />
+      <column name="name" />
+      <column name="geom" mappable="true" />
+      <!-- 0% red 1%-50%, amber 50%-75%, green 75%-99%, and purple 100% -->
+      <column name="sc" feature_style="strokeColor" />
+      <column name="sw" feature_style="strokeWidth" />
+      <column name="fo" feature_style="fillOpacity" />
     </columns>
 </report>
