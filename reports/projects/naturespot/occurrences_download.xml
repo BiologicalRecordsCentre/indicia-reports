@@ -10,11 +10,17 @@
     JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
     JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
     JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+    JOIN samples smp on smp.id=o.sample_id and smp.deleted=false
+    LEFT JOIN locations vc on o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15 and vc.deleted=false
+    LEFT JOIN occurrence_attribute_values verif on verif.occurrence_id=o.id and verif.deleted=false and verif.occurrence_attribute_id=19
     JOIN users u ON u.id=o.created_by_id
     JOIN people p ON p.id=u.person_id
+    LEFT JOIN occurrence_comments oc
+      ON oc.occurrence_id=o.id AND oc.deleted=false AND oc.record_status IS NOT NULL
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
+    AND o.survey_id = 15
     #idlist#
   </query>
   <params>
@@ -30,7 +36,7 @@
       <where value="C" operator="equal">o.record_status='C' and o.record_substatus is null</where>
     </param>
     <param name='site' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8'>
-      <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, o.public_geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
+      <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, smp.geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
       JOIN locations_websites lw on lw.location_id=lfilt.id and lw.deleted=false and lw.website_id=8</join>
     </param>
   </params>
@@ -47,9 +53,8 @@
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="grid_ref" display="Grid Ref" sql="smp.entered_sref" datatype="text" />
     <column name="location_name" display="Location Name" sql="smp.location_name" datatype="text" />
-    <column name="vc" display="VC Code" sql="(SELECT string_agg(vc.code || ': ' || vc.name, '; ')
-      FROM locations vc
-      WHERE o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15 and vc.deleted=false)" datatype="text" />
+    <column name="vc_code" display="VC Code" sql="vc.code" datatype="text" />
+    <column name="vc_name" display="VC Name" sql="vc.name" datatype="text" />
     <column name="recorders" display="Recorder" sql="rtrim(snf.recorders, ', ')" datatype="text" />
     <column name="email_address" display="Email" sql="p.email_address" datatype="text" />
     <column name="warehouse_user_id" display="Warehouse user ID" sql="o.created_by_id" datatype="integer" />
@@ -78,9 +83,7 @@ end"/>
   <column name="query_status" display="Query status" sql="o.query" datatype="text" />
   <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
   <column name='verified_on' display='Verified on' sql='o.verified_on' datatype="text" />
-  <column name="verifier_comment" display="Verifier comment"
-    sql="(SELECT string_agg(oc.comment, '; ') FROM occurrence_comments oc
-      WHERE oc.occurrence_id=o.id AND oc.deleted=false AND oc.record_status IS NOT NULL)" />
+  <column name="verifier_comment" display="Verifier comment" sql="string_agg(oc.comment, '; ')" aggregate="true" />
   <column name="record_link" display="Record link"
     sql="'https://www.brc.ac.uk/irecord/record-details?occurrence_id=' || o.id::varchar" />
   </columns>
