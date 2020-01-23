@@ -45,8 +45,8 @@
     <column name="date_start" sql="o.date_start" visible="false" />
     <column name="date_end" sql="o.date_end" visible="false" />
     <column name="date_type" sql="o.date_type" visible="false" />
-    <column name="grid_ref" display="Grid Ref" sql="smp.entered_sref" datatype="text" />
-    <column name="location_name" display="Location Name" sql="smp.location_name" datatype="text" />
+    <column name="grid_ref" display="Grid Ref" sql="snf.public_entered_sref" datatype="text" />
+    <column name="location_name" display="Location Name" sql="o.location_name" datatype="text" />
     <column name="vc" display="VC Code" sql="(SELECT string_agg(vc.code || ': ' || vc.name, '; ')
       FROM locations vc
       WHERE o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15 and vc.deleted=false)" datatype="text" />
@@ -57,7 +57,6 @@
       sql="CASE WHEN onf.attr_det_full_name IS NULL THEN
         CASE WHEN onf.attr_det_last_name IS NULL THEN NULL ELSE onf.attr_det_last_name || COALESCE(', ' || onf.attr_det_first_name, '') END
       ELSE onf.attr_det_full_name END" />
-    <column name="verification" display="Verification" sql="verif.int_value" datatype="integer" />
     <column name="confidence" display="Confidence" sql="onf.attr_certainty" datatype="text" />
     <column name="abundance" display="Abundance" sql="onf.attr_sex_stage_count" datatype="text" />
     <column name="record_comment" display="Record comment" sql="onf.comment" datatype="text" />
