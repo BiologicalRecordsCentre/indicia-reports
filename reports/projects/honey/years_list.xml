@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="List of years which have data" description="For parameters in honey reports.">
+  <query>
+    SELECT #columns#
+    FROM samples
+    --WHERE survey_id=512
+  </query>
+  <order_bys>
+    <order_by>extract(year from created_on) DESC</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="year" display="Year" datatype="integer" sql="extract(year from created_on)" in_count="true" distincton="true" />
+  </columns>
+</report>
