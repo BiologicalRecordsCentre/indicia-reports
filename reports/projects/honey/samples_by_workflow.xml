@@ -7,8 +7,7 @@
 		LEFT JOIN sample_attribute_values sav ON sav.sample_id = s.id AND sav.sample_attribute_id = 1161
 		LEFT JOIN cache_termlists_terms tlt ON tlt.id = sav.int_value
 		#joins#
-		WHERE s.website_id = #website_id#
-		AND s.survey_id = #survey_id#
+		WHERE s.survey_id = #survey_id#
 		AND (#workflow_status# = sav.int_value OR #workflow_status# = 0)
 		AND ('#record_status#' = s.record_status OR '#record_status#' = '0')
 		AND CASE
