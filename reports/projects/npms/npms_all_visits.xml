@@ -9,18 +9,17 @@
       JOIN users u on u.id=csf.created_by_id AND u.deleted=false
       JOIN people p on p.id=u.person_id AND p.deleted=false
       JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
+      JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
       LEFT JOIN location_attribute_values lavPlotName on lavPlotName.location_attribute_id=#plot_number_attr_id# AND lavPlotName.location_id=plot.id AND lavPlotName.deleted=false
-      JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       --JOIN sample_attribute_values savLinkToSurveyOne ON savLinkToSurveyOne.sample_id = csf.id AND savLinkToSurveyOne.sample_attribute_id = #s1AttrID# AND savLinkToSurveyOne.int_value = 0
       LEFT JOIN sample_attribute_values savLinkToSurveyOne ON savLinkToSurveyOne.sample_id = csf.id AND savLinkToSurveyOne.sample_attribute_id = #s1AttrID# 
           AND savLinkToSurveyOne.int_value != 0 AND savLinkToSurveyOne.deleted=false
-      LEFT JOIN sample_attribute_values savLinkToSurveyTwo on savLinkToSurveyTwo.int_value = csf.id AND savLinkToSurveyTwo.sample_attribute_id = #s1AttrID# 
-          AND savLinkToSurveyTwo.int_value != 0 AND savLinkToSurveyTwo.deleted=false
       WHERE 
       #website_filter#
       AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
       AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
+      AND csf.survey_id != #extra_species_survey_id#
       #order_by#
   </query>
   <order_bys>
@@ -57,8 +56,8 @@
     <column name='surname' display='Surname' datatype='text' sql='p.surname'/>
     <column name='email_address' display='Email' datatype='text' sql='p.email_address'/>
     <column name='survey_number' sql="
-    case when (savLinkToSurveyOne.int_value IS NOT NULL AND savLinkToSurveyOne.int_value != 0) AND csf.survey_id != #extra_species_survey_id# THEN 'Survey 2' 
-    when (savLinkToSurveyOne.int_value IS NULL OR savLinkToSurveyOne.int_value = 0) AND csf.survey_id != #extra_species_survey_id# THEN 'Survey 1'
+    case when (savLinkToSurveyOne.int_value IS NOT NULL AND savLinkToSurveyOne.int_value != 0) THEN 'Survey 2' 
+    when (savLinkToSurveyOne.int_value IS NULL OR savLinkToSurveyOne.int_value = 0) THEN 'Survey 1'
     ELSE  '' END" display=' '/>
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
   </columns>
