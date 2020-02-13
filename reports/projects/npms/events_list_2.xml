@@ -13,11 +13,15 @@
   ) ON ttl1.id=l.location_type_id
   LEFT JOIN location_attribute_values lav on lav.location_id=l.id AND lav.location_attribute_id=#max_people_attr_id# AND lav.deleted=false
   LEFT JOIN location_attribute_values lavEvent on lavEvent.location_id=l.id AND lavEvent.location_attribute_id=#event_date_attr_id# AND lavEvent.deleted=false
+  LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false
   LEFT JOIN person_attribute_values pav on pav.int_value=l.id AND pav.person_attribute_id=#user_event_attr_id# AND pav.deleted=false  
   #joins#
   WHERE l.deleted=false
   AND #website_filter#
   AND (CAST(l.location_type_id AS character varying)='#location_type_id#')
+  AND ((#historic_mode# = false AND (lavHistoric.id IS NULL OR lavHistoric.int_value = 0))
+      OR
+      (#historic_mode# = true AND lavHistoric.int_value = 1))
   GROUP BY lavEvent.date_start_value, lavEvent.date_end_value, lavEvent.date_type_value, l.id, l.name, l.comment,lav.int_value
   #order_by#
   </query>
@@ -30,6 +34,8 @@
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
     <param name='max_people_attr_id' display='Max People Attr Id' description='Attribute Id that holds the maximum number of people allowed on the event.' datatype='integer'/>
     <param name='event_date_attr_id' display='Event Date Attribute Id' description='Attribute Id that holds the event date.' datatype='integer'/>
+    <param name='historic_attr_id' display='Historic Attribute Id' description='Attribute Id that holds whether an event is historic.' datatype='integer'/>
+    <param name='historic_mode' display='Historic Mode' description='True if only historic events are to be shown. False excludes historic events' datatype='boolean'/>
   </params>
   <columns>
     <column name='location_id' display='ID' sql='l.id' visible='false' in_count='true'/>

@@ -1,7 +1,6 @@
 <report
     title="List locations with postcode search."
-    description="Get a list of locations for display on the square and user maintenance page, also can be used by users
-    when searching for events. "
+    description="Get a list of locations for display on the square and user maintenance page. "
 >
   <query website_filter_field="lw.website_id">
     SELECT #columns#

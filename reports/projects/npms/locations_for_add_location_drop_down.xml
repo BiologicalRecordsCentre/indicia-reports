@@ -40,7 +40,12 @@ for limiting results to a certain distance from a post code and also excluding e
                     )
                   )
           </where>         
-        </param>                
+        </param>
+        <param name="historic_attr_id" display="Exclude historic events" description="Optional parameter. Exclude hostoric events by including the attribute." datatype="integer" emptyvalue="0" default="0">
+          <join>LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false</join>
+          <where>(lavHistoric.id IS NULL OR lavHistoric.int_value = 0)
+          </where>       
+        </param>                   
         <param name="my_sites_person_attr_id" display="Person preferred sites attribute Id" description="Person preferred sites attribute Id" datatype="integer"/>
         <param name="user_id" display="User ID" description="The warehouse user's ID" datatype="integer" emptyvalue="-1"/>
         <param name="location_type_ids" display="Location Type ID" description="Warehouse Ids for the location types you 
