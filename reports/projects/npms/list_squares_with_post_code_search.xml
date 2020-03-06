@@ -1,6 +1,6 @@
 <report
     title="List locations with postcode search."
-    description="Get a list of locations for display on the square and user maintenance page. "
+    description="Used for post code search on My Squares page. Also used for same functionality on events page. "
 >
   <query website_filter_field="lw.website_id">
     SELECT #columns#
@@ -10,6 +10,7 @@
       LEFT JOIN location_attribute_values lav on lav.location_id=l.id AND lav.location_attribute_id = #vice_county_location_attribute_id# AND lav.deleted=false
       --Determine whether square is excluded if needed
       LEFT JOIN location_attribute_values lavEx on lavEx.location_id=l.id AND lavEx.location_attribute_id=#excluded_square_attr_id# AND lavEx.deleted=false
+      #joins#
     WHERE 1=1
       AND #website_filter#
       AND (l.location_type_id=#core_square_type_id# OR l.location_type_id=#additional_square_type_id#)    
@@ -37,6 +38,11 @@
     </param>
     <param name="distance_from_post_code" display="Distance from post code" description="The distance to return items from the specified post code." datatype="integer" default='0' emptyvalue='0'/>
     <param name="return_all_squares" display="Return all squares" description="If true, return all squares else return nothing or return squares using the post code search."  default='true' emptyvalue='true'/>
+    <param name="historic_attr_id" display="Exclude historic events" description="Optional parameter. Exclude historic events by including the attribute." datatype="integer" emptyvalue="0" default="0">
+      <join>LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false</join>
+      <where>(lavHistoric.id IS NULL OR lavHistoric.int_value = 0)
+      </where>       
+    </param>    
   </params>
   <columns>
     <column name='id' display='Location ID' sql="l.id" datatype='integer' visible="false" in_count="true"/>
