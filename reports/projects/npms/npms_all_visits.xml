@@ -15,7 +15,7 @@
       #website_filter#
       AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
       AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
-      AND csf.survey_id != #extra_species_survey_id#
+      AND csf.survey_id in (#survey_ids#)
       #order_by#
   </query>
   <order_bys>
@@ -25,7 +25,7 @@
     <param name = 'plot_number_attr_id' display = 'Plot number attribute Id' description = 'Id of the location attribute that holds the plot number label' datatype = 'int' default = '0' empytvalue = '0'/>
     <param name = 'date_from' display = 'Date From' datatype = 'date' />
     <param name = 'date_to' display = 'Date To' datatype = 'date' />
-    <param name = 'extra_species_survey_id' display = 'Extra Species Survey ID' description = 'Survey ID of the Extra Species survey' datatype = 'integer' />
+    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
     <param name= "ignore_square_dates_before" display = "Ignore Square Dates Before" description = "Ignore any squares created before this date.
         Useful if old squares are left on the system but are not currently active." datatype = "date" emptyvalue = "" default = "">
       <where>square.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
