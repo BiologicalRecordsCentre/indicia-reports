@@ -30,6 +30,7 @@
       </params>
       <columns>
         <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
+        <column name="parent_id" visible="false" sql="l.parent_id" />
         <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
         <column name="route" display="Route" sql="lp.name" datatype="text" />
         <column name="created_by_user" visible="false" sql="CASE l.created_by_id WHEN #user_id# THEN true ELSE false END" />
