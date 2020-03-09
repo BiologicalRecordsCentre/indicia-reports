@@ -8,7 +8,7 @@
       LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
       #joins#
       #agreements_join#
-      WHERE (o.id is null or (#sharing_filter#))
+      WHERE (#sharing_filter#)
       AND (l.public=true or lw.website_id in (#website_ids#))
       AND l.deleted=false
       AND l.created_by_id=#user_id#
