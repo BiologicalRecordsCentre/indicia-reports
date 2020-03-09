@@ -1,37 +1,31 @@
 <report
     title="Volunteer who have not created data recently"
-    description="List of volunteers who have not created any data recently (e.g. not in the past two years).">
+    description="List of volunteers who have not created any data in past two years.">
   <query>
     SELECT #columns#
     FROM indicia.people p
     JOIN indicia.users u on u.person_id = p.id and u.deleted=false
     JOIN indicia.person_attribute_values sqrPav ON sqrPav.person_id=u.person_id AND sqrPav.updated_by_id!=u.id AND sqrPav.person_attribute_id=#person_square_attr_id# 
-    AND sqrPav.created_on::date <
-        date case when extract(month from current_date) < 4 then extract(year from current_date) - 2 || '-1-1' 
-        ELSE extract(year from current_date) - 1 || '-1-1' END
-    AND sqrPav.deleted=false 
+        AND sqrPav.created_on::date &lt; date (extract(year from current_date) - 2 || '-1-1')
+        AND sqrPav.deleted=false 
     JOIN indicia.locations sqr ON sqr.id=sqrPav.int_value AND sqr.created_on::date >= date '#ignore_square_dates_before#' AND sqr.location_type_id = #core_square_type_id# AND sqr.deleted=false 
-    LEFT JOIN indicia.samples s on s.created_by_id = u.id 
-    and s.date_start::date >= 
-        date case when extract(month from current_date) < 4 then extract(year from current_date) - 2 || '-1-1' 
-        ELSE extract(year from current_date) - 1 || '-1-1' END
+    LEFT JOIN indicia.samples s on s.created_by_id = u.id
+        AND s.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
     AND s.deleted=false
     WHERE s.id IS NULL AND p.deleted=false
-    GROUP BY u.id,p.first_name, p.surname, p.email_address;
   </query>
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name='person_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
-        Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default="">
-    <param name='ignore_recent_allocations_after' display='Ignore recent user allocations after this date (this is not the approval date)' datatype='date' />
+        Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
   </params>
   <columns>
     <column name='id' display='ID' sql='p.id' datatype='integer' in_count='true' visible='false'/>  
     <column name='first_name' display='First name' sql='p.first_name' datatype='text' />  
     <column name='surname' display='Surname' sql='p.surname' datatype='text' />  
     <column name='email_address' display='Email address' sql='p.email_address' datatype='text' /> 
-    <column name='squares' display='Squares' sql='string_agg(distinct(sqr.name), ', ')' datatype='text' aggregate='true'/>   
-    <column name='approval_dates' display='Approval dates' sql='string_agg(distinct(sqrPav.updated_on::text), ', ')' datatype='text' aggregate='true'/> 
+    <column name='squares' display='Squares' sql="string_agg(distinct(sqr.name), ', ')" datatype='text' aggregate='true'/>   
+    <column name='approval_dates' display='Approval dates' sql="string_agg(distinct(sqrPav.updated_on::text), ', ')" datatype='text' aggregate='true'/> 
   </columns>
 </report>
