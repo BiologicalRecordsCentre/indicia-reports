@@ -3,7 +3,7 @@
     description="Lists info in a sample for the thank you page."
 >
   <query>
-  select o.id, cttl.taxon, cttl.preferred_taxon, cttl.default_common_name, cttl.external_key
+  select o.id, o.date_start, cttl.taxon, cttl.preferred_taxon, cttl.default_common_name, cttl.external_key
   from cache_occurrences_functional o
   join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
   where o.sample_id=#sample_id#
