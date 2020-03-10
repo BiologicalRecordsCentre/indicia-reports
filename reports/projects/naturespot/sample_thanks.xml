@@ -16,6 +16,7 @@
   </params>
   <columns>
     <column name='id' sql='o.id' visible="false" />
+    <column name='date_start' sql='o.date_start' datatype='date' />
     <column name='preferred_taxon' sql='cttl.preferred_taxon' datatype='text' />
     <column name='default_common_name' sql='cttl.default_common_name' datatype='text' />
     <column name='external_key' sql='cttl.external_key' datatype='text' />
