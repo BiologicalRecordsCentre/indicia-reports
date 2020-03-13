@@ -46,6 +46,12 @@
         'you feel is relevant to your honey sample.'
       WHEN sav.int_value = 14683 THEN
         'Your sample was discounted from further analysis. Please log in to your account for further details.'
+      WHEN sav.int_value = 17630 THEN
+        'Your habitat and crop results are now ready to view on your webpage. Please note the sequencing results ' ||
+        'may not yet be complete for your sample, these will be released separately in coming months if you have ' ||
+        'submitted a late-season sample. Please see this ' ||
+        '&lt;a href=&quot;https://honey-monitoring.ac.uk/taking-part/faq#n22537&quot;&gt;FAQ&lt;/a&gt; for more ' ||
+        'details on the habitat graphs.'
       END,
       '&lt;br&gt;&lt;br&gt;',
       'Thank you for taking part in the National Honey Monitoring Scheme. This is an auto-generated notification; ' ||
