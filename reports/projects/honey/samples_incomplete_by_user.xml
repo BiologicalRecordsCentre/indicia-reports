@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="Incomplete samples by user" definition="Lists requested sample packs that have not been returned for the user.">
-	<query>
-		SELECT #columns#
-		FROM cache_samples_functional s
-		#joins#
-		WHERE s.survey_id = #survey_id#
+  <query>
+    SELECT #columns#
+    FROM cache_samples_functional s
+    LEFT JOIN sample_attribute_values v ON v.sample_id=s.id AND v.deleted=false AND v.sample_attribute_id=1161
+      AND v.int_value in (14683, 17631)
+    #joins#
+    WHERE s.survey_id = #survey_id#
     AND s.created_by_id = #user_id#
     AND s.record_status = 'I'
-	</query>
-	<params>
-		<param name='user_id' display='User' description='Enter the user id' datatype='text'></param>
-		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
-    </params>
-	<order_bys>
-		<order_by>s.id ASC</order_by>
-	</order_bys>
+    -- Excluded discounted/not returned samples
+    AND v.id IS NULL
 
-	<columns>
-		<column name="id" sql="s.id" visible="true" in_count="true" />
-	</columns>
+  </query>
+  <params>
+    <param name='user_id' display='User' description='Enter the user id' datatype='text'></param>
+    <param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+    </params>
+  <order_bys>
+    <order_by>s.id ASC</order_by>
+  </order_bys>
+
+  <columns>
+    <column name="id" sql="s.id" visible="true" in_count="true" />
+  </columns>
 
 </report>
