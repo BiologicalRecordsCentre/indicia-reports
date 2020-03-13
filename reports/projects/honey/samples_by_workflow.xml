@@ -16,7 +16,7 @@
          description="Status of sample."
          lookup_values="14412:Pack requested,14150:Pack sent,14151:Sample received,
           14413:Sugar results added,17630:Habitat and crop results ready,14415:Species results added,
-          14683:Sample discounted">
+          17630:Sample not returned,14683:Sample discounted">
       <where>#workflow_status# = sav.int_value</where>
     </param>
     <param name="record_status" display="Record status" datatype="lookup"
