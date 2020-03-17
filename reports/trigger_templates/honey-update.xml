@@ -19,6 +19,9 @@
   </params>
   <columns>
   <column name="id" display="Sample barcode ID" sql="s.id"/>
+  <column name="link" display="Sample edit link" 
+      sql="'&lt;a href=&quot;https://honey-monitoring.ac.uk/indicia/honey-sample-submission?sample_id=' ||
+        s.id::text || '&quot;&gt;Edit link&lt;/a&gt;'"/>
     <column name="website_id" visible='false' sql="s.website_id" />
     <column name="notify_user_ids" display="notify_user_ids" sql="s.created_by_id" />
     <column name="term" display="Change in status for your honey sample(s)" sql="tlt.term" />
