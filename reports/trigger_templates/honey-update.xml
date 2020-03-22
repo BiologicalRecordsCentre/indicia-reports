@@ -19,7 +19,7 @@
   </params>
   <columns>
   <column name="id" display="Sample barcode ID" sql="s.id"/>
-  <column name="link" display="Sample edit link" 
+  <column name="link" display="Sample edit link"
       sql="'&lt;a href=&quot;https://honey-monitoring.ac.uk/indicia/honey-sample-submission?sample_id=' ||
         s.id::text || '&quot;&gt;Edit link&lt;/a&gt;'"/>
     <column name="website_id" visible='false' sql="s.website_id" />
@@ -56,7 +56,7 @@
         '&lt;a href=&quot;https://honey-monitoring.ac.uk/taking-part/faq#n22537&quot;&gt;FAQ&lt;/a&gt; for more ' ||
         'details on the habitat graphs.'
       WHEN sav.int_value = 17631 THEN
-        'You have not returned your sample using the pack we've sent out to you. As it's now past the yearly ' ||
+        'You have not returned your sample using the pack we''ve sent out to you. As it''s now past the yearly ' ||
         'cut-off date, your sample ID has become invalid. In order to send any future honey samples to us a new ' ||
         'sample pack will need to be requested.'
       END,
