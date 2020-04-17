@@ -10,6 +10,12 @@
   JOIN occurrence_attribute_values v ON v.occurrence_id=o.id AND v.occurrence_attribute_id=751 AND v.deleted=false
   WHERE o.website_id in (#website_ids#)
   </query>
+  <param name="from_id" display="from sample ID" datatype="integer">
+      <where>o.sample_id&gt;=#from_id#</where>
+    </param>
+    <param name="to_id" display="to sample ID" datatype="integer">
+      <where>o.sample_id&lt;=#to_id#</where>
+  </param>
   <columns>
     <column name="sample_id" sql="o.sample_id" />
     <column name="id" sql="o.id" />

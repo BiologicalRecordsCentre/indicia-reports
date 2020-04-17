@@ -13,6 +13,14 @@
   left join cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
   where sf.website_id in (#website_ids#)
   </query>
+  <params>
+    <param name="from_id" display="from sample ID" datatype="integer">
+      <where>s.id&gt;=#from_id#</where>
+    </param>
+    <param name="to_id" display="to sample ID" datatype="integer">
+      <where>s.id&lt;=#to_id#</where>
+    </param>
+  </params>
   <columns>
     <column name="sample_id" sql="sf.id" />
     <column name="record_status" sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
