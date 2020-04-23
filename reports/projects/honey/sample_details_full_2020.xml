@@ -32,7 +32,7 @@
     <column name="date" datatype="date" />
     <column name="recorders" sql="snf.recorders"  />
     <column name="sample_comment" display="Record:Sample comment" sql="s.comment" />
-    <column name="yield" sql="(snf.attrs_json->>'1151') || ' ' || (snf.attrs_json->>'1152')" />
+    <column name="yield" sql="(snf.attrs_json->>'1151') || coalesce(' ' || (snf.attrs_json->>'1152'), '')" />
     <column name="time_at_location" sql="snf.attrs_json->>'1153'" />
     <column name="beekeeper_status" sql="snf.attrs_json->>'1466'" />
     <column name="race_of_bee" sql="snf.attrs_json->>'1467'" />
