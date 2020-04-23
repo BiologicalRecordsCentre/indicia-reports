@@ -1,0 +1,93 @@
+<report
+    title="Full details of honey samples (2020 version)"
+    description="All details of samples."
+>
+  <query website_filter_field="sf.website_id">
+  select #columns#
+  from cache_samples_functional sf
+  join cache_samples_nonfunctional snf on snf.id = sf.id
+  join samples s on s.id = sf.id and s.deleted = false
+  left join locations l on sf.location_ids &amp;&amp; ARRAY[l.id] AND l.deleted=false AND l.location_type_id=16517
+  left join occurrences o on o.sample_id=s.id and o.deleted=false
+  left join occurrence_attribute_values v ON v.occurrence_id=o.id AND v.occurrence_attribute_id=751 AND v.deleted=false
+  left join cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
+  where sf.website_id in (#website_ids#)
+  </query>
+  <params>
+    <param name="from_id" display="from sample ID" datatype="integer">
+      <where>s.id&gt;=#from_id#</where>
+    </param>
+    <param name="to_id" display="to sample ID" datatype="integer">
+      <where>s.id&lt;=#to_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name="sample_id" sql="sf.id" />
+    <column name="record_status" sql="CASE WHEN sf.record_status = 'I' THEN 'Incomplete' WHEN sf.record_status = 'C' THEN 'Complete' END" />
+    <column name="entered_sref" sql="s.entered_sref" />
+    <column name="nuts_region" aggregate="true" sql="string_agg(distinct l.name, '; ')" />
+    <column name="date_start" visible="false" sql="sf.date_start" />
+    <column name="date_end" visible="false" sql="sf.date_end" />
+    <column name="date_type" visible="false" sql="sf.date_type" />
+    <column name="date" datatype="date" />
+    <column name="recorders" sql="snf.recorders"  />
+    <column name="sample_comment" display="Record:Sample comment" sql="s.comment" />
+    <column name="yield" sql="(snf.attrs_json->>'1151') || ' ' || (snf.attrs_json->>'1152')" />
+    <column name="time_at_location" sql="snf.attrs_json->>'1153'" />
+    <column name="beekeeper_status" sql="snf.attrs_json->>'1466'" />
+    <column name="race_of_bee" sql="snf.attrs_json->>'1467'" />
+    <column name="race_of_bee_other" sql="snf.attrs_json->>'1469'" />
+    <column name="type_of_hive" sql="snf.attrs_json->>'1468'" />
+    <column name="honey_sold" sql="snf.attrs_json->>'1470'" />
+    <column name="additional_feeding" sql="snf.attrs_json->>'1471'" />
+    <column name="number_of_hives_harvested" sql="snf.attrs_json->>'1155'" />
+    <column name="number_of_hives_died" sql="snf.attrs_json->>'1156'" />
+    <column name="number_of_hives_initially" sql="snf.attrs_json->>'1157'" />
+    <column name="Hive_Strength" sql="snf.attrs_json->>'1158'" />
+    <column name="Workflow_Status" sql="snf.attrs_json->>'1161'" />
+    <column name="import_date_logged" sql="snf.attrs_json->>'1214'" />
+    <column name="import_lab_code" sql="snf.attrs_json->>'1215'" />
+    <column name="import_sugar_content" sql="snf.attrs_json->>'1216'" />
+    <column name="import_density" sql="snf.attrs_json->>'1217'" />
+    <column name="import_moisture_content" sql="snf.attrs_json->>'1218'" />
+    <column name="import_weight" sql="snf.attrs_json->>'1219'" />
+    <column name="import_date_archived" sql="snf.attrs_json->>'1220'" />
+    <column name="import_initials" sql="snf.attrs_json->>'1221'" />
+    <column name="import_comments" sql="snf.attrs_json->>'1222'" />
+    <column name="Crop_ImprovedGrass" sql="snf.attrs_json->>'1230'" />
+    <column name="Crop_Maize" sql="snf.attrs_json->>'1231'" />
+    <column name="Crop_WinterWheat" sql="snf.attrs_json->>'1232'" />
+    <column name="Crop_WinterBarley" sql="snf.attrs_json->>'1233'" />
+    <column name="Crop_Other" sql="snf.attrs_json->>'1234'" />
+    <column name="Crop_SpringWheat" sql="snf.attrs_json->>'1235'" />
+    <column name="Crop_OilseedRape" sql="snf.attrs_json->>'1236'" />
+    <column name="Crop_FieldBeans" sql="snf.attrs_json->>'1237'" />
+    <column name="Crop_SpringBarley" sql="snf.attrs_json->>'1238'" />
+    <column name="Crop_SugarBeet" sql="snf.attrs_json->>'1239'" />
+    <column name="Crop_Potatoes" sql="snf.attrs_json->>'1240'" />
+    <column name="LandCover_ImprovedGrassland" sql="snf.attrs_json->>'1241'" />
+    <column name="LandCover_NeutralGrassland" sql="snf.attrs_json->>'1242'" />
+    <column name="LandCover_Freshwater" sql="snf.attrs_json->>'1243'" />
+    <column name="LandCover_Urban" sql="snf.attrs_json->>'1244'" />
+    <column name="LandCover_Suburban" sql="snf.attrs_json->>'1245'" />
+    <column name="LandCover_ConiferousWoodland" sql="snf.attrs_json->>'1246'" />
+    <column name="LandCover_AcidGrassland" sql="snf.attrs_json->>'1247'" />
+    <column name="LandCover_Heather" sql="snf.attrs_json->>'1248'" />
+    <column name="LandCover_HeatherGrassland" sql="snf.attrs_json->>'1249'" />
+    <column name="LandCover_CalcareousGrassland" sql="snf.attrs_json->>'1250'" />
+    <column name="LandCover_FenMarshSwamp" sql="snf.attrs_json->>'1252'" />
+    <column name="LandCover_Saltwater" sql="snf.attrs_json->>'1253'" />
+    <column name="LandCover_SupralittoralRock" sql="snf.attrs_json->>'1254'" />
+    <column name="LandCover_LittoralSediment" sql="snf.attrs_json->>'1255'" />
+    <column name="LandCover_Saltmarsh" sql="snf.attrs_json->>'1256'" />
+    <column name="LandCover_Bog" sql="snf.attrs_json->>'1257'" />
+    <column name="LandCover_LittoralRock" sql="snf.attrs_json->>'1258'" />
+    <column name="LandCover_SupralittoralSediment" sql="snf.attrs_json->>'1259'" />
+    <column name="LandCover_BroadleafWoodland" sql="snf.attrs_json->>'1260'" />
+    <column name="LandCover_ArableAndHorticulture" sql="snf.attrs_json->>'1261'" />
+    <column name="infections" aggregate="true"
+      sql="string_agg(case when v.id is null then cttl.preferred_taxon else null end, ', ')" />
+    <column name="pollen_analysis_species" aggregate="true"
+      sql="string_agg(case when v.id is null then null else cttl.preferred_taxon end, ', ')" />
+  </columns>
+</report>
