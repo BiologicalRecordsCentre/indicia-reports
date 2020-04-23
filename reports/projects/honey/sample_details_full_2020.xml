@@ -14,10 +14,10 @@
   where sf.website_id in (#website_ids#)
   </query>
   <params>
-    <param name="from_id" display="from sample ID" datatype="integer">
+    <param name="from_id" display="from sample ID" datatype="integer" emptyvalue="0">
       <where>s.id&gt;=#from_id#</where>
     </param>
-    <param name="to_id" display="to sample ID" datatype="integer">
+    <param name="to_id" display="to sample ID" datatype="integer" emptyvalue="999999999">
       <where>s.id&lt;=#to_id#</where>
     </param>
   </params>
