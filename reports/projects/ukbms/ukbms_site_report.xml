@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS site report" description="Todo description">
+  <query>
+    SELECT
+      l.id as id,
+      l.name as name,
+      t.term as type,
+      l.location_type_id as ltype,
+      l.code as lcode,
+      l.centroid_sref as centroid_sref,
+      COUNT(DISTINCT sp.id) as samples,
+      COUNT(DISTINCT extract(YEAR from sp.date_start)) as n_year,
+      min(extract(YEAR from sp.date_start)) first_year,
+      max(extract(YEAR from sp.date_start)) last_year,
+      l.code as code,
+      st_x(st_centroid(st_transform(l.centroid_geom, 4326))) as lon,
+      st_y(st_centroid(st_transform(l.centroid_geom, 4326))) as lat
+      FROM locations l
+      left JOIN samples sp ON sp.location_id=l.id
+      join termlists_terms tt on l.location_type_id = tt.id
+      join terms t on tt.term_id = t.id
+      WHERE l.id=#location_id#
+      group by l.id, t.term
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer" default="77868"></param>
+  </params>
+  <columns>
+    <column name="lat" display="Lat" visible="false"/>
+    <column name="lon" display="Lon" visible="false"/>
+    <column name="name" display="Site" />
+    <column name="lcode" display="UKBMS code" />
+    <column name="id" display="Site ID" />
+    <column name="type" display="Survey type" />
+    <column name="first_year" display="First year surveyed" />
+    <column name="last_year" display="Last year surveyed" />
+    <column name="n_year" display="Number of years surveyed" />
+    <column name="samples" display="Number of surveys" />
+    <column name="centroid_sref" display="Grid reference" />
+  </columns>
+</report>

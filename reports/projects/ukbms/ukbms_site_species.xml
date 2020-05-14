@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS site species" description="Todo description note that SQL has to avoid intersection operator">
+  <query>
+    select cttl.preferred_taxon, count(*)
+    from cache_samples_functional csf
+    join cache_occurrences_functional cof on cof.sample_id = csf.id
+    join locations l on l.id = csf.location_id
+    join cache_taxa_taxon_lists cttl on cttl.taxon_meaning_id = cof.taxon_meaning_id
+    where csf.website_id=27
+    and (l.parent_id=#location_id# or l.id=#location_id#)
+    and (select count(*) > 0 
+      from (select unnest(cof.taxon_path) taxon_meaning_id) taxon_path 
+      join (select taxon_meaning_id from cache_taxa_taxon_lists
+      where taxon in ('Hesperiidae', 'Lycaenidae', 'Nymphalidae', 'Papilionidae', 'Pieridae', 'Riodinidae')
+      and taxon_list_id=15) bfamily on taxon_path.taxon_meaning_id=bfamily.taxon_meaning_id)
+    group by cttl.preferred_taxon
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer" default="77868"></param>
+  </params>
+</report>

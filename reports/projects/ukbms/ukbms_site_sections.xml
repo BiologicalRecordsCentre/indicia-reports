@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS site sections" description="Todo description">
+  <query>
+    select 
+    name,
+    ST_AsGeoJSON(st_transform(boundary_geom, 4326)) as geojson
+    from locations 
+    where parent_id = #location_id#
+    and deleted = false
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer" default="77868"></param>
+  </params>
+</report>
