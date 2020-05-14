@@ -4,12 +4,12 @@
       all species in the selected RISC survey."
 >
   <query>
-  SELECT 
-    co.sample_id,
-    snf.survey_title, 
+  SELECT
+    co.id,
+    snf.survey_title,
     ttl.taxon,
-    co.date_start, 
-    snf.public_entered_sref, 
+    co.date_start,
+    snf.public_entered_sref,
     co.location_name,
     o.comment,
     co.website_id
@@ -25,20 +25,20 @@
   #order_by#
   </query>
   <order_bys>
-    <order_by>sample_id DESC</order_by>
+    <order_by>id DESC</order_by>
   </order_bys>
   <params>
-    <param name='survey' display='Survey' 
-      description='Select the survey to return data for' 
+    <param name='survey' display='Survey'
+      description='Select the survey to return data for'
       datatype='lookup'
       population_call='report:risc/NNSS_surveys:id:title'/>
-    <param name='date' 
-      display='Date' 
-      description='Date &amp; time of last check' 
+    <param name='date'
+      display='Date'
+      description='Date &amp; time of last check'
       datatype='datetime' />
   </params>
   <columns>
-    <column name='sample_id' display='ID' />
+    <column name='id' display='ID' />
     <column name='survey_title' display='Survey' />
     <column name='taxon' display='Taxon' />
     <column name='date_start' display='Date' />
