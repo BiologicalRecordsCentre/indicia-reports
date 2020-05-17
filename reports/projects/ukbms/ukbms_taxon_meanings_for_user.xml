@@ -1,0 +1,19 @@
+<report
+    title="Taxon meanings for user"
+    description="Returns the list of taxon meanings ever recorded by a user on this survey."
+>
+  <query website_filter_field="o.website_id">
+  SELECT distinct o.taxon_meaning_id
+  FROM cache_occurrences_functional o
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  AND o.created_by_id = #user_id#
+  AND o.survey_id = #survey_id#
+  </query>
+  <params>
+    <param name="user_id" display="User ID" datatype="integer"/>
+    <param name='survey_id' display='Location' description='Provide the survey to display records for' datatype='lookup' emptyvalue="0"
+        population_call='direct:survey:id:title' />
+  </params>
+</report>
