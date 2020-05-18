@@ -21,5 +21,6 @@
         <column name="code" display="Code" sql="l.code" datatype="text" />
         <column name="centroid_sref" display="centroid_sref" sql="l.centroid_sref" datatype="text" />
         <column name="location_type_id" sql="location_type_id" datatype="integer" />
+        <column name="geom" display="Geom" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" datatype="text" />
       </columns>
 </report>
