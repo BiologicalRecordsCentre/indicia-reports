@@ -14,12 +14,12 @@
       <order_bys>
         <order_by>lpad(l.name, 10, '0') ASC</order_by>
       </order_bys>
-      <param name="parent_id" type="integer" />
+      <param name="parent_id" type="integer" display="Parent ID" />
       <columns>
         <column name="id" sql="l.id" unique="true" in_count="true" />
         <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
         <column name="code" display="Code" sql="l.code" datatype="text" />
         <column name="centroid_sref" display="centroid_sref" sql="l.centroid_sref" datatype="text" />
-        <column name="location_type_id" sql="location_type_id" />
+        <column name="location_type_id" sql="location_type_id" datatype="integer" />
       </columns>
 </report>
