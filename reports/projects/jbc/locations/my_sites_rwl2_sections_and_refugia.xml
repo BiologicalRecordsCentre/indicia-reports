@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="JBC, Reptilewatch L2 sections and refugia"
+  description="All sections and refugia for a Reptilewatch L2 site.">
+      <query website_filter_field="" training_filter_field="" >
+      SELECT #columns#
+      FROM locations l
+      JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      WHERE (#sharing_filter#)
+      AND lw.website_id in (#website_ids#)
+      AND l.deleted=false
+      AND l.parent_id=#parent_id#
+      </query>
+      <order_bys>
+        <order_by>lpad(l.name, 10, '0') ASC</order_by>
+      </order_bys>
+      <param name="parent_id" type="integer" />
+      <columns>
+        <column name="id" sql="l.id" unique="true" in_count="true" />
+        <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
+        <column name="code" display="Code" sql="l.code" datatype="text" />
+        <column name="centroid_sref" display="centroid_sref" sql="l.centroid_sref" datatype="text" />
+        <column name="location_type_id" sql="location_type_id" />
+      </columns>
+</report>
