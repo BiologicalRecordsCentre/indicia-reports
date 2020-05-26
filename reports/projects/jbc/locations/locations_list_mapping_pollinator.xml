@@ -5,14 +5,15 @@
   <query website_filter_field="lw.website_id">
     SELECT #columns#
     FROM locations l
-    -- Check not private
+    -- Not private
     LEFT JOIN location_attribute_values vp on vp.location_id=l.id and vp.location_attribute_id=257 and vp.deleted=false and vp.int_value=1
-    LEFT JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+    -- JBC
+    JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+      AND lw.website_id in (#website_ids#)
     #joins#
     WHERE l.deleted=false
     AND vp.id IS NULL
-    AND (l.public=true or lw.website_id in (#website_ids#))
-      #filters#
+    #filters#
   </query>
   <params>
       <param name="location_type_id" display="Location type(s)" datatype="lookup"
@@ -20,23 +21,14 @@
         population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
           <where>l.location_type_id in (#location_type_id#)</where>
       </param>
+      <param name="checked" datatype="boolean" default="1">
+        <join>JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+      </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
         <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
       </param>
       <param name="strokewidth" default="1" datatype="integer" />
-      <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to">
-          <where>l.parent_id=#parent_id#</where>
-      </param>
-      <param name="parent_boundary_id" default="" datatype="integer" description="ID of the parent site to filter to">
-          <join>join locations lp on lp.deleted=false and lp.id=#parent_boundary_id#</join>
-          <where>st_intersects(lp.boundary_geom, l.boundary_geom)</where>
-      </param>
-      <param name="exclude_composites" display="Exclude composite locations" datatype="boolean" default="0"
-             description="Ignore composition locations (which have a + in their code field), e.g. combined vice counties
-             such as Sussex">
-        <where>(l.code is null or l.code not like '%+%')</where>
-      </param>
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" />
