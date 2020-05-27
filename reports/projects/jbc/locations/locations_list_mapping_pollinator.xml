@@ -12,7 +12,6 @@
       AND lw.website_id in (#website_ids#)
     #joins#
     WHERE l.deleted=false
-    AND vp.id IS NULL
     #filters#
   </query>
   <params>
@@ -29,6 +28,9 @@
         <filters>
           <filter value="no" operator="equal">vchk is null</filter>
         </filters>
+      </param>
+      <param name="private" datatype="text" default="no">
+        <where value="no" operator="equal">vp.id IS NULL</where>
       </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
