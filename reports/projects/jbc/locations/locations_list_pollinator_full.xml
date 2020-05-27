@@ -7,6 +7,8 @@
     FROM locations l
     -- Not private
     LEFT JOIN location_attribute_values vp ON vp.location_id=l.id AND vp.location_attribute_id=257 AND vp.deleted=false AND vp.int_value=1
+    -- Checked
+    LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false
     -- JBC
     JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
       AND lw.website_id in (#website_ids#)
@@ -26,13 +28,10 @@
           <where>l.location_type_id in (#location_type_id#)</where>
       </param>
       <param name="checked" datatype="text" default="yes">
-        <joins>
-          <join value="yes" operator="equal">JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
-          <join value="no" operator="equal">LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
-        </joins>
-        <filters>
-          <filter value="no" operator="equal">vchk is null</filter>
-        </filters>
+        <wheres>
+          <where value="yes" operator="equal">(vchk.id is not null and int_value=1)</where>
+          <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
+        </wheres>
       </param>
       <param name="private" datatype="text" default="no">
         <where value="no" operator="equal">vp.id IS NULL</where>
@@ -48,7 +47,7 @@
         <column name="name" display="Site name" sql="l.name" />
         <column name="activity" display="Activity" sql="tact.term" />
         <column name="private" display="Private" sql="vp.id is not null" />
-        <column name="checked" display="Checked" sql="vchk.id is not null" />
+        <column name="checked" display="Checked" sql="vchk`.id is not null" />
         <column name="planting_date_start" visible="false" sql="vpd.date_start_value" />
         <column name="planting_date_end" visible="false" sql="vpd.date_end_value" />
         <column name="planting_date_type" visible="false" sql="vpd.date_type_value" />
