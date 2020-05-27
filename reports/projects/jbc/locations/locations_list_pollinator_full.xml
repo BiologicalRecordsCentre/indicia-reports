@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="List of locations for exploring pollinator areas"
+        description="Full data of pollinator areas designed for explore.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations l
+    -- Not private
+    LEFT JOIN location_attribute_values vp ON vp.location_id=l.id AND vp.location_attribute_id=257 AND vp.deleted=false AND vp.int_value=1
+    -- JBC
+    JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      AND lw.website_id in (#website_ids#)
+    -- Activity
+    LEFT JOIN location_attribute_values vact ON vact.location_id=l.id AND vact.location_attribute_id=251 AND vact.deleted=false
+    LEFT JOIN cache_termlists_terms tact ON tact.id=vact.int_value
+    -- Date of planting
+    LEFT JOIN location_attribute_values vpd ON vpd.location_id=l.id AND vpd.location_attribute_id=260 AND vpd.deleted=false
+    #joins#
+    WHERE l.deleted=false
+    #filters#
+  </query>
+  <params>
+      <param name="location_type_id" display="Location type(s)" datatype="lookup"
+        description="Select the location type, or leave blank to not filter by location type."
+        population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+          <where>l.location_type_id in (#location_type_id#)</where>
+      </param>
+      <param name="checked" datatype="text" default="yes">
+        <joins>
+          <join value="yes" operator="equal">JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+          <join value="no" operator="equal">LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+        </joins>
+        <filters>
+          <filter value="no" operator="equal">vchk is null</filter>
+        </filters>
+      </param>
+      <param name="private" datatype="text" default="no">
+        <where value="no" operator="equal">vp.id IS NULL</where>
+      </param>
+      <param name="simplifyFeatureTo" datatype="integer" default="1" />
+      <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
+        <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
+      </param>
+      <param name="strokewidth" default="1" datatype="integer" />
+  </params>
+  <columns>
+        <column name="id" visible="false" sql="l.id" datatype="integer" />
+        <column name="name" display="Site name" sql="l.name" />
+        <column name="activity" display="Activity" sql="tact.term" />
+        <column name="private" display="Private" sql="vp.id is not null" />
+        <column name="checked" display="Checked" sql="vchk.id is not null" />
+        <column name="planting_date_start" visible="false" sql="vpd.date_start_value" />
+        <column name="planting_date_end" visible="false" sql="vpd.date_end_value" />
+        <column name="planting_date_type" visible="false" sql="vpd.date_type_value" />
+        <column name="date" display="Planting date" datatype="date" />
+        <column name="geom" display="Boundary" sql="st_astext(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" visible="false" mappable="true"/>
+        <column name="sc" visible="false" feature_style="strokeColor"
+          sql="CASE tact.id WHEN 17711 THEN '#7f5095' WHEN 17714 THEN '#004d1f' WHEN 17713 THEN '#3f1a4c' ELSE '#607458' END" />
+        <column name="fc" visible="false" feature_style="fillColor"
+          sql="CASE tact.id WHEN 17711 THEN '#c2a5cf' WHEN 17714 THEN '#008837' WHEN 17713 THEN '#7b3294' ELSE '#bbc8b6' END" />
+  </columns>
+</report>
