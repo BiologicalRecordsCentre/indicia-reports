@@ -27,14 +27,15 @@
         population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
           <where>l.location_type_id in (#location_type_id#)</where>
       </param>
-      <param name="checked" datatype="text" default="yes">
+      <param name="checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
         <wheres>
           <where value="yes" operator="equal">(vchk.id is not null and int_value=1)</where>
           <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
         </wheres>
       </param>
-      <param name="private" datatype="text" default="no">
-        <where value="no" operator="equal">vp.id IS NULL</where>
+      <param name="private" datatype="text" lookup_values="all:-,yes:Yes,no:No">
+        <where value="yes" operator="equal">(vp.id is not null and int_value=1)</where>
+        <where value="no" operator="equal">(vp.id is null or vp.int_value&lt;&gt;1)</where>
       </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
@@ -46,12 +47,12 @@
         <column name="id" visible="false" sql="l.id" datatype="integer" />
         <column name="name" display="Site name" sql="l.name" />
         <column name="activity" display="Activity" sql="tact.term" />
-        <column name="private" display="Private" sql="vp.id is not null" />
-        <column name="checked" display="Checked" sql="vchk.id is not null" />
         <column name="planting_date_start" visible="false" sql="vpd.date_start_value" />
         <column name="planting_date_end" visible="false" sql="vpd.date_end_value" />
         <column name="planting_date_type" visible="false" sql="vpd.date_type_value" />
-        <column name="date" display="Planting date" datatype="date" />
+        <column name="planting_date" display="Planting date" datatype="date" />
+        <column name="private" display="Private" sql="vp.id is not null" />
+        <column name="checked" display="Checked" sql="vchk.id is not null" />
         <column name="geom" display="Boundary" sql="st_astext(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" visible="false" mappable="true"/>
         <column name="sc" visible="false" feature_style="strokeColor"
           sql="CASE tact.id WHEN 17711 THEN '#7f5095' WHEN 17714 THEN '#004d1f' WHEN 17713 THEN '#3f1a4c' ELSE '#607458' END" />
