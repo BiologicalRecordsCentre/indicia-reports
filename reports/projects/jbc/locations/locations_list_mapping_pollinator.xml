@@ -21,8 +21,14 @@
         population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
           <where>l.location_type_id in (#location_type_id#)</where>
       </param>
-      <param name="checked" datatype="boolean" default="1">
-        <join>JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+      <param name="checked" datatype="text" default="yes">
+        <joins>
+          <join value="yes" operator="equal">JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+          <join value="no" operator="equal">LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false and vchk.int_value=1</join>
+        </joins>
+        <filters>
+          <filter value="no" operator="equal">vchk is null</filter>
+        </filters>
       </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
