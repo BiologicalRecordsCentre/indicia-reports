@@ -47,7 +47,7 @@
         <column name="name" display="Site name" sql="l.name" />
         <column name="activity" display="Activity" sql="tact.term" />
         <column name="private" display="Private" sql="vp.id is not null" />
-        <column name="checked" display="Checked" sql="vchk`.id is not null" />
+        <column name="checked" display="Checked" sql="vchk.id is not null" />
         <column name="planting_date_start" visible="false" sql="vpd.date_start_value" />
         <column name="planting_date_end" visible="false" sql="vpd.date_end_value" />
         <column name="planting_date_type" visible="false" sql="vpd.date_type_value" />
