@@ -52,8 +52,8 @@
         <column name="planting_date_type" display="Date of planting type" sql="vpd.date_type_value" />
         <column name="geom" display="Boundary" sql="st_astext(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" visible="false" mappable="true"/>
         <column name="sc" visible="false" feature_style="strokeColor"
-          sql="CASE tact.id WHEN 17711 THEN '#c2a5cf' WHEN 17714 THEN '#008837' WHEN 17713 THEN '#7b3294' ELSE '#b6cbb0' END" />
+          sql="CASE tact.id WHEN 17711 THEN '#7f5095' WHEN 17714 THEN '#004d1f' WHEN 17713 THEN '#3f1a4c' ELSE '#607458' END" />
         <column name="fc" visible="false" feature_style="fillColor"
-          sql="CASE tact.id WHEN 17711 THEN '#c2a5cf' WHEN 17714 THEN '#008837' WHEN 17713 THEN '#7b3294' ELSE '#b6cbb0' END" />
+          sql="CASE tact.id WHEN 17711 THEN '#c2a5cf' WHEN 17714 THEN '#008837' WHEN 17713 THEN '#7b3294' ELSE '#bbc8b6' END" />
   </columns>
 </report>
