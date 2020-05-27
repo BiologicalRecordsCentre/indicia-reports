@@ -29,7 +29,7 @@
       </param>
       <param name="checked" display="Checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
         <wheres>
-          <where value="yes" operator="equal">(vchk.id is not null and int_value=1)</where>
+          <where value="yes" operator="equal">(vchk.id is not null and vp.int_value=1)</where>
           <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
         </wheres>
       </param>
