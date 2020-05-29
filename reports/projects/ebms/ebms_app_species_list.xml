@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS App species list report"
+        description="Lists species to be used in the App.">
+  <query website_filter_field="">
+  select #columns#
+  from taxa_taxon_lists ttl
+  join taxa t on t.id=ttl.taxon_id
+  where ttl.taxon_list_id=#taxon_list_id#
+  </query>
+  <order_bys>
+    <order_by>ttl.taxonomic_sort_order nulls first</order_by>
+  </order_bys>
+  <params>
+    <param name="taxon_list_id" display="Taxon List ID" datatype="integer" />
+  </params>
+  <columns>
+    <column name="taxa_taxon_list_id" sql="ttl.id" />
+    <column name="taxon_meaning_id" sql="ttl.taxon_meaning_id" />
+    <column name="taxon_id" sql="ttl.taxon_id" />
+    <column name="external_key" sql="t.external_key" />
+    <column name="taxon" sql="t.taxon" />
+    <column name="attributes" sql="(select string_agg(ttla.caption || '=' || t.term, ' | ' order by ttla.caption)
+   from taxa_taxon_list_attributes ttla
+   join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=ttl.id and ttlav.taxa_taxon_list_attribute_id=ttla.id
+   join cache_termlists_terms t on t.id=ttlav.int_value)" />
+  </columns>
+</report>
