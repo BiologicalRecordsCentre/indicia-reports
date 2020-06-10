@@ -41,7 +41,6 @@
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
         <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
       </param>
-      <param name="strokewidth" default="1" datatype="integer" />
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" />
