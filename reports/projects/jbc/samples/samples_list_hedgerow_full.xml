@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="List of samples for exploring hedgerow planting"
+        description="Sample data of hedgerow planting designed for explore.">
+  <query website_filter_field="s.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    #joins#
+    WHERE s.survey_id=581
+    #filters#
+  </query>
+  <params>
+      <param name="checked" display="Checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
+        <wheres>
+          <where value="yes" operator="equal">(vchk.id is not null and vchk.int_value=1)</where>
+          <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
+        </wheres>
+      </param>
+      <param name="simplifyFeatureTo" datatype="integer" default="1" />
+      <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
+        <where>st_intersects(s.public_geom, st_geomfromtext('#bounds#', 900913))</where>
+      </param>
+  </params>
+  <columns>
+        <column name="sample_id" display="Sample ID" sql="s.id" datatype="integer" />
+        <column name="name" display="Site name" sql="s.location_name" datatype="text" />
+        <column name="organisation" display="Organisation" sql="attrs_json->>'726'" datatype="text" />
+        <column name="recorder_name" display="Recorder" sql="attrs_json->>'127'" datatype="text" />
+        <column name="total_count" display="Total count" sql="attrs_json->>'1473'" datatype="integer" />
+        <column name="checked" display="Checked" sql="attrs_json->>'1484'" datatype="text" />
+        <column name="geom" display="Boundary" visible="false" mappable="true"
+          sql="st_astext(ST_SnapToGrid(ST_Simplify(s.public_geom, #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" />
+  </columns>
+</report>
