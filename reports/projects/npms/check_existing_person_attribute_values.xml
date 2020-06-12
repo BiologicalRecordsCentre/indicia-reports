@@ -10,14 +10,16 @@ that returns details of the person_attributes even when the person_attribute_val
       #filters#
   </query>
   <params>
-    <param name="person_id" display="Person id" description="id of the person to return data for" datatype="integer" emptyvalue="" default="">
-      <where>pav.person_id=#person_id#</where>
+    <param name="person_ids" display="Person id" description="id of the person to return data for" datatype="string" emptyvalue="" default="">
+      <where>pav.person_id in (#person_ids#)</where>
     </param>
     <param name="person_attribute_id" display="Person attribute id" description="Id of the person attribute to return data for." datatype="integer" emptyvalue="" default="">
       <where>pav.person_attribute_id=#person_attribute_id#</where>
     </param>  
   </params>
   <columns>
-    <column name="id" sql="pav.id"/>
+    <column name="pav_id" sql="pav.id"/>
+    <column name="person_id" sql="pav.person_id"/>
+    <column name="person_attribute_id" sql="pav.person_attribute_id"/>
   </columns>
 </report>
