@@ -4,12 +4,12 @@
       <query>
       SELECT  count(DISTINCT o.taxon_meaning_id) as species_count, count(DISTINCT o.id) as occurrences_count, #website_id# as website_id
       FROM cache_occurrences_functional o
-	  JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
+      JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
       JOIN (locations l
         JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
       ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
-      WHERE survey_id=15
-	  AND length(snf.public_entered_sref)&gt;=8
+      WHERE website_id=8
+      AND length(snf.public_entered_sref)&gt;=8
       AND o.record_status='V'
       </query>
   <params>
