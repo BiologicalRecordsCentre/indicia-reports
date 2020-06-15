@@ -8,7 +8,7 @@
       JOIN (locations l
         JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=#website_id# AND lw.deleted=false
       ) on l.name='#site_name#' AND st_intersects(l.boundary_geom, o.public_geom) AND l.deleted=false
-      WHERE website_id=8
+      WHERE o.website_id=8
       AND length(snf.public_entered_sref)&gt;=8
       AND o.record_status='V'
       </query>
