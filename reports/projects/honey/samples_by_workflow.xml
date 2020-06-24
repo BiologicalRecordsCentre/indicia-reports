@@ -33,7 +33,7 @@
     </param>
   </params>
   <order_bys>
-    <order_by>s.id ASC</order_by>
+    <order_by>s.created_on ASC</order_by>
   </order_bys>
 
   <columns>
