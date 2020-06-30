@@ -27,7 +27,7 @@
       <where>l.location_type_id=#location_type_id#</where>
     </param>
     <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]">
-      <join>JOIN location lcontext on st_intersects(lcontext.boundary_geom, l.boundary_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
+      <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, l.centroid_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
     </param>
   </params>
   <columns>
