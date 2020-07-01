@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="eBMS App Timed Count GIS Details 2" description="eBMS specific: sample details for use with GIS orientated downloads with boundary filter for download integration.">
+    <query website_filter_field="s.website_id">
+      SELECT #columns#
+      from cache_samples_functional s
+      join cache_occurrences_functional o on o.sample_id = s.id
+      join cache_samples_nonfunctional csn on csn.id = s.id
+      #joins#
+      WHERE #website_filter#
+      AND s.survey_id = #survey_id#
+      AND (GeometryType(s.public_geom) = 'LINESTRING' OR GeometryType(s.public_geom) = 'MULTILINESTRING')
+    </query>
+    <params>
+      <param name='survey_id' datatype='int'/>
+      <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
+        <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, s.public_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
+      </param>
+    </params>
+    <columns>
+      <column name="SmpID" sql="s.id" unique="true" />
+      <column name="SmpDate" sql="TO_CHAR(s.created_on::date, 'dd/MM/yyyy')" />
+      <column name="TaxaCount" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
+      <column name="Location" sql="s.location_name" unique="true"/>
+      <column name="geom" sql="st_astext(st_transform(s.public_geom, 4326))" datatype="text" />
+    </columns>
+</report>
