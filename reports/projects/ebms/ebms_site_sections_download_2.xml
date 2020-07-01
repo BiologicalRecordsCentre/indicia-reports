@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS Site Sections Download Report 2" description="Lists saved site sections and their attributes with filtering to integrate with new downloads page on ABLE.">
+  <query website_filter_field="lw.website_id">
+  SELECT #columns#
+  FROM locations l
+  JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
+  JOIN locations l2 ON l2.parent_id=l.id
+  LEFT JOIN locations_websites lw ON l.id = lw.location_id AND lw.deleted = FALSE
+  #joins#
+  WHERE #website_filter#
+    AND l.deleted = false AND l2.deleted = false
+    AND (l.public=TRUE OR lw.website_id IS NOT NULL)
+  #filters#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name, l2.id</order_by>
+  </order_bys>
+  <params>
+    <!-- Legacy: EBMS and UKBMS assign locations via an attribute holding the CMS user ID, not the Indicia ID -->
+    <param name="cms_user_id" display="CMS User ID" description="CMS User ID" datatype="integer" default="" />
+    <param name="cms_attribute_id" display="CMS Atribute ID" description="Attribute used to hold the CMS User ID" datatype="integer" default="" >
+      <where>EXISTS (SELECT id FROM location_attribute_values lav WHERE lav.location_id = l.id
+      AND lav.location_attribute_id = #cms_attribute_id#
+      AND lav.int_value = #cms_user_id# AND lav.deleted=false)</where>
+    </param>
+    <param name="locattrs" display="Site attribute list" description="Comma separated list of site location attribute IDs to include" datatype="locattrs" />
+    <param name="loc2attrs" display="Section attribute list" description="Comma separated list of section location attribute IDs to include" datatype="loc2attrs" />
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+    <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
+      <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, l.centroid_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
+    </param>
+  </params>
+  <columns>
+    <column name="site_id" sql="l.id" display="Site ID" />
+    <column name="site_name" sql="l.name" display="Site Name" />
+    <column name="site_code" sql="l.code" display="Site Code" />
+    <column name="site_type" sql="ctt.term" display="Site Type" />
+    <column name="site_sref" sql="l.centroid_sref" display="SiteRef" />
+    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="System" />
+    <column name="section_id" sql="l2.id" display="Section ID" />
+    <column name="section_name" sql="l2.name" display="Section Name" />
+    <column name="section_code" sql="l2.code" display="Section Code" />
+    <column name="section_sref" sql="l2.centroid_sref" display="SectionRef" />
+    <column name="unique_code" sql="(COALESCE(l.code, l.name)::text || '.'::text) || substring(l2.code::text, 2)" display="Unique Section Code" />
+  </columns>
+</report>
