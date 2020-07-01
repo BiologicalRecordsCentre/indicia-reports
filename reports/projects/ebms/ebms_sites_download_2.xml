@@ -26,7 +26,7 @@
             population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
       <where>l.location_type_id=#location_type_id#</where>
     </param>
-    <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]">
+    <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
       <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, l.centroid_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
     </param>
   </params>
