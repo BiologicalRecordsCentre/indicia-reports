@@ -12,7 +12,7 @@
       ) ON ttl1.id=l.location_type_id and ttl1.deleted=false
       #joins#
       WHERE lw.deleted=false AND #website_filter#
-      l.location_type_id=#location_type_id#
+      AND l.location_type_id=#location_type_id#
       AND (GeometryType(section.boundary_geom) = 'LINESTRING' OR GeometryType(section.boundary_geom) = 'MULTILINESTRING')
     </query>
     <order_bys>
