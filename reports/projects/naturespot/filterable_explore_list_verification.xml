@@ -35,8 +35,6 @@
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;
         &lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;
         &lt;span class="record-tvk" style="display: none"&gt;{external_key}&lt;/span&gt;'  />
-    <column name='source' display='Source' datatype="text"
-        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
     <column name='source_id' display='Source ID' datatype="text" visible="false"
             sql="o.website_id::varchar || '|' || o.survey_id::varchar"
             template="&lt;span title=&quot;{source}&quot;&gt;{source_id}&lt;/span&gt;" />
@@ -60,6 +58,7 @@
     <column name='cache_updated_on' sql="to_char(o.updated_on,'DD/MM/YYYY HH24:MI')" display='Last updated' visible="false" orderby="cache_updated_on_raw" />
     <column name='cache_updated_on_raw' sql="o.updated_on" display='Last updated unformatted' visible="false" />
     <column name='recorder' display='Recorder' sql="CASE WHEN (TRIM(snf.recorders) !~ ' ' AND LENGTH(snf.recorders)>30) THEN 'Recorder' ELSE snf.recorders END" datatype="text" />
+    <column name="identified_by" display="Identified by" sql="onf.attr_det_full_name" datatype="text" />
     <column name='zero_abundance' display='Zero abundance' sql='o.zero_abundance' visible="false" />
     <column name='created_by_id' visible='false' sql='o.created_by_id' datatype="integer" />
     <column name='record_status' display='State' sql='o.record_status' visible="false" />
