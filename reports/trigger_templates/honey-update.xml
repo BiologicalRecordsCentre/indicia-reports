@@ -59,6 +59,8 @@
         'You have not returned your sample using the pack we''ve sent out to you. As it''s now past the yearly ' ||
         'cut-off date, your sample ID has become invalid. In order to send any future honey samples to us a new ' ||
         'sample pack will need to be requested.'
+      WHEN sav.int_value = 17792 THEN
+        'Sample archived only'
       END,
       '&lt;br&gt;&lt;br&gt;',
       'Thank you for taking part in the National Honey Monitoring Scheme. This is an auto-generated notification; ' ||
