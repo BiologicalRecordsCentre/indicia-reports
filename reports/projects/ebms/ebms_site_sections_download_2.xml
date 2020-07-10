@@ -36,15 +36,15 @@
   </params>
   <columns>
     <column name="site_id" sql="l.id" display="Transect ID" />
-    <column name="site_name" sql="l.name" display="Transect name" />
-    <column name="site_code" sql="l.code" display="Transect code" />
-    <column name="site_type" sql="ctt.term" display="Site type" />
-    <column name="site_sref" sql="l.centroid_sref" display="Transect spatial reference" />
-    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="Spatial reference system" />
-    <column name="section_id" sql="l2.id" display="Transect section ID" />
-    <column name="section_name" sql="l2.name" display="Transect section name" />
-    <column name="section_code" sql="l2.code" display="Transect section code number" />
-    <column name="section_sref" sql="l2.centroid_sref" display="Transect section spatial reference" />
-    <column name="unique_code" sql="(COALESCE(l.code, l.name)::text || '.'::text) || substring(l2.code::text, 2)" display="Transect section code" />
+    <column name="site_name" sql="l.name" display="Transect Name" />
+    <column name="site_code" sql="l.code" display="Transect Code" />
+    <column name="site_type" sql="ctt.term" display="Site Type" />
+    <column name="site_sref" sql="l.centroid_sref" display="Transect Spatial Reference" />
+    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="Spatial Reference System" />
+    <column name="section_id" sql="l2.id" display="Transect Section ID" />
+    <column name="section_name" sql="l2.name" display="Transect Section name" />
+    <column name="section_code" sql="l2.code" display="Transect Section Code number" />
+    <column name="section_sref" sql="l2.centroid_sref" display="Transect Section Spatial Reference" />
+    <column name="unique_code" sql="(COALESCE(l.code, l.name)::text || '.'::text) || substring(l2.code::text, 2)" display="Transect Section Code" />
   </columns>
 </report>

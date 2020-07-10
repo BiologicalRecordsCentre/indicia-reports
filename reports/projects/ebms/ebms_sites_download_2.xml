@@ -31,11 +31,11 @@
     </param>
   </params>
   <columns>
-    <column name="site_id" sql="l.id" display="Site ID" />
-    <column name="site_name" sql="l.name" display="Site Name" />
-    <column name="site_code" sql="l.code" display="Site Code" />
+    <column name="site_id" sql="l.id" display="Transect ID" />
+    <column name="site_name" sql="l.name" display="Transect Name" />
+    <column name="site_code" sql="l.code" display="Transect Code" />
     <column name="site_type" sql="ctt.term" display="Site Type" />
-    <column name="centroid_sref" sql="l.centroid_sref" display="SRef" />
-    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="System" />
+    <column name="centroid_sref" sql="l.centroid_sref" display="Spatial Reference" />
+    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="Spatial Reference System" />
   </columns>
 </report>
