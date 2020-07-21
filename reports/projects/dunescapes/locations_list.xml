@@ -28,7 +28,7 @@
         and not st_touches(l.boundary_geom, st_geomfromtext('#intersects#', 900913))</where>
     </param>
     <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to">
-      <where>l.id=#parent_id#</where>
+      <where>l.parent_id=#parent_id#</where>
     </param>
   </params>
   <columns>
