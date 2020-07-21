@@ -2,7 +2,7 @@
     title="Locations list - Dunescape"
     description="A general purpose list of Dunescape locations."
 >
-  <query website_filter_field="lw.website_id" training_filter_field="">
+  <query website_filter_field="lw.website_id" training_filter_field="" blocked_sharing_tasks_field="">
     SELECT #columns#
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
