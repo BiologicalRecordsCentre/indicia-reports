@@ -35,6 +35,6 @@
     <column name="location_id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
-    <column name="geom" display="Geom" sql="ST_AsText(COALESCE(l.boundary_geom, l.centroid_geom))" mappable="true" />
+    <column name="geom" display="Geom" sql="ST_AsText(COALESCE(l.boundary_geom, l.centroid_geom))" mappable="true" visible="false" />
   </columns>
 </report>
