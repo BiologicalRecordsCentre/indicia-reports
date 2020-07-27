@@ -1,0 +1,21 @@
+<report
+    title="Existing groups for site"
+    description="Lists groups already defined for this site."
+>
+  <query website_filter_field="" training_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    JOIN location_attribute_values v ON v.location_id=l.id AND v.location_attribute_id=272
+    WHERE l.parent_id=#parent_id#
+    #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
+  </params>
+  <columns>
+    <column name="term" distincton="true" datatype="text" />
+  </columns>
+</report>
