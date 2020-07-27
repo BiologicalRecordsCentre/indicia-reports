@@ -10,12 +10,12 @@
     #order_by#
   </query>
   <order_bys>
-    <order_by>l.name ASC</order_by>
+    <order_by>v.text_value ASC</order_by>
   </order_bys>
   <params>
     <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
   </params>
   <columns>
-    <column name="term" distincton="true" datatype="text" />
+    <column name="term" sql="v.text_value" distincton="true" datatype="text" />
   </columns>
 </report>
