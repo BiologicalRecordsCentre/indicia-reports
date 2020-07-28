@@ -16,6 +16,6 @@
     <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
   </params>
   <columns>
-    <column name="term" sql="v.text_value" distincton="true" datatype="text" />
+    <column name="group" sql="v.text_value" distincton="true" datatype="text" />
   </columns>
 </report>

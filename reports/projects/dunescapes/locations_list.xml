@@ -6,6 +6,7 @@
     SELECT #columns#
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+    JOIN cache_termlists_terms t on t.id=l.location_type_id
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
@@ -34,7 +35,16 @@
   <columns>
     <column name="location_id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name" />
+    <column name="type" display="Type" sql="t.term" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
     <column name="geom" display="Geom" sql="ST_AsText(COALESCE(l.boundary_geom, l.centroid_geom))" mappable="true" visible="false" />
+    <column name="edit_link" display="Actions"
+      sql="CASE l.location_type_id
+        WHEN 17804 THEN ''
+        WHEN 777 THEN '&lt;a href=&quot;/sites/setup/transect-edit?location_id=' || l.id::text || '&amp;dynamic-parent_id=' || l.parent_id::text || '&quot;&gt;edit&lt;/a&gt;'
+        WHEN 17805 THEN '&lt;a href=&quot;/sites/setup/fixed-point-edit?location_id=' || l.id::text || '&amp;dynamic-parent_id=' || l.parent_id::text || '&quot;&gt;edit&lt;/a&gt;'
+        WHEN 17806 THEN '&lt;a href=&quot;/sites/setup/fixed-point-edit?location_id=' || l.id::text || '&amp;dynamic-parent_id=' || l.parent_id::text || '&quot;&gt;edit&lt;/a&gt;'
+        WHEN 17807 THEN '&lt;a href=&quot;/sites/setup/fixed-point-edit?location_id=' || l.id::text || '&amp;dynamic-parent_id=' || l.parent_id::text || '&quot;&gt;edit&lt;/a&gt;'
+      END" />
   </columns>
 </report>
