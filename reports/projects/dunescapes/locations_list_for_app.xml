@@ -1,0 +1,49 @@
+<report
+    title="Locations list - Dunescape app"
+    description="A list of Dunescape locations formatted for use in the app."
+>
+  <query website_filter_field="" training_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+    JOIN cache_termlists_terms t ON t.id=l.location_type_id
+    LEFT JOIN location_attribute_values hab ON hab.location_id=l.id AND hab.deleted=false AND hab.location_attribute_id=263
+    LEFT JOIN cache_termlists_terms thab ON thab.id=hab.int_value
+    LEFT JOIN location_attribute_values b ON b.location_id=l.id AND b.deleted=false AND b.location_attribute_id=268
+    #agreements_join#
+    #joins#
+    WHERE #sharing_filter#
+    AND (l.public=true or lw.website_id in (#website_ids#))
+    AND l.deleted=false
+    #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="location_type_ids" display="Location Type" datatype="integer[]" default="">
+      <where>l.location_type_id in (#location_type_ids#)</where>
+    </param>
+    <param name="locattrs" display="Location attribute list" datatype="locattrs" default=""
+           description="Comma separated list of location attribute IDs to include" />
+    <param name="intersects" display="Intersects with" datatype="text" default=""
+           description="Geometry to filter to locations intersecting with as WKT, Web Mercator projection">
+      <where>st_intersects(l.boundary_geom, st_geomfromtext('#intersects#', 900913))
+        and not st_touches(l.boundary_geom, st_geomfromtext('#intersects#', 900913))</where>
+    </param>
+    <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to">
+      <where>l.parent_id=#parent_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name="location_id" display="ID" sql="l.id" />
+    <column name="name" display="Name" sql="l.name" />
+    <column name="type" display="Type" sql="t.term" />
+    <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
+    <column name="centroid_sref_system" display="Grid ref." sql="l.centroid_sref_system" />
+    <column name="geom" display="Geom" sql="ST_AsText(COALESCE(l.boundary_geom, l.centroid_geom))" mappable="true" visible="false" />
+    <column name="media" display="Media" sql="(select json_agg(path) from location_media where location_id=l.id)" />
+    <column name="habitat" display="Habitat" sql="thab.term" />
+    <column name="bearing" display="Bearing" sql="b.int_value" />
+  </columns>
+</report>
