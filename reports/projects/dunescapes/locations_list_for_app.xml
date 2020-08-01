@@ -10,6 +10,7 @@
     LEFT JOIN location_attribute_values hab ON hab.location_id=l.id AND hab.deleted=false AND hab.location_attribute_id=263
     LEFT JOIN cache_termlists_terms thab ON thab.id=hab.int_value
     LEFT JOIN location_attribute_values b ON b.location_id=l.id AND b.deleted=false AND b.location_attribute_id=268
+    LEFT JOIN location_attribute_values grp ON grp.location_id=l.id AND grp.deleted=false AND grp.location_attribute_id=272
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
@@ -45,5 +46,6 @@
     <column name="media" display="Media" sql="(select json_agg(path) from location_media where location_id=l.id)" />
     <column name="habitat" display="Habitat" sql="thab.term" />
     <column name="bearing" display="Bearing" sql="b.int_value" />
+    <column name="group" display="Habitat" sql="grp.text_value" />
   </columns>
 </report>
