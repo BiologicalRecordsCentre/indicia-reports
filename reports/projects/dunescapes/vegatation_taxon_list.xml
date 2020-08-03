@@ -22,7 +22,7 @@
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
   </order_bys>
   <params>
-    <param name="taxon_list_id" datatype="integer" display="Taxon List ID" default=""
+    <param name="taxon_list_id" datatype="integer" display="Taxon List ID" default="266"
         description="Limit to the list with this ID.">
       <where>cttl.taxon_list_id=#taxon_list_id#</where>
     </param>
