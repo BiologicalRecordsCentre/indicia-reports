@@ -19,7 +19,7 @@
     <order_by>l.name ASC</order_by>
   </order_bys>
   <params>
-    <param name="location_type_ids" display="Location Type" datatype="integer[]" default="17804">
+    <param name="location_type_ids" display="Location Type" datatype="integer[]">
       <where>l.location_type_id in (#location_type_ids#)</where>
     </param>
     <param name="locattrs" display="Location attribute list" datatype="locattrs" default=""
@@ -31,7 +31,7 @@
     </param>
   </params>
   <columns>
-    <column name="location_id" display="ID" sql="l.id" datatype="integer" />
+    <column name="location_id" display="ID" sql="l.id" datatype="integer" in_count="true" />
     <column name="name" display="Name" sql="l.name" datatype="text" />
     <column name="type" display="Type" sql="t.term" datatype="text" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" datatype="text" />
@@ -39,6 +39,6 @@
     <column name="photo_points" display="Fixed photo points" sql="count(case when lc.location_type_id=17805 then 1 else null end)" aggregate="true" />
     <column name="dipwells" display="Dipwells" sql="count(case when lc.location_type_id=17806 then 1 else null end)" aggregate="true" />
     <column name="quadrats" display="Quadrats" sql="count(case when lc.location_type_id=17807 then 1 else null end)" aggregate="true" />
-    <column name="samples" display="Quadrats" sql="count(s.*)" aggregate="true" />
+    <column name="samples" display="Samples" sql="count(s.*)" aggregate="true" />
   </columns>
 </report>
