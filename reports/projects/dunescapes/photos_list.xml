@@ -1,0 +1,22 @@
+<report
+    title="Photos list - Dunescape"
+    description="A general purpose list of Dunescape photos."
+>
+  <query website_filter_field="o.website_id" training_filter_field="">
+    SELECT #columns#
+    FROM occurrence_media om
+    JOIN occurrences o on o.id=om.occurrence_id AND o.deleted=false
+  </query>
+  <order_bys>
+    <order_by>o.sample_id ASC</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="sample_id" display="Sample ID" sql="o.sample_id" />
+    <column name="occurrence_id" display="Occurrence ID" sql="o.id" />
+    <column name="occurrence_media_id" display="Photo ID" sql="om.id" />
+    <column name="caption" display="Caption" sql="om.caption" />
+    <column name="link" display="Link" sql="'https://warehouse1.indicia.org.uk/upload/' || om.path" />
+  </columns>
+</report>
