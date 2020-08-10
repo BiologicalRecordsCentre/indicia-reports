@@ -1,6 +1,6 @@
 <report
-    title="Parent samples list - Dunescape"
-    description="A general purpose list of Dunescape parent samples."
+    title="Samples list - Dunescape"
+    description="A general purpose list of Dunescape samples."
 >
   <query website_filter_field="s.website_id">
     SELECT #columns#
@@ -16,7 +16,10 @@
   </order_bys>
   <params>
     <param name="survey_id" display="Survey ID" datatype="integer" default="">
-      <where>s.survey_id</where>
+      <where>s.survey_id=#survey_id#</where>
+    </param>
+    <param name="sample_method_id" display="Sample method ID" datatype="integer" default="">
+      <where>s.sample_method_id=#sample_method_id#</where>
     </param>
     <param name="smpattrs" display="Sample attribute list" description="Comma separated list of sample attribute IDs to include" datatype="smpattrs" default="" />
   </params>
