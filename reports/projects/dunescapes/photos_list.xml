@@ -2,10 +2,12 @@
     title="Photos list - Dunescape"
     description="A general purpose list of Dunescape photos."
 >
-  <query website_filter_field="o.website_id" training_filter_field="">
+  <query website_filter_field="">
     SELECT #columns#
     FROM occurrence_media om
     JOIN occurrences o on o.id=om.occurrence_id AND o.deleted=false
+      AND o.website_id in (#website_ids#)
+    WHERE om.deleted=false
   </query>
   <order_bys>
     <order_by>o.sample_id ASC</order_by>
