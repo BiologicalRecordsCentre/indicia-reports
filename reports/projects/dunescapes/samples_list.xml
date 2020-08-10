@@ -18,7 +18,7 @@
       <where>s.survey_id=#survey_id#</where>
     </param>
     <param name="sample_method" display="Sample method" datatype="text" default="">
-      <where>snf.attr_sample_method_id='#sample_method#'</where>
+      <where>snf.attr_sample_method='#sample_method#'</where>
     </param>
     <param name="smpattrs" display="Sample attribute list" description="Comma separated list of sample attribute IDs to include" datatype="smpattrs" default="" />
   </params>
