@@ -1,0 +1,34 @@
+<report
+    title="Parent samples list - Dunescape"
+    description="A general purpose list of Dunescape parent samples."
+>
+  <query website_filter_field="s.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    #joins#
+    WHERE om.deleted = false
+    AND #website_filter#
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>s.id ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="survey_id" display="Survey ID" datatype="integer" default="">
+      <where>s.survey_id</where>
+    </param>
+    <param name="smpattrs" display="Sample attribute list" description="Comma separated list of sample attribute IDs to include" datatype="smpattrs" default="" />
+  </params>
+  <columns>
+    <column name="sample_id" display="Sample ID" sql="s.id" />
+    <column name='entered_sref' display='Original grid ref' datatype="text" visible="false"
+        sql="coalesce(regexp_replace(#sample_sref_field#, ',[^ ]', ', ', 'g'), snf.public_entered_sref, onf.output_sref)" />
+    <column name="output_sref" sql="onf.output_sref" display="Grid ref" datatype="text" />
+    <column name='date_start' sql='o.date_start' visible='false' />
+    <column name='date_end' sql='o.date_end' visible='false' />
+    <column name='date_type' sql='o.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name='recorders' display='Recorders' datatype="snf.recorders" />
+  </columns>
+</report>
