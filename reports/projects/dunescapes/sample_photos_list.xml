@@ -5,7 +5,7 @@
   <query website_filter_field="">
     SELECT #columns#
     FROM sample_media sm
-    JOIN cache_samples_nonfunctional s on s.id=sm.occurrence_id
+    JOIN cache_samples_nonfunctional s on s.id=sm.sample_id
       AND s.website_id in (#website_ids#)
     WHERE sm.deleted=false
   </query>
