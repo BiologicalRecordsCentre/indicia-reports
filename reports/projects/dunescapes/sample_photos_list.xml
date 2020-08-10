@@ -1,0 +1,23 @@
+<report
+    title="Sample photos list - Dunescape"
+    description="A general purpose list of Dunescape sample photos."
+>
+  <query website_filter_field="">
+    SELECT #columns#
+    FROM sample_media sm
+    JOIN cache_samples_nonfunctional s on s.id=sm.occurrence_id
+      AND s.website_id in (#website_ids#)
+    WHERE sm.deleted=false
+  </query>
+  <order_bys>
+    <order_by>s.id ASC</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="sample_id" display="Sample ID" sql="s.id" />
+    <column name="sample_media_id" display="Sample photo ID" sql="sm.id" />
+    <column name="caption" display="Caption" sql="sm.caption" />
+    <column name="link" display="Link" sql="'https://warehouse1.indicia.org.uk/upload/' || sm.path" />
+  </columns>
+</report>
