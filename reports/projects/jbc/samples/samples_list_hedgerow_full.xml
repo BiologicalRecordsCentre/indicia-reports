@@ -29,6 +29,7 @@
         <column name="recorder_name" display="Recorder" sql="attrs_json->>'127'" datatype="text" />
         <column name="total_count" display="Total count" sql="attrs_json->>'1473'" datatype="integer" />
         <column name="checked" display="Checked" sql="attrs_json->>'1484'" datatype="text" />
+        <column name="privacy_option" display="Privacy option" sql="attrs_json->>'1506'" datatype="text" />
         <column name="geom" display="Boundary" visible="false" mappable="true"
           sql="st_astext(ST_SnapToGrid(ST_Simplify(s.public_geom, #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" />
   </columns>
