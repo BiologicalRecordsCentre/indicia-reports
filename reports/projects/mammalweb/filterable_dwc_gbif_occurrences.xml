@@ -230,9 +230,13 @@ END"
           datatype="text"
           term="http://rs.tdwg.org/dwc/terms/eventRemarks" />
     <column name="samplingProtocol"
-          sql="snf.attrs_json->>'799'"
+          sql="onf.attrs_json->>'799'"
           datatype="text"
           term="http://rs.tdwg.org/dwc/terms/samplingProtocol" />
+    <column name="basisOfRecord"
+          sql="onf.attrs_json->>'800'"
+          datatype="text"
+          term="http://rs.tdwg.org/dwc/terms/basisOfRecord" />
     <column name="occurrenceRemarks"
           sql="regexp_replace(onf.comment, E'[\\n\\r]+', ' ', 'g')"
           datatype="text"
