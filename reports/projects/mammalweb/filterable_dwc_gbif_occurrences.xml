@@ -156,11 +156,11 @@ END"
   ELSE
     COALESCE(
       CASE snf.attrs_json->>'1446'
-        WHEN '0-10m' THEN 10
-        WHEN '10-50m' THEN 50
-        WHEN '50-100m' THEN 100
-        WHEN '100m-1km' THEN 1000
-        WHEN '>1km' THEN 5000
+        WHEN '0-10m' THEN 5
+        WHEN '10-50m' THEN 25
+        WHEN '50-100m' THEN 75
+        WHEN '100m-1km' THEN 500
+        WHEN '>1km' THEN 2000
         ELSE null
         END::text,
       snf.attrs_json->>'282'::text,
