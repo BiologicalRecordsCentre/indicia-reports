@@ -2,7 +2,7 @@
     title="NPMS My Visits 2"
     description="Display a list of visits suitable for users to view their own data. Note: used by the Tracking The Impact project, not just NPMS."
 >
-  <query website_filter_field="csf.website_id" training_filter_field = "csf.training">
+  <query website_filter_field="" training_filter_field="csf.training" >
     SELECT #columns# 
       FROM cache_samples_functional csf
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
@@ -10,12 +10,13 @@
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
       LEFT JOIN location_attribute_values lavPlotName on lavPlotName.location_attribute_id=#plot_number_attr_id# AND lavPlotName.location_id=plot.id AND lavPlotName.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
-      WHERE 
-      #sharing_filter#
+      #agreements_join#
+      WHERE #sharing_filter# 
       AND csf.created_by_id=#current_user#
       AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
       AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
       AND csf.survey_id in (#survey_ids#)
+      AND csf.website_id in (#website_ids#)
       #order_by#
   </query>
   <order_bys>
