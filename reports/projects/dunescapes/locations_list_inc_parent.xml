@@ -6,6 +6,7 @@
     SELECT #columns#
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+	LEFT JOIN location_attribute_values v ON l.location_type_id=777 AND v.location_id=l.id AND v.location_attribute_id=273 AND v.deleted=false
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
@@ -36,7 +37,24 @@
     <column name="name" display="Name" sql="l.name" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
     <column name="geom" display="Geom" sql="ST_AsText(COALESCE(l.boundary_geom, l.centroid_geom))" mappable="true" visible="false" />
-    <column name="sc" feature_style="strokeColor" sql="CASE l.id WHEN #parent_id# THEN '#a6611a' ELSE '#018571' END" />
-    <column name="fc" feature_style="fillColor" sql="CASE l.id WHEN #parent_id# THEN '#a6611a' ELSE '#018571' END" />
+    <column name="fo" feature_style="fillOpacity" sql="CASE location_type_id WHEN 17804 THEN 0.1 ELSE 0.5 END" />
+    <column name="sc" feature_style="strokeColor" sql="CASE location_type_id
+    WHEN 17804 THEN '#996633'
+    WHEN 777 THEN
+	  CASE v.int_value WHEN 17839 THEN '#cc00cc' WHEN 17840 THEN '#ffff00' ELSE '#777777' END
+	WHEN 17805 THEN '#dd7733'
+    WHEN 17806 THEN '#3399ff'
+	WHEN 17807 THEN '#55ee77'
+	ELSE '#777777'
+  END" />
+    <column name="fc" feature_style="fillColor" sql="CASE location_type_id
+    WHEN 17804 THEN '#996633'
+    WHEN 777 THEN
+	  CASE v.int_value WHEN 17839 THEN '#cc00cc' WHEN 17840 THEN '#ffff00' ELSE '#777777' END
+	WHEN 17805 THEN '#dd7733'
+    WHEN 17806 THEN '#3399ff'
+	WHEN 17807 THEN '#55ee77'
+	ELSE '#777777'
+  END" />
   </columns>
 </report>
