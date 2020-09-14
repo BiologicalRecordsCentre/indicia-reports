@@ -31,6 +31,10 @@
         Useful if old squares are left on the system but are not currently active." datatype = "date" emptyvalue = "" default = "">
       <where>square.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
     </param>
+    <param name= "location_id" display = "Location ID" description = "Filter results to a particular location id
+      Currently used by Plant Portal for limiting results when detecting if a plot has samples associated with it." datatype = "int" emptyvalue = "" default = "">
+      <where>csf.location_id = #location_id#</where>
+    </param>
   </params>
   <columns>
     <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
