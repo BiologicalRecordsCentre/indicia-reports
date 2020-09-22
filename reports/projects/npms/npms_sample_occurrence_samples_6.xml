@@ -81,17 +81,17 @@
 </params>
   <columns>
     <column name='sample_id' sql='csf.id' display='ID' visible='false' in_count="true" distincton="true"/>
-    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'21')::integer != 0 then (csnf.attrs_json->>'21')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer"/>
+    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer"/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
     <column name='square' sql="square.name" display='Square'/>
     <column name='location_name'
     sql="
     COALESCE(
         case 
-        when (csnf.attrs_json->>'21')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS null
+        when (csnf.attrs_json->>'227')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS null
           then '&lt;div style=&quot;color:red&quot; &gt;' || 'Please check this record, as you have already entered two surveys for this plot for the year' ||
           '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
-        when (csnf.attrs_json->>'21')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS NOT NULL
+        when (csnf.attrs_json->>'227')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS NOT NULL
           then '&lt;div style=&quot;color:red&quot; &gt;' || 'Please check this record, as you have already entered two surveys for this plot for the year' ||
           '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
         when lavPlotName.text_value IS null
@@ -106,8 +106,8 @@
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='survey_number' sql="
-    case when ((csnf.attrs_json->>'21')::integer IS NOT NULL AND (csnf.attrs_json->>'21')::integer != 0) THEN 'Survey 2' 
-    when ((csnf.attrs_json->>'21')::integer IS NULL OR (csnf.attrs_json->>'21')::integer = 0) THEN 'Survey 1'
+    case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
+    when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
     ELSE  '' END" display=' '/>
   </columns>
 </report>
