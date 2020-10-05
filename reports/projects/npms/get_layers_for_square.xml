@@ -1,0 +1,33 @@
+<report
+    title="Get layers for square"
+    description="Get a list of layers for an NPMS square."
+>
+  <query>
+    SELECT #columns#
+    FROM locations square
+    JOIN locations layer on 
+      st_intersects(layer.boundary_geom,square.centroid_geom)
+      AND layer.location_type_id in (#layer_location_types#)
+      AND NOT st_touches(layer.boundary_geom, square.centroid_geom)
+    JOIN cache_termlists_terms ctt on ctt.id = layer.location_type_id
+    WHERE square.location_type_id = #core_square_location_type_id#
+    AND square.id=#location_id# 
+    AND square.deleted=false
+  </query>
+  <order_bys>
+    <order_by>layer.name</order_by>
+  </order_bys>
+  <params>
+    <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>
+    <param name="location_id" display="ID of the square to return data for" datatype="integer"/>
+    <param name="layer_location_types" display="Comma separated list of location type IDs of the layers to return" datatype="text"/>
+  </params>
+  <columns>
+    <column name='id' display='Layer Id' sql="layer.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='name' display=' ' sql='layer.name' datatype='text' />
+    <column name='layer_type' display=' ' sql='ctt.term' datatype='text' />
+    <column name='area' display='% of square covered' 
+        sql='trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric),2)'
+    datatype='text' />
+  </columns> 
+</report>
