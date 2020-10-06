@@ -27,7 +27,7 @@
     <column name='name' display=' ' sql='layer.name' datatype='text' />
     <column name='layer_type' display=' ' sql='ctt.term' datatype='text' />
     <column name='area' display='% of square covered' 
-        sql='trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric),2)'
+        sql='trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)'
     datatype='text' />
   </columns> 
 </report>
