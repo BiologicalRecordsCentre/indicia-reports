@@ -23,11 +23,16 @@
     <param name="layer_location_types" display="Comma separated list of location type IDs of the layers to return" datatype="text"/>
   </params>
   <columns>
-    <column name='id' display='Layer Id' sql="layer.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='id' display='Layer Id' sql="layer.id" datatype='integer' visible="true" in_count="true"/>
     <column name='name' display=' ' sql='layer.name' datatype='text' />
     <column name='layer_type' display=' ' sql='ctt.term' datatype='text' />
     <column name='area' display='% of square covered' 
-        sql='trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)'
+        sql="
+        CASE WHEN trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)::varchar = '0'
+        THEN '&lt; 1'::varchar
+        ELSE trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)::varchar
+        END
+        "
     datatype='text' />
   </columns> 
 </report>
