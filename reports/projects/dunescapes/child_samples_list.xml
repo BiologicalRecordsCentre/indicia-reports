@@ -6,6 +6,8 @@
     SELECT #columns#
     FROM cache_samples_functional s
     JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    LEFT JOIN locations lc ON lc.id=s.location_id AND lc.deleted=false
+    LEFT JOIN locations lp ON lp.id=lc.parent_id AND lp.deleted=false
     #joins#
     WHERE #website_filter#
     #filters#
@@ -26,6 +28,7 @@
     <column name="sample_id" display="Sample ID" sql="s.id" />
     <column name="parent_sample_id" display="Parent sample ID" sql="s.parent_sample_id" />
     <column name='entered_sref' display='Original grid ref' datatype="text" visible="false" sql="snf.public_entered_sref" />
+    <column name='site' display='Site' datatype="text" sql="COALESCE(lp.name || ' - ') || lc.name" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
