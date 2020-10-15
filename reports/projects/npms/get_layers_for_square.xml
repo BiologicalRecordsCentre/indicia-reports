@@ -9,6 +9,7 @@
       st_intersects(layer.boundary_geom,square.centroid_geom)
       AND layer.location_type_id in (#layer_location_types#)
       AND NOT st_touches(layer.boundary_geom, square.centroid_geom)
+      AND layer.deleted=false
     JOIN cache_termlists_terms ctt on ctt.id = layer.location_type_id
     WHERE square.location_type_id = #core_square_location_type_id#
     AND square.id=#location_id# 
@@ -27,7 +28,12 @@
     <column name='name' display=' ' sql='layer.name' datatype='text' />
     <column name='layer_type' display=' ' sql='ctt.term' datatype='text' />
     <column name='area' display='% of square covered' 
-        sql='trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)'
+        sql="
+        CASE WHEN trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)::varchar = '0'
+        THEN '&lt; 1'::varchar
+        ELSE trunc(cast(st_area(st_intersection(layer.boundary_geom, coalesce(square.boundary_geom, square.centroid_geom))) / st_area(coalesce(square.boundary_geom, square.centroid_geom)) as numeric) * 100,0)::varchar
+        END
+        "
     datatype='text' />
   </columns> 
 </report>
