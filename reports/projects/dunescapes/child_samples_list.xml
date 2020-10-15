@@ -24,7 +24,7 @@
   </params>
   <columns>
     <column name="sample_id" display="Sample ID" sql="s.id" />
-    <column name="sample_id" display="Parent sample ID" sql="s.parent_id" />
+    <column name="parent_sample_id" display="Parent sample ID" sql="s.parent_sample_id" />
     <column name='entered_sref' display='Original grid ref' datatype="text" visible="false" sql="snf.public_entered_sref" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
