@@ -6,6 +6,7 @@
   SELECT #columns#
   FROM cache_taxa_taxon_lists
   WHERE taxon_list_id=#taxon_list_id#
+  AND allow_data_entry=true
   </query>
 <order_bys>
   <order_by>family_taxon ASC, taxon ASC</order_by>
