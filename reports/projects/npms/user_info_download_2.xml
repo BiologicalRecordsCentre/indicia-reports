@@ -103,6 +103,8 @@ an event filter to return users associated with a particular event."
     <param name="allocation_date_start" display="User allocated square on or after this date" description="Only return users who were allocated a square on or after this date." datatype="date" emptyvalue=""/>
     <param name="allocation_date_end" display="User allocated square before this date" description="Only return users who were allocated a square before this date." datatype="date" emptyvalue=""/>
     <param name="user_admin_page_link" display="Link to user administration page" description="Link to page which administrators use to manage users." datatype="text" emptyvalue=""/>
+    <param name="leitrim_person_id" display="Leitrum Person ID" description="Override the county, country, post code of the person with this person ID as they are in Republic Of Ireland 
+        which is not normally supported" datatype="integer" emptyvalue="0" default="0"/>
   </params>
   <columns>
     <column name='person_full_name_admin_link' display='User administration link' 
@@ -136,9 +138,24 @@ an event filter to return users associated with a particular event."
     )
     " datatype='text' />
     <column name='town' display='Town' sql='pavTown.text_value' datatype='text' />
-    <column name='county' display='County' sql='pavCounty.text_value' datatype='text' />
-    <column name='country' display='Country' sql='pavCountry.text_value' datatype='text' />
-    <column name='post_code' display='Post Code' sql='pavPC.text_value' datatype='text' />
+    <column name='county' display='County' sql="
+      CASE WHEN p.id = #leitrim_person_id#
+      THEN 'Co. Leitrim'
+      ELSE pavCounty.text_value
+      END
+    " datatype='text' />
+    <column name='country' display='Country' sql="
+      CASE WHEN p.id = #leitrim_person_id#
+      THEN 'ROI'
+      ELSE pavCountry.text_value
+      END
+    " datatype='text' />
+    <column name='post_code' display='Post Code' sql="
+      CASE WHEN p.id = #leitrim_person_id# 
+      THEN ''
+      ELSE pavPC.text_value
+      END
+    " datatype='text' />
     <column name='over_18' display='18 or over?' sql="case pav18.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='mentor' display='Mentor?' sql="case pavMentor.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='request_survey_forms' display='Requested Survey Forms?' sql="case reqSurvForms.text_value  when '1' then 'Yes' else 'No' End" datatype='text' />
