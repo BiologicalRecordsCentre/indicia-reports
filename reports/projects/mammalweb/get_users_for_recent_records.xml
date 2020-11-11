@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report
+    title="Get users for recent records"
+    description="Retrieve a list of user IDs for recently added records.">
+  <query website_filter_field="o.website_id">
+      SELECT #columns#
+      FROM cache_occurrences_functional o
+      #agreements_join#
+      #joins#
+      WHERE #sharing_filter#
+      AND o.id>#last_id#
+      </query>
+  <params>
+    <param name='last_id' display='Last ID' description='ID to check from.' datatype='integer' />
+  </params>
+    <order_bys>
+      <order_by>max(o.id)</order_by>
+    </order_bys>
+    <columns>
+      <column name="user_id" sql="o.created_by_id" datatype="integer" in_count="true" />
+      <column name="max_id" display="Max ID" sql="max(o.id)" datatype="integer" aggregate="true" />
+    </columns>
+</report>
