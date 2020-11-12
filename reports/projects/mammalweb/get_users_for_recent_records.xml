@@ -9,6 +9,7 @@
       #joins#
       WHERE #sharing_filter#
       AND o.id>#last_id#
+      AND o.website_id=122
       </query>
   <params>
     <param name='last_id' display='Last ID' description='ID to check from.' datatype='integer' />
