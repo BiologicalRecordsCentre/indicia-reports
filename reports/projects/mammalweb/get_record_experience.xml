@@ -5,8 +5,8 @@
   <query>
       SELECT TRANSLATE(metadata::text, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', REVERSE('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')) AS metadata
       FROM occurrences
-      WHERE o.id=#id#
-      AND o.website_id=122
+      WHERE id=#id#
+      AND website_id=122
       </query>
   <params>
     <param name='id' display='ID' description='Occurrence ID.' datatype='integer' />
