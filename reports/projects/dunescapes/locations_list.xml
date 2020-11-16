@@ -12,6 +12,7 @@
     WHERE #sharing_filter#
     AND (l.public=true or lw.website_id in (#website_ids#))
     AND l.deleted=false
+    #idlist#
     #order_by#
   </query>
   <order_bys>
@@ -31,6 +32,8 @@
     <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to">
       <where>l.parent_id=#parent_id#</where>
     </param>
+    <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
+      datatype='idlist' fieldname='l.id' alias='location_id' default="" />
   </params>
   <columns>
     <column name="location_id" display="ID" sql="l.id" />
