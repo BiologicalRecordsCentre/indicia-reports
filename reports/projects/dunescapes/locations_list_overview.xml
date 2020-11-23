@@ -35,10 +35,10 @@
     <column name="name" display="Name" sql="l.name" datatype="text" />
     <column name="type" display="Type" sql="t.term" datatype="text" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" datatype="text" />
-    <column name="transects" display="Transects" sql="count(case when lc.location_type_id=777 then 1 else null end)" aggregate="true" />
-    <column name="photo_points" display="Fixed photo points" sql="count(case when lc.location_type_id=17805 then 1 else null end)" aggregate="true" />
-    <column name="dipwells" display="Dipwells" sql="count(case when lc.location_type_id=17806 then 1 else null end)" aggregate="true" />
-    <column name="quadrats" display="Quadrats" sql="count(case when lc.location_type_id=17807 then 1 else null end)" aggregate="true" />
-    <column name="samples" display="Samples" sql="count(s.*)" aggregate="true" />
+    <column name="transects" display="Transects" sql="count(DISTINCT case when lc.location_type_id=777 then lc.id else null end)" aggregate="true" />
+    <column name="photo_points" display="Fixed photo points" sql="count(DISTINCT case when lc.location_type_id=17805 then lc.id else null end)" aggregate="true" />
+    <column name="dipwells" display="Dipwells" sql="count(DISTINCT case when lc.location_type_id=17806 then lc.id else null end)" aggregate="true" />
+    <column name="quadrats" display="Quadrats" sql="count(DISTINCT case when lc.location_type_id=17807 then lc.id else null end)" aggregate="true" />
+    <column name="samples" display="Samples" sql="count(DISTINCT s.id)" aggregate="true" />
   </columns>
 </report>
