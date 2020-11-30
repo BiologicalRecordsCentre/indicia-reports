@@ -29,7 +29,7 @@
       </param>
       <param name="island" display="Island" datatype="lookup"
              lookup_values="203170:Jersey,215429:Alderney,215430:Guernsey (including Sark and Herm)">
-        <join>JOIN locations lfilt ON st_intersects(lfilt.boundary_geom, l.boundary_geom) AND lfilt.id=#island#</join>
+        <join>JOIN locations lfilt ON st_intersects(lfilt.boundary_geom, COALESCE(l.boundary_geom, l.centroid_geom)) AND lfilt.id=#island#</join>
       </param>
       <param name="checked" display="Checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
         <wheres>
