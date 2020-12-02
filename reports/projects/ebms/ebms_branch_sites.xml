@@ -34,7 +34,7 @@
             <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
             <column name="name" display="Site Name" sql="l.name" />
             <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
-            <column name="samples_this_year" display="Samples this year" sql="SUM(CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN 1 ELSE 0 END)" aggregate="true" />
+            <column name="samples_this_year" display="Samples this year" sql="COUNT(DISTINCT CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN sp.id ELSE null END)" aggregate="true" />
             <column name="taxa" display="Taxa recorded" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
       </columns>
 </report>
