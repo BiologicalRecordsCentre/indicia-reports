@@ -142,7 +142,7 @@ END"
     <!-- @todo decide default licence by dataset -->
     <!-- @todo expand to full licence URL -->
     <column name="licence"
-          sql="onf.licence_code"
+          sql="COALESCE(onf.licence_code, 'CC BY')"
           datatype="text"
           term="http://purl.org/dc/terms/license" />
     <column name="rightsHolder"
