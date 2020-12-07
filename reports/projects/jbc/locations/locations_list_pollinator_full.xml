@@ -57,7 +57,9 @@
         <column name="private" display="Private" sql="case when vp.id is not null and vp.int_value=1 then 'yes' else 'no' end" />
         <column name="checked" display="Checked" sql="case when vchk.id is not null and vchk.int_value=1 then 'yes' else 'no' end" />
         <column name="area" display="Area (m2)" datatype="integer" sql="round(st_area(st_transform(l.boundary_geom, 3109)))" />
-        <column name="shape" display="Shape" sql="ST_AsText(ST_Transform(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#), 4326))" />
+        <column name="shape" display="Shape" sql="ST_AsGeoJson(ST_Transform(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#), 4326))" />
+        <column name="lat" display="Latitude" sql="ST_x(ST_Transform(ST_Centroid(l.centroid_geom), 4326))" datatype="integer" visible="false" />
+        <column name="lon" display="Longitude" sql="ST_y(ST_Transform(ST_Centroid(l.centroid_geom), 4326))" datatype="integer" visible="false" />
         <column name="geom" sql="st_astext(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" visible="false" mappable="true"/>
         <column name="sc" visible="false" feature_style="strokeColor"
           sql="CASE tact.id WHEN 17711 THEN '#0571b0' WHEN 17714 THEN '#80cdc1' WHEN 17713 THEN '#c2a5cf' ELSE '#a6611a' END" />
