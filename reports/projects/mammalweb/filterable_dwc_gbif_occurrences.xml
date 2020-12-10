@@ -233,10 +233,10 @@ END"
           sql="onf.attrs_json->>'799'"
           datatype="text"
           term="http://rs.tdwg.org/dwc/terms/samplingProtocol" />
-    <column name="basisOfRecord"
-          sql="onf.attrs_json->>'800'"
+    <column name="dynamicProperties"
+          sql="'{&quot;observationType&quot;: &quot;' || (onf.attrs_json->>'800') || '&quot;}'"
           datatype="text"
-          term="http://rs.tdwg.org/dwc/terms/basisOfRecord" />
+          term="http://rs.tdwg.org/dwc/terms/dynamicProperties" />
     <column name="occurrenceRemarks"
           sql="regexp_replace(onf.comment, E'[\\n\\r]+', ' ', 'g')"
           datatype="text"
