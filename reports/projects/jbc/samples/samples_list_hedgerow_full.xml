@@ -13,8 +13,8 @@
   <params>
       <param name="checked" display="Checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
         <wheres>
-          <where value="yes" operator="equal">(vchk.id is not null and vchk.int_value=1)</where>
-          <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
+          <where value="yes" operator="equal">attrs_json->>'1484' = '1'</where>
+          <where value="no" operator="equal">(attrs_json->>'1484' = '0' OR attrs_json->>'1484' IS NULL)</where>
         </wheres>
       </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
