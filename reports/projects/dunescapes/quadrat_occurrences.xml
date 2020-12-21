@@ -25,9 +25,9 @@
     <column name="fixed_point_location_id" display="Fixed point location ID" datatype="integer" sql="lc.id" />
     <column name="fixed_point_location" display="Fixed point location" datatype="text" sql="lc.name" />
     <column name="entered_sref" display="Original grid ref" datatype="text" sql="snf.public_entered_sref" />
-    <column name="date_start" sql="s.date_start" visible="false" />
-    <column name="date_end" sql="s.date_end" visible="false" />
-    <column name="date_type" sql="s.date_type" visible="false" />
+    <column name="date_start" sql="o.date_start" visible="false" />
+    <column name="date_end" sql="o.date_end" visible="false" />
+    <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
     <column name="recorders" display="Recorders" datatype="snf.recorders" />
     <column name="occurrence_id" display="Occurrence ID" datatype="integer" sql="o.id" />
