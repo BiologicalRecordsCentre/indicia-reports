@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="UKBMS sampling locations" description="Todo description">
+<report title="UKBMS sampling locations (except BBS)" description="All UKBMS lsampling locations except WCBS-BBS">
   <query>
     SELECT * FROM
       (SELECT
@@ -22,7 +22,7 @@
       join termlists_terms tt on l.location_type_id = tt.id
       join terms t on tt.term_id = t.id
       WHERE l.deleted=false
-        AND l.location_type_id in (777, 5195, 5196)
+        AND l.location_type_id in (777, 5196)
         AND lw.website_id=27
       group by l.id, t.term
       order by samples asc, name) as subsel
