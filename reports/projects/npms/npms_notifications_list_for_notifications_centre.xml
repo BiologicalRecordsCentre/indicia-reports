@@ -2,7 +2,9 @@
     title="NPMS Notifications list for notifications centre"
     description="A list of notifications for use with the notifications centre extension, 
 slightly simplified source types for NPMS. 
-Note this version also has a website filter to attempt to limit to NPMS where possible.">
+Note this version also has a website filter to attempt to limit to NPMS where possible.
+Note also that the date limiter is hard-coded as 2015, his is because the notification_centre extension would
+of had to have been changed to feed this param through, and it wasn't worth it as this is NPMS specific anyway.">
   <query website_filter_field="o.website_id">
   SELECT #columns#
     FROM notifications n
@@ -13,6 +15,8 @@ Note this version also has a website filter to attempt to limit to NPMS where po
       and n.user_id=#user_id#  
       and (o.training=#training# or o.id is null)
       and n.source_type&lt;&gt;'T' -- skip trigger notifications which don't display correctly in the grid
+      and n.data::json->>'username'::text != 'iRecord'
+      AND n.triggered_on::TIMESTAMP WITHOUT TIME ZONE &gt;= CAST('2015-01-01' as date)
       AND #website_filter#
     #order_by#
   </query>  
@@ -41,15 +45,7 @@ Note this version also has a website filter to attempt to limit to NPMS where po
     <param name="system_name" display="System Name" description="Name to display instead of admin for system generated notifications" datatype="text" />
     <param name="default_edit_page_path" display="Default edit page path" description="The default page that the notification edit link goes to if the input_form is blank and the user has rights to perform the edit" datatype="text"/>
     <param name="view_record_page_path" display="View record page path" description="The default page that the notification view link goes to if the user has rights to view the record" datatype="text"/>
-    <param name="groups_admin_page_path" display="Groups admin page path" datatype="text" default=""
-           description="The path to the page which allows group admins to manage membership" />
     <param name="website_id" display="Website Id for the occurrence record." datatype="integer"/>
-    <param name="group_ids" display="Group Ids" 
-        description="Comma separated list of groups ids, or blank to allow all. Only notifications associated with these group ids will be displayed." datatype="text" default=''>
-      <wheres>
-        <where>o.group_id in (#group_ids#)</where>
-      </wheres>
-    </param>
   </params>
   <columns>
     <column name="notification_id" visible="false" sql="n.id" />
