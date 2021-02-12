@@ -20,7 +20,7 @@
     <param name='person_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
         Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
-    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='test' />
+    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='text' />
   </params>
   <columns>
     <column name='id' display='ID' sql='p.id' datatype='integer' in_count='true' visible='false'/>  
