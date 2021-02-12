@@ -10,6 +10,7 @@
         AND sqrPav.deleted=false 
     JOIN indicia.locations sqr ON sqr.id=sqrPav.int_value AND sqr.created_on::date >= date '#ignore_square_dates_before#' AND sqr.location_type_id = #core_square_type_id# AND sqr.deleted=false 
     LEFT JOIN indicia.samples s on s.created_by_id = u.id
+        AND s.survey_id in (#survey_ids#)
         AND s.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
     AND s.deleted=false
     WHERE s.id IS NULL AND p.deleted=false
@@ -19,6 +20,7 @@
     <param name='person_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
         Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
+    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='test' />
   </params>
   <columns>
     <column name='id' display='ID' sql='p.id' datatype='integer' in_count='true' visible='false'/>  
