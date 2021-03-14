@@ -1,0 +1,40 @@
+<report
+    title="FIT Counts mapping"
+    description="FIT counts for map"
+>
+  <query website_filter_field="" training_filter_field="csf.training" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      #agreements_join#
+      WHERE #sharing_filter# 
+        AND csf.survey_id in (#survey_ids#)
+        AND csf.website_id in (#website_ids#)
+        AND ((trim('#year#') = '' OR '#year#'='Click here' OR csf.date_end &gt;= CAST('#year#' || '-01-01' as date))
+            AND (trim('#year#')  = '' OR '#year#'='Click here' OR csf.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+  </query>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
+    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
+      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "ownData" display="My data only?" datatype="checkbox">
+      <where value="1">csf.created_by_id=#current_user_id#</where>
+    </param>  
+  </params>
+  <columns>
+    <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(csf.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case csf.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="csf.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case csf.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="csf.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(csf.public_geom)" />
+  </columns>
+</report>
