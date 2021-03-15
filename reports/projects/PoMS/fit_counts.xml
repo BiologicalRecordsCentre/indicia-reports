@@ -9,7 +9,7 @@
       LEFT JOIN sample_attribute_values hab_sav on hab_sav.sample_id = csf.id AND hab_sav.sample_attribute_id = #habitat_smp_id# 
           AND hab_sav.deleted = false
       LEFT JOIN cache_termlists_terms hab_term on hab_term.id = hab_sav.int_value
-      LEFT JOIN sample_attribute_values target_sav on target_sav.sample_id = csf.id AND hab_sav.sample_attribute_id = #target_smp_id# 
+      LEFT JOIN sample_attribute_values target_sav on target_sav.sample_id = csf.id AND target_sav.sample_attribute_id = #target_smp_id# 
           AND target_sav.deleted = false
       LEFT JOIN cache_termlists_terms target_term on target_term.id = target_sav.int_value
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
