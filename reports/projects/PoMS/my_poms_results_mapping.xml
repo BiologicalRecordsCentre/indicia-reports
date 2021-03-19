@@ -1,0 +1,45 @@
+<report
+    title="My PoMS results mapping"
+    description="My PomS results for map. Includes blurred location data"
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM samples s
+      JOIN indicia.cache_samples_functional csf on csf.id = s.id
+      #agreements_join#
+      WHERE #sharing_filter# 
+        AND s.created_by_id=#current_user_id#
+        AND csf.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+        )
+        AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
+            AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND (CAST(s.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
+  </query>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
+      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
+  </params>
+  <columns>
+    <column name='id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case s.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="s.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="s.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(s.geom)" />
+  </columns>
+</report>

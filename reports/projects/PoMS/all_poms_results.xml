@@ -1,6 +1,7 @@
 <report
-    title="FIT Counts"
-    description="List of FIT counts"
+    title="All PoMS results"
+    description="All PomS results. Includes blurred location data. 
+    Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
 >
   <query website_filter_field="" training_filter_field="csf.training" >
     SELECT #columns# 
@@ -17,14 +18,16 @@
         AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
       #agreements_join#
       WHERE #sharing_filter# 
-        AND csf.survey_id in (#survey_ids#)
+        AND csf.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+        )
         AND csf.website_id in (#website_ids#)
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR csf.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR csf.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND (CAST(csf.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
   </query>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
-    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
     <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
     <param name = "target_smp_id" display="Target flower sample attribute ID" description = "ID of sample attribute that holds the target flower." datatype="integer"/>  
     <param name = "insect_abund_occ_id" display="Insect abundance occurrence attribute ID" 
@@ -32,20 +35,32 @@
     <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
     <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
       population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
-    <param name = "ownData" display="My data only?" datatype="checkbox">
-      <where value="1">csf.created_by_id=#current_user_id#</where>
-    </param>  
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
   </params>
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name='survey_title' sql="
+    case csf.survey_id
+      when #public_fit_count_survey_id# then 'FIT Count'
+      when #1km_fit_count_survey_id# then 'FIT Count 1km'
+      when #1km_pan_traps_survey_id# then '1km pan traps'
+      when #fit_count_app_survey_id# then 'FIT Count App'
+      else ''
+      END" display='Survey' datatype="integer"/>
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='location' display='Location' sql='csf.location_name' datatype="text"/>
+    <column name='1km grid ref' display='Location' sql='csnf.public_entered_sref' datatype="text"/>
     <column name='habitat' display='Habitat' sql='hab_term.term' datatype="text"/>
     <column name='target' display='Target flower' sql='target_term.term' datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
   </columns>
 </report>

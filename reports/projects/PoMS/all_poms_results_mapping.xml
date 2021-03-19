@@ -1,6 +1,7 @@
 <report
-    title="FIT Counts mapping"
-    description="FIT counts for map"
+    title="All PoMS results mapping"
+    description="All PomS results for map. Includes blurred location data.
+    Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
 >
   <query website_filter_field="" training_filter_field="csf.training" >
     SELECT #columns# 
@@ -8,20 +9,25 @@
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
       #agreements_join#
       WHERE #sharing_filter# 
-        AND csf.survey_id in (#survey_ids#)
+        AND csf.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+        )
         AND csf.website_id in (#website_ids#)
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR csf.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR csf.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND (CAST(csf.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
   </query>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
-    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
     <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
     <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
-      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
-    <param name = "ownData" display="My data only?" datatype="checkbox">
-      <where value="1">csf.created_by_id=#current_user_id#</where>
-    </param>  
+        population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
   </params>
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
