@@ -1,6 +1,6 @@
 <report
-    title="My PoMS results mapping"
-    description="My PomS results for map. Includes blurred location data"
+    title="PoMS results in detail mapping"
+    description="Detailed PomS results for map. Includes full detail location data"
 >
   <query website_filter_field="" training_filter_field="" >
     SELECT #columns# 
@@ -8,7 +8,6 @@
       JOIN indicia.cache_samples_functional csf on csf.id = s.id
       #agreements_join#
       WHERE #sharing_filter# 
-        AND s.created_by_id=#current_user_id#
         AND csf.survey_id in (
           #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
         )
@@ -27,6 +26,9 @@
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
     <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">s.created_by_id=#current_user_id#</where>
+    </param>
   </params>
   <columns>
     <column name='id' sql='s.id' display='ID' in_count="true" datatype="integer"/>

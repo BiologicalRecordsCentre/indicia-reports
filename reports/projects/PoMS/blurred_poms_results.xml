@@ -1,5 +1,5 @@
 <report
-    title="All PoMS results"
+    title="Blurred PoMS results"
     description="All PomS results. Includes blurred location data. 
     Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
 >
@@ -56,7 +56,7 @@
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='1km grid ref' display='Location' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='1km_grid_ref' display='1km grid ref' sql='csnf.public_entered_sref' datatype="text"/>
     <column name='habitat' display='Habitat' sql='hab_term.term' datatype="text"/>
     <column name='target' display='Target flower' sql='target_term.term' datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />

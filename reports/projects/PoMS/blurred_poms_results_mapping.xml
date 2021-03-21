@@ -1,5 +1,5 @@
 <report
-    title="All PoMS results mapping"
+    title="Blurred PoMS results mapping"
     description="All PomS results for map. Includes blurred location data.
     Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
 >
