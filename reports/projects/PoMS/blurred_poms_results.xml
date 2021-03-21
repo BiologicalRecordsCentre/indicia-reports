@@ -21,7 +21,6 @@
         AND csf.survey_id in (
           #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
         )
-        AND csf.website_id in (#website_ids#)
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR csf.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR csf.date_start &lt;= CAST('#year#' || '-12-31' as date)))
         AND (CAST(csf.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')

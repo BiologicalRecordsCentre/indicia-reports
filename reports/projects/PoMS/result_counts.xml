@@ -1,0 +1,25 @@
+<report
+    title="Result counts"
+    description="Result counts. 
+    Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
+>
+  <query website_filter_field="" training_filter_field="csf.training" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      #agreements_join#
+      WHERE #sharing_filter# 
+      AND csf.survey_id in (
+        #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+      )
+  </query>
+  <params>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+  </params>
+  <columns>
+    <column name='total_counts' sql="count(distinct csf.id)" display='Total counts' datatype="integer"/>
+    <column name='total_participants' sql="count(distinct csf.created_by_id)" display='Total participants' datatype="integer"/>
+  </columns>
+</report>
