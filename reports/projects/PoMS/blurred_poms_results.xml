@@ -71,7 +71,7 @@
     <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
         sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_fit_count_survey_id#' AND CAST(csf.created_by_id AS character varying) = '#current_user_id#'
             THEN true ELSE false END" visible="false" />
-    <column name='1km_pan_traps_survey_id' display='Show 1km pan-traps edit icon' 
+    <column name='show_1km_pan_traps_edit_icon' display='Show 1km pan-traps edit icon' 
         sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_pan_traps_survey_id#' AND CAST(csf.created_by_id AS character varying) = '#current_user_id#'
             THEN true ELSE false END" visible="false" />
   </columns>
