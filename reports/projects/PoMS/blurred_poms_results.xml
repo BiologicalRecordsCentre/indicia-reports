@@ -43,6 +43,7 @@
   </params>
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name='survey_id' sql='csf.survey_id' display='Survey ID' visible="false" datatype="integer"/>
     <column name='survey_title' sql="
     case csf.survey_id
       when #public_fit_count_survey_id# then 'FIT Count'
