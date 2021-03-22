@@ -62,5 +62,17 @@
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
     <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
+    <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
+        sql="CASE WHEN 
+            (CAST(csf.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
+            CAST(csf.survey_id AS character varying) = '#fit_count_app_survey_id#') AND
+            CAST(csf.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
+    <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
+        sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_fit_count_survey_id#' AND CAST(csf.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
+    <column name='1km_pan_traps_survey_id' display='Show 1km pan-traps edit icon' 
+        sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_pan_traps_survey_id#' AND CAST(csf.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
   </columns>
 </report>
