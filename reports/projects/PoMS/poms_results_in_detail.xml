@@ -65,8 +65,7 @@
     <column name='date_end' sql='s.date_end' visible="false"/>
     <column name='date_type' sql='s.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='detailed_grid_ref' display='Detailed grid ref' sql='s.entered_sref' datatype="text"/>
-    <column name='1km_grid_ref' display='1km grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
     <column name='habitat' display='Habitat' sql='hab_term.term' datatype="text"/>
     <column name='target' display='Target flower' sql='target_term.term' datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
