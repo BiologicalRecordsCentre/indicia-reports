@@ -1,10 +1,10 @@
 <report
     title="Explore records using standard filters"
-    description="Report designed for the explore records facility in iRecord, with standardised filtering parameters."
+    description="Report designed for the explore records facility, with semi-standardised filtering parameters."
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id" standard_params="true">
   SELECT #columns#
-  FROM cache_occurrences o
+  FROM cache_occurrences_functional o
   JOIN websites w on w.id=o.website_id and w.deleted=false
   #agreements_join#
   #joins#
@@ -28,13 +28,15 @@
     <param name='drift_attr_id' display='Drift occurrence attribute'
             description='Occurrence attribute that holds whether the occurrence records a drifting or unattached seaweed'
             emptyvalue="0" default="" />
-    
+    <param name='taxa_taxon_list_ids' display='TTL Ids' description='Comma separated list of TTL ids' default='' >
+      <where>o.taxa_taxon_list_id IN (#taxa_taxon_list_ids#)</where>
+    </param>
   </params>
   <columns>
-    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer" visible='false' />
+    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer" />
     <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
-    <column name='status' display='ID' sql='o.id' datatype="integer"
-        template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="drifting-icon drifting-{attr_occurrence_#drift_attr_id#}" title="Record has been flagged as drifting or unattached"&gt;&lt;/span&gt;&lt;span class="images-icon images-{has_images}" title="{images_hint}"&gt;&lt;/span&gt;' />
+    <column name='status' display='Status' sql='o.id' datatype="integer"
+        template='{occurrence_id} &lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="drifting-icon drifting-{attr_occurrence_#drift_attr_id#}" title="Record has been flagged as drifting or unattached"&gt;&lt;/span&gt;&lt;span class="images-icon images-{has_images}" title="{images_hint}"&gt;&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="upper(substring(o.default_common_name from 1 for 1)) || substring(o.default_common_name from 2 for length(o.default_common_name))" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
     <column name='taxon' display='Species' datatype="species" sql="o.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='taxon_group' display='Taxon group' sql='o.taxon_group' datatype="text" visible="false"  />
