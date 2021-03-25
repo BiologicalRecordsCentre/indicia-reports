@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="UKBMS sampling locations (except BBS)" description="All UKBMS lsampling locations except WCBS-BBS">
+<report title="UKBMS sampling locations (except BBS and confidential)" description="All UKBMS sampling locations except WCBS-BBS and confidential locations">
   <query>
     SELECT * FROM
       (SELECT
+      lav.int_value as confidential,
       l.id as id,
       l.name as name,
       t.term as type,
@@ -21,12 +22,13 @@
       left JOIN samples sp ON sp.location_id=l.id
       join termlists_terms tt on l.location_type_id = tt.id
       join terms t on tt.term_id = t.id
+      left join location_attribute_values lav on l.id = lav.location_id AND lav.location_attribute_id = 245 AND lav.deleted=false
       WHERE l.deleted=false
         AND l.location_type_id in (777, 5196)
         AND lw.website_id=27
-      group by l.id, t.term
+      group by l.id, t.term, lav.int_value
       order by samples asc, name) as subsel
-    where ltype=777 or samples>0
+    where (ltype=777 or samples>0) and (confidential is NULL or confidential = 0)
   </query>
   <columns>
     <column name="lat" display="Lat" visible="false"/>

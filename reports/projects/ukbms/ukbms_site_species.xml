@@ -8,11 +8,7 @@
     join cache_taxa_taxon_lists cttl on cttl.taxon_meaning_id = cof.taxon_meaning_id
     where csf.website_id=27
     and (l.parent_id=#location_id# or l.id=#location_id#)
-    and (select count(*) > 0 
-      from (select unnest(cof.taxon_path) taxon_meaning_id) taxon_path 
-      join (select taxon_meaning_id from cache_taxa_taxon_lists
-      where taxon in ('Hesperiidae', 'Lycaenidae', 'Nymphalidae', 'Papilionidae', 'Pieridae', 'Riodinidae')
-      and taxon_list_id=15) bfamily on taxon_path.taxon_meaning_id=bfamily.taxon_meaning_id)
+    and cof.taxon_group_id = 104
     group by cttl.preferred_taxon, cttl.default_common_name
   </query>
   <params>
