@@ -9,6 +9,9 @@
     where csf.website_id=27
     and (l.parent_id=#location_id# or l.id=#location_id#)
     and cof.taxon_group_id = 104
+    and cof.zero_abundance = False
+	  and cof.training = False
+	  and cttl.preferred = True
     group by cttl.preferred_taxon, cttl.default_common_name
   </query>
   <params>
