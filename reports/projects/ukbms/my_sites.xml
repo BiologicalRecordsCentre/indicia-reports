@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="Branch sites list for UKBMS"
-    description="Lists sites and count of samples.">
+<report title="My sites list for UKBMS"
+    description="Lists sites and count of occurrences and species.">
   <query website_filter_field="lw.website_id">
     SELECT #columns#
-    FROM locations l
-    JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
-    JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
-    JOIN location_attribute_values vUserLink ON vUserLink.location_id=l.id
-      AND vUserLink.location_attribute_id=#user_link_attr_id# AND vUserLink.deleted = FALSE
-      AND vUserLink.int_value = #user_id#
-    LEFT JOIN samples sp ON sp.location_id=l.id AND sp.deleted = FALSE
-    #joins#
-    WHERE #website_filter#
+      FROM locations l
+      JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
+      JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
+      JOIN location_attribute_values vUserLink ON vUserLink.location_id=l.id
+        AND vUserLink.location_attribute_id=#user_link_attr_id# AND vUserLink.deleted = FALSE
+        AND vUserLink.int_value = #user_id#
+      LEFT JOIN samples s ON s.location_id = l.id AND s.deleted = false
+      LEFT JOIN cache_occurrences_functional o ON o.parent_sample_id = s.id AND o.zero_abundance='f'
+      #joins#
+      WHERE #website_filter#
       AND l.deleted=false
   </query>
   <order_bys>
-    <order_by>samples DESC</order_by>
+    <order_by>occurrences DESC</order_by>
+    <order_by>taxa DESC</order_by>
     <order_by>name ASC</order_by>
   </order_bys>
   <params>
@@ -31,6 +33,7 @@
     <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
     <column name="name" display="Site Name" sql="l.name" />
     <column name="location_type" display="Site Type" sql="ctt.term" />
-    <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
+    <column name="occurrences" display="No. of Occurrences" sql="COUNT(DISTINCT o.id)" aggregate="true" />
+    <column name="taxa" display="No. of Taxa" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
   </columns>
 </report>
