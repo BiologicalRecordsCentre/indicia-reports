@@ -1,6 +1,7 @@
 <report
-    title="Squares Summary."
-    description="A summary of which squares have been allocated and which have had 1 or more surveys carried out so far."
+    title="Squares Summary Mappable"
+    description="A summary of which squares have been allocated and which have had 1 or more surveys carried out so far.
+    Can work with a map."
 >
   <query website_filter_field="">
     SELECT #columns# 
@@ -9,6 +10,7 @@
       LEFT JOIN location_attribute_values lavAlloc on lavAlloc.location_id=l.id AND lavAlloc.location_attribute_id=#allocated_square_attr_id# AND lavAlloc.deleted=false
       LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.survey_id in (#survey_ids#)
       WHERE l.location_type_id in (#location_type_ids#)
+      AND l.deleted = false
       AND #website_filter#
   </query>
   <params>
@@ -21,5 +23,10 @@
     <column name='name' sql="l.name" display='Square' datatype="text"/>
     <column name="allocated" display='Allocated?' sql="case when lavAlloc.int_value = 1 then 'Yes' else 'No' end" datatype="text"/> 
     <column name="surveyed" display='Surveyed?' sql="case when count(csf.id) > 0 then 'Yes' else 'No' end" datatype="text" aggregate="true"/> 
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="case when lavAlloc.int_value = 1 then 1 else 0.5 end"  />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="case when count(csf.id) > 0 then 'green' else 'red' end" aggregate="true"/>
+    <column name="fc" visible="false" feature_style="fillColor" sql="case when count(csf.id) > 0 then 'green' else 'red' end" aggregate="true"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(l.centroid_geom)"/>
+    <column name="count" display='Count?' sql="count(csf.id)" datatype="integer" aggregate="true"/> 
   </columns>
 </report>
