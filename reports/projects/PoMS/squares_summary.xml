@@ -1,0 +1,25 @@
+<report
+    title="Squares Summary."
+    description="A summary of which squares have been allocated and which have had 1 or more surveys carried out so far."
+>
+  <query website_filter_field="">
+    SELECT #columns# 
+      FROM locations l
+      LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+      LEFT JOIN location_attribute_values lavAlloc on lavAlloc.location_id=l.id AND lavAlloc.location_attribute_id=#allocated_square_attr_id# AND lavAlloc.deleted=false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.survey_id in (#survey_ids#)
+      WHERE l.location_type_id in (#location_type_ids#)
+      AND #website_filter#
+  </query>
+  <params>
+    <param name = "location_type_ids" display="Location type Is" description = "Comma separated list of Location IDs to limit report to." datatype="integer"/>  
+    <param name = "allocated_square_attr_id" display="Allocated square attribute ID" description = "." datatype="integer"/> 
+    <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/> 
+  </params>
+  <columns>
+    <column name='id' sql="l.id" display='Square ID' datatype="integer" in_count="true"/>
+    <column name='name' sql="l.name" display='Square' datatype="text"/>
+    <column name="allocated" display='Allocated?' sql="case when lavAlloc.int_value = 1 then 'Yes' else 'No' end" datatype="text"/> 
+    <column name="surveyed" display='Surveyed?' sql="case when count(csf.id) > 0 then 'Yes' else 'No' end" datatype="text" aggregate="true"/> 
+  </columns>
+</report>
