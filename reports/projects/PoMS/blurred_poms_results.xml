@@ -7,12 +7,6 @@
     SELECT #columns# 
       FROM cache_samples_functional s
       JOIN cache_samples_nonfunctional csnf on csnf.id = s.id
-      LEFT JOIN sample_attribute_values hab_sav on hab_sav.sample_id = s.id AND hab_sav.sample_attribute_id = #habitat_smp_id# 
-          AND hab_sav.deleted = false
-      LEFT JOIN cache_termlists_terms hab_term on hab_term.id = hab_sav.int_value
-      LEFT JOIN sample_attribute_values target_sav on target_sav.sample_id = s.id AND target_sav.sample_attribute_id = #target_smp_id# 
-          AND target_sav.deleted = false
-      LEFT JOIN cache_termlists_terms target_term on target_term.id = target_sav.int_value
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
       LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
       LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id 
@@ -82,15 +76,17 @@
     <column name='location_name' display='Location' sql='s.location_name' datatype="text"/>
     <column name='public_sref' display='Spatial ref output' sql="csnf.public_entered_sref" datatype="text"/>
     <column name='entered_sref_system' display='Projection entered' sql="csnf.entered_sref_system" datatype="text"/>
-    <column name='habitat' display='Habitat' sql='hab_term.term' datatype="text"/>
+    <column name='habitat' display='Habitat' sql="csnf.attrs_json->>'#habitat_smp_id#'" datatype="text"/>
     <column name="other_habitat" display='Other habitat' sql="
         csnf.attrs_json->>'#other_habitat_attr_id#'" datatype="text"/>
-    <column name='target' display='Target flower' sql='target_term.term' datatype="text"/>
+    <column name='target' display='Target flower' sql="csnf.attrs_json->>'#target_smp_id#'" datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
-    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
     <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
     <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
+    <column name="start_time" display='Start time' sql="csnf.attrs_json->>'#start_time_attr_id#'" datatype="text"/>
+    <column name='pan_trap_number' display='Pan-trap number' sql="csnf.attrs_json->>'#trap_station_smp_id#'"/>
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
     <column name="bumblebees" display='Bumblebees' sql="
         count(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="honeybee" display='Honeybees' sql="
@@ -111,7 +107,6 @@
         count(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="other_insects" display='Other insects' sql="
         count(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="start_time" display='Start time' sql="csnf.attrs_json->>'#start_time_attr_id#'" datatype="text" />
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>'#cover_within_patch_attr_id#'" datatype="text" />
     <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>'#flowers_counted_attr_id#'" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>'#flower_unit_attr_id#'" datatype="text" />
