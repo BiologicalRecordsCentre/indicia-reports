@@ -59,6 +59,7 @@
     <param name="ownData" display="My data only?" datatype="checkbox">
       <where value="1">s.created_by_id=#current_user_id#</where>
     </param>
+    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
@@ -77,44 +78,44 @@
     <column name='date' display='Date' datatype="date"/>
     <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
     <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
-    <column name='habitat' display='Habitat' sql="csnf.attrs_json->>'#habitat_smp_id#'" datatype="text"/>
+    <column name='habitat' display='Habitat' sql="csnf.attrs_json->>('#habitat_smp_id#' || ':' || '#language#')" datatype="text"/>
     <column name="other_habitat" display='Other habitat' sql="
-        csnf.attrs_json->>'#other_habitat_attr_id#'" datatype="text"/>
-    <column name='target' display='Target flower' sql="csnf.attrs_json->>'#target_smp_id#'" datatype="text"/>
+        csnf.attrs_json->>('#other_habitat_attr_id#' || ':' || '#language#')" datatype="text"/>
+    <column name='target' display='Target flower' sql="csnf.attrs_json->>('#target_smp_id#' || ':' || '#language#')" datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
     <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
     <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
-    <column name='start_time' display='Start time' sql="csnf.attrs_json->>'#trap_station_smp_id#'" />
-    <column name='pan_trap_number' display='Pan-trap number' sql="csnf.attrs_json->>'#trap_station_smp_id#'"/>
+    <column name='start_time' display='Start time' sql="csnf.attrs_json->>('#trap_station_smp_id#' || ':' || '#language#')" />
+    <column name='pan_trap_number' display='Pan-trap number' sql="csnf.attrs_json->>('#trap_station_smp_id#' || ':' || '#language#')"/>
     <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
     <column name="bumblebees" display='Bumblebees' sql="
-        count(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="honeybee" display='Honeybees' sql="
-        count(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="solitary_bee" display='Solitary bees' sql="
-        count(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="wasp" display='Wasps' sql="
-        count(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="hoverflies" display='Hoverflies' sql="
-        count(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="other_flies" display='Other flies' sql="
-        count(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="butterflies_moths" display='Butterflies moths' sql="
-        count(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="beetles" display='Beetles' sql="
-        count(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="small_insects" display='Small insects' sql="
-        count(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
+        count(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="other_insects" display='Other insects' sql="
-        count(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>'#abundance_attr_id#')::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>'#cover_within_patch_attr_id#'" datatype="text" />
-    <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>'#flowers_counted_attr_id#'" datatype="text" />
-    <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>'#flower_unit_attr_id#'" datatype="text" />
-    <column name="patch_context_attr_id" display='Patch context' sql="csnf.attrs_json->>'#patch_context_attr_id#'" datatype="text" />
-    <column name="cloud_cover_attr_id" display='Cloud cover' sql="csnf.attrs_json->>'#cloud_cover_attr_id#'" datatype="text" />
-    <column name="wind_attr_id" display='Wind' sql="csnf.attrs_json->>'#wind_attr_id#'" datatype="text" />
-    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="csnf.attrs_json->>'#patch_sunshine_attr_id#'" datatype="text" />
+        count(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>('#cover_within_patch_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>('#flowers_counted_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>('#flower_unit_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="patch_context_attr_id" display='Patch context' sql="csnf.attrs_json->>('#patch_context_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="cloud_cover_attr_id" display='Cloud cover' sql="csnf.attrs_json->>('#cloud_cover_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="wind_attr_id" display='Wind' sql="csnf.attrs_json->>('#wind_attr_id#' || ':' || '#language#')" datatype="text" />
+    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="csnf.attrs_json->>('#patch_sunshine_attr_id#' || ':' || '#language#')" datatype="text" />
     <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
     <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
         sql="CASE WHEN 
