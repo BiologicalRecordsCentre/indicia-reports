@@ -1,6 +1,6 @@
 <report
     title="PoMS results in detail mapping"
-    description="Detailed PomS results for map. Includes full detail location data"
+    description="Detailed PomS results for map for administrators. Includes full detail location data"
 >
   <query website_filter_field="" training_filter_field="" >
     SELECT #columns# 
