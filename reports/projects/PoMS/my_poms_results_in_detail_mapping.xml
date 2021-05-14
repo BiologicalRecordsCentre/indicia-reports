@@ -96,5 +96,6 @@
     <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
         internal_sql="s.record_status"/>
     <column name="geom" visible="false" mappable="true" sql="st_astext(s.geom)" />
+    <column name="language" display = "Preferred language" sql="case when '#language#' = 'cym' then 'cym' else 'eng' end" datatype="text" />
   </columns>
 </report>
