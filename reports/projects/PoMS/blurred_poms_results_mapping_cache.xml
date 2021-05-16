@@ -1,6 +1,6 @@
 <report
     title="Blurred PoMS results mapping"
-    description="All PomS results for map. Includes blurred location data.
+    description="All PomS results for map. Includes blurred location data. Data from attrs_json so this report version has no multi-lingual support.
     Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 638, 641"
 >
   <query website_filter_field="" training_filter_field="s.training" standard_params="samples">
@@ -50,38 +50,37 @@
     <param name = "wind_attr_id" display="Wind sample attr ID" description = "ID of the sample attribute that holds the wind value." datatype="integer"/>
     <param name = "patch_sunshine_attr_id" display="Patch sample attr ID" description = "ID of the sample attribute that holds the patch sunshine." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
-    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"/>
     <column name="beetles" display='Beetles' sql="
-        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="bumblebees" display='Bumblebees' sql="
-        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="butterflies_moths" display='Butterflies moths' sql="
-        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>       
+        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>       
     <column name="honeybee" display='Honeybees' sql="
-        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="hoverflies" display='Hoverflies' sql="
-        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
      <column name="other_flies" display='Other flies' sql="
-        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>   
+        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>   
     <column name="other_insects" display='Other insects' sql="
-        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
     <column name="small_insects" display='Small insects' sql="
-        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
     <column name="solitary_bee" display='Solitary bees' sql="
-        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="wasp" display='Wasps' sql="
-        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="start_time" display='Start time' sql="csnf.attrs_json->>('#start_time_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>('#cover_within_patch_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>('#flowers_counted_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>('#flower_unit_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="patch_context_attr_id" display='Patch context' sql="csnf.attrs_json->>('#patch_context_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="cloud_cover_attr_id" display='Cloud cover' sql="csnf.attrs_json->>('#cloud_cover_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="wind_attr_id" display='Wind' sql="csnf.attrs_json->>('#wind_attr_id#' || ':' || '#language#')" datatype="text" />
-    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="csnf.attrs_json->>('#patch_sunshine_attr_id#' || ':' || '#language#')" datatype="text" />
+        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="start_time" display='Start time' sql="csnf.attrs_json->>('#start_time_attr_id#')" datatype="text" />
+    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>('#cover_within_patch_attr_id#')" datatype="text" />
+    <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>('#flowers_counted_attr_id#')" datatype="text" />
+    <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>('#flower_unit_attr_id#')" datatype="text" />
+    <column name="patch_context_attr_id" display='Patch context' sql="csnf.attrs_json->>('#patch_context_attr_id#')" datatype="text" />
+    <column name="cloud_cover_attr_id" display='Cloud cover' sql="csnf.attrs_json->>('#cloud_cover_attr_id#')" datatype="text" />
+    <column name="wind_attr_id" display='Wind' sql="csnf.attrs_json->>('#wind_attr_id#')" datatype="text" />
+    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="csnf.attrs_json->>('#patch_sunshine_attr_id#')" datatype="text" />
     <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
     <column name="sc" visible="false" feature_style="strokeColor" sql="
       case s.record_status 
