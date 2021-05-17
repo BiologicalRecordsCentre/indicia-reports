@@ -1,0 +1,144 @@
+<report
+    title="PoMS results in detail mapping"
+    description="Detailed PomS results for map for administrators. Includes full detail location data.
+    Doesn't use cache attributes so we have multi-lingual support."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM samples s
+      JOIN indicia.cache_samples_functional csf on csf.id = s.id
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id 
+          and cof.taxon_meaning_id in (#bumblebee_taxon_meaning_id#,#honeybee_taxon_meaning_id#,#solitary_bee_taxon_meaning_id#,#wasp_taxon_meaning_id#,#hoverflies_taxon_meaning_id#,
+              #other_flies_taxon_meaning_id#,#butterflies_moths_taxon_meaning_id#,#beetles_taxon_meaning_id#,#small_insects_taxon_meaning_id#,#other_insects_taxon_meaning_id#)
+      LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
+
+      LEFT JOIN sample_attribute_values sav_start_time on sav_start_time.id = csnf.id 
+          AND sav_start_time.sample_attribute_id = #start_time_attr_id#
+          AND sav_start_time.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_start_time on ctt_start_time.id = sav_start_time.int_value AND ctt_start_time.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_cover on sav_cover.id = csnf.id 
+          AND sav_cover.sample_attribute_id = #cover_within_patch_attr_id#
+          AND sav_cover.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_cover on ctt_cover.id = sav_cover.int_value AND ctt_cover.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.id = csnf.id 
+          AND sav_flowers_counted.sample_attribute_id = #flowers_counted_attr_id#
+          AND sav_flowers_counted.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_flowers_counted on ctt_flowers_counted .id = sav_flowers_counted.int_value AND ctt_flowers_counted.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_flowers_unit on sav_flowers_unit.id = csnf.id 
+          AND sav_flowers_unit.sample_attribute_id = #flower_unit_attr_id#
+          AND sav_flowers_unit.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_flowers_unit on ctt_flowers_unit.id = sav_flowers_unit.int_value AND ctt_flowers_unit.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_patch_context on sav_patch_context.id = csnf.id 
+          AND sav_patch_context.sample_attribute_id = #patch_context_attr_id#
+          AND sav_patch_context.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_patch_context on ctt_patch_context.id = sav_patch_context.int_value AND ctt_patch_context.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_cloud_cover on sav_cloud_cover.id = csnf.id 
+          AND sav_cloud_cover.sample_attribute_id = #cloud_cover_attr_id#
+          AND sav_cloud_cover.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_cloud_cover on ctt_cloud_cover.id = sav_cloud_cover.int_value AND ctt_cloud_cover.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_wind on sav_wind.id = csnf.id 
+          AND sav_wind.sample_attribute_id = #wind_attr_id#
+          AND sav_wind.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_wind on ctt_wind.id = sav_wind.int_value AND ctt_wind.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_patch_sunshine on sav_patch_sunshine.id = csnf.id 
+          AND sav_patch_sunshine.sample_attribute_id = #patch_sunshine_attr_id#
+          AND sav_patch_sunshine.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value AND ctt_patch_sunshine.language_iso = '#language#'
+
+      #agreements_join#
+      WHERE #sharing_filter# 
+        AND csf.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+        )
+        AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
+            AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND (CAST(s.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
+  </query>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
+      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name = "beetles_taxon_meaning_id" display="Beetles taxon meaning ID" description = "Meaning ID for beetles." datatype="integer"/>
+    <param name = "bumblebee_taxon_meaning_id" display="Bumblebee taxon meaning ID" description = "Meaning ID for bumblebee." datatype="integer"/>
+    <param name = "butterflies_moths_taxon_meaning_id" display="Butteflies moths taxon meaning ID" description = "Meaning ID for butterflies moths." datatype="integer"/>
+    <param name = "honeybee_taxon_meaning_id" display="Honeybee taxon meaning ID" description = "Meaning ID for Honeybee." datatype="integer"/>
+    <param name = "hoverflies_taxon_meaning_id" display="Hoverfly taxon meaning ID" description = "Meaning ID for hoverfly." datatype="integer"/>
+    <param name = "other_flies_taxon_meaning_id" display="Other flies taxon meaning ID" description = "Meaning ID for other flies." datatype="integer"/>
+    <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
+    <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
+    <param name = "solitary_bee_taxon_meaning_id" display="Solitary bee taxon meaning ID" description = "Meaning ID for solitary bee." datatype="integer"/>
+    <param name = "wasp_taxon_meaning_id" display="Wasp taxon meaning ID" description = "Meaning ID for wasp." datatype="integer"/>
+    <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
+    <param name = "cover_within_patch_attr_id" display="Cover within patch sample attr ID" description = "ID of the sample attribute that holds the cover within patch." datatype="integer"/>
+    <param name = "flowers_counted_attr_id" display="Flowers counted sample attr ID" description = "ID of the sample attribute that holds the flowers counted." datatype="integer"/>
+    <param name = "flower_unit_attr_id" display="Flower unit sample attr ID" description = "ID of the sample attribute that holds the flower unit." datatype="integer"/>
+    <param name = "patch_context_attr_id" display="Patch context sample attr ID" description = "ID of the sample attribute that holds the patch context." datatype="integer"/>
+    <param name = "cloud_cover_attr_id" display="Cloud_cover sample attr ID" description = "ID of the sample attribute that holds the cloud cover." datatype="integer"/>
+    <param name = "wind_attr_id" display="Wind sample attr ID" description = "ID of the sample attribute that holds the wind value." datatype="integer"/>
+    <param name = "patch_sunshine_attr_id" display="Patch sample attr ID" description = "ID of the sample attribute that holds the patch sunshine." datatype="integer"/>
+    <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">s.created_by_id=#current_user_id#</where>
+    </param>
+    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+  </params>
+  <columns>
+    <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="beetles" display='Beetles' sql="
+        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="bumblebees" display='Bumblebees' sql="
+        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="butterflies_moths" display='Butterflies moths' sql="
+        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>       
+    <column name="honeybee" display='Honeybees' sql="
+        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="hoverflies" display='Hoverflies' sql="
+        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+     <column name="other_flies" display='Other flies' sql="
+        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>   
+    <column name="other_insects" display='Other insects' sql="
+        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+    <column name="small_insects" display='Small insects' sql="
+        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+    <column name="solitary_bee" display='Solitary bees' sql="
+        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="wasp" display='Wasps' sql="
+        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="start_time" display='Start time' sql="ctt_start_time.term" datatype="text" />
+    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover.term" datatype="text" />
+    <column name="flowers_counted_attr_id" display='Flowers counted' sql="ctt_flowers_counted.term" datatype="text" />
+    <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit.term" datatype="text" />
+    <column name="patch_context_attr_id" display='Patch context' sql="ctt_patch_context.term" datatype="text" />
+    <column name="cloud_cover_attr_id" display='Cloud cover' sql="ctt_cloud_cover.term" datatype="text" />
+    <column name="wind_attr_id" display='Wind' sql="ctt_wind.term" datatype="text" />
+    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="ctt_patch_sunshine.term" datatype="text" />
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case s.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="s.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="s.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(s.geom)" />
+    <column name="language" display = "Preferred language" sql="case when '#language#' = 'cym' then 'cym' else 'eng' end" datatype="text" />
+  </columns>
+</report>
