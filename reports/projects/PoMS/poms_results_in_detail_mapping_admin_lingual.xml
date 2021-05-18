@@ -16,42 +16,50 @@
       LEFT JOIN sample_attribute_values sav_start_time on sav_start_time.id = csnf.id 
           AND sav_start_time.sample_attribute_id = #start_time_attr_id#
           AND sav_start_time.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_start_time on ctt_start_time.id = sav_start_time.int_value AND ctt_start_time.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_start_time on ctt_start_time.id = sav_start_time.int_value
+      LEFT JOIN cache_termlists_terms ctt_start_time_lang on ctt_start_time_lang.meaning_id = ctt_start_time.meaning_id AND ctt_start_time_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_cover on sav_cover.id = csnf.id 
           AND sav_cover.sample_attribute_id = #cover_within_patch_attr_id#
           AND sav_cover.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_cover on ctt_cover.id = sav_cover.int_value AND ctt_cover.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_cover on ctt_cover.id = sav_cover.int_value
+      LEFT JOIN cache_termlists_terms ctt_cover_lang on ctt_cover_lang.meaning_id = ctt_cover.meaning_id AND ctt_cover_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.id = csnf.id 
           AND sav_flowers_counted.sample_attribute_id = #flowers_counted_attr_id#
           AND sav_flowers_counted.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_flowers_counted on ctt_flowers_counted .id = sav_flowers_counted.int_value AND ctt_flowers_counted.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_flowers_counted on ctt_flowers_counted .id = sav_flowers_counted.int_value
+      LEFT JOIN cache_termlists_terms ctt_flowers_counted_lang on ctt_flowers_counted_lang.meaning_id = ctt_flowers_counted.meaning_id AND ctt_flowers_counted_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_flowers_unit on sav_flowers_unit.id = csnf.id 
           AND sav_flowers_unit.sample_attribute_id = #flower_unit_attr_id#
           AND sav_flowers_unit.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_flowers_unit on ctt_flowers_unit.id = sav_flowers_unit.int_value AND ctt_flowers_unit.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_flowers_unit on ctt_flowers_unit.id = sav_flowers_unit.int_value
+      LEFT JOIN cache_termlists_terms ctt_flowers_unit_lang on ctt_flowers_unit_lang.meaning_id = ctt_flowers_unit.meaning_id AND ctt_flowers_unit_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_patch_context on sav_patch_context.id = csnf.id 
           AND sav_patch_context.sample_attribute_id = #patch_context_attr_id#
           AND sav_patch_context.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_patch_context on ctt_patch_context.id = sav_patch_context.int_value AND ctt_patch_context.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_patch_context on ctt_patch_context.id = sav_patch_context.int_value
+      LEFT JOIN cache_termlists_terms ctt_patch_context_lang on ctt_patch_context_lang.meaning_id = ctt_patch_context.meaning_id AND ctt_patch_context_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_cloud_cover on sav_cloud_cover.id = csnf.id 
           AND sav_cloud_cover.sample_attribute_id = #cloud_cover_attr_id#
           AND sav_cloud_cover.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_cloud_cover on ctt_cloud_cover.id = sav_cloud_cover.int_value AND ctt_cloud_cover.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_cloud_cover on ctt_cloud_cover.id = sav_cloud_cover.int_value
+      LEFT JOIN cache_termlists_terms ctt_cloud_cover_lang on ctt_cloud_cover_lang.meaning_id = ctt_cloud_cover.meaning_id AND ctt_cloud_cover_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_wind on sav_wind.id = csnf.id 
           AND sav_wind.sample_attribute_id = #wind_attr_id#
           AND sav_wind.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_wind on ctt_wind.id = sav_wind.int_value AND ctt_wind.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_wind on ctt_wind.id = sav_wind.int_value
+      LEFT JOIN cache_termlists_terms ctt_wind_lang on ctt_wind_lang.meaning_id = ctt_wind.meaning_id AND ctt_wind_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_patch_sunshine on sav_patch_sunshine.id = csnf.id 
           AND sav_patch_sunshine.sample_attribute_id = #patch_sunshine_attr_id#
           AND sav_patch_sunshine.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value AND ctt_patch_sunshine.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value
+      LEFT JOIN cache_termlists_terms ctt_patch_sunshine_lang on ctt_patch_sunshine_lang.meaning_id = ctt_patch_sunshine.meaning_id AND ctt_patch_sunshine_lang.language_iso = '#language#'
 
       #agreements_join#
       WHERE #sharing_filter# 
@@ -120,14 +128,14 @@
         sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="wasp" display='Wasps' sql="
         sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#' || ':' || '#language#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="start_time" display='Start time' sql="ctt_start_time.term" datatype="text" />
-    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover.term" datatype="text" />
-    <column name="flowers_counted_attr_id" display='Flowers counted' sql="ctt_flowers_counted.term" datatype="text" />
-    <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit.term" datatype="text" />
-    <column name="patch_context_attr_id" display='Patch context' sql="ctt_patch_context.term" datatype="text" />
-    <column name="cloud_cover_attr_id" display='Cloud cover' sql="ctt_cloud_cover.term" datatype="text" />
-    <column name="wind_attr_id" display='Wind' sql="ctt_wind.term" datatype="text" />
-    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="ctt_patch_sunshine.term" datatype="text" />
+    <column name="start_time" display='Start time' sql="ctt_start_time_lang.term" datatype="text" />
+    <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover_lang.term" datatype="text" />
+    <column name="flowers_counted_attr_id" display='Flowers counted' sql="ctt_flowers_counted_lang.term" datatype="text" />
+    <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit_lang.term" datatype="text" />
+    <column name="patch_context_attr_id" display='Patch context' sql="ctt_patch_context_lang.term" datatype="text" />
+    <column name="cloud_cover_attr_id" display='Cloud cover' sql="ctt_cloud_cover_lang.term" datatype="text" />
+    <column name="wind_attr_id" display='Wind' sql="ctt_wind_lang.term" datatype="text" />
+    <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="ctt_patch_sunshine_lang.term" datatype="text" />
     <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
     <column name="sc" visible="false" feature_style="strokeColor" sql="
       case s.record_status 
