@@ -10,43 +10,43 @@
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
       LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
 
-      LEFT JOIN sample_attribute_values sav_cover on sav_cover.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_cover on sav_cover.sample_id = csnf.id 
           AND sav_cover.sample_attribute_id = #cover_within_patch_attr_id#
           AND sav_cover.deleted = false
       LEFT JOIN cache_termlists_terms ctt_cover on ctt_cover.id = sav_cover.int_value
       LEFT JOIN cache_termlists_terms ctt_cover_lang on ctt_cover_lang.meaning_id = ctt_cover.meaning_id AND ctt_cover_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.sample_id = csnf.id 
           AND sav_flowers_counted.sample_attribute_id = #flowers_counted_attr_id#
           AND sav_flowers_counted.deleted = false
       LEFT JOIN cache_termlists_terms ctt_flowers_counted on ctt_flowers_counted .id = sav_flowers_counted.int_value
       LEFT JOIN cache_termlists_terms ctt_flowers_counted_lang on ctt_flowers_counted_lang.meaning_id = ctt_flowers_counted.meaning_id AND ctt_flowers_counted_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_flowers_unit on sav_flowers_unit.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_flowers_unit on sav_flowers_unit.sample_id = csnf.id 
           AND sav_flowers_unit.sample_attribute_id = #flower_unit_attr_id#
           AND sav_flowers_unit.deleted = false
       LEFT JOIN cache_termlists_terms ctt_flowers_unit on ctt_flowers_unit.id = sav_flowers_unit.int_value
       LEFT JOIN cache_termlists_terms ctt_flowers_unit_lang on ctt_flowers_unit_lang.meaning_id = ctt_flowers_unit.meaning_id AND ctt_flowers_unit_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_patch_context on sav_patch_context.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_patch_context on sav_patch_context.sample_id = csnf.id 
           AND sav_patch_context.sample_attribute_id = #patch_context_attr_id#
           AND sav_patch_context.deleted = false
       LEFT JOIN cache_termlists_terms ctt_patch_context on ctt_patch_context.id = sav_patch_context.int_value
       LEFT JOIN cache_termlists_terms ctt_patch_context_lang on ctt_patch_context_lang.meaning_id = ctt_patch_context.meaning_id AND ctt_patch_context_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_cloud_cover on sav_cloud_cover.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_cloud_cover on sav_cloud_cover.sample_id = csnf.id 
           AND sav_cloud_cover.sample_attribute_id = #cloud_cover_attr_id#
           AND sav_cloud_cover.deleted = false
       LEFT JOIN cache_termlists_terms ctt_cloud_cover on ctt_cloud_cover.id = sav_cloud_cover.int_value
       LEFT JOIN cache_termlists_terms ctt_cloud_cover_lang on ctt_cloud_cover_lang.meaning_id = ctt_cloud_cover.meaning_id AND ctt_cloud_cover_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_wind on sav_wind.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_wind on sav_wind.sample_id = csnf.id 
           AND sav_wind.sample_attribute_id = #wind_attr_id#
           AND sav_wind.deleted = false
       LEFT JOIN cache_termlists_terms ctt_wind on ctt_wind.id = sav_wind.int_value
       LEFT JOIN cache_termlists_terms ctt_wind_lang on ctt_wind_lang.meaning_id = ctt_wind.meaning_id AND ctt_wind_lang.language_iso = '#language#'
 
-      LEFT JOIN sample_attribute_values sav_patch_sunshine on sav_patch_sunshine.id = csnf.id 
+      LEFT JOIN sample_attribute_values sav_patch_sunshine on sav_patch_sunshine.sample_id = csnf.id 
           AND sav_patch_sunshine.sample_attribute_id = #patch_sunshine_attr_id#
           AND sav_patch_sunshine.deleted = false
       LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value
