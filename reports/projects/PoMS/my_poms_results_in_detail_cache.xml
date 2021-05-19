@@ -1,5 +1,5 @@
 <report
-    title="PoMS results in detail"
+    title="My PoMS results in detail"
     description="PomS results in detail on My Records page. Includes full detail location data.
     Data from attrs_json so this report version has no multi-lingual support."
 >
@@ -37,7 +37,6 @@
     <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
-    <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
     <param name = "cover_within_patch_attr_id" display="Cover within patch sample attr ID" description = "ID of the sample attribute that holds the cover within patch." datatype="integer"/>
     <param name = "flowers_counted_attr_id" display="Flowers counted sample attr ID" description = "ID of the sample attribute that holds the flowers counted." datatype="integer"/>
     <param name = "flower_unit_attr_id" display="Flower unit sample attr ID" description = "ID of the sample attribute that holds the flower unit." datatype="integer"/>
@@ -67,42 +66,22 @@
         when #fit_count_app_survey_id# then 'FIT Count App'
         else ''
         END" display='Survey' datatype="integer"/>
+    <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
+    <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
     <column name='date_start' sql='s.date_start' visible="false"/>
     <column name='date_end' sql='s.date_end' visible="false"/>
     <column name='date_type' sql='s.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
-    <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
+    <column name='start_time' display='Start time' sql="csnf.attrs_json->>('#start_time_smp_id#')" />
+    <column name='recorder_names' display='Recorder' sql='csnf.recorders'/>
+    <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
+    <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
+    <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
     <column name='habitat' display='Habitat' sql="csnf.attrs_json->>('#habitat_smp_id#')" datatype="text"/>
     <column name="other_habitat" display='Other habitat' sql="
         csnf.attrs_json->>('#other_habitat_attr_id#')" datatype="text"/>
     <column name='target' display='Target flower' sql="csnf.attrs_json->>('#target_smp_id#')" datatype="text"/>
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
-    <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
-    <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
-    <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
-    <column name='start_time' display='Start time' sql="csnf.attrs_json->>('#trap_station_smp_id#')" />
-    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
-    <column name="bumblebees" display='Bumblebees' sql="
-        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="honeybee" display='Honeybees' sql="
-        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="solitary_bee" display='Solitary bees' sql="
-        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="wasp" display='Wasps' sql="
-        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="hoverflies" display='Hoverflies' sql="
-        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="other_flies" display='Other flies' sql="
-        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="butterflies_moths" display='Butterflies moths' sql="
-        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="beetles" display='Beetles' sql="
-        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="small_insects" display='Small insects' sql="
-        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="other_insects" display='Other insects' sql="
-        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="csnf.attrs_json->>('#cover_within_patch_attr_id#')" datatype="text" />
     <column name="flowers_counted_attr_id" display='Flowers counted' sql="csnf.attrs_json->>('#flowers_counted_attr_id#')" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="csnf.attrs_json->>('#flower_unit_attr_id#')" datatype="text" />
@@ -110,7 +89,27 @@
     <column name="cloud_cover_attr_id" display='Cloud cover' sql="csnf.attrs_json->>('#cloud_cover_attr_id#')" datatype="text" />
     <column name="wind_attr_id" display='Wind' sql="csnf.attrs_json->>('#wind_attr_id#')" datatype="text" />
     <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="csnf.attrs_json->>('#patch_sunshine_attr_id#')" datatype="text" />
-    <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
+    <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
+    <column name="beetles" display='Beetles' sql="
+        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="bumblebees" display='Bumblebees' sql="
+        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="butterflies_moths" display='Butterflies moths' sql="
+        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="honeybee" display='Honeybees' sql="
+        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>  
+    <column name="hoverflies" display='Hoverflies' sql="
+        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="other_flies" display='Other flies' sql="
+        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="other_insects" display='Other insects' sql="
+        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="small_insects" display='Small insects' sql="
+        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="solitary_bee" display='Solitary bees' sql="
+        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="wasp" display='Wasps' sql="
+        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
         sql="CASE WHEN 
             (CAST(s.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
