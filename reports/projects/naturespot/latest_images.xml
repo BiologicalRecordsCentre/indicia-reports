@@ -9,7 +9,8 @@
      JOIN cache_samples_nonfunctional snf ON snf.id = o.sample_id
      JOIN occurrence_media oi ON oi.occurrence_id = o.id and oi.deleted=false
 WHERE o.website_id=8
-and o.record_status='V'
+AND o.record_status='V'
+AND 690=ANY(o.location_ids)
   </query>
   <order_bys>
     <order_by>o.updated_on DESC</order_by>
