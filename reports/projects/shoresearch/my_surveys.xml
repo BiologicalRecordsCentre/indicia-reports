@@ -9,7 +9,6 @@
   left join cache_samples_functional sc on sc.parent_sample_id=s.id
   where s.parent_sample_id is null
   and s.created_by_id=#user_id#
-  group by s.id, snf.survey_title, s.date_start, s.date_end, s.date_type, s.input_form
   </query>
   <order_bys>
     <order_by>s.date_start desc</order_by>
