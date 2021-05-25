@@ -1,0 +1,30 @@
+<report
+    title="My surveys"
+    description="List of a user's surveys"
+>
+  <query website_filter_field="s.website_id">
+  select #columns#
+  from cache_samples_functional s
+  join cache_samples_nonfunctional snf on snf.id=s.id
+  left join cache_samples_functional sc on sc.parent_sample_id=s.id
+  where s.parent_sample_id is null
+  and s.created_by_id=#user_id#
+  group by s.id, snf.survey_title, s.date_start, s.date_end, s.date_type, s.input_form
+  </query>
+  <order_bys>
+    <order_by>s.date_start desc</order_by>
+  </order_bys>
+  <params>
+    <param name="user_id" display="User ID" description="ID of the user to show surveys for" datatype="integer" />
+  </params>
+  <columns>
+    <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
+    <column name="survey_title" display="Survey type" sql="snf.survey_title" datatype="text" />
+    <column name='date_start' visible='false' sql='s.date_start' />
+    <column name='date_end' visible='false' sql='s.date_end' />
+    <column name='date_type' visible='false' sql='s.date_type' />
+    <column name='date' display='Date' datatype="date" />
+    <column name="input_form" visible="false" sql="s.input_form" datatype="text" />
+    <column name="subsamples" display="Samples" sql="count(sc.id)" datatype="integer" aggregate="true" />
+  </columns>
+</report>
