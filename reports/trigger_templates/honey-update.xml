@@ -44,9 +44,9 @@
         'Results from spring samples will be available in December and autumn samples in June of the following year. ' ||
         'Please update your online form to include yield and other information you feel is relevant to your honey sample.'
       WHEN sav.int_value = 14415 THEN
-        'We have updated your records with plant identification data obtained from DNA analysis of your honey ' ||
-        'sample. If you have not yet done so, please update your online form to include yield and other information ' ||
-        'you feel is relevant to your honey sample.'
+        'Your plant DNA sequencing results are now ready to view on your webpage. Please visit your history table via ' ||
+        'the Taking part tab and click on 'Analysis results are ready' to view the plant species found within your ' ||
+        'honey sample(s).'
       WHEN sav.int_value = 14683 THEN
         'Your sample was discounted from further analysis. Please log in to your account for further details.'
       WHEN sav.int_value = 17630 THEN
