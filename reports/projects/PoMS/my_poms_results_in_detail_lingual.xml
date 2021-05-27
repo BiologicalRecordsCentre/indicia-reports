@@ -83,6 +83,9 @@
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>

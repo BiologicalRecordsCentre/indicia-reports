@@ -21,6 +21,9 @@
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
   <params>
     <param name = 'year_termlist_id' display='Years termlist ID' datatype="int"/>
     <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
