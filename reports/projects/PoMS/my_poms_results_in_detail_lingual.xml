@@ -82,6 +82,7 @@
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+        AND s.created_by_id=#current_user_id#
   </query>
   <order_bys>
     <order_by>s.id DESC</order_by>
@@ -121,9 +122,6 @@
     <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
     <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
-    <param name="ownData" display="My data only?" datatype="checkbox">
-      <where value="1">s.created_by_id=#current_user_id#</where>
-    </param>
     <param name = "language" display = "Preferred language" datatype="text" default="eng" />
   </params>
   <columns>
