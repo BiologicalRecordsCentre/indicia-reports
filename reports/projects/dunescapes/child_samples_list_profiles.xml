@@ -43,5 +43,7 @@
       sql="coalesce((attrs_json->>'1495')::float, 0)" />
     <column name="slope_distance" display="Dune slope distance" datatype="float"
       sql="coalesce((attrs_json->>'1496')::float, 0)" />
+    <column name="slope_type" display="Dune slope type" datatype="text"
+      sql="attrs_json->>'1494'" />
   </columns>
 </report>
