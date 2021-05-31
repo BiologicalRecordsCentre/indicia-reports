@@ -81,8 +81,12 @@
         )
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
-        AND (CAST(s.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
+        AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+        AND s.created_by_id=#current_user_id#
   </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
@@ -96,7 +100,7 @@
     <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
-    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+    <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
     <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
@@ -118,9 +122,6 @@
     <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
     <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
-    <param name="ownData" display="My data only?" datatype="checkbox">
-      <where value="1">s.created_by_id=#current_user_id#</where>
-    </param>
     <param name = "language" display = "Preferred language" datatype="text" default="eng" />
   </params>
   <columns>

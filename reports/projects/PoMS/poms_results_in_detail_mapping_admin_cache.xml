@@ -20,8 +20,11 @@
         )
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
-        AND (CAST(s.survey_id AS character varying) = '#survey_id#' OR '#survey_id#'='')
+        AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
@@ -31,7 +34,7 @@
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
-    <param name = 'survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+    <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,638:1km pan traps,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
     <param name = "beetles_taxon_meaning_id" display="Beetles taxon meaning ID" description = "Meaning ID for beetles." datatype="integer"/>
