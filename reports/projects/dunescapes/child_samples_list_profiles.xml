@@ -1,6 +1,6 @@
 <report
-    title="Child samples list - Dunescape"
-    description="A general purpose list of Dunescape samples with parent sample ID."
+    title="Child samples list - Dunescapes profiles"
+    description="A list of Dunescape profile samples."
 >
   <query website_filter_field="s.website_id">
     SELECT #columns#
@@ -8,13 +8,15 @@
     JOIN cache_samples_nonfunctional snf on snf.id=s.id
     LEFT JOIN locations lc ON lc.id=s.location_id AND lc.deleted=false
     LEFT JOIN locations lp ON lp.id=lc.parent_id AND lp.deleted=false
-    LEFT JOIN location_attribute_values gv ON gv.location_id=lc.id AND gv.location_attribute_id=272 AND gv.deleted=false
+    LEFT JOIN cache_samples_functional sp on sp.id=s.parent_sample_id
+    LEFT JOIN locations lsp ON lsp.id=sp.location_id AND lsp.deleted=false
+    LEFT JOIN occurrences o ON o.sample_id=s.id AND o.deleted=false
     #joins#
     WHERE #website_filter#
     #filters#
   </query>
   <order_bys>
-    <order_by>s.parent_sample_id ASC, s.id ASC</order_by>
+    <order_by>sp.id ASC, s.id ASC</order_by>
   </order_bys>
   <params>
     <param name="survey_id" display="Survey ID" datatype="integer" default="">
@@ -28,16 +30,18 @@
   <columns>
     <column name="parent_sample_id" display="Parent sample ID" sql="s.parent_sample_id" />
     <column name="sample_id" display="Sample ID" sql="s.id" />
+    <column name="occurrence_id" display="Occurrence ID" sql="o.id" />
     <column name='entered_sref' display='Original grid ref' datatype="text" sql="snf.public_entered_sref" />
-    <column name='site_id' display='Site ID' datatype="text" sql="lp.id" />
-    <column name='site' display='Site' datatype="text" sql="lp.name" />
-    <column name='group' display='Group' datatype="text" sql="gv.text_value" />
-    <column name='fixed_point_id' display='Fixed point ID' datatype="text" sql="lc.id" />
-    <column name='fixed_point_label' display='Fixed point label' datatype="text" sql="lc.name" />
+    <column name='site' display='Site' datatype="text" sql="COALESCE(lp.name || ' - ', '') || lc.name" />
+    <column name='transect' display='Transect' datatype="text" sql="lsp.name" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
-    <column name='recorders' display='Recorders' datatype="snf.recorders" />
+    <column name='recorders' display='Recorders' datatype="text" sql="snf.recorders" />
+    <column name="slope_angle" display="Dune slope angle" datatype="float"
+      sql="coalesce((attrs_json->>'1495')::float, 0)" />
+    <column name="slope_distance" display="Dune slope distance" datatype="float"
+      sql="coalesce((attrs_json->>'1496')::float, 0)" />
   </columns>
 </report>

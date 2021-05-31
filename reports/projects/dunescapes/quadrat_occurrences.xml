@@ -11,10 +11,14 @@
     join cache_occurrences_nonfunctional onf on onf.id=o.id
     join cache_samples_nonfunctional snf on snf.id=o.sample_id
     left join location_attribute_values g on g.location_id=lc.id and g.deleted=false
+      and g.location_attribute_id=272
+    left join location_attribute_values h on h.location_id=lc.id and h.deleted=false
+      and h.location_attribute_id=263
+	  left join cache_termlists_terms th on t.id=h.int_value
     where o.website_id in (#website_ids#)
   </query>
   <order_bys>
-    <order_by>o.id ASC</order_by>
+    <order_by>lp.name asc, g.text_value asc, lc.name asc, o.id asc</order_by>
   </order_bys>
   <params>
   </params>
@@ -23,8 +27,8 @@
     <column name="parent_sample_id" display="Parent sample ID" sql="o.parent_sample_id" />
 
     <column name="site" display="Site" datatype="text" sql="lp.name" />
-    <column name="fixed_point_location_id" display="Fixed point location ID" datatype="integer" sql="lc.id" />
-    <column name="fixed_point_location" display="Fixed point location" datatype="text" sql="lc.name" />
+    <column name="fixed_point_location_id" display="Quadrat (fixed point) ID" datatype="integer" sql="lc.id" />
+    <column name="fixed_point_location" display="Quadrat (fixed point)" datatype="text" sql="lc.name" />
     <column name="entered_sref" display="Original grid ref" datatype="text" sql="snf.public_entered_sref" />
     <column name="date_start" sql="o.date_start" visible="false" />
     <column name="date_end" sql="o.date_end" visible="false" />
@@ -36,5 +40,6 @@
     <column name="nitrogen" display="Nitrogen" datatype="text" sql="onf.attrs_json->>'840'" />
     <column name="grid_ref_calculated" display="Grid ref calculated" datatype="text" sql="snf.attrs_json->>'335'" />
     <column name="group" display="Group" datatype="text" sql="g.text_value" />
+    <column name="habitat_type" display="Habitat type" datatype="text" sql="ht.term" />
   </columns>
 </report>

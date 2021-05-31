@@ -1,6 +1,6 @@
 <report
-    title="Child samples list - Dunescape"
-    description="A general purpose list of Dunescape samples with parent sample ID."
+    title="Child samples list - Dunescape vegetation structure"
+    description="A list of Dunescape quadrat samples with vegetation structure"
 >
   <query website_filter_field="s.website_id">
     SELECT #columns#
@@ -9,6 +9,7 @@
     LEFT JOIN locations lc ON lc.id=s.location_id AND lc.deleted=false
     LEFT JOIN locations lp ON lp.id=lc.parent_id AND lp.deleted=false
     LEFT JOIN location_attribute_values gv ON gv.location_id=lc.id AND gv.location_attribute_id=272 AND gv.deleted=false
+    LEFT JOIN sample_attribute_values v ON v.sample_id=s.id AND v.deleted=false AND v.sample_attribute_id=1493
     #joins#
     WHERE #website_filter#
     #filters#
@@ -32,12 +33,14 @@
     <column name='site_id' display='Site ID' datatype="text" sql="lp.id" />
     <column name='site' display='Site' datatype="text" sql="lp.name" />
     <column name='group' display='Group' datatype="text" sql="gv.text_value" />
-    <column name='fixed_point_id' display='Fixed point ID' datatype="text" sql="lc.id" />
-    <column name='fixed_point_label' display='Fixed point label' datatype="text" sql="lc.name" />
+    <column name="fixed_point_location_id" display="Quadrat (fixed point) ID" datatype="integer" sql="lc.id" />
+    <column name="fixed_point_location" display="Quadrat (fixed point)" datatype="text" sql="lc.name" />
     <column name='date_start' sql='s.date_start' visible='false' />
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
     <column name='recorders' display='Recorders' datatype="snf.recorders" />
+    <column name="veg_heights" display="Vegetation heights" sql="string_agg(v.int_value::text, ', ')" aggregate="true" />
+    <column name="avg_height" display="Average height" sql="round(avg(v.int_value), 1)" aggregate="true" />
   </columns>
 </report>
