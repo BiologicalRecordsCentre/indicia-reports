@@ -32,7 +32,7 @@
     <column name='date_end' sql='s.date_end' visible='false' />
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
-    <column name='recorders' display='Recorders' datatype="snf.recorders" />
-    <column name='comment' display='Comment' datatype="snf.comment" />
+    <column name='recorders' display='Recorders' sql="snf.recorders" />
+    <column name='comment' display='Comment' sql="snf.comment" />
   </columns>
 </report>
