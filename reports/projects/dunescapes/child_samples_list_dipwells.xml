@@ -1,0 +1,43 @@
+<report
+    title="Child samples list - Dunescape dipwells"
+    description="A general purpose list of Dunescape samples with parent sample ID."
+>
+  <query website_filter_field="s.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    LEFT JOIN locations lc ON lc.id=s.location_id AND lc.deleted=false
+    LEFT JOIN locations lp ON lp.id=lc.parent_id AND lp.deleted=false
+    LEFT JOIN location_attribute_values gv ON gv.location_id=lc.id AND gv.location_attribute_id=272 AND gv.deleted=false
+    #joins#
+    WHERE #website_filter#
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>s.parent_sample_id ASC, s.id ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="survey_id" display="Survey ID" datatype="integer" default="">
+      <where>s.survey_id=#survey_id#</where>
+    </param>
+    <param name="sample_method" display="Sample method" datatype="text" default="">
+      <where>snf.attr_sample_method='#sample_method#'</where>
+    </param>
+    <param name="smpattrs" display="Sample attribute list" description="Comma separated list of sample attribute IDs to include" datatype="smpattrs" default="" />
+  </params>
+  <columns>
+    <column name="parent_sample_id" display="Parent sample ID" sql="s.parent_sample_id" />
+    <column name="sample_id" display="Sample ID" sql="s.id" />
+    <column name='site_id' display='Site ID' datatype="text" sql="lp.id" />
+    <column name='site' display='Site' datatype="text" sql="lp.name" />
+    <column name='group' display='Group' datatype="text" sql="gv.text_value" />
+    <column name='fixed_point_id' display='Dipwell (fixed point) ID' datatype="text" sql="lc.id" />
+    <column name='fixed_point_label' display='Dipwell (fixed point)' datatype="text" sql="lc.name" />
+    <column name='entered_sref' display='Original grid ref' datatype="text" sql="snf.public_entered_sref" />
+    <column name='date_start' sql='s.date_start' visible='false' />
+    <column name='date_end' sql='s.date_end' visible='false' />
+    <column name='date_type' sql='s.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name='recorders' display='Recorders' datatype="snf.recorders" />
+  </columns>
+</report>
