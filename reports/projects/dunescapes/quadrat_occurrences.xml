@@ -39,9 +39,9 @@
     <column name="recorders" display="Recorders" datatype="snf.recorders" />
     <column name="health" display="Health" datatype="text" sql="onf.attrs_json->>'841'" />
     <column name="nitrogen" display="Nitrogen" datatype="text" sql="onf.attrs_json->>'840'" />
-    <column name="short_list" display="Short list" datatype="sm.short_list" />
-    <column name="health_type" display="Health type" datatype="sm.health_type" />
-    <column name="nitrogen_type" display="Nitrogen type" datatype="sm.nitrogen_type" />
+    <column name="short_list" display="Short list" datatype="integer" sql="sm.short_list" />
+    <column name="health_type" display="Health type" datatype="text" sql="sm.health_type" />
+    <column name="nitrogen_type" display="Nitrogen type" datatype="text" sql="sm.nitrogen_type" />
     <column name="grid_ref_calculated" display="Grid ref calculated" datatype="text" sql="snf.attrs_json->>'335'" />
     <column name="group" display="Group" datatype="text" sql="g.text_value" />
     <column name="habitat_type" display="Habitat type" datatype="text" sql="ht.term" />
