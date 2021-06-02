@@ -37,8 +37,8 @@
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
     <column name="recorders" display="Recorders" datatype="snf.recorders" />
-    <column name="health" display="Health" datatype="text" sql="onf.attrs_json->>'841'" />
-    <column name="nitrogen" display="Nitrogen" datatype="text" sql="onf.attrs_json->>'840'" />
+    <column name="health" display="Health indicators (%cover)" datatype="text" sql="onf.attrs_json->>'841'" />
+    <column name="nitrogen" display="Nitrogen indicators (%cover)" datatype="text" sql="onf.attrs_json->>'840'" />
     <column name="short_list" display="Short list" datatype="integer" sql="sm.short_list" />
     <column name="health_type" display="Health type" datatype="text" sql="sm.health_type" />
     <column name="nitrogen_type" display="Nitrogen type" datatype="text" sql="sm.nitrogen_type" />

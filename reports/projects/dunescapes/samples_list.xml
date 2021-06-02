@@ -33,5 +33,6 @@
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
     <column name='recorders' display='Recorders' datatype="snf.recorders" />
+    <column name='comment' display='Comment' datatype="snf.comment" />
   </columns>
 </report>

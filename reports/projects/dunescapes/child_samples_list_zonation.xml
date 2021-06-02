@@ -37,7 +37,7 @@
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
     <column name='recorders' display='Recorders' datatype="text" sql="snf.recorders" />
-    <column name="slope_distance" display="Dune slope distance" datatype="float"
+    <column name="slope_distance" display="Distance" datatype="float"
       sql="coalesce((attrs_json->>'1497')::float, 0)" />
   </columns>
 </report>

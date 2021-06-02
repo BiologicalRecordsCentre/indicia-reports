@@ -7,12 +7,16 @@
     FROM occurrence_media om
     JOIN occurrences o on o.id=om.occurrence_id AND o.deleted=false
       AND o.website_id in (#website_ids#)
+    JOIN samples s ON s.id=o.sample_id AND s.deleted=false
     WHERE om.deleted=false
   </query>
   <order_bys>
     <order_by>o.sample_id ASC</order_by>
   </order_bys>
   <params>
+   <param name="survey_id" display="Survey ID" datatype="integer" default="">
+      <where>s.survey_id=#survey_id#</where>
+    </param>
   </params>
   <columns>
     <column name="sample_id" display="Sample ID" sql="o.sample_id" />
