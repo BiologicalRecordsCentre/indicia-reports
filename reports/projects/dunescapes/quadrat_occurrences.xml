@@ -9,7 +9,7 @@
     left join locations lp on lp.id=lc.parent_id and lp.deleted=false
     join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
     join cache_occurrences_nonfunctional onf on onf.id=o.id
-    left join dunescapes.species_matrix sm on sm.meaning_id=ANY(o.taxon_path)
+    left join dunescapes.species_matrix sm on sm.taxon_meaning_id=ANY(o.taxon_path)
     join cache_samples_nonfunctional snf on snf.id=o.sample_id
     left join location_attribute_values g on g.location_id=lc.id and g.deleted=false
       and g.location_attribute_id=272
