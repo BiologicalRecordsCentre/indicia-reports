@@ -11,12 +11,10 @@
       JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
-      #agreements_join#
       WHERE #sharing_filter# 
       AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
       AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
       AND csf.survey_id in (#survey_ids#)
-      AND csf.website_id in (#website_ids#)
       #order_by#
   </query>
   <order_bys>
