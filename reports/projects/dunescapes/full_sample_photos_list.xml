@@ -41,6 +41,6 @@
     <column name='date_type' sql='s.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
     <column name='recorders' display='Recorders' datatype="text" sql="snf.recorders" />
-    <column name="photo_paths" display="Photo paths" datatype="text" sql="string_agg(sm.path, ', ')" aggregate="true" />
+    <column name="photo_paths" display="Photo URLS" datatype="text" sql="string_agg('https://warehouse1.indicia.org.uk/upload/' || sm.path, ', ')" aggregate="true" />
   </columns>
 </report>
