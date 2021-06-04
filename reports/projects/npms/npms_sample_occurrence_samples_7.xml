@@ -1,10 +1,10 @@
 <report
-    title="Samples List for npms_sample_occurrences form 7"
+    title="Samples List for npms_sample_occurrences form 6"
     description="Used by the Samples grid to retrieve the samples associated with a survey and user. User can be identified by
         their Indicia User ID. A second sample may be linked to a first sample, the id of which is stored in a custom attribute. The id
         of that custom attribute is passed as a parameter to the report. New version of the report only returns data for squares you
         are assigned to.">
-  <query website_filter_field="csf.website_id" training_filter_field="csf.training">
+  <query website_filter_field="" training_filter_field="csf.training">
     SELECT * FROM
     (SELECT #columns#
       FROM users u
@@ -50,6 +50,7 @@
         AND lavPlotName.deleted=false
       JOIN cache_termlists_terms termPlotType
         ON termPlotType.id = plot.location_type_id
+      #agreements_join#
       WHERE #sharing_filter# AND u.id=#iUserID# 
       AND (csf.location_id=#plot_id# OR #plot_id#=0)
       AND 
