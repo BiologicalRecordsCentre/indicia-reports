@@ -9,6 +9,7 @@
     LEFT JOIN locations lc ON lc.id=s.location_id AND lc.deleted=false AND lc.location_type_id&lt;&gt;17804
     LEFT JOIN locations lp ON lp.id in (lc.parent_id, s.location_id) AND lp.deleted=false AND lp.location_type_id=17804
     LEFT JOIN location_attribute_values gv ON gv.location_id=lc.id AND gv.location_attribute_id=272 AND gv.deleted=false
+    JOIN sample_media sm on sm.sample_id=s.id
     #joins#
     WHERE #website_filter#
     #filters#
