@@ -21,6 +21,7 @@
         ON termPlotType.id = square_or_plot.location_type_id
         AND square_or_plot.parent_id IS NULL
       JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+      #agreements_join#
       WHERE #sharing_filter# AND csf.created_by_id=#iUserID# 
       AND csf.survey_id = #survey_id#
       #order_by#
