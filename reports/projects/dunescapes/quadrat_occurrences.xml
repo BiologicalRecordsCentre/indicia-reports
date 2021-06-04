@@ -37,8 +37,8 @@
     <column name="date_end" sql="o.date_end" visible="false" />
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
-    <column name="species" display="Species name" datatype="cttl.taxon" />
-    <column name="recorders" display="Recorders" datatype="snf.recorders" />
+    <column name="species" display="Species name" datatype="text" sql="cttl.taxon" />
+    <column name="recorders" display="Recorders" datatype="text" sql="snf.recorders" />
     <column name="health" display="Health indicators (%cover)" datatype="text" sql="onf.attrs_json->>'841'" />
     <column name="nitrogen" display="Nitrogen indicators (%cover)" datatype="text" sql="onf.attrs_json->>'840'" />
     <column name="short_list" display="Short list" datatype="integer" sql="sm.short_list" />
