@@ -19,6 +19,8 @@
     LEFT JOIN location_attribute_values vpd ON vpd.location_id=l.id AND vpd.location_attribute_id=260 AND vpd.deleted=false
     #joins#
     WHERE l.deleted=false
+    -- Exclude private
+    AND (vp.id is null or vp.int_value&lt;&gt;1)
     #filters#
   </query>
   <params>
@@ -36,10 +38,6 @@
           <where value="yes" operator="equal">(vchk.id is not null and vchk.int_value=1)</where>
           <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
         </wheres>
-      </param>
-      <param name="private" display="Private" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
-        <where value="yes" operator="equal">(vp.id is not null and vp.int_value=1)</where>
-        <where value="no" operator="equal">(vp.id is null or vp.int_value&lt;&gt;1)</where>
       </param>
       <param name="simplifyFeatureTo" datatype="integer" default="1" />
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
