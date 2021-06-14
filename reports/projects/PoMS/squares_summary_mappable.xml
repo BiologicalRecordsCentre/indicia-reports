@@ -33,6 +33,6 @@
     <column name="sc" visible="false" feature_style="strokeColor" sql="case when lavAlloc.int_value = 1 then 'blue' else 'red' end"/>
     <column name="fc" visible="false" feature_style="fillColor" sql="case when lavAlloc.int_value = 1 then 'blue' else 'red' end"/>
     <column name="geom" visible="false" mappable="true" sql="st_astext(l.centroid_geom)"/>
-    <column name="count" display='Count for this year' sql="count(csf.id)" datatype="integer" aggregate="true"/> 
+    <column name="count" display='Count for this year' sql="count(distinct csf.id)" datatype="integer" aggregate="true"/> 
   </columns>
 </report>
