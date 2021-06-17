@@ -48,5 +48,6 @@
     <column name='signed_up' display='Signed up' sql="count(pav.id)"/>
     <column name='max_people' display='Max people' sql="lav.int_value"/>
     <column name='full' display='Spaces available?' sql="case when count(pav.id)>=lav.int_value then '&lt;b style=&quot;color:red&quot;&gt;FULL&lt;/b&gt;' else '&lt;i&gt;Spaces available&lt;/i&gt;' end"/>
+    <column name='full_bool' display='Spaces available boolean' sql="case when count(pav.id)>=lav.int_value then false else true end" visible='false'/>
   </columns>
 </report>
