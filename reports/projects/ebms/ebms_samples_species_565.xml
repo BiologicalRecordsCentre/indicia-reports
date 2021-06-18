@@ -33,10 +33,10 @@
     <column name="recorder_name" sql="snf.recorders" display="Recorder name" />
     <column name="area_sampled_m2" sql="snf.attrs_json->>'723'" display="Area sampled (m2)" />
     <column name="geom_geojson" sql="st_asgeojson(st_transform(s.public_geom, 4326))" display="Geom (GeoJSON)" />
-    <column name="cloud_percent" sql="snf.attrs_json->>'1457'" display="Cloud (%)" />
-    <column name="temp_deg_c" sql="snf.attrs_json->>'1388'" display="Temp (deg C)" />
-    <column name="wind_dir" sql="snf.attrs_json->>'1389'" display="Wind direction" />
-    <column name="wind_speed" sql="snf.attrs_json->>'1390'" display="Wind speed" />
+    <column name="cloud_percent" sql="coalesce(snf.attrs_json->>'1457', 'Not recorded/no data')" display="Cloud (%)" />
+    <column name="temp_deg_c" sql="coalesce(snf.attrs_json->>'1388', 'Not recorded/no data')" display="Temp (deg C)" />
+    <column name="wind_dir" sql="coalesce(snf.attrs_json->>'1389', 'Not recorded/no data')" display="Wind direction" />
+    <column name="wind_speed" sql="coalesce(snf.attrs_json->>'1390', 'Not recorded/no data')" display="Wind speed" />
     <column name="species_scientific_name" sql="cttl.preferred_taxon" in_count="true" />
     <column name="taxon_count" display="Total count" sql="sum((onf.attrs_json->>'780')::integer)" aggregate="true" />
   </columns>
