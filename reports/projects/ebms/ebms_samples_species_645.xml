@@ -13,7 +13,7 @@
     #joins#
     WHERE #website_filter#
     AND #region_location_id#=ANY(s.location_ids)
-    AND s.survey_id=565
+    AND s.survey_id=645
     AND s.parent_sample_id IS NULL
   </query>
   <order_bys>
