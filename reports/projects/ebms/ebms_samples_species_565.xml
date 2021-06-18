@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Samples with species (survey 565)"
+    description="Lists top level timed-count samples and summary data for the species found.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    LEFT JOIN cache_samples_functional sc on sc.parent_sample_id=s.id
+    JOIN occurrences o on o.sample_id in (sc.id, s.id) and o.deleted=false
+    JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
+    JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+    #joins#
+    WHERE #website_filter#
+    AND #region_location_id#=ANY(s.location_ids)
+    AND s.survey_id=565
+    AND s.parent_sample_id IS NULL
+  </query>
+  <order_bys>
+    <order_by>s.id ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="region_location_id" display="Region location ID" datatype="integer"/>
+  </params>
+  <columns>
+    <column name="sample_id" sql="s.id" in_count="true" display="Sample Id" datatype="integer" />
+    <column name="date_start" sql="s.date_start" visible="false" />
+    <column name="date_end" sql="s.date_end" visible="false" />
+    <column name="date_type" sql="s.date_type" visible="false" />
+    <column name="date" display="Date" />
+    <column name="start_time" sql="snf.attrs_json->>'1385'" display="Start time" />
+    <column name="end_time" sql="snf.attrs_json->>'1386'" display="End time" />
+    <column name="recorder_name" sql="snf.recorders" display="Recorder name" />
+    <column name="area_sampled_m2" sql="snf.attrs_json->>'723'" display="Area sampled (m2)" />
+    <column name="geom_geojson" sql="st_asgeojson(st_transform(s.public_geom, 4326))" display="Geom (GeoJSON)" />
+    <column name="cloud_percent" sql="snf.attrs_json->>'1457'" display="Cloud (%)" />
+    <column name="temp_deg_c" sql="snf.attrs_json->>'1388'" display="Temp (deg C)" />
+    <column name="wind_dir" sql="snf.attrs_json->>'1389'" display="Wind direction" />
+    <column name="wind_speed" sql="snf.attrs_json->>'1390'" display="Wind speed" />
+    <column name="species_scientific_name" sql="cttl.preferred_taxon" in_count="true" />
+    <column name="taxon_count" display="Total count" sql="sum((onf.attrs_json->>'780')::integer)" aggregate="true" />
+  </columns>
+</report>
