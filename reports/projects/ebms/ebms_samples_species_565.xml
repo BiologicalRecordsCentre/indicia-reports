@@ -2,7 +2,7 @@
 
 <report title="Samples with species (survey 565)"
     description="Lists top level timed-count samples and summary data for the species found.">
-  <query website_filter_field="lw.website_id">
+  <query website_filter_field="o.id">
     SELECT #columns#
     FROM cache_samples_functional s
     JOIN cache_samples_nonfunctional snf on snf.id=s.id
