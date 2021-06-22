@@ -16,6 +16,7 @@
     and s.created_by_id=#user_id#
     and s.parent_id is null
     and s.deleted=false
+    and (om.id is not null or sm.id is not null)
   </query>
   <order_bys>
     <order_by>s.date_start desc, s.id, v.int_value</order_by>
@@ -31,7 +32,7 @@
     <column name='date' display='Date' datatype="date" />
     <column name="location_name" display="Site" sql="s.location_name" datatype="text" />
     <column name="sample_no" display="Sample no." sql="v.int_value" datatype="integer" />
-    <column name="quadrat_photos" sql="string_agg('https://warehouse1.indicia.org.uk/upload' || sm.path || ' (' || sm.caption || ')', '; ')" datatype="text" aggregate="true" />
-    <column name="species_photos" sql="string_agg('https://warehouse1.indicia.org.uk/upload' || om.path || ' (' || om.caption || ') [' || cttl.taxon || ']', '; ')" datatype="text" aggregate="true" />
+    <column name="quadrat_photos" sql="string_agg('https://warehouse1.indicia.org.uk/upload' || sm.path || coalesce(' (' || sm.caption || ')', ''), '; ')" datatype="text" aggregate="true" />
+    <column name="species_photos" sql="string_agg('https://warehouse1.indicia.org.uk/upload' || om.path || coalesce(' (' || om.caption || ')', '') || '[' || cttl.taxon || ']', '; ')" datatype="text" aggregate="true" />
   </columns>
 </report>
