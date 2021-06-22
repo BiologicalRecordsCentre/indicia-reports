@@ -1,0 +1,41 @@
+<report
+    title="Quadrat and box core photos - download"
+    description="Lists both photos at the quadrat/box core sample level and the species photos for these 2 surveys."
+>
+  <query website_filter_field="s.website_id">
+    select #columns#
+    from samples s
+    join samples sc on sc.parent_id=s.id and sc.deleted=false
+    left join sample_attribute_values v on v.sample_id=sc.id and v.sample_attribute_id=1367
+    left join sample_media sm on sm.sample_id=sc.id and sm.deleted=false
+    left join occurrences o on o.sample_id=sc.id and o.deleted=false
+    left join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+    left join occurrence_media om on om.occurrence_id=o.id and om.deleted=false
+    #joins#
+    where s.survey_id in (558, 559)
+    and s.created_by_id=#user_id#
+    and s.parent_id is null
+    and s.deleted=false
+    and (om.id is not null or sm.id is not null)
+  </query>
+  <order_bys>
+    <order_by>s.date_start desc, s.id, v.int_value</order_by>
+  </order_bys>
+  <params>
+    <param name="user_id" display="User ID" description="ID of the user to show surveys for" datatype="integer" />
+  </params>
+  <columns>
+    <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
+    <column name="subsample_id" visible="false" sql="sc.id" datatype="integer" in_count="true" />
+    <column name="date_start" visible="false" sql="s.date_start" />
+    <column name="date_end" visible="false" sql="s.date_end" />
+    <column name="date_type" visible="false" sql="s.date_type" />
+    <column name="date" display="Date" datatype="date" />
+    <column name="location_name" display="Site" sql="s.location_name" datatype="text" />
+    <column name="sample_no" display="Sample no." sql="v.int_value" datatype="integer" />
+    <column name="quadrat_photos" display="Transect/box-core photos" datatype="text" aggregate="true"
+      sql="string_agg('https://warehouse1.indicia.org.uk/upload' || sm.path || coalesce(' (' || sm.caption || ')', ''), '; ')" />
+    <column name="species_photos" display="Species photos" gidatatype="text" aggregate="true"
+      sql="string_agg('https://warehouse1.indicia.org.uk/upload' || om.path || coalesce(' (' || om.caption || ')', '') || '[' || cttl.taxon || ']', '; ')" />
+  </columns>
+</report>
