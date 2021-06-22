@@ -25,7 +25,7 @@
     <param name="user_id" display="User ID" description="ID of the user to show surveys for" datatype="integer" />
   </params>
   <columns>
-    <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
+    <column name="sample_id" display="Survey ID" sql="s.id" datatype="integer" />
     <column name="subsample_id" visible="false" sql="sc.id" datatype="integer" in_count="true" />
     <column name="date_start" visible="false" sql="s.date_start" />
     <column name="date_end" visible="false" sql="s.date_end" />
