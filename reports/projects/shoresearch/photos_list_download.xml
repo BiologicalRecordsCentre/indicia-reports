@@ -36,6 +36,6 @@
     <column name="quadrat_photos" display="Transect/box-core photos" datatype="text" aggregate="true"
       sql="string_agg('https://warehouse1.indicia.org.uk/upload' || sm.path || coalesce(' (' || sm.caption || ')', ''), '; ')" />
     <column name="species_photos" display="Species photos" gidatatype="text" aggregate="true"
-      sql="string_agg('https://warehouse1.indicia.org.uk/upload' || om.path || coalesce(' (' || om.caption || ')', '') || '[' || cttl.taxon || ']', '; ')" />
+      sql="string_agg('https://warehouse1.indicia.org.uk/upload' || om.path || coalesce(' (' || om.caption || ')', '') || ' [' || cttl.taxon || ']', '; ')" />
   </columns>
 </report>
