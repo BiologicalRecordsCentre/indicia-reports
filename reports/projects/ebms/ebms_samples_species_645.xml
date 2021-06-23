@@ -39,6 +39,6 @@
     <column name="wind_speed" sql="coalesce(snf.attrs_json->>'1390', 'Not recorded/no data')" display="Wind speed" />
     <column name="species_scientific_name" sql="cttl.preferred_taxon" in_count="true" />
     <column name="present" sql="case o.zero_abundance when true then 'absent' else 'present' end" display="Presence/absence" internal_sql="o.zero_abundance" />
-    <column name="taxon_count" display="Total count" sql="case o.zero_abundance when false then coalesce(sum((onf.attrs_json->>'780')::integer)::text, 'Not recorded/no data') else '0' end" aggregate="true" />
+    <column name="taxon_count" display="Total count" sql="case o.zero_abundance when false then count(distinct o.id) else '0' end" aggregate="true" />
   </columns>
 </report>
