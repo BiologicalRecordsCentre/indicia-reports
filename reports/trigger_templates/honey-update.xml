@@ -37,8 +37,8 @@
         'We have received your sample pack for analysis. Sugar/water measurements will be available within one month. '
       WHEN sav.int_value = 14413 THEN
         'We have updated your records with sugar/water measurements from your honey sample. Your sample will be ' ||
-        'batched with others for DNA analysis with results from spring samples available in December and autumn ' ||
-        'samples in June of the following year. '
+        'batched with others for DNA analysis, with results from selected samples available in spring of the ' ||
+        'following year.'
       WHEN sav.int_value = 14414 THEN
         'We have completed DNA sequencing of your sample in the laboratory and are processing the results now. ' ||
         'Results from spring samples will be available in December and autumn samples in June of the following year. ' ||
