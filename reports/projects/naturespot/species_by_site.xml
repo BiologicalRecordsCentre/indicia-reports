@@ -22,6 +22,7 @@ WHERE 1=1
   </params>
   <columns>
     <column name='taxon_group' sql='taxon_group' display="Group" datatype='text' />
+    <column name='external_key' sql='external_key' visible="false" datatype='text' />
     <column name='common' sql='common' datatype='text' display="Common name" />
     <column name='taxon' sql='taxon' datatype='text' display="Latin name" />
     <column name='date_start' sql='date_start' visible="false" />
