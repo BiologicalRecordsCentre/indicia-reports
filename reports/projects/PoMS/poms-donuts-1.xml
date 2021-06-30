@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report 
+  title="Counts per record with group and flower" 
+  description="Filtered for UK (with IOM) only, April-Sept inclusive. Includes samples with zero counts. Originally for donut chart display."
+>
+  <query>
+    select csn.id as sample,
+    cttl.taxon as taxon,
+    csn.attrs_json -&gt;&gt; '1050' as flower,
+    coalesce((con.attrs_json -&gt;&gt; '666')::int, 0) as pomscount
+    from cache_occurrences_functional cof
+    join cache_occurrences_nonfunctional con on con.id = cof.id
+    right join cache_samples_nonfunctional csn on cof.sample_id = csn.id
+    join cache_samples_functional csf on csf.id = csn.id
+    join cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
+    where cof.survey_id in (636, 641, 637)
+    and cttl.taxon_group LIKE 'Pollinator%'
+    and extract(month from cof.date_end) &gt; 3
+    and extract(month from cof.date_end) &lt; 10
+    and array[214127, 1612, 1606, 1605, 1614] &amp;&amp; csf.location_ids = true
+  </query>
+</report>
