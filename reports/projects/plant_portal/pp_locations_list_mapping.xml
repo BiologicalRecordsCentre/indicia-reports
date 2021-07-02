@@ -37,7 +37,7 @@
       </param>
   </params>
   <columns>
-        <column name="id" visible="true" sql="l.id" datatype="integer" />
+        <column name="id" visible="false" sql="l.id" datatype="integer" />
         <column name="name" display="Site name" sql="l.name" />
         <column name="code" display="Site code" sql="l.code" />
         <column name="parent_id" display="Parent ID" sql="l.parent_id" visible="false"/>
