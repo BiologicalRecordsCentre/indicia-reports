@@ -6,17 +6,10 @@
   <query website_filter_field="cttl.website_id" training_filter_field="">
     SELECT #columns#
     FROM cache_taxa_taxon_lists cttl
-    left join taxa_taxon_list_attribute_values v177 on v177.taxa_taxon_list_id=cttl.id and v177.taxa_taxon_list_attribute_id=177
-    left join taxa_taxon_list_attribute_values v178 on v178.taxa_taxon_list_id=cttl.id and v178.taxa_taxon_list_attribute_id=178
-    left join taxa_taxon_list_attribute_values v179 on v179.taxa_taxon_list_id=cttl.id and v179.taxa_taxon_list_attribute_id=179
-    left join taxa_taxon_list_attribute_values v180 on v180.taxa_taxon_list_id=cttl.id and v180.taxa_taxon_list_attribute_id=180
-    left join taxa_taxon_list_attribute_values v181 on v181.taxa_taxon_list_id=cttl.id and v181.taxa_taxon_list_attribute_id=181
-    left join taxa_taxon_list_attribute_values v182 on v182.taxa_taxon_list_id=cttl.id and v182.taxa_taxon_list_attribute_id=182
-    left join taxa_taxon_list_attribute_values v183 on v183.taxa_taxon_list_id=cttl.id and v183.taxa_taxon_list_attribute_id=183
-    left join taxa_taxon_list_attribute_values v184 on v184.taxa_taxon_list_id=cttl.id and v184.taxa_taxon_list_attribute_id=184
-    left join taxa_taxon_list_attribute_values v185 on v185.taxa_taxon_list_id=cttl.id and v185.taxa_taxon_list_attribute_id=185
-    left join taxa_taxon_list_attribute_values v186 on v186.taxa_taxon_list_id=cttl.id and v186.taxa_taxon_list_attribute_id=186
+    join cache_taxa_taxon_lists cttl15 on cttl15.external_key=cttl.external_key and cttl15.preferred=true and cttl15.taxon_list_id=15
+    join dunescapes.species_matrix sm on sm.taxa_taxon_list_id=cttl15.id
     WHERE (cttl.website_id IS NULL OR cttl.website_id IN (#website_ids#))
+    AND cttl.allow_data_entry=true
   </query>
   <order_bys>
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
@@ -56,15 +49,13 @@
             sql='cttl.taxon_group' datatype="text" />
     <column name='taxon_group_id' display='Taxon group ID'
             sql='cttl.taxon_group_id' visible="false" datatype="integer" />
-    <column name='short_list' display='Short list' sql='v177.int_value' datatype="boolean" />
-    <column name='long_list' display='Long list' sql='v178.int_value' datatype="boolean" />
-    <column name='strandline_embryo_mobile_dune' display='Strandline embryo mobile dune' sql='v179.int_value' datatype="boolean" />
-    <column name='fixed_semi_fixed_dune' display='Fixed semi-fixed dune' sql='v180.int_value' datatype="boolean" />
-    <column name='dune_heath' display='Dune heath' sql='v181.int_value' datatype="boolean" />
-    <column name='dune_slack' display='Dune slack' sql='v182.int_value' datatype="boolean" />
-    <column name='positive_health' display='Positive health' sql='v183.int_value' datatype="boolean" />
-    <column name='negative_health' display='Negative health' sql='v184.int_value' datatype="boolean" />
-    <column name='nitro_phobe' display='Nitro phobe' sql='v185.int_value' datatype="boolean" />
-    <column name='nitro_phile' display='Nitro phile' sql='v186.int_value' datatype="boolean" />
+    <column name='short_list' display='Short list' sql='sm.short_list' datatype="boolean" />
+    <column name='long_list' display='Long list' sql='sm.long_list' datatype="boolean" />
+    <column name='strandline_embryo_mobile_dune' display='Strandline embryo mobile dune' sql='sm.strandline_embryo_and_mobile_dune' datatype="boolean" />
+    <column name='fixed_semi_fixed_dune' display='Fixed semi-fixed dune' sql='fixed_and_semi_fixed_dune' datatype="boolean" />
+    <column name='dune_heath' display='Dune heath' sql='sm.dune_heath' datatype="boolean" />
+    <column name='dune_slack' display='Dune slack' sql='sm.dune_slack' datatype="boolean" />
+    <column name='health_type' display='Health type' sql='sm.health_type' datatype="text" />
+    <column name='nitrogen_type' display='Nitrogen type' sql='sm.nitrogen_type' datatype="text" />
   </columns>
 </report>
