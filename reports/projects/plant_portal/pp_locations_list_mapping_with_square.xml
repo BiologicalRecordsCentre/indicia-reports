@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Square and plots list for map"
+        description="Basic list of plots with square for Plant Portal map.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+    #joins#
+    WHERE l.deleted=false
+    AND (l.public=true or lw.website_id in (#website_ids#))
+    AND (l.id = #parent_id# OR (l.parent_id = #parent_id# AND l.location_type_id in (#location_type_ids#)))
+      #filters#
+  </query>
+  <params>
+      <param name="location_type_ids" display="Location type(s)" datatype="text"/>
+      <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
+  </params>
+  <columns>
+        <column name="id" visible="false" sql="l.id" datatype="integer" />
+        <column name="name" display="Site name" sql="l.name" />
+        <column name="parent_id" display="Parent ID" sql="l.parent_id" visible="false"/>  
+        <column name="geom" visible="false" mappable="true" sql="st_astext(l.centroid_geom)"/>
+        <column name="pr" visible="false" feature_style="pointRadius" sql="1" />
+        <column name="sw" visible="false" feature_style="strokeWidth" sql="3" />
+        <column name="so" visible="false" feature_style="strokeOpacity" sql="0.8" />
+        <column name="fo" visible="false" feature_style="fillOpacity" sql="0.15" />
+        <column name="sc" visible="false" feature_style="strokeColor" sql="case when l.parent_id IS NOT NULL then 'blue' else 'red' end"/>
+        <column name="fc" visible="false" feature_style="fillColor" sql="case when l.parent_id IS NOT NULL then 'blue' else 'red' end"/>  
+  </columns>
+</report>
