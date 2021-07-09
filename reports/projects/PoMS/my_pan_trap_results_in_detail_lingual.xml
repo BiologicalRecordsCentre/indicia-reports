@@ -1,0 +1,43 @@
+<report
+    title="My pan trap results in detail"
+    description="Results grid for the My Pan Trap Records page."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM samples s
+      JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = s.id
+      LEFT JOIN sample_attribute_values sav_pan_num on sav_pan_num.sample_id = csnf.id 
+          AND sav_pan_num.sample_attribute_id = #pan_num_smp_attr_id#
+          AND sav_pan_num.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_pan_num on ctt_pan_num.id = sav_pan_num.int_value AND ctt_pan_num.preferred=true
+      #agreements_join#
+      WHERE #sharing_filter# 
+        AND s.survey_id = #1km_pan_traps_survey_id#
+        AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
+            AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND s.created_by_id=#current_user_id#
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
+      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the pan trap count survey." datatype="integer"/>  
+    <param name = "pan_num_smp_attr_id" display="Pan trap num attr ID" description = "ID of the pan trap number sample attribute." datatype="integer"/>  
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+  </params>
+  <columns>
+    <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
+    <column name='site_name' display='Site name' sql='s.location_name' datatype="text"/>
+    <column name='pan_no' display='Pan no.' sql='ctt_pan_num.term' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
+    <column name='date_start' sql='s.date_start' visible="false"/>
+    <column name='date_end' sql='s.date_end' visible="false"/>
+    <column name='date_type' sql='s.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+  </columns>
+</report>
