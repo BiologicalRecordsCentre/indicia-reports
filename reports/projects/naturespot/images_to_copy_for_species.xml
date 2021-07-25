@@ -1,0 +1,39 @@
+<report
+    title="List of images to copy to Drupal for single species"
+    description="Lists the images for verified records which should be copied into Drupal image link nodes."
+>
+  <query>
+	select  co.id  as  occurrence_id, co.taxa_taxon_list_external_key  as  external_key, COALESCE(sav.text_value, p.first_name || ' ' || p.surname, p.surname) as recorders, co.location_name, co.date_start, co.date_end, co.date_type,
+                case co.record_status when 'V' then 'Certain' else 'Maybe' end as confidence,
+		oi.id, oi.path, oi.caption
+	from cache_occurrences_functional co
+	join cache_samples_nonfunctional snf on snf.id=co.sample_id
+	join occurrence_images oi on oi.occurrence_id=co.id and oi.deleted=false
+	left join sample_attribute_values sav on sav.sample_id=co.sample_id and sav.deleted=false and sav.sample_attribute_id=22
+	join users u on u.id=co.created_by_id
+	join people p on p.id=u.person_id
+	where (co.record_status='V' or co.record_substatus=3)
+	and co.location_ids @> ARRAY[690]
+	and snf.recorders&lt;&gt;'' and snf.recorders is not null
+	and co.website_id=8
+	and co.media_count>0
+	#filters#
+  </query>
+  <orderbys>
+    <orderby>co.verified_on desc nulls last, oi.id</orderby>
+  </orderbys>
+  <params>
+    <param name="tvk" datatype="text">
+	  <where>co.taxa_taxon_list_external_key = '#tvk#'</where>
+	</param>
+	<param name="id" datatype="integer" default="">
+	  <where>oi.id = '#id#'</where>
+	</param>
+	<param name="exclude_copied" datatype="boolean" default="1">
+	  <where>(oi.external_details is null or oi.external_details not in ('Copied to Drupal', 'Rejected for Drupal import'))</where>
+	</param>
+	<param name="path" datatype="text" default="">
+	  <where>oi.path = '#path#'</where>
+	</param>
+  </params>
+</report>
