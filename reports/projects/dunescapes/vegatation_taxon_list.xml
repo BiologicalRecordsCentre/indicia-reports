@@ -42,7 +42,7 @@
     <column name='preferred_taxon' display='Preferred name'
             sql="cttl.preferred_taxon" datatype="text" />
     <column name='common' display='Common name'
-            sql="cttl.default_common_name" datatype="text" />
+            sql="COALESCE(cttl.default_common_name, cttl15.default_common_name)" datatype="text" />
     <column name='family_taxon' display='Family'
             sql='cttl.family_taxon' datatype="text" />
     <column name='taxon_group' display='Taxon group'
