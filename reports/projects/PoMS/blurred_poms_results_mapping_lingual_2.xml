@@ -1,15 +1,16 @@
 <report
-    title="PoMS results in detail"
-    description="PomS results in detail on My Rercords page. Includes full detail location data.
-    Doesn't use cache attributes so we have multi-lingual support."
+    title="Blurred PoMS results mapping"
+    description="All PomS results for map. Includes blurred location data.
+    Doesn't use cache attributes so we have multi-lingual support.
+    Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 641"
 >
-  <query website_filter_field="" training_filter_field="" >
+  <query website_filter_field="" training_filter_field="s.training" standard_params="samples">
     SELECT #columns# 
-      FROM samples s
-      LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
-      JOIN indicia.cache_samples_functional csf on csf.id = s.id
-      JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = csf.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
+      FROM cache_samples_functional s
+      JOIN cache_samples_nonfunctional csnf on csnf.id = s.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id 
+          and cof.taxon_meaning_id in (#bumblebee_taxon_meaning_id#,#honeybee_taxon_meaning_id#,#solitary_bee_taxon_meaning_id#,#wasp_taxon_meaning_id#,#hoverflies_taxon_meaning_id#,
+              #other_flies_taxon_meaning_id#,#butterflies_moths_taxon_meaning_id#,#beetles_taxon_meaning_id#,#small_insects_taxon_meaning_id#,#other_insects_taxon_meaning_id#)
       LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
 
       LEFT JOIN sample_attribute_values sav_start_time on sav_start_time.sample_id = csnf.id 
@@ -37,7 +38,7 @@
           AND sav_cover.deleted = false
       LEFT JOIN cache_termlists_terms ctt_cover on ctt_cover.id = sav_cover.int_value
       LEFT JOIN cache_termlists_terms ctt_cover_lang on ctt_cover_lang.meaning_id = ctt_cover.meaning_id AND ctt_cover_lang.language_iso = '#language#'
-      
+
       LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.sample_id = csnf.id 
           AND sav_flowers_counted.sample_attribute_id = #flowers_counted_attr_id#
           AND sav_flowers_counted.deleted = false
@@ -73,38 +74,42 @@
           AND sav_patch_sunshine.deleted = false
       LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value
       LEFT JOIN cache_termlists_terms ctt_patch_sunshine_lang on ctt_patch_sunshine_lang.meaning_id = ctt_patch_sunshine.meaning_id AND ctt_patch_sunshine_lang.language_iso = '#language#'
-
-      LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id 
-        AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
       #agreements_join#
       WHERE #sharing_filter# 
+      #idlist#
         AND s.survey_id in (
           #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
         )
         AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
             AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
-        AND s.created_by_id=#current_user_id#
   </query>
   <order_bys>
     <order_by>s.id DESC</order_by>
   </order_bys>
   <params>
-    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
-    <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
-    <param name = "other_habitat_smp_id" display="Other habitat sample attribute ID" description = "ID of sample attribute that holds the other habitat." datatype="integer"/>
-    <param name = "target_smp_id" display="Target flower sample attribute ID" description = "ID of sample attribute that holds the target flower." datatype="integer"/>  
-    <param name = "insect_abund_occ_id" display="Insect abundance occurrence attribute ID" 
-      description = "ID of occurrence attribute that holds abundances of the insects." datatype="integer"/>  
-    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year_termlist_id' display='Years termlist ID' datatype="int"/>
     <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
-      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+        population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
     <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
     <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name = "beetles_taxon_meaning_id" display="Beetles taxon meaning ID" description = "Meaning ID for beetles." datatype="integer"/>
+    <param name = "bumblebee_taxon_meaning_id" display="Bumblebee taxon meaning ID" description = "Meaning ID for bumblebee." datatype="integer"/>
+    <param name = "butterflies_moths_taxon_meaning_id" display="Butteflies moths taxon meaning ID" description = "Meaning ID for butterflies moths." datatype="integer"/>
+    <param name = "honeybee_taxon_meaning_id" display="Honeybee taxon meaning ID" description = "Meaning ID for Honeybee." datatype="integer"/>
+    <param name = "hoverflies_taxon_meaning_id" display="Hoverfly taxon meaning ID" description = "Meaning ID for hoverfly." datatype="integer"/>
+    <param name = "other_flies_taxon_meaning_id" display="Other flies taxon meaning ID" description = "Meaning ID for other flies." datatype="integer"/>
+    <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
+    <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
+    <param name = "solitary_bee_taxon_meaning_id" display="Solitary bee taxon meaning ID" description = "Meaning ID for solitary bee." datatype="integer"/>
+    <param name = "wasp_taxon_meaning_id" display="Wasp taxon meaning ID" description = "Meaning ID for wasp." datatype="integer"/>
+    <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
+    <param name = "other_habitat_smp_id" display="Other habitat sample attribute ID" description = "ID of sample attribute that holds the other habitat." datatype="integer"/>
+    <param name = "target_smp_id" display="Target flower sample attribute ID" description = "ID of sample attribute that holds the target flower." datatype="integer"/>  
     <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
     <param name = "cover_within_patch_attr_id" display="Cover within patch sample attr ID" description = "ID of the sample attribute that holds the cover within patch." datatype="integer"/>
     <param name = "flowers_counted_attr_id" display="Flowers counted sample attr ID" description = "ID of the sample attribute that holds the flowers counted." datatype="integer"/>
@@ -113,65 +118,38 @@
     <param name = "cloud_cover_attr_id" display="Cloud_cover sample attr ID" description = "ID of the sample attribute that holds the cloud cover." datatype="integer"/>
     <param name = "wind_attr_id" display="Wind sample attr ID" description = "ID of the sample attribute that holds the wind value." datatype="integer"/>
     <param name = "patch_sunshine_attr_id" display="Patch sample attr ID" description = "ID of the sample attribute that holds the patch sunshine." datatype="integer"/>
-    <param name = "bumblebee_taxon_meaning_id" display="Bumblebee taxon meaning ID" description = "Meaning ID for bumblebee." datatype="integer"/>
-    <param name = "honeybee_taxon_meaning_id" display="Honeybee taxon meaning ID" description = "Meaning ID for Honeybee." datatype="integer"/>
-    <param name = "solitary_bee_taxon_meaning_id" display="Solitary bee taxon meaning ID" description = "Meaning ID for solitary bee." datatype="integer"/>
-    <param name = "wasp_taxon_meaning_id" display="Wasp taxon meaning ID" description = "Meaning ID for wasp." datatype="integer"/>
-    <param name = "hoverflies_taxon_meaning_id" display="Hoverfly taxon meaning ID" description = "Meaning ID for hoverfly." datatype="integer"/>
-    <param name = "other_flies_taxon_meaning_id" display="Other flies taxon meaning ID" description = "Meaning ID for other flies." datatype="integer"/>
-    <param name = "butterflies_moths_taxon_meaning_id" display="Butteflies moths taxon meaning ID" description = "Meaning ID for butterflies moths." datatype="integer"/>
-    <param name = "beetles_taxon_meaning_id" display="Beetles taxon meaning ID" description = "Meaning ID for beetles." datatype="integer"/>
-    <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
-    <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
     <param name = "language" display = "Preferred language" datatype="text" default="eng" />
-    <param name = "england_location_id" display="England location ID" description = "Location ID for England." datatype="integer"/>
-    <param name = "scotland_location_id" display="Scotland location ID" description = "Location ID for Scotland." datatype="integer"/>  
-    <param name = "wales_location_id" display="Wales location ID" description = "Location ID for Wales." datatype="integer"/>  
-    <param name = "ni_location_id" display="Northern Ireland location ID" description = "Location ID for Northern Ireland." datatype="integer"/>  
-    <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
-    <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
-    <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
     <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
-      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
-    </param> 
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
   </params>
   <columns>
-    <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
-    <column name='survey_id' sql='s.survey_id' display='Survey ID' visible="false" datatype="integer"/>
-    <column name='survey_title' sql="
-      case s.survey_id
-        when #public_fit_count_survey_id# then 'FIT Count'
-        when #1km_fit_count_survey_id# then 'FIT Count 1km'
-        when #fit_count_app_survey_id# then 'FIT Count App'
-        else ''
-        END" display='Survey' datatype="integer"/>
-    <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
-    <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
-    <column name='location' display='Location' sql='coalesce(l.name, s.location_name)' datatype="text"/>
-    <column name='country' display='Country/Island' sql="
-        case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
-        when csf.location_ids @> ARRAY[#scotland_location_id#] THEN 'Scotland'
-        when csf.location_ids @> ARRAY[#wales_location_id#] THEN 'Wales'
-        when csf.location_ids @> ARRAY[#ni_location_id#] THEN 'Northern Ireland'
-        when csf.location_ids @> ARRAY[#man_location_id#] THEN 'Isle of Man'
-        when csf.location_ids @> ARRAY[#jersey_location_id#] THEN 'Jersey'
-        when csf.location_ids @> ARRAY[#guernsey_location_id#] THEN 'Guernsey'
-        ELSE '' END"
-    datatype="text"/>
-    <column name='date_start' sql='s.date_start' visible="false"/>
-    <column name='date_end' sql='s.date_end' visible="false"/>
-    <column name='date_type' sql='s.date_type' visible="false"/>
-    <column name='date' display='Date' datatype="date"/>
-    <column name='start_time' display='Start time' sql="sav_start_time.text_value" />
-    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
-    <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
-    <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
-    <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"/>
+    <column name="beetles" display='Beetles' sql="
+        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="bumblebees" display='Bumblebees' sql="
+        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="butterflies_moths" display='Butterflies moths' sql="
+        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>       
+    <column name="honeybee" display='Honeybees' sql="
+        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="hoverflies" display='Hoverflies' sql="
+        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+     <column name="other_flies" display='Other flies' sql="
+        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>   
+    <column name="other_insects" display='Other insects' sql="
+        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+    <column name="small_insects" display='Small insects' sql="
+        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>    
+    <column name="solitary_bee" display='Solitary bees' sql="
+        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="wasp" display='Wasps' sql="
+        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
+    <column name="start_time" display='Start time' sql="sav_start_time.text_value" datatype="text" />
     <column name='habitat' display='Habitat' sql="ctt_hab_lang.term" datatype="text"/>
     <column name='Other habitat' display='Other habitat' sql="sav_other_hab.text_value" datatype="text"/>
     <column name='target' display='Target flower' sql="ctt_target_lang.term" datatype="text"/>
-    <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover_lang.term" datatype="text" />
     <column name="flowers_counted_attr_id" display='Flowers counted' sql="ctt_flowers_counted_lang.term" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit_lang.term" datatype="text" />
@@ -179,33 +157,17 @@
     <column name="cloud_cover_attr_id" display='Cloud cover' sql="ctt_cloud_cover_lang.term" datatype="text" />
     <column name="wind_attr_id" display='Wind' sql="ctt_wind_lang.term" datatype="text" />
     <column name="patch_sunshine_attr_id" display='Patch sunshine' sql="ctt_patch_sunshine_lang.term" datatype="text" />
-    <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
-    <column name="beetles" display='Beetles' sql="
-        sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="bumblebees" display='Bumblebees' sql="
-        sum(case when cof.taxon_meaning_id = #bumblebee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="butterflies_moths" display='Butterflies moths' sql="
-        sum(case when cof.taxon_meaning_id = #butterflies_moths_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="honeybee" display='Honeybees' sql="
-        sum(case when cof.taxon_meaning_id = #honeybee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>  
-    <column name="hoverflies" display='Hoverflies' sql="
-        sum(case when cof.taxon_meaning_id = #hoverflies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="other_flies" display='Other flies' sql="
-        sum(case when cof.taxon_meaning_id = #other_flies_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="other_insects" display='Other insects' sql="
-        sum(case when cof.taxon_meaning_id = #other_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="small_insects" display='Small insects' sql="
-        sum(case when cof.taxon_meaning_id = #small_insects_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="solitary_bee" display='Solitary bees' sql="
-        sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name="wasp" display='Wasps' sql="
-        sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
-        sql="CASE WHEN 
-            (CAST(s.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
-            CAST(s.survey_id AS character varying) = '#fit_count_app_survey_id#') 
-            THEN true ELSE false END" visible="false" />
-    <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
-        sql="CASE WHEN CAST(s.survey_id AS character varying) = '#1km_fit_count_survey_id#' THEN true ELSE false END" visible="false" />
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case s.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="s.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="s.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(s.public_geom)" />
+    <column name="language" display = "Preferred language" sql="case when '#language#' = 'cym' then 'cym' else 'eng' end" datatype="text" />
   </columns>
 </report>
