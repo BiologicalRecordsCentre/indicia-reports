@@ -132,9 +132,6 @@
     <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
     <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
     <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
-    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
-      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
-    </param> 
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
