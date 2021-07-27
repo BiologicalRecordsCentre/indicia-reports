@@ -131,7 +131,7 @@
     <param name = "ni_location_id" display="Northern Ireland location ID" description = "Location ID for Northern Ireland." datatype="integer"/>  
     <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
     <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
-    <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/>  
+    <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>

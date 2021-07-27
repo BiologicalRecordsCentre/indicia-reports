@@ -74,7 +74,6 @@
           AND sav_patch_sunshine.deleted = false
       LEFT JOIN cache_termlists_terms ctt_patch_sunshine on ctt_patch_sunshine.id = sav_patch_sunshine.int_value
       LEFT JOIN cache_termlists_terms ctt_patch_sunshine_lang on ctt_patch_sunshine_lang.meaning_id = ctt_patch_sunshine.meaning_id AND ctt_patch_sunshine_lang.language_iso = '#language#'
-
       #agreements_join#
       WHERE #sharing_filter# 
       #idlist#
@@ -121,6 +120,9 @@
     <param name = "patch_sunshine_attr_id" display="Patch sample attr ID" description = "ID of the sample attribute that holds the patch sunshine." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
     <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"/>

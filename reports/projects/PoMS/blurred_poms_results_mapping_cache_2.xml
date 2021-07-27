@@ -53,6 +53,9 @@
     <param name = "wind_attr_id" display="Wind sample attr ID" description = "ID of the sample attribute that holds the wind value." datatype="integer"/>
     <param name = "patch_sunshine_attr_id" display="Patch sample attr ID" description = "ID of the sample attribute that holds the patch sunshine." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"/>

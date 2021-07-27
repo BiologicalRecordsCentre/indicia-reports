@@ -24,7 +24,6 @@
 
       LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id
         AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
-
       #agreements_join#
       WHERE #sharing_filter# 
       #idlist#
@@ -54,6 +53,9 @@
       lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
     <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"

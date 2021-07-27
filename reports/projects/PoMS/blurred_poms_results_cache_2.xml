@@ -39,6 +39,9 @@
     <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
       lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"

@@ -7,10 +7,11 @@
   <query website_filter_field="" training_filter_field="" >
     SELECT #columns# 
       FROM samples s
-      JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = s.id
+      JOIN cache_samples_functional csf on csf.id = s.id
+      JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = csf.id
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
       LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
-      LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id 
+      LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id
         AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
       #agreements_join#
       WHERE #sharing_filter# 
@@ -61,6 +62,9 @@
     <param name = "small_insects_taxon_meaning_id" display="Small insects taxon meaning ID" description = "Meaning ID for small insects." datatype="integer"/>
     <param name = "other_insects_taxon_meaning_id" display="Other insects taxon meaning ID" description = "Meaning ID for other insects." datatype="integer"/>
     <param name = "abundance_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>

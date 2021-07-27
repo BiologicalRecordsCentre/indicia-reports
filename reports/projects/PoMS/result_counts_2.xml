@@ -8,7 +8,7 @@
       #agreements_join#
       WHERE #sharing_filter# 
       AND csf.survey_id in (
-        #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#1km_pan_traps_survey_id#,#fit_count_app_survey_id#
+        #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
       )
       AND csf.date_end &gt;= CAST(date_part('year', CURRENT_DATE) || '-01-01' as date)
       AND csf.date_start &lt;= CAST(date_part('year', CURRENT_DATE) || '-12-31' as date)
@@ -16,8 +16,10 @@
   <params>
     <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
-    <param name = "1km_pan_traps_survey_id" display="1km pan traps survey ID" description = "ID of the 1km pan traps survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='total_counts' sql="count(distinct csf.id)" display='Total counts' datatype="integer"/>
