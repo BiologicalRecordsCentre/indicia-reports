@@ -7,7 +7,8 @@
   from cache_samples_functional s
   join cache_samples_nonfunctional snf on snf.id=s.id
   left join cache_samples_functional sc on sc.parent_sample_id=s.id
-  where s.parent_sample_id is null
+  where s.website_id in (#website_ids#)
+  and s.parent_sample_id is null
   and s.created_by_id=#user_id#
   </query>
   <order_bys>
@@ -23,6 +24,7 @@
     <column name='date_end' visible='false' sql='s.date_end' />
     <column name='date_type' visible='false' sql='s.date_type' />
     <column name='date' display='Date' datatype="date" />
+    <column name="site_name" display="Site name" sql="s.location_name" datatype="text" />
     <column name="input_form" visible="false" sql="s.input_form" datatype="text" />
     <column name="subsamples" display="Samples" sql="count(sc.id)" datatype="integer" aggregate="true" />
   </columns>
