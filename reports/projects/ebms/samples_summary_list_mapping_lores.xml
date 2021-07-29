@@ -5,6 +5,7 @@
   <query website_filter_field="">
     select #columns#
     from cache_samples_functional s
+    join cache_samples_nonfunctional snf on snf.id=s.id
     join surveys su on su.id=s.survey_id and su.deleted=false
     left join cache_occurrences_functional o on o.sample_id=s.id or o.parent_sample_id=s.id
     left join cache_taxa_Taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
@@ -42,6 +43,8 @@
     <column name="date_end" sql="s.date_end" visible="false" on_demand="true" />
     <column name="date_type" sql="s.date_type" visible="false" on_demand="true" />
     <column name="date" display="Date" datatype="date" on_demand="true" />
+    <column name="start_time" display="Start time" sql="snf.attrs_json->>'1385'" datatype="text" on_demand="true" />
+    <column name="end_time" display="End time" sql="snf.attrs_json->>'1386'" datatype="text" on_demand="true" />
     <column name="sample_ids" visible="false" sql="array_to_string(array_agg(s.id), ',')" aggregate="true" />
     <column name="geom" visible="false" mappable="true" sql="st_astext(case when msq.size > #sq_size# then s.public_geom else msq.geom end)" in_count="true" />
   </columns>
