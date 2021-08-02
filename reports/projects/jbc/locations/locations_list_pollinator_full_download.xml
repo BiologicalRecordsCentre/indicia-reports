@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="List of locations for downloading pollinator areas"
+        description="Full data of pollinator areas designed for explore.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations l
+    -- Not private
+    LEFT JOIN location_attribute_values vp ON vp.location_id=l.id AND vp.location_attribute_id=257 AND vp.deleted=false AND vp.int_value=1
+    -- Checked
+    LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id and vchk.location_attribute_id=256 and vchk.deleted=false
+    -- Email
+    LEFT JOIN location_attribute_values vemail on vemail.location_id=l.id and vemail.location_attribute_id=15 and vemail.deleted=false
+    -- First name
+    LEFT JOIN location_attribute_values vfn on vfn.location_id=l.id and vfn.location_attribute_id=5 and vfn.deleted=false
+    -- Last name
+    LEFT JOIN location_attribute_values vln on vln.location_id=l.id and vln.location_attribute_id=11 and vln.deleted=false
+    -- Site type
+    LEFT JOIN location_attribute_values vst on vst.location_id=l.id and vst.location_attribute_id=249 and vst.deleted=false
+    LEFT JOIN cache_termlists_terms tst on tst.id=vst.int_value
+    -- Seed mix
+    LEFT JOIN location_attribute_values vsm on vsm.location_id=l.id and vsm.location_attribute_id=252 and vsm.deleted=false
+    -- Your site
+    LEFT JOIN location_attribute_values vys on vys.location_id=l.id and vys.location_attribute_id=254 and vys.deleted=false
+    LEFT JOIN cache_termlists_terms tys on tys.id=vys.int_value
+    -- Confirmation of accuracy
+    LEFT JOIN location_attribute_values vca on vys.location_id=l.id and vca.location_attribute_id=255 and vca.deleted=false
+    -- Privacy option
+    LEFT JOIN location_attribute_values vpo on vys.location_id=l.id and vpo.location_attribute_id=257 and vpo.deleted=false
+    -- Terms accepted
+    LEFT JOIN location_attribute_values vta on vys.location_id=l.id and vta.location_attribute_id=261 and vta.deleted=false
+    -- JBC
+    JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      AND lw.website_id in (#website_ids#)
+    -- Activity
+    LEFT JOIN location_attribute_values vact ON vact.location_id=l.id AND vact.location_attribute_id=251 AND vact.deleted=false
+    LEFT JOIN cache_termlists_terms tact ON tact.id=vact.int_value
+    -- Date of planting
+    LEFT JOIN location_attribute_values vpd ON vpd.location_id=l.id AND vpd.location_attribute_id=260 AND vpd.deleted=false
+    #joins#
+    WHERE l.deleted=false
+    #filters#
+  </query>
+  <params>
+      <param name="location_type_id" display="Location type(s)" datatype="lookup"
+        description="Select the location type, or leave blank to not filter by location type."
+        population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+          <where>l.location_type_id in (#location_type_id#)</where>
+      </param>
+      <param name="island" display="Island" datatype="lookup"
+             lookup_values="203170:Jersey,215429:Alderney,215430:Guernsey (including Sark and Herm)">
+        <join>JOIN locations lfilt ON st_intersects(lfilt.boundary_geom, COALESCE(l.boundary_geom, l.centroid_geom)) AND lfilt.id=#island#</join>
+      </param>
+      <param name="checked" display="Checked" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
+        <wheres>
+          <where value="yes" operator="equal">(vchk.id is not null and vchk.int_value=1)</where>
+          <where value="no" operator="equal">(vchk.id is null or vchk.int_value&lt;&gt;1)</where>
+        </wheres>
+      </param>
+      <param name="private" display="Private" datatype="lookup" lookup_values="all:-,yes:Yes,no:No">
+        <where value="yes" operator="equal">(vp.id is not null and vp.int_value=1)</where>
+        <where value="no" operator="equal">(vp.id is null or vp.int_value&lt;&gt;1)</where>
+      </param>
+      <param name="simplifyFeatureTo" datatype="integer" default="1" />
+      <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
+        <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
+      </param>
+  </params>
+  <columns>
+        <column name="id" visible="false" sql="l.id" datatype="integer" />
+        <column name="email" display="Email" sql="vemail.text_value" />
+        <column name="first_name" display="First name" sql="vfn.text_value" />
+        <column name="last_name" display="Last name" sql="vln.text_value" />
+        <column name="name" display="Site name" sql="l.name" />
+        <column name="planting_date_start" visible="false" sql="vpd.date_start_value" />
+        <column name="planting_date_end" visible="false" sql="vpd.date_end_value" />
+        <column name="planting_date_type" visible="false" sql="vpd.date_type_value" />
+        <column name="planting_date" display="Planting date" datatype="date" />
+        <column name="site_type" display="Site type" sql="tst.term" />
+        <column name="comment" display="Comment" sql="l.comment" />
+        <column name="activity" display="Activity" sql="tact.term" />
+        <column name="seed_mix" display="Seed mix" sql="vsm.text_value" />
+        <column name="your_site" display="Your site" sql="tys.term" />
+        <column name="confirm_accurate" display="Confirmation of accuracy" sql="vca.int_value" />
+        <column name="privacy_option" display="Privacy option" sql="vpo.int_value" />
+        <column name="terms_accepted" display="Terms accepted" sql="vta.int_value" />
+        <column name="private" display="Private" sql="case when vp.id is not null and vp.int_value=1 then 'yes' else 'no' end" />
+        <column name="checked" display="Checked" sql="case when vchk.id is not null and vchk.int_value=1 then 'yes' else 'no' end" />
+        <column name="area" display="Area (m2)" datatype="integer" sql="round(st_area(st_transform(l.boundary_geom, 3109)))" />
+        <column name="shape" display="Shape" sql="ST_AsGeoJson(ST_Transform(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#), 4326))" />
+        <column name="lat" display="Latitude" sql="ST_x(ST_Transform(ST_Centroid(l.centroid_geom), 4326))" datatype="integer" />
+        <column name="lon" display="Longitude" sql="ST_y(ST_Transform(ST_Centroid(l.centroid_geom), 4326))" datatype="integer" />
+
+  </columns>
+</report>
