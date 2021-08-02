@@ -24,11 +24,11 @@
     LEFT JOIN location_attribute_values vys on vys.location_id=l.id and vys.location_attribute_id=254 and vys.deleted=false
     LEFT JOIN cache_termlists_terms tys on tys.id=vys.int_value
     -- Confirmation of accuracy
-    LEFT JOIN location_attribute_values vca on vys.location_id=l.id and vca.location_attribute_id=255 and vca.deleted=false
+    LEFT JOIN location_attribute_values vca on vca.location_id=l.id and vca.location_attribute_id=255 and vca.deleted=false
     -- Privacy option
-    LEFT JOIN location_attribute_values vpo on vys.location_id=l.id and vpo.location_attribute_id=257 and vpo.deleted=false
+    LEFT JOIN location_attribute_values vpo on vpo.location_id=l.id and vpo.location_attribute_id=257 and vpo.deleted=false
     -- Terms accepted
-    LEFT JOIN location_attribute_values vta on vys.location_id=l.id and vta.location_attribute_id=261 and vta.deleted=false
+    LEFT JOIN location_attribute_values vta on vta.location_id=l.id and vta.location_attribute_id=261 and vta.deleted=false
     -- JBC
     JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
       AND lw.website_id in (#website_ids#)
