@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="List of locations for exploring pollinator areas"
+<report title="List of locations for mapping pollinator areas"
         description="Full data of pollinator areas designed for explore.">
   <query website_filter_field="lw.website_id">
     SELECT #columns#
