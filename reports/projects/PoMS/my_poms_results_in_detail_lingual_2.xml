@@ -145,6 +145,18 @@
         END" display='Survey' datatype="integer"/>
     <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
     <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
+    <!-- This is a version of cache_occurrences_nonfunctional column altered for samples only, also assumes 1000 privacy_precision -->
+    <column name='output_sref' display='Output spatial reference' sql="
+      get_output_sref(
+        greatest(
+        round(sqrt(st_area(st_transform(s.geom, sref_system_to_srid(s.entered_sref_system)))))::integer,
+          null,
+          1000,
+          1000,
+          10
+        ), reduce_precision(coalesce(s.geom, l.centroid_geom), false, greatest(null, 1000))
+      )
+    " datatype="text"/>
     <column name='location' display='Location' sql='coalesce(l.name, s.location_name)' datatype="text"/>
     <column name='country' display='Country/Island' sql="
         case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
