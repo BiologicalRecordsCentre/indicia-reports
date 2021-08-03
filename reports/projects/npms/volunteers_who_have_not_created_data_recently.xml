@@ -12,7 +12,8 @@
     LEFT JOIN indicia.samples s on s.created_by_id = u.id
         AND s.survey_id in (#survey_ids#)
         AND s.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
-    AND s.deleted=false
+        AND s.training=false
+        AND s.deleted=false
     WHERE s.id IS NULL AND p.deleted=false
   </query>
   <params>
