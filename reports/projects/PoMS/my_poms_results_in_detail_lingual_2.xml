@@ -173,7 +173,7 @@
     <column name='date_type' sql='s.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='start_time' display='Start time' sql="sav_start_time.text_value" />
-    <column name='recorder_names' display='Recorder names' sql='csnf.recorders'/>
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders' datatype="text"/>
     <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
     <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
     <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
