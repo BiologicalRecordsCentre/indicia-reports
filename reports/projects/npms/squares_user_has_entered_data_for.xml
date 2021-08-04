@@ -8,6 +8,7 @@
     LEFT JOIN locations_websites square_w on square_w.location_id=square.id AND square_w.deleted=false
     JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
     JOIN samples samp on samp.location_id = plot.id AND samp.survey_id in (#limit_survey_ids#) AND samp.deleted = false
+      AND samp.training = false
   WHERE square.deleted=false
     AND #website_filter#
     AND samp.created_by_id=#the_user_id#
