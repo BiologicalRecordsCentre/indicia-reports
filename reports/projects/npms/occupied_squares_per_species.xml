@@ -12,7 +12,8 @@
       co.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date)
       AND #website_filter# 
       AND square.deleted=false
-      AND co.survey_id in (#limit_survey_ids#) 
+      AND co.survey_id in (#limit_survey_ids#)
+      AND co.training = false
   </query>
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
