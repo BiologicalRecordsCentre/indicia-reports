@@ -10,7 +10,9 @@
       JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
       JOIN users u on u.id=#current_user_id#
       JOIN samples s on s.location_id = plot.id and s.created_by_id = u.id AND s.deleted=false
+        AND s.training = false
       JOIN occurrences o on o.sample_id = s.id AND o.deleted=false
+        AND o.training = false
     WHERE (square.location_type_id=#core_square_location_type_id#)
     AND 
       ((trim('#year#') = '' OR s.date_start &gt;= CAST(COALESCE('#year#' || '-01-01','1500-01-01') as date))

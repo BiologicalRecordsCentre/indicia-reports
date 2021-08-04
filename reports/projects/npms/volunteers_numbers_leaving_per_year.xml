@@ -57,7 +57,7 @@
   AND square.location_type_id=#core_square_type_id# AND square.deleted=false
   LEFT JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
   -- Only interested in people who actually made some recordings (i.e. used the scheme_)
-  LEFT JOIN samples s on s.location_id=plot.id AND s.deleted=false
+  LEFT JOIN samples s on s.location_id=plot.id AND s.deleted=false AND s.training = false
   where 
     --If a user is deallocated, then check they haven't been re-allocated, if they have been re-allocated then they don't count as having left.
     p.id NOT in
