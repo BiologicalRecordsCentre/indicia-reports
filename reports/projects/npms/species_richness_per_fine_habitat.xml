@@ -14,6 +14,7 @@ level."
       JOIN samples samp on samp.id = sampHabVal.sample_id 
         AND (samp.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')
         AND samp.deleted=false
+        AND samp.training=false
       JOIN locations plot on plot.id = samp.location_id AND plot.deleted=false
       JOIN surveys su on su.id=samp.survey_id 
         AND (su.id=#survey_id# OR #survey_id#=0)
