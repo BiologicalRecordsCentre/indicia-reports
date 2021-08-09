@@ -12,7 +12,7 @@ on the input forms in edit mode."
     AND plot.deleted=false
   </query>
   <params>
-    <param name="sample_id" display="Todo" datatype="integer"/>
+    <param name="sample_id" display="Sample ID" datatype="integer"/>
   </params>
   <columns>
     <column name='id' display='Square ID' sql="square.id" datatype='integer' visible="false"/>
