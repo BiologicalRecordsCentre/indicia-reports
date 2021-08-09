@@ -6,7 +6,7 @@ Broad habitat data may include data for samples where a fine scale sub-habitat h
 >
   <query website_filter_field="co.website_id">
     SELECT #columns#
-    FROM cache_occurrences co
+    FROM cache_occurrences_functional co
       JOIN samples samp on samp.id=co.sample_id AND samp.survey_id in (#limit_survey_ids#) AND samp.deleted = false AND samp.training = false
       JOIN sample_attribute_values savHab on savHab.sample_id=samp.id AND savHab.sample_attribute_id=#habitat_attr_id# AND savHab.deleted=false
       JOIN termlists_terms ttHab ON ttHab.id = savHab.int_value AND ttHab.deleted=false
@@ -20,6 +20,8 @@ Broad habitat data may include data for samples where a fine scale sub-habitat h
     WHERE
       #website_filter#
       #filters#
+      AND co.survey_id in (#limit_survey_ids#)
+      AND co.training = false
     GROUP BY tHab.term
   </query>
   <order_bys>
