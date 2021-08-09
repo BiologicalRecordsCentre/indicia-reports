@@ -19,7 +19,7 @@ or any plot they are assigned to which they didn't create (as long as they are t
       JOIN person_attribute_values pav on pav.int_value=square.id AND pav.person_id=u.person_id AND pav.person_attribute_id=#user_square_attr_id# AND pav.deleted=false
     #joins#
     WHERE (l.id = square.id OR l.parent_id = square.id)
-    AND l.location_type_id in (#location_type_ids#)
+    AND (l.location_type_id = #core_square_location_type_id# OR l.parent_id IS NOT NULL)
     AND #website_filter# AND l.deleted=false
     GROUP BY square.id,l.parent_id,l.id,lavplotname.text_value,cache_ttPlotType.term,pav.updated_by_id,u.id,cache_ttPlotType.id
     HAVING (l.parent_id IS NULL OR (#only_show_my_useable_plots_squares#=0 OR (#only_show_my_useable_plots_squares#=1 AND ((l.created_by_id=#current_user_id# or l.created_by_id=#user_id#) OR count(distinct pavOthers.id) &lt; 2))))
@@ -41,7 +41,6 @@ or any plot they are assigned to which they didn't create (as long as they are t
     <param name='linear_location_type_id' description='Location type id for linear plot.' emptyvalue='0' default='0'/>
     <param name='5_location_type_id' description='Location type id for 5 x 5 plots.' emptyvalue='0' default='0'/>
     <param name='10_location_type_id' description='Location type id for 10 x 10 plots.' emptyvalue='0' default='0'/>
-    <param name='location_type_ids' description='Comma separated list of location type IDs to limit to.' datatype="text"/>
   </params>
   <columns>
     <column name='id' display='Location ID' sql="l.id" datatype='integer' visible="false" in_count="true"/>
