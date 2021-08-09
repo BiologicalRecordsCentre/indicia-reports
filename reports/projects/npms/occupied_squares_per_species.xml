@@ -4,7 +4,7 @@
 >
   <query website_filter_field="co.website_id">
     SELECT #columns#
-    FROM cache_occurrences co
+    FROM cache_occurrences_functional co
     JOIN locations plot on plot.id=co.location_id AND plot.deleted=false
     JOIN locations square on square.id=plot.parent_id AND (square.location_type_id=#core_square_type_id#) AND square.deleted=false
     #joins#
