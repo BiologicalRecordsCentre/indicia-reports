@@ -30,9 +30,9 @@
     <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
   </params>
   <columns>
-    <column name='id' sql='csf.id' display='ID' visible='false' in_count="true"/>
+    <column name='id' sql='csf.id' display='ID' in_count="true"/>
     <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
-    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer"/>
+    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
     <column name='square_name' sql="square.centroid_sref" display='Square'/>
     <column name='plot_name'
