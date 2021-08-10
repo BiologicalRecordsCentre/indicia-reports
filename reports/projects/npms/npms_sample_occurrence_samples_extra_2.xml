@@ -1,7 +1,7 @@
 <report
     title="Samples List for the NPMS Extra Species form."
     description="Display a list of samples for the NPMS Extra Species page">
-  <query website_filter_field="csf.website_id" training_filter_field="csf.training">
+  <query website_filter_field="o.website_id" training_filter_field="o.training">
     SELECT #columns#
       FROM cache_occurrences_functional o
       JOIN cache_samples_functional csf on csf.id = o.sample_id
