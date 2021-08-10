@@ -1,5 +1,5 @@
 <report
-    title="Samples List for npms_sample_occurrences form 6"
+    title="Samples List for npms_sample_occurrences form 7"
     description="Used by the Samples grid to retrieve the samples associated with a survey and user. User can be identified by
         their Indicia User ID. A second sample may be linked to a first sample, the id of which is stored in a custom attribute. The id
         of that custom attribute is passed as a parameter to the report. New version of the report only returns data for squares you
@@ -81,8 +81,8 @@
     population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
 </params>
   <columns>
-    <column name='sample_id' sql='csf.id' display='ID' visible='false' in_count="true" distincton="true"/>
-    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer"/>
+    <column name='sample_id' sql='csf.id' display='ID' in_count="true" distincton="true"/>
+    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
     <column name='square' sql="square.name" display='Square'/>
     <column name='location_name'
