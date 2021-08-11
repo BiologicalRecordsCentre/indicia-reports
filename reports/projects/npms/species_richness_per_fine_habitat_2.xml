@@ -1,0 +1,153 @@
+<report
+    title="Species Richness Per fine Habitat"
+    description="Return the average number of species found at each fine habitat, this excludes broad habitats. For instance a grass habitat
+might have an average of 5 different species. This is made slightly more complicated because the habitat is held at sample level instead of location
+level."
+>
+  <query website_filter_field="samp.website_id">
+    SELECT #columns#  
+    FROM cache_termlists_terms tthab
+      JOIN sample_attribute_values sampHabVal on sampHabVal.int_value=ttHab.id AND sampHabVal.sample_attribute_id=#habitat_attr_id# AND sampHabVal.deleted=false
+      JOIN cache_samples_functional samp on samp.id = sampHabVal.sample_id 
+        AND (samp.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')
+        AND samp.training=false
+        AND samp.survey_id in (#limit_survey_ids#) 
+        AND (samp.survey_id=#survey_id# OR #survey_id#=0)
+      JOIN locations plot on plot.id = samp.location_id AND plot.deleted=false
+    LEFT JOIN cache_occurrences_functional o on o.sample_id = samp.id AND o.training=false
+    LEFT JOIN cache_taxa_taxon_lists ttl on ttl.id = o.taxa_taxon_list_id
+    WHERE tthab.term!='Not in scheme'
+      #filters#
+      AND #website_filter#
+      AND ttHab.parent_id IS NOT NULL 
+      AND (ttHab.id=#fine_habitat# OR #fine_habitat#=0)
+      AND tthab.termlist_id = #habitat_termlist_id#
+    GROUP BY ttHab.term,ttHab.id
+  </query>
+  <params>
+    <param name='habitat_attr_id' display='Habitat Sample Attribute Id' description='Id of the sample attribute that holds the habitat.' datatype='integer'/>
+    <param name='fine_habitat' display='Fine Scale Habitat' description='Restrict report to specific habitat.' datatype='lookup' emptyvalue='0'
+        population_call='report:reports_for_prebuilt_forms/Splash/fine_habitats_for_population_call:id:term'/>   
+    <param name='survey_id' display='Survey' description='Survey' datatype='lookup' population_call='report:reports_for_prebuilt_forms/Splash/get_surveys_for_population_call:id:title' emptyvalue='0'/>
+    <param name="ignore_dates_before" display="Ignore Dates Before" description="Ignore samples whose date is before this date (we can ignore previous years data)" datatype="date" emptyvalue="" default=""/>
+    <param name="limit_survey_ids" display="Limit Survey IDs" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
+    <param name="habitat_termlist_id" display="Id of the habitat termlist" datatype="integer"/>
+  </params>
+  <columns> 
+    <column name='habitat' display='Habitat' sql="tthab.term" datatype='text' in_count="true"/>
+    <column name='habitat_abbr' display='Abbreviation' sql="
+      CASE 
+        WHEN tthab.term='Acid fens, mires and springs' then 'AFF' 
+        WHEN tthab.term='Arable field margins' then 'AFM' 
+        WHEN tthab.term='Base-rich fens, mires and springs' then 'BFF' 
+        WHEN tthab.term='Blanket bog' then 'BB' 
+        WHEN tthab.term='Coastal saltmarsh' then 'CS' 
+        WHEN tthab.term='Coastal sand dunes' then 'CSD'
+        WHEN tthab.term='Coastal vegetated shingle' then 'CVS'
+        WHEN tthab.term='Dry acid grassland' then 'DAG'
+        WHEN tthab.term='Dry calcareous grassland' then 'DCG' 
+        WHEN tthab.term='Dry deciduous woodland' then 'DDW' 
+        WHEN tthab.term='Dry heathland' then 'DH'
+        WHEN tthab.term='Montane dry heathland' then 'DMH'
+        WHEN tthab.term='Hedgerows of native species' then 'HNS'
+        WHEN tthab.term='Inland rocks and scree' then 'IRS'
+        WHEN tthab.term='Machair' then 'M'
+        WHEN tthab.term='Maritime cliffs and slopes' then 'MCT'
+        WHEN tthab.term='Montane acid grassland' then 'MAG'
+        WHEN tthab.term='Montane calcareous grassland' then 'MCG'
+        WHEN tthab.term='Montane rocks and scree' then 'MRS'
+        WHEN tthab.term='Native conifer woods and juniper scrub' then 'NPW'
+        WHEN tthab.term='Neutral damp grassland' then 'NDG'
+        WHEN tthab.term='Neutral pastures and meadows' then 'NPM'
+        WHEN tthab.term='Nutrient-poor lakes and ponds' then 'NPL'
+        WHEN tthab.term='Nutrient-rich lakes and ponds' then 'NRL'
+        WHEN tthab.term='Raised bog' then 'RB'
+        WHEN tthab.term='Rivers and streams' then 'RS'
+        WHEN tthab.term='Wet heath' then 'WH'
+        WHEN tthab.term='Wet woodland' then 'WW'
+        ELSE tthab.term 
+      END" datatype='text'/>  
+    <column name='total_plots' display='Number of plots' sql='count(distinct(plot.id))'/>
+    <column name='total_samples' display='Samples' sql='count(distinct(samp.id))'/>
+    <column name='total_species_richness' display='Species' sql='count(distinct(ttl.taxon_meaning_id))' datatype='float'/>
+    <!-- The species richness is complicated by a few things.
+    Firstly the plot habitat is actually only held at the sample level instead of the location itself.
+    Secondly to calculate the richness of a plot we need a distinct list of the species at the plot.
+    However as each habitat might have several plots, we can't just use the word distinct in the select statement as
+    this will actually only count distinct species accross all the plots, not at individual plots, so we need a sub-query
+    to select the distinct taxon meanings at the individual plots.
+    -->
+    <column name='mean_species_richness' display='Mean Richness' sql="
+      (select round(avg(count_richness_per_plot),2)
+         FROM
+         (select plot2.id as plot_id, plot_counts.count as count_richness_per_plot
+           FROM cache_samples_functional samp2
+           JOIN locations plot2 on plot2.id=samp2.location_id AND plot2.deleted=false
+           JOIN sample_attribute_values sampHabVal2 on sampHabVal2.sample_id=samp2.id AND sampHabVal2.sample_attribute_id=#habitat_attr_id# AND sampHabVal2.deleted=false
+           JOIN cache_termlists_terms ttHab2 ON ttHab2.id=sampHabVal2.int_value AND ttHab2.parent_id IS NOT NULL
+             AND (ttHab2.id=ttHab.id)
+             AND ttHab2.term!='Not in scheme'
+
+           LEFT JOIN
+
+            (select plot3.id as plot_id, count(distinct ttl3.taxon_meaning_id) as count
+              From cache_samples_functional samp3 
+              JOIN locations plot3 on plot3.id = samp3.location_id AND plot3.deleted=false   
+              JOIN sample_attribute_values sampHabVal3 on sampHabVal3.sample_id=samp3.id AND sampHabVal3.sample_attribute_id=#habitat_attr_id# AND sampHabVal3.deleted=false         
+              JOIN cache_termlists_terms ttHab3 ON ttHab3.id=sampHabVal3.int_value AND ttHab3.parent_id IS NOT NULL AND (ttHab3.id=ttHab.id)
+                AND ttHab3.term!='Not in scheme' 
+              JOIN cache_occurrences_functional o3 on o3.sample_id=samp3.id AND o3.training=false
+              JOIN cache_taxa_taxon_lists ttl3 on ttl3.id=o3.taxa_taxon_list_id
+              WHERE
+              (samp3.date_start >= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')
+              AND (samp3.survey_id=#survey_id# OR #survey_id#=0) 
+              AND samp3.survey_id in (#limit_survey_ids#)   
+              AND samp3.training=false
+              GROUP BY plot3.id) plot_counts
+         ON plot_counts.plot_id=plot2.id
+         WHERE 
+         (samp2.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')
+         AND (samp2.survey_id=#survey_id# OR #survey_id#=0) 
+         AND samp2.survey_id in (#limit_survey_ids#) 
+         AND samp2.training=false
+         GROUP BY plot2.id,plot_counts.count) as counts)"   
+    />     
+    <!--Note this is all a duplicate of the sql in the species richness column apart from using stddev instead of avg, will try to remove this
+    duplication at some point, but for now haven't managed to -->
+    <column name='standard_deviation' display='Standard Deviation' sql="
+       (select round(stddev(count_richness_per_plot),2)
+         FROM
+         (select plot2.id as plot_id, plot_counts.count as count_richness_per_plot
+           FROM cache_samples_functional samp2
+           JOIN locations plot2 on plot2.id=samp2.location_id AND plot2.deleted=false
+           JOIN sample_attribute_values sampHabVal2 on sampHabVal2.sample_id=samp2.id AND sampHabVal2.sample_attribute_id=#habitat_attr_id# AND sampHabVal2.deleted=false
+           JOIN cache_termlists_terms ttHab2 ON ttHab2.id=sampHabVal2.int_value AND ttHab2.parent_id IS NOT NULL
+             AND (ttHab2.id=ttHab.id)
+             AND ttHab2.term!='Not in scheme'
+
+           LEFT JOIN
+
+            (select plot3.id as plot_id, count(distinct ttl3.taxon_meaning_id) as count
+              From cache_samples_functional samp3 
+              JOIN locations plot3 on plot3.id = samp3.location_id AND plot3.deleted=false       
+              JOIN sample_attribute_values sampHabVal3 on sampHabVal3.sample_id=samp3.id AND sampHabVal3.sample_attribute_id=#habitat_attr_id# AND sampHabVal3.deleted=false         
+              JOIN cache_termlists_terms ttHab3 ON ttHab3.id=sampHabVal3.int_value AND ttHab3.parent_id IS NOT NULL AND (ttHab3.id=ttHab.id)
+                AND ttHab3.term!='Not in scheme'
+              LEFT JOIN cache_occurrences_functional o3 on o3.sample_id=samp3.id AND o3.training=false
+              LEFT JOIN cache_taxa_taxon_lists ttl3 on ttl3.id=o3.taxa_taxon_list_id
+              WHERE
+              (samp3.date_start >= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')         
+              AND (samp3.survey_id=#survey_id# OR #survey_id#=0) AND samp3.survey_id in (#limit_survey_ids#) 
+              AND samp3.training=false
+              GROUP BY plot3.id) plot_counts
+         ON plot_counts.plot_id=plot2.id
+         WHERE 
+         (samp2.date_start &gt;= CAST(COALESCE('#ignore_dates_before#','1500-01-01') as date) OR '#ignore_dates_before#'='')
+         AND (samp2.survey_id=#survey_id# OR #survey_id#=0) AND samp2.survey_id in (#limit_survey_ids#) 
+         AND samp2.training=false
+         GROUP BY plot2.id,plot_counts.count) as counts)
+    "   
+    />
+  </columns>
+</report>
+
