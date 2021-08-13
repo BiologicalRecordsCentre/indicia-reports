@@ -1,0 +1,40 @@
+<report
+    title="Volunteer who have not created data recently 2"
+    description="List of volunteers who have not created any data in past two years.">
+  <query website_filter_field="uw.website_id">
+    SELECT #columns#
+    FROM people p
+    JOIN users u on u.person_id = p.id and u.deleted=false
+    JOIN users_websites uw on u.id=uw.user_id
+    JOIN person_attribute_values sqrPav ON sqrPav.person_id=u.person_id AND sqrPav.updated_by_id!=u.id AND sqrPav.person_attribute_id=#person_square_attr_id# 
+        AND sqrPav.created_on::date &lt; date (extract(year from current_date) - 2 || '-1-1')
+        AND sqrPav.deleted=false 
+    JOIN locations sqr ON sqr.id=sqrPav.int_value AND sqr.created_on::date >= date '#ignore_square_dates_before#' AND sqr.location_type_id = #core_square_type_id# AND sqr.deleted=false 
+    LEFT JOIN cache_samples_functional s_recent on s_recent.created_by_id = u.id
+        AND s_recent.survey_id in (#survey_ids#)
+        AND s_recent.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
+        AND s_recent.training=false
+    LEFT JOIN cache_samples_functional s_last on s_last.created_by_id = u.id
+        AND s_last.survey_id in (#survey_ids#)
+        AND s_last.date_start::date &lt; date (extract(year from current_date) - 2 || '-1-1')
+        AND s_last.training=false
+    WHERE s_recent.id IS NULL AND p.deleted=false
+    AND uw.website_id in (#website_ids#)
+  </query>
+  <params>
+    <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
+    <param name='person_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
+    <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
+        Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
+    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='text' />
+  </params>
+  <columns>
+    <column name='id' display='ID' sql='p.id' datatype='integer' in_count='true' visible='false'/>  
+    <column name='first_name' display='First name' sql='p.first_name' datatype='text' />  
+    <column name='surname' display='Surname' sql='p.surname' datatype='text' />  
+    <column name='email_address' display='Email address' sql='p.email_address' datatype='text' /> 
+    <column name='squares' display='Squares' sql="string_agg(distinct(sqr.name), ', ')" datatype='text' aggregate='true'/>   
+    <column name='approval_dates' display='Approval dates' sql="string_agg(distinct(to_char(sqrPav.updated_on, 'DD/MM/YYYY')::text), ', ')" datatype='text' aggregate='true'/> 
+    <column name='last_data_entry_date' display='Most recent data entry' sql="to_char(max(s_last.created_on), 'DD/MM/YYYY')" datatype='text' aggregate='true'/> 
+  </columns>
+</report>
