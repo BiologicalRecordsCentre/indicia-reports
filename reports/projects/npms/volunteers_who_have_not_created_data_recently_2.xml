@@ -1,10 +1,11 @@
 <report
     title="Volunteer who have not created data recently 2"
     description="List of volunteers who have not created any data in past two years.">
-  <query>
+  <query website_filter_field="uw.website_id">
     SELECT #columns#
     FROM people p
     JOIN users u on u.person_id = p.id and u.deleted=false
+    LEFT JOIN users_websites uw on u.id=uw.user_id
     JOIN person_attribute_values sqrPav ON sqrPav.person_id=u.person_id AND sqrPav.updated_by_id!=u.id AND sqrPav.person_attribute_id=#person_square_attr_id# 
         AND sqrPav.created_on::date &lt; date (extract(year from current_date) - 2 || '-1-1')
         AND sqrPav.deleted=false 
@@ -18,6 +19,7 @@
         AND s_last.date_start::date &lt; date (extract(year from current_date) - 2 || '-1-1')
         AND s_last.training=false
     WHERE s_recent.id IS NULL AND p.deleted=false
+    AND #website_filter#
   </query>
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
