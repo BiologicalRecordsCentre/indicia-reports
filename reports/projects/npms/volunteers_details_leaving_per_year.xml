@@ -5,7 +5,6 @@
   <query>
   SELECT distinct #columns#
   FROM people p
-  JOIN users u on u.person_id=p.id
   -- Think join here should speed things up else we end up left joining on everything, can't use a users_websites filter as we are interested in people who might not have a record for the wesbite anymore
   JOIN person_attribute_values pavRemovedAlloc on pavRemovedAlloc.person_id = p.id
       AND (EXTRACT(epoch from age(pavRemovedAlloc.updated_on::DATE, pavRemovedAlloc.created_on::DATE)) / 86400)::int &gt;&#61; #min_time_between_alloc_and_dealloc#
@@ -92,9 +91,9 @@
   </params>
   <columns>
     <column name='id' display='Person ID' sql='p.id' datatype='integer' visible="false" in_count='true'/> 
-    <column name='surname' display='Surname' sql='p.surname' datatype='text' in_count='true'/>     
-    <column name='first_name' display='First name' sql='p.first_name' datatype='text' in_count='true'/>  
-    <column name='email_address' display='Email' sql='p.email_address' datatype='text' in_count='true'/> 
+    <column name='surname' display='Surname' sql='p.surname' datatype='text'/>     
+    <column name='first_name' display='First name' sql='p.first_name' datatype='text'/>  
+    <column name='email_address' display='Email' sql='p.email_address' datatype='text'/> 
     <column name='date_left' display='Date left' sql="
     to_char(
       cast (
@@ -110,7 +109,7 @@
         END
     as date)
     , 'DD/MM/YYYY')
-    " datatype='date' in_count='true'/>     
+    " datatype='date'/>     
     <column name='year_left' display='Year left' sql="
     case 
       WHEN pavRemovedAlloc15.id IS NOT NULL THEN 2015
@@ -122,6 +121,6 @@
       WHEN pavRemovedAlloc21.id IS NOT NULL THEN 2021
       ELSE NULL
     END
-    " datatype='integer' in_count='true'/>        
+    " datatype='integer'/>        
   </columns>
 </report>
