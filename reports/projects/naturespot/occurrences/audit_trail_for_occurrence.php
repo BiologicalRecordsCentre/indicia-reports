@@ -1,0 +1,38 @@
+<report
+    title="Audit trail for an occurrence"
+>
+  <query>
+    select 'Created' as action, 'occurrences' as entity, o.id, o.created_on as date, o.created_by_id as user_id, coalesce(p.first_name || ' ', '') || p.surname as user, null::hstore as row_data,
+      (select row_data from audit.logged_actions where search_table_name='occurrences' and search_key=#occurrence_id# and event_record_id=#occurrence_id# and event_table_name='occurrences' order by id limit 1) as changed_field,
+      case when o.created_on<'2017-05-11 12:30:27.016+01' then 'Record entered before audit logging feature added to the warehouse, so initial data values may be inaccurate.' else null end as notes
+    from occurrences o
+    left join users u on u.id=o.created_by_id
+    left join people p on p.id=u.person_id
+    where o.id=#occurrence_id#
+    and o.website_id=8
+    union
+    select case la.action when 'U' then 'Update ' when 'I' then 'Insert ' when 'D' then 'Delete ' when 'T' then 'Truncate' end as action,
+      la.event_table_name as entity, la.event_record_id as id, la.action_tstamp_tx as date,
+      la.updated_by_id as user_id, coalesce(p.first_name || ' ', '') || p.surname as user,
+      la.row_data, la.changed_fields, array_to_string(ARRAY[case
+        when event_table_name='occurrences' and left(changed_fields::text, 30)='"last_verification_check_date"' then 'Record cleaner rule check'
+      else null
+      end, case
+      when session_user_name='postgres' then 'Action carried out directly on the back-end database'
+      when session_user_name='indicia_data_user' then 'Action carried out directly on the back-end database'
+      else null
+      end], '. ') as notes
+    from audit.logged_actions la
+    left join users u on u.id=la.updated_by_id
+    left join people p on p.id=u.person_id
+    join occurrences o on o.id=la.search_key and o.website_id=8
+    where la.search_table_name='occurrences'
+    and la.search_key=#occurrence_id#
+  </query>
+  <order_bys>
+    <order_by>date</order_by>
+  </order_bys>
+  <params>
+    <param name='occurrence_id' display='Occurrence ID' description='Occurrence ID' datatype='integer' />
+  </params>
+</report>
