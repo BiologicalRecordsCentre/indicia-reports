@@ -19,6 +19,7 @@
   LEFT JOIN survey_attribute_values yav5 ON yav5.survey_id = o.survey_id and yav5.survey_attribute_id = #source_contact_affiliation_id# and yav5.deleted=false
   LEFT JOIN survey_attribute_values yav6 ON yav6.survey_id = o.survey_id and yav6.survey_attribute_id = #source_contact_email_id# and yav6.deleted=false
   LEFT JOIN survey_attribute_values yav7 ON yav7.survey_id = o.survey_id and yav7.survey_attribute_id = #source_additional_contact_id# and yav7.deleted=false
+  LEFT JOIN survey_attribute_values yav8 ON yav8.survey_id = o.survey_id and yav8.survey_attribute_id = #source_full_title_id# and yav8.deleted=false
   LEFT JOIN locations l on l.id = o.location_id and l.deleted=false
   LEFT JOIN location_attribute_values lav1 ON lav1.location_id = o.location_id and lav1.location_attribute_id = #location_hemisphere_id# and lav1.deleted=false
   LEFT JOIN cache_termlists_terms ctt2 ON ctt2.id = lav1.int_value
@@ -83,13 +84,16 @@
       display="ID of Contact Affiliation survey attribute" 
       datatype="integer"
     />
-  </params>
     <param name="source_contact_email_id" 
       display="ID of Contact Email survey attribute" 
       datatype="integer"
     />
     <param name="source_additional_contact_id" 
       display="ID of Additional Contact survey attribute" 
+      datatype="integer"
+    />
+    <param name="source_full_title_id" 
+      display="ID of Full Title survey attribute" 
       datatype="integer"
     />
     <param name="location_hemisphere_id" 
@@ -164,10 +168,12 @@
       display="ID of Taxonomy Notes occurrence attribute" 
       datatype="integer"
     />
+  </params>
   <columns>
     <column name="occurrence_id" display="ID" sql="o.id" datatype="integer" distincton="true" />
     <column name="source_data_type" display="Source Data Type" sql="coalesce(ctt1.term, 'NA')" datatype="text" />
     <column name="source_title" display="Source Title" sql="snf.survey_title" datatype="text" />
+    <column name="source_full_title" display="Source Full Title" sql="coalesce(yav8.text_value, 'NA')" datatype="text" />
     <column name="source_doi_website" display="Source DOI Website" sql="coalesce(yav2.text_value, 'NA')" datatype="text" />
     <column name="source_publication_year" display="Source Publication Year" sql="coalesce(yav3.int_value::text, 'NA')" datatype="text" />
     <column name="source_contact" display="Source Contact" sql="coalesce(yav4.text_value, 'NA')" datatype="text" />
