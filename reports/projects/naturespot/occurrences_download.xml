@@ -74,13 +74,14 @@
   when 'R4' then 'not accepted as unable to review'
   when 'R5' then 'not accepted as incorrect'
 end"/>
-  <column name="query_status" display="Query status" sql="o.query" datatype="text" />
-  <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
-  <column name='verified_on' display='Verified on' sql='o.verified_on' datatype="text" />
-  <column name="verifier_comment" display="Verifier comment"
-    sql="(SELECT string_agg(oc.comment, '; ') FROM occurrence_comments oc
-      WHERE oc.occurrence_id=o.id AND oc.deleted=false AND oc.record_status IS NOT NULL)" />
-  <column name="record_link" display="Record link"
-    sql="'https://www.brc.ac.uk/irecord/record-details?occurrence_id=' || o.id::varchar" />
+    <column name="query_status" display="Query status" sql="o.query" datatype="text" />
+    <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
+    <column name='verified_on' display='Verified on' sql='o.verified_on' datatype="text" />
+    <column name="verifier_comment" display="Verifier comment"
+      sql="(SELECT string_agg(oc.comment, '; ') FROM occurrence_comments oc
+        WHERE oc.occurrence_id=o.id AND oc.deleted=false AND oc.record_status IS NOT NULL)" />
+    <column name="record_link" display="Record link"
+      sql="'https://www.brc.ac.uk/irecord/record-details?occurrence_id=' || o.id::varchar" />
+    <column name="group_title" display="Project" sql="snf.group_title" datatype="text" />
   </columns>
 </report>
