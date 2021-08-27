@@ -1,0 +1,101 @@
+<report
+    title="Blurred PoMS results"
+    description="All PomS results. Includes blurred location data. Doesn't use cache attributes so we have multi-lingual support.
+    Note this will only work on BRC Live Warehouse as I had to include hard-coded survey IDs 636, 637, 641"
+>
+  <query website_filter_field="" training_filter_field="s.training" standard_params="samples">
+    SELECT #columns# 
+      FROM cache_samples_functional s
+      JOIN cache_samples_nonfunctional csnf on csnf.id = s.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
+      LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
+
+      LEFT JOIN sample_attribute_values sav_hab on sav_hab.sample_id = csnf.id 
+          AND sav_hab.sample_attribute_id = #habitat_smp_id#
+          AND sav_hab.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_hab on ctt_hab.id = sav_hab.int_value
+      LEFT JOIN cache_termlists_terms ctt_hab_lang on ctt_hab_lang.meaning_id = ctt_hab.meaning_id AND ctt_hab_lang.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_target on sav_target.sample_id = csnf.id 
+          AND sav_target.sample_attribute_id = #target_smp_id#
+          AND sav_target.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_target on ctt_target.id = sav_target.int_value
+      LEFT JOIN cache_termlists_terms ctt_target_lang on ctt_target_lang.meaning_id = ctt_target.meaning_id AND ctt_target_lang.language_iso = '#language#'
+
+      LEFT JOIN sample_attribute_values sav_other_target on sav_other_target.sample_id = csnf.id 
+          AND sav_other_target.sample_attribute_id = #other_target_smp_id#
+          AND sav_other_target.deleted = false
+
+      LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id
+        AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
+      #agreements_join#
+      WHERE #sharing_filter# 
+      #idlist#
+        AND s.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
+        )
+        AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
+            AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
+    <param name = "target_smp_id" display="Target flower sample attribute ID" description = "ID of sample attribute that holds the target flower." datatype="integer"/>  
+    <param name = "other_target_tt_id" display="Other target flower termlists_terms ID" description = "Termlists_terms ID of the Other Target Flower option." datatype="integer"/>
+    <param name = "other_target_smp_id" display="Other target flower sample attribute ID" description = "ID of sample attribute that holds the other target flower entry." datatype="integer"/>
+    <param name = "insect_abund_occ_id" display="Insect abundance occurrence attribute ID" 
+      description = "ID of occurrence attribute that holds abundances of the insects." datatype="integer"/>  
+    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
+    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
+      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
+  </params>
+  <columns>
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"
+        template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
+    <column name='survey_id' sql='s.survey_id' display='Survey ID' visible="false" datatype="integer"/>
+    <column name='survey_title' sql="
+      case s.survey_id
+        when #public_fit_count_survey_id# then 'FIT Count'
+        when #1km_fit_count_survey_id# then 'FIT Count 1km'
+        when #fit_count_app_survey_id# then 'FIT Count App'
+        else ''
+        END" display='Survey' datatype="integer"/>
+    <column name='date_start' sql='s.date_start' visible="false"/>
+    <column name='date_end' sql='s.date_end' visible="false"/>
+    <column name='date_type' sql='s.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='location_name' display='Location' sql='s.location_name' datatype="text"/>
+    <column name='public_sref' display='Spatial ref output' sql="csnf.public_entered_sref" datatype="text"/>
+    <column name='entered_sref_system' display='Projection entered' sql="csnf.entered_sref_system" datatype="text"/>
+    <column name='habitat' display='Habitat' sql="ctt_hab_lang.term" datatype="text"/>
+    <column name='target' display='Target flower' sql="
+      CASE WHEN sav_target.int_value = #other_target_tt_id# 
+      THEN 'Other' || ' (' || sav_other_target.text_value || ')'
+      ELSE ctt_target_lang.term END" datatype="text"/> 
+    <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
+    <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
+    <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
+        sql="CASE WHEN 
+            (CAST(s.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
+            CAST(s.survey_id AS character varying) = '#fit_count_app_survey_id#') AND
+            CAST(s.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
+    <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
+        sql="CASE WHEN CAST(s.survey_id AS character varying) = '#1km_fit_count_survey_id#' AND CAST(s.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
+  </columns>
+</report>
