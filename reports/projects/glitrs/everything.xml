@@ -47,7 +47,7 @@
   LEFT JOIN cache_termlists_terms ctt11 ON ctt11.id = oav3.int_value
   LEFT JOIN occurrence_attribute_values oav4 ON oav4.occurrence_id = o.id and oav4.occurrence_attribute_id = #occurrence_caste_id# and oav4.deleted=false
   LEFT JOIN cache_termlists_terms ctt12 ON ctt12.id = oav4.int_value
-  LEFT JOIN occurrence_attribute_values oav5 ON oav5.occurrence_id = o.id and oav5.occurrence_attribute_id = #occuuurence_sensitive_data_id# and oav5.deleted=false
+  LEFT JOIN occurrence_attribute_values oav5 ON oav5.occurrence_id = o.id and oav5.occurrence_attribute_id = #occurrence_sensitive_data_id# and oav5.deleted=false
   LEFT JOIN occurrence_attribute_values oav6 ON oav6.occurrence_id = o.id and oav6.occurrence_attribute_id = #occurrence_taxon_name_in_source_id# and oav6.deleted=false
   LEFT JOIN occurrence_attribute_values oav7 ON oav7.occurrence_id = o.id and oav7.occurrence_attribute_id = #occurrence_taxonomy_notes_id# and oav7.deleted=false
   #agreements_join#
@@ -156,7 +156,7 @@
       display="ID of Caste occurrence attribute" 
       datatype="integer"
     />
-    <param name="occuuurence_sensitive_data_id" 
+    <param name="occurrence_sensitive_data_id" 
       display="ID of Sensitive Data occurrence attribute" 
       datatype="integer"
     />
