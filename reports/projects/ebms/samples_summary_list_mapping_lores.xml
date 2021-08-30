@@ -45,6 +45,7 @@
     <column name="date" display="Date" datatype="date" on_demand="true" />
     <column name="start_time" display="Start time" sql="snf.attrs_json->>'1385'" datatype="text" on_demand="true" />
     <column name="end_time" display="End time" sql="snf.attrs_json->>'1386'" datatype="text" on_demand="true" />
+    <column name="area_sampled" display="Area sampled (m2)" sql="snf.attrs_json->>'723'" datatype="text" on_demand="true" />
     <column name="sample_ids" visible="false" sql="array_to_string(array_agg(s.id), ',')" aggregate="true" />
     <column name="geom" visible="false" mappable="true" sql="st_astext(case when msq.size > #sq_size# then s.public_geom else msq.geom end)" in_count="true" />
   </columns>

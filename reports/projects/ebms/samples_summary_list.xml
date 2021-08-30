@@ -28,6 +28,7 @@
     <column name="date" display="Date" datatype="date" />
     <column name="start_time" display="Start time" sql="snf.attrs_json->>'1385'" datatype="text" />
     <column name="end_time" display="End time" sql="snf.attrs_json->>'1386'" datatype="text" />
+    <column name="area_sampled" display="Area sampled (m2)" sql="snf.attrs_json->>'723'" datatype="text" />
     <column name="no_of_species" display="Number of species" sql="count(distinct cttl.external_key)" datatype="integer" aggregate="true" />
   </columns>
 </report>
