@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="eBMS species counts by sample for a survey" 
+<report title="eBMS species counts by sample for a survey"
     description="Lists locations and the number of species within them.">
       <query website_filter_field="s.website_id">
       SELECT #columns#
       from cache_samples_functional s
-      join cache_occurrences_functional o on o.sample_id = s.id 
+      left join cache_occurrences_functional o on o.sample_id = s.id
       join cache_samples_nonfunctional csn on csn.id = s.id
       #joins#
       WHERE #website_filter#
