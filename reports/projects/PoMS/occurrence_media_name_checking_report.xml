@@ -33,13 +33,10 @@
   </params>
   <columns>
     <column name='id' display='Occurrence ID' datatype="integer" sql="cof.id" />
-    <column name='correction_occ_attr_id' display='Correction occurrence_attribute_id' datatype="text" sql="oav_correction.occurrence_attribute_id" visible = "false" />
     <column name='correction_oav_id' display='Correction occurrence_attribute_value_id' datatype="text" sql="oav_correction.id" visible = "false" />
     <column name='entered_species_name' display='Entered species name' datatype="text" sql="cttl_entered_species.taxon" />
     <column name='entered_species_name_synonyms' display='Other names for entered species' datatype="text" sql="string_agg(distinct cttl_entered_species_meaning.taxon,', ')" aggregate = "true"/>
-    <column name='corrected_species_name' display='Existing correction' datatype="text" sql="cttl_correction.taxon" visible = "false" />
-    -- Leave an empty cell on grid for expert entry
-    <column name='corrected_name' display='Correction' datatype="text"/>
+    <column name='corrected_species_name_id' display='Correction' datatype="text" sql="cttl_correction.taxon || '-' || oav_correction.id" />
     <column name='corrected_species_name_synonyms' display='Other names for corrected species' datatype="text" sql="string_agg(distinct cttl_correction_meaning.taxon,', ')" aggregate = "true"/>
     <column name='images' display='Images' sql='conf.media' img='true' />
   </columns>
