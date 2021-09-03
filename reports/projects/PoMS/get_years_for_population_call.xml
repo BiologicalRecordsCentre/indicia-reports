@@ -8,7 +8,7 @@
     FROM generate_series (2017,extract(year from now())::int)
   </query>
   <columns>
-    <column name='sort_order' display='Sort order' sql='extract(year from now())::int - generate_series::int' datatype="text" />
+    <column name='year_sort_order' display='Year sort order' sql='0-generate_series' datatype="text" />
     <column name='year' display='Site name' sql='generate_series' datatype="text" />
   </columns>
 </report>

@@ -10,8 +10,8 @@
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
-    AND ((trim('#year#') = '0' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
-    AND (trim('#year#')  = '0' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+    AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+    AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
   #idlist#
   </query>
   <params>
@@ -19,8 +19,8 @@
            description='Comma separated list of sample attribute IDs to include as columns in the report' />
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
-    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
-        population_call='report:projects/PoMS/get_years_for_population_call:sort_order:year:orderby=sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
   </params>
   <columns>
     <column name='sample_id' sql='s.id' datatype="integer" />
