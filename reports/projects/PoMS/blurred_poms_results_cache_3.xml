@@ -28,8 +28,8 @@
         AND s.survey_id in (
           #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
         )
-        AND ((trim('#year#') = '' OR '#year#'='Click here' OR s.date_end &gt;= CAST('#year#' || '-01-01' as date))
-            AND (trim('#year#')  = '' OR '#year#'='Click here' OR s.date_start &lt;= CAST('#year#' || '-12-31' as date)))
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   </query>
   <order_bys>
@@ -43,9 +43,8 @@
     <param name = "other_target_smp_id" display="Other target flower sample attribute ID" description = "ID of sample attribute that holds the other target flower entry." datatype="integer"/>
     <param name = "insect_abund_occ_id" display="Insect abundance occurrence attribute ID" 
       description = "ID of occurrence attribute that holds abundances of the insects." datatype="integer"/>  
-    <param name = 'year_termlist_id' display='NPMS years termlist ID' datatype="int"/>
-    <param name = 'year' display='Year' description='Select a year, or leave blank for all years'
-      population_call='direct:termlists_term:term:term:termlist_id=#year_termlist_id#' datatype="lookup"/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
