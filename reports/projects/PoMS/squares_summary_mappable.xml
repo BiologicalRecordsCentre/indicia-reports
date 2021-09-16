@@ -3,7 +3,7 @@
     description="A summary of which squares have been allocated and which have had 1 or more surveys carried out so far.
     Can work with a map."
 >
-  <query website_filter_field="">
+  <query website_filter_field="lw.website_id">
     SELECT #columns# 
       FROM locations l
       LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
@@ -14,7 +14,6 @@
       WHERE l.location_type_id in (#location_type_ids#)
       AND l.deleted = false
       AND #website_filter#
-      #idlist#
   </query>
   <params>
     <param name = "poly" display="Polygon" description = "Draw Polygon to limit data to." datatype="geometry"> 
@@ -23,7 +22,9 @@
     <param name = "location_type_ids" display="Location type Is" description = "Comma separated list of Location IDs to limit report to." datatype="integer"/>  
     <param name = "allocated_square_attr_id" display="Allocated square attribute ID" description = "." datatype="integer"/> 
     <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
-    <param name = "idlist" display="Location IDs" description="Comma separated list of location IDs to load" datatype='idlist' fieldname='l.id' alias='id' default='' />
+    <param name="idlist" display="Location IDs" description="Comma separated list of location IDs to load" datatype='idlist' default=''>
+      <where>l.id in (#idlist#)</where>
+    </param> 
   </params>
   <columns>
     <column name='id' sql="l.id" display='Square ID' datatype="integer" in_count="true" visible="false"/>

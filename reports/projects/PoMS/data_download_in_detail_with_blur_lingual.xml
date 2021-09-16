@@ -151,10 +151,7 @@
         when #fit_count_app_survey_id# then 'FIT Count App'
         else ''
         END" display='Survey' datatype="integer"/>
-    <column name='public_sref' display='Spatial ref output' sql="csnf.public_entered_sref" datatype="text"/>
-    <column name='entered_sref_system' display='Projection entered' sql="csnf.entered_sref_system" datatype="text"/>
-    <!-- This is a version of cache_occurrences_nonfunctional column altered for samples only, also assumes 1000 privacy_precision -->
-    <column name='output_sref' display='Output spatial reference' sql="
+    <column name='grid_ref' display='Grid ref' sql='
       get_output_sref(
         greatest(
         round(sqrt(st_area(st_transform(csf.public_geom, sref_system_to_srid(csnf.entered_sref_system)))))::integer,
@@ -164,7 +161,8 @@
           10
         ), reduce_precision(coalesce(csf.public_geom, l.centroid_geom), false, greatest(null, 1000))
       )
-    " datatype="text"/>
+    ' datatype="text"/>
+    <column name='entered_sref_system' display='Projection entered' sql="csnf.entered_sref_system" datatype="text"/>
     <column name='location' display='Location' sql='coalesce(l.name, csf.location_name)' datatype="text"/>
     <column name='country' display='Country/Island' sql="
         case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
@@ -223,10 +221,12 @@
     <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
         sql="CASE WHEN 
             (CAST(csf.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
-            CAST(csf.survey_id AS character varying) = '#fit_count_app_survey_id#') 
+            CAST(csf.survey_id AS character varying) = '#fit_count_app_survey_id#') AND
+            CAST(csf.created_by_id AS character varying) = '#current_user_id#'
             THEN true ELSE false END" visible="false" />
     <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
-        sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_fit_count_survey_id#' THEN true ELSE false END" visible="false" />
+        sql="CASE WHEN CAST(csf.survey_id AS character varying) = '#1km_fit_count_survey_id#' AND CAST(csf.created_by_id AS character varying) = '#current_user_id#'
+            THEN true ELSE false END" visible="false" />
     <column name="geom" visible="false" mappable="true" sql="st_astext(csf.public_geom)" in_count="true" />
   </columns>
 </report>
