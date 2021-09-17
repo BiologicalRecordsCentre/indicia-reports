@@ -16,7 +16,7 @@
           AND sav_target.sample_attribute_id = #target_smp_id#
           AND sav_target.deleted = false
       LEFT JOIN cache_termlists_terms ctt_target on ctt_target.id = sav_target.int_value
-      LEFT JOIN cache_termlists_terms ctt_target_lang on ctt_target_lang.meaning_id = ctt_target.meaning_id AND ctt_target_lang.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_target_lang on ctt_target_lang.meaning_id = ctt_target.meaning_id AND ctt_target_lang.language_iso = 'eng'
 
       LEFT JOIN sample_attribute_values sav_other_target on sav_other_target.sample_id = csnf.id 
           AND sav_other_target.sample_attribute_id = #other_target_smp_id#
