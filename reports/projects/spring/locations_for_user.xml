@@ -1,4 +1,4 @@
-report
+<report
     title="Locations list for user"
     description="List of locations associated with a user via a location
     attribute holding cms_user_id."
