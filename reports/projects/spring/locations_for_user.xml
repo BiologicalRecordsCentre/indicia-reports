@@ -11,7 +11,7 @@
   #joins#
   WHERE l.deleted=false
   AND lav.location_attribute_id = #cms_user_attr_id#
-  AND lav.text_value = #cms_user_id#
+  AND lav.text_value = '#cms_user_id#'
   AND #website_filter#
   #order_by#
   </query>
