@@ -1,0 +1,34 @@
+report
+    title="Locations list for user"
+    description="List of locations associated with a user via a location
+    attribute holding cms_user_id."
+>
+  <query website_filter_field="lw.website_id">
+  SELECT #columns#
+  FROM locations l
+  JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false
+  JOIN location_attribute_values lav on lav.location_id = l.id and lav.deleted = false
+  #joins#
+  WHERE l.deleted=false
+  AND lav.location_attribute_id = #cms_user_attr_id#
+  AND lav.text_value = #cms_user_id#
+  AND #website_filter#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  
+  <params>
+    <param name='cms_user_attr_id' display='User attribute ID' description='ID of location attribute holding CMS user.' datatype="integer" default='0' emptyvalue='0' />
+    <param name='cms_user_id' display='CMS user ID' description='ID of user in Drupal.' datatype="integer" default='0' emptyvalue='0' />
+    <param name="location_type_ids" display="Location Type Ids" description="Comma separated list of location type ids we want to return results for."
+        datatype="text" >
+      <where>l.location_type_id in (#location_type_ids#)</where>
+    </param>
+  </params>
+  <columns>
+    <column name="name" display="Caption" sql="l.name" datatype="text" />
+    <column name="id" display="Value" sql="l.id"  datatype="integer" />
+  </columns>
+</report>
