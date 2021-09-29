@@ -19,9 +19,9 @@
 	and co.media_count>0
 	#filters#
   </query>
-  <orderbys>
-    <orderby>co.verified_on desc nulls last, oi.id</orderby>
-  </orderbys>
+  <order_bys>
+    <order_by>co.verified_on desc nulls last, oi.id</orderby>
+  </order_bys>
   <params>
     <param name="tvk" datatype="text">
 	  <where>co.taxa_taxon_list_external_key = '#tvk#'</where>
