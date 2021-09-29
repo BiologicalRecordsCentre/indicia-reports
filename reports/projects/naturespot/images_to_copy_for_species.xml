@@ -20,7 +20,7 @@
 	#filters#
   </query>
   <order_bys>
-    <order_by>co.verified_on desc nulls last, oi.id</orderby>
+    <order_by>co.verified_on desc nulls last, oi.id</order_by>
   </order_bys>
   <params>
     <param name="tvk" datatype="text">
