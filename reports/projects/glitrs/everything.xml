@@ -50,6 +50,8 @@
   LEFT JOIN occurrence_attribute_values oav5 ON oav5.occurrence_id = o.id and oav5.occurrence_attribute_id = #occurrence_sensitive_data_id# and oav5.deleted=false
   LEFT JOIN occurrence_attribute_values oav6 ON oav6.occurrence_id = o.id and oav6.occurrence_attribute_id = #occurrence_taxon_name_in_source_id# and oav6.deleted=false
   LEFT JOIN occurrence_attribute_values oav7 ON oav7.occurrence_id = o.id and oav7.occurrence_attribute_id = #occurrence_taxonomy_notes_id# and oav7.deleted=false
+  LEFT JOIN locations l2 ON l2.id = ANY (o.location_ids)
+  LEFT JOIN cache_termlists_terms ctt13 ON ctt13.id = l2.location_type_id AND ctt13.term = 'Countries 2016'
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -180,6 +182,7 @@
     <column name="source_contact_affiliation" display="Source Contact Affiliation" sql="coalesce(yav5.text_value, 'NA')" datatype="text" />
     <column name="source_contact_email" display="Source Contact Email" sql="coalesce(yav6.text_value, 'NA')" datatype="text" />
     <column name="source_additional_contact" display="Source Additional Contact" sql="coalesce(yav7.text_value, 'NA')" datatype="text" />
+    <column name="location_country" display="Country" sql="coalesce(l2.name, 'NA')" datatype="text" />
     <column name="location_site_name" display="Location Site Name" sql="o.location_name" datatype="text" />
     <column name="location_latitude" display="Location Latitude" sql="ST_Y(ST_TRANSFORM(l.centroid_geom, 4326))" datatype="float" />
     <column name="location_longitude" display="Location Longitude" sql="ST_X(ST_TRANSFORM(l.centroid_geom, 4326))" datatype="float" />
