@@ -27,7 +27,7 @@
     group by t.id, t.term, tc.term
   </query>
   <order_bys>
-    <order_by>module, term</order_by>
+    <order_by>module, title</order_by>
   </order_bys>
   <params>
   </params>
