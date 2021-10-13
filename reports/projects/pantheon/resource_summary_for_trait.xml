@@ -1,0 +1,42 @@
+<report
+    title="Resource summary for trait"
+    description="Breakdown of resources in a trait with species and SQI scores"
+>
+  <query website_filter_field="" training_filter_field="">
+  with recursive cte_query
+  as
+  (
+    select t.id, t.term, t.meaning_id, null::integer as parent_id, 0 as sequence
+    from cache_termlists_terms t
+    where t.parent_id=10512
+    and t.preferred=true
+    union all
+    select t.id, t.term, t.meaning_id, t.parent_id, q.sequence+1
+    from cache_termlists_terms t
+    join cte_query q on q.id=t.parent_id
+    where t.preferred=true
+  )
+  select #columns#
+  from cte_query q
+  left join taxa_taxon_list_attribute_values v on v.int_value=q.id and v.taxa_taxon_list_attribute_id=17 and v.deleted=false
+  left join cache_taxa_taxon_lists cttl on cttl.id=v.taxa_taxon_list_id
+  left join taxa_taxon_list_attribute_values rscv on rscv.taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id and rscv.deleted=false
+            and rscv.taxa_taxon_list_attribute_id=24
+  left join cache_termlists_terms tc on tc.meaning_id=q.meaning_id and tc.preferred=false
+  group by q.id, q.term, q.parent_id, q.sequence
+  </query>
+  <order_bys>
+    <order_by>q.sequence, q.term</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="id" sql="q.id" />
+    <column name="term" sql="q.term" />
+    <column name="code" sql="tc.term" />
+    <column name="sequence" sql="q.sequence" />
+    <column name="number_of_species" sql="count(v.*)" />
+    <column name="sqi" sql="round(avg(rscv.int_value)*100)" />
+  </columns>
+</report>
+
