@@ -3,28 +3,28 @@
     description="Traits plus species counts"
 >
   <query website_filter_field="" training_filter_field="">
-    select t.id, 'Broad biotope' as module, t.term as title, tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term as title, tc.term as code, count(v.*) as number_of_species
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=15 and v.deleted=false
     where t.termlist_id=627 and t.preferred=true
     and t.parent_id is null
-    group by t.id, t.term, tc.term
+    group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Habitat' as module, t.term, tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term, tc.term as code, count(v.*) as number_of_species
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=16 and v.deleted=false
     where t.termlist_id=627 and t.preferred=true
     and t.parent_Id in (10460,10268,10512,10158)
-    group by t.id, t.term, tc.term
+    group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Specific assemblage type' as module, t.term,  tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term,  tc.term as code, count(v.*) as number_of_species
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=20 and v.deleted=false
     where t.termlist_id=627 and t.preferred=true
-    group by t.id, t.term, tc.term
+    group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
   </query>
   <order_bys>
     <order_by>module, title</order_by>
