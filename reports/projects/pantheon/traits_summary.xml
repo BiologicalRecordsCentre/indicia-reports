@@ -34,6 +34,7 @@
   <columns>
     <column name="id" visible="false" in_count="true" datatype="integer" />
     <column name="module" display="Module" datatype="string" />
+    <column name="attribute_id" visible="false" datatype="integer" />
     <column name="title" display="Title" datatype="string" />
     <column name="code" display="Code" datatype="string" />
     <column name="number_of_species" display="Number of species" datatype="integer" />
