@@ -32,7 +32,7 @@
   </params>
   <columns>
     <column name="id" sql="q.id" />
-    <column name="id" sql="q.parent_id" />
+    <column name="parent_id" sql="q.parent_id" />
     <column name="term" sql="q.term" />
     <column name="code" sql="tc.term" />
     <column name="sequence" sql="q.sequence" />
