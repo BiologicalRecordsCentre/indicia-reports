@@ -8,7 +8,7 @@
   (
     select t.id, t.term, t.meaning_id, null::integer as parent_id, 0 as sequence
     from cache_termlists_terms t
-    where t.parent_id=#trait_id#
+    where t.id=#trait_id#
     and t.preferred=true
     union all
     select t.id, t.term, t.meaning_id, t.parent_id, q.sequence+1
