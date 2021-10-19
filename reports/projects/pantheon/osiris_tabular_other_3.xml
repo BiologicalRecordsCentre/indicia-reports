@@ -107,7 +107,8 @@
     <column name="l2_term" sql="l2_term" display="Classification L2" datatype="text" in_count="true" />
     <column name="term" sql="term" display="Classification L3" datatype="text" in_count="true" />
     <column name="count" sql="speciescount" display="No. of species" datatype="integer" />
-    <column name="rep" display="% representation" sql="case when sub.rep&lt;1 then '&lt;1' else round(sub.rep)::varchar end" />
+    <column name="rep_sort" visible="false" sql="sub.rep" />
+    <column name="rep" display="% representation" sql="case when sub.rep&lt;1 then '&lt;1' else round(sub.rep)::varchar end" orderby="rep_sort" />
     <column name="sqi" sql="sqi" display="SQI" datatype="float" />
     <column name="cons_count" display="Species with conservation status" sql="cons_count" datatype="integer" />
     <column name="cons" display="Conservation status" sql="cons" />
