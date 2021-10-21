@@ -98,6 +98,7 @@
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
+    <param name = "other_habitat_tt_id" display="Other habitat termlists_terms ID" description = "Termlists_terms ID of the Other habitat option." datatype="integer"/>
     <param name = "other_habitat_smp_id" display="Other habitat sample attribute ID" description = "ID of sample attribute that holds the other habitat." datatype="integer"/>
     <param name = "target_smp_id" display="Target flower sample attribute ID" description = "ID of sample attribute that holds the target flower." datatype="integer"/>  
     <param name = "other_target_tt_id" display="Other target flower termlists_terms ID" description = "Termlists_terms ID of the Other Target Flower option." datatype="integer"/>
@@ -168,7 +169,6 @@
         ), reduce_precision(coalesce(s.geom, l.centroid_geom), false, greatest(null, 1000))
       )
     " datatype="text"/>
-    <column name='location' display='Location' sql='coalesce(l.name, s.location_name)' datatype="text"/>
     <column name='country' display='Country/Island' sql="
         case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
         when csf.location_ids @> ARRAY[#scotland_location_id#] THEN 'Scotland'
@@ -192,8 +192,10 @@
     <column name="comment" display='Comment' sql="csnf.comment" datatype="text" />
     <column name='date_added' display='Date added' sql="s.created_on" datatype="date"/>
     <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
-    <column name='habitat' display='Habitat' sql="ctt_hab_lang.term" datatype="text"/>
-    <column name='Other habitat' display='Other habitat' sql="sav_other_hab.text_value" datatype="text"/>
+    <column name='habitat' display='Habitat' sql="
+      CASE WHEN sav_hab.int_value = #other_habitat_tt_id# 
+      THEN 'Other' || ' (' || sav_other_hab.text_value || ')'
+      ELSE ctt_hab_lang.term END" datatype="text"/> 
     <column name='target' display='Target flower' sql="
       CASE WHEN sav_target.int_value = #other_target_tt_id# 
       THEN 'Other' || ' (' || sav_other_target.text_value || ')'
