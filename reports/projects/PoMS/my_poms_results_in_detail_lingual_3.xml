@@ -45,8 +45,6 @@
       LEFT JOIN sample_attribute_values sav_flowers_counted on sav_flowers_counted.sample_id = csnf.id 
           AND sav_flowers_counted.sample_attribute_id = #flowers_counted_attr_id#
           AND sav_flowers_counted.deleted = false
-      LEFT JOIN cache_termlists_terms ctt_flowers_counted on ctt_flowers_counted .id = sav_flowers_counted.int_value
-      LEFT JOIN cache_termlists_terms ctt_flowers_counted_lang on ctt_flowers_counted_lang.meaning_id = ctt_flowers_counted.meaning_id AND ctt_flowers_counted_lang.language_iso = '#language#'
 
       LEFT JOIN sample_attribute_values sav_flowers_unit on sav_flowers_unit.sample_id = csnf.id 
           AND sav_flowers_unit.sample_attribute_id = #flower_unit_attr_id#
@@ -190,7 +188,7 @@
       ELSE ctt_target_lang.term END" datatype="text"/> 
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover_lang.term" datatype="text" />
-    <column name="flowers_counted_attr_id" display='Flowers counted' sql="ctt_flowers_counted_lang.term" datatype="text" />
+    <column name="flowers_counted_attr_id" display='Flowers counted' sql="sav_flowers_counted.int_value" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit_lang.term" datatype="text" />
     <column name="patch_context_attr_id" display='Patch context' sql="ctt_patch_context_lang.term" datatype="text" />
     <column name="cloud_cover_attr_id" display='Cloud cover' sql="ctt_cloud_cover_lang.term" datatype="text" />
