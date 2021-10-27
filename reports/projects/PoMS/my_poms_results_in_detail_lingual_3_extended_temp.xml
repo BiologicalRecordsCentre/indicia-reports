@@ -167,7 +167,7 @@
         ), reduce_precision(coalesce(s.geom, l.centroid_geom), false, greatest(null, 1000))
       )
     " datatype="text"/>
-    <column name='country' display='Country/Island' sql="
+    <!--<column name='country' display='Country/Island' sql="
         case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
         when csf.location_ids @> ARRAY[#scotland_location_id#] THEN 'Scotland'
         when csf.location_ids @> ARRAY[#wales_location_id#] THEN 'Wales'
@@ -180,7 +180,7 @@
         when csf.location_ids @> ARRAY[#brazil_location_id#] THEN 'Brazil'
         when csf.location_ids @> ARRAY[#chile_location_id#] THEN 'Chile'
         ELSE '' END"
-    datatype="text"/>
+    datatype="text"/>-->
     <column name='date_start' sql='s.date_start' visible="false"/>
     <column name='date_end' sql='s.date_end' visible="false"/>
     <column name='date_type' sql='s.date_type' visible="false"/>
