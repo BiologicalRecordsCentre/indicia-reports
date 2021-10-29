@@ -1,7 +1,7 @@
 <report
     title="PoMS results in detail"
     description="PomS results in detail on My Rercords page. Includes full detail location data.
-    Doesn't use cache attributes so we have multi-lingual support."
+    Doesn't use cache attributes so we have multi-lingual support. Some alterations to be used for Download Link such as removal of Photo column."
 >
   <query website_filter_field="" training_filter_field="" >
     SELECT #columns# 
@@ -196,7 +196,6 @@
       CASE WHEN sav_target.int_value = #other_target_tt_id# 
       THEN 'Other' || ' (' || sav_other_target.text_value || ')'
       ELSE ctt_target_lang.term END" datatype="text"/> 
-    <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover_lang.term" datatype="text" />
     <column name="flowers_counted_attr_id" display='Flowers counted' sql="sav_flowers_counted.int_value" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit_lang.term" datatype="text" />
@@ -225,12 +224,5 @@
         sum(case when cof.taxon_meaning_id = #solitary_bee_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="wasp" display='Wasps' sql="
         sum(case when cof.taxon_meaning_id = #wasp_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
-    <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
-        sql="CASE WHEN 
-            (CAST(s.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
-            CAST(s.survey_id AS character varying) = '#fit_count_app_survey_id#') 
-            THEN true ELSE false END" visible="false" />
-    <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
-        sql="CASE WHEN CAST(s.survey_id AS character varying) = '#1km_fit_count_survey_id#' THEN true ELSE false END" visible="false" />
   </columns>
 </report>
