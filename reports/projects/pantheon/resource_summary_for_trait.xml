@@ -14,7 +14,10 @@
     select t.id, t.term, t.meaning_id, t.parent_id, q.sequence+1
     from cache_termlists_terms t
     join cte_query q on q.id=t.parent_id
+    left join taxa_taxon_list_attribute_values sat on sat.int_value=t.id and sat.taxa_taxon_list_attribute_id=20 and sat.deleted=false
     where t.preferred=true
+    --exclude SATs
+    and sat.id is null
   )
   select #columns#
   from cte_query q

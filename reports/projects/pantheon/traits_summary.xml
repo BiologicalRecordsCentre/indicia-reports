@@ -3,7 +3,7 @@
     description="Traits plus species counts"
 >
   <query website_filter_field="" training_filter_field="">
-    select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term as title, tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term as title, tc.term as code, count(v.*) as number_of_species, true as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=15 and v.deleted=false
@@ -11,7 +11,7 @@
     and t.parent_id is null
     group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term, tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term, tc.term as code, count(v.*) as number_of_species, true as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=16 and v.deleted=false
@@ -19,7 +19,7 @@
     and t.parent_Id in (10460,10268,10512,10158)
     group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term,  tc.term as code, count(v.*) as number_of_species
+    select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term,  tc.term as code, count(v.*) as number_of_species, false as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
     join taxa_taxon_list_attribute_values v on v.int_value=t.id and v.taxa_taxon_list_attribute_id=20 and v.deleted=false
@@ -38,5 +38,6 @@
     <column name="title" display="Title" />
     <column name="code" display="Code" />
     <column name="number_of_species" display="Number of species" />
+    <column name="has_resources" display="Has resources" visible="false" datatype="boolean" />
   </columns>
 </report>
