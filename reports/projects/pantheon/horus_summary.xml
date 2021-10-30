@@ -26,7 +26,9 @@
     union
     select 5,
       case term when 'GB Status' then 'GB Conservation Status (old &amp; new)' else term end,
-      array_to_string(array_agg(count::varchar || ' ' || code), '; ')
+      array_to_string(array_agg(
+        '&lt;a href="/pantheon/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_code=' || code || '"&gt;' || count::varchar || ' ' || code || '&lt;/a&gt;'
+        ), '; ')
     from (
       select cat.term, coalesce(td.code, td.abbreviation) as code, count(distinct cttl.preferred_taxa_taxon_list_id)
       from taxon_designations td
