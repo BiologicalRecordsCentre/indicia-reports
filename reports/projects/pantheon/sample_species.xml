@@ -5,8 +5,8 @@
   <query website_filter_field="cttl.website_id">
     select #columns#
     from cache_taxa_taxon_lists cttl
-	join cache_taxa_taxon_lists cttlpref on cttlpref.id=cttl.preferred_taxa_taxon_list_id
-	left join pantheon.species_index si on si.preferred_taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id
+    join cache_taxa_taxon_lists cttlpref on cttlpref.id=cttl.preferred_taxa_taxon_list_id
+    left join pantheon.species_index si on si.preferred_taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id
     #joins#
     #filters#
   </query>
@@ -44,17 +44,24 @@
     <param name="trait_term_id" display="Trait term ID(s)" datatype="integer[]" default="">
       <where>filtv.int_value in (#trait_term_id#)</where>
     </param>
-	<param name="parent_trait_term_id" display="Parent trait term IDs" datatype="integer[]" default="">
+    <param name="parent_trait_term_id" display="Parent trait term IDs" datatype="integer[]" default="">
       <join>join cache_termlists_terms t_trait on t_trait.id=filtv.int_value
 	  join cache_termlists_terms t_trait_p on t_trait_p.id=t_trait.parent_id and t_trait_p.id in (#parent_trait_term_id#)
       join taxa_taxon_list_attribute_values av_trait_p on av_trait_p.int_value=t_trait_p.id and av_trait_p.taxa_taxon_list_id=filtv.taxa_taxon_list_id</join>
     </param>
-	<param name="grandparent_trait_term_id" display="Grandparent trait term IDs" datatype="integer[]" default="">
+    <param name="grandparent_trait_term_id" display="Grandparent trait term IDs" datatype="integer[]" default="">
       <join>join cache_termlists_terms t_trait_gp on t_trait_gp.id=t_trait_p.parent_id and t_trait_gp.id in (#grandparent_trait_term_id#)
       join taxa_taxon_list_attribute_values av_trait_gp on av_trait_gp.int_value=t_trait_gp.id and av_traitg_p.taxa_taxon_list_id=filtv.taxa_taxon_list_id</join>
     </param>
     <param name="has_any_designation" display="Has any designation" default="" datatype="boolean">
-	  <where>si.designations&lt;&gt;''</where>
+	    <where>si.designations&lt;&gt;''</where>
+    </param>
+    <param name="has_designation_code" display="Has designation code" default="" datatype="text">
+      <join>join cache_taxa_taxon_lists cttl on cttl.id=cttl.preferred_taxa_taxon_list_id
+        join taxa_taxon_designations ttd on ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+        join taxon_designations td on td.id=ttd.taxon_designation_id and td.deleted=false
+          and td.abbreviation='#has_designation_code#'
+      </join>
     </param>
     <param name="duplicates" display="Only show duplicates?" default="" datatype="boolean">
       <where>case '#sample_type#'
