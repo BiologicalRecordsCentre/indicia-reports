@@ -20,7 +20,7 @@
     <param name="user_id" display="User ID" datatype="integer" />
   </params>
   <columns>
-    <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
+    <column name="sample_id" display="ID" sql="s.id" datatype="integer" in_count="true" />
     <column name="survey_title" display="Survey" sql="su.title" datatype="text" />
     <column name="date_start" sql="s.date_start" visible="false" />
     <column name="date_end" sql="s.date_end" visible="false" />
