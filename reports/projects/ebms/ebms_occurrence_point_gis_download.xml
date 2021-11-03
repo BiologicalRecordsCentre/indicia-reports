@@ -15,7 +15,7 @@
     <params>
       <param name='survey_id' display='Survey ID' datatype="integer" />
       <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
-        <join>o.location_ids && ARRAY[#indexed_location_list_context#]</join>
+        <join>o.location_ids &amp;&amp; ARRAY[#indexed_location_list_context#]</join>
       </param>
     </params>
     <columns>
