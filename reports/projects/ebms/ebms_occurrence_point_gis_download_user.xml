@@ -22,7 +22,7 @@
     </params>
     <columns>
       <column name="id" display="Occurrence ID" sql="o.id" datatype="integer" />
-      <column name="sample_id" display="Visit Sample ID" sql="COALESCE(o.parent_sample_id, o.sample_id)" datatype="integer" />
+      <column name="visit_sample_id" display="Visit Sample ID" sql="COALESCE(o.parent_sample_id, o.sample_id)" datatype="integer" />
       <column name="geom" sql="st_astext(st_transform(o.public_geom, 4326))" datatype="text" />
       <column name="entered_sref" display="Grid ref" sql="onf.output_sref" datatype="text" />
       <column name="accepted_taxon_name" display="Accepted species name" sql="cttl.preferred_taxon" datatype="text" />

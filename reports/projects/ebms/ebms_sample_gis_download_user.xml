@@ -21,7 +21,7 @@
       <param name='user_id' display='User ID' datatype="integer" />
     </params>
     <columns>
-      <column name="id" display="Visit Sample ID" sql="s.id" datatype="integer" />
+      <column name="visit_sample_id" display="Visit Sample ID" sql="s.id" datatype="integer" />
       <column name="geom" sql="st_astext(st_transform(s.geom, 4326))" datatype="text" />
       <column name='entered_sref' display='Grid ref' sql="s.entered_sref" datatype="text" />
       <column name='date_start' sql='s.date_start' visible='false' />
