@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="EBMS Specific GIS Occurrence points" description="EBMS specific: lists occurrence details for use with GIS orientated downloads.">
+    <query website_filter_field=''>
+      SELECT #columns#
+      FROM cache_occurrences_functional o
+      JOIN cache_occurrences_nonfunctional onf ON onf.id=o.id
+      #joins#
+      WHERE o.survey_id=#survey_id#
+    </query>
+    <order_bys>
+      <order_by>o.id</order_by>
+    </order_bys>
+    <params>
+      <param name='survey_id' display='Survey ID' datatype="integer" />
+      <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
+        <join>o.location_ids && ARRAY[#indexed_location_list_context#]</join>
+      </param>
+    </params>
+    <columns>
+      <column name="id" display="Visit Sample ID" sql="COALESCE(o.parent_sample_id, o.sample_id)" datatype="integer" />
+      <column name="geom" sql="st_astext(st_transform(o.public_geom, 4326))" datatype="text" />
+      <column name='entered_sref' display='Grid ref' sql="onf.output_sref" datatype="text" />
+      <column name='date_start' sql='s.date_start' visible='false' />
+      <column name='date_end' sql='s.date_end' visible='false' />
+      <column name='date_type' sql='s.date_type' visible='false' />
+      <column name='date' display='Date' datatype="date" />
+    </columns>
+</report>
