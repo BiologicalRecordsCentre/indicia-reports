@@ -30,7 +30,7 @@
     concat(
       CASE
       WHEN sav.int_value = 14412 THEN
-        'We have received your request. Sample packs will be dispatched between mid-March and mid-October 2021.'
+        'Pack requested: &lt;br/&gt;We have received your request. Sample packs will be dispatched between mid-March and 7th October 2022.'
       WHEN sav.int_value = 14150 THEN
         'We have dispatched your sample pack.'
       WHEN sav.int_value = 14151 THEN
