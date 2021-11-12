@@ -1,0 +1,28 @@
+<report
+    title="User overview stats"
+>
+  <query website_filter_field="" training_filter_field="">
+select 1 as sequence, 'Total users' as name, count(user_id) as value
+from users_websites where
+website_id=93
+  union
+select 2 as sequence, 'Users who have posted a list' as name, count(user_id) as value
+from users_websites
+where website_id=93
+and (user_id in (select created_by_id from cache_samples_functional where website_id=93) or user_id in (select created_by_id from scratchpad_lists where website_id=93))
+  union
+select 3 as sequence, 'Samples' as name, count(id) as value
+from cache_samples_functional
+where website_id=93
+  union
+select 4 as sequence, 'Species lists' as name, count(*) as value
+from scratchpad_lists
+where website_id=93
+order by sequence
+  </query>
+  <columns>
+    <column name="sequence" visible="false" datatype="integer" />
+    <column name="name" visible="false" datatype="text" />
+    <column name="value" visible="false" datatype="integer" />
+  </columns>
+</report>
