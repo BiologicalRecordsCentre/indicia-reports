@@ -1,0 +1,15 @@
+<report
+    title="Get max ID of taxon change log"
+>
+  <query website_filter_field="cttl.website_id" training_filter_field="">
+    select max(id) as max_id
+    from taxa_taxon_list_attribute_values v
+    where taxa_taxon_list_attribute_id=#attr_id#
+and deleted=false
+  </query>
+  <params>
+    <param name="attr_id" datatype="integer" display="Logged changes attribute ID"/>
+  </params>
+  <columns>
+    <column name="max_id" display="Max ID" datatype="integer" />
+</report>
