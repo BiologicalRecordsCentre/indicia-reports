@@ -12,4 +12,5 @@ and deleted=false
   </params>
   <columns>
     <column name="max_id" display="Max ID" datatype="integer" />
+  </columns>
 </report>
