@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <report title="EBMS Specific GIS Occurrence points, user_filtered" description="EBMS specific: lists occurrence details for use with GIS orientated downloads for a user.">
-    <query website_filter_field=''>
+    <query website_filter_field="">
       SELECT #columns#
       FROM cache_occurrences_functional o
       JOIN cache_occurrences_nonfunctional onf ON onf.id=o.id
@@ -14,17 +14,21 @@
       <order_by>o.id</order_by>
     </order_bys>
     <params>
-      <param name='survey_id' display='Survey ID' datatype="integer" />
+      <param name="survey_id" display="Survey ID" datatype="integer" />
       <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
         <join>o.location_ids &amp;&amp; ARRAY[#indexed_location_list_context#]</join>
       </param>
-      <param name='user_id' display='User ID' datatype="integer" />
+      <param name="user_id" display="User ID" datatype="integer" />
     </params>
     <columns>
       <column name="id" display="Occurrence ID" sql="o.id" datatype="integer" />
       <column name="visit_sample_id" display="Visit Sample ID" sql="COALESCE(o.parent_sample_id, o.sample_id)" datatype="integer" />
       <column name="geom" sql="st_astext(st_transform(o.public_geom, 4326))" datatype="text" />
       <column name="entered_sref" display="Grid ref" sql="onf.output_sref" datatype="text" />
+      <column name="date_start" sql="o.date_start" visible="false" />
+      <column name="date_end" sql="o.date_end" visible="false" />
+      <column name="date_type" sql="o.date_type" visible="false" />
+      <column name="date" display="Date" datatype="date" />
       <column name="accepted_taxon_name" display="Accepted species name" sql="cttl.preferred_taxon" datatype="text" />
       <column name="common_name" display="Common name" sql="cttl.default_common_name" datatype="text" />
     </columns>
