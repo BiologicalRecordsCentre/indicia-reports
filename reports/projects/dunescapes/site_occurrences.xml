@@ -30,7 +30,7 @@
     <column name="date_end" sql="o.date_end" visible="false" />
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
-    <column name="recorders" display="Recorders" datatype="snf.recorders" />
+    <column name="recorders" display="Recorders" sql="snf.recorders" datatype="text" />
     <column name="occurrence_id" display="Occurrence ID" datatype="integer" sql="o.id" />
     <column name="health" display="Health" datatype="text" sql="onf.attrs_json->>'841'" />
     <column name="nitrogen" display="Nitrogen" datatype="text" sql="onf.attrs_json->>'840'" />
