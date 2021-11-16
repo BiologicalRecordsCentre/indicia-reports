@@ -47,5 +47,6 @@
     <column name="habitat" display="Habitat" sql="thab.term" />
     <column name="bearing" display="Bearing" sql="b.int_value" />
     <column name="group" display="Group" sql="grp.text_value" />
+    <column name="comment" display="Comment" sql="l.comment" />
   </columns>
 </report>
