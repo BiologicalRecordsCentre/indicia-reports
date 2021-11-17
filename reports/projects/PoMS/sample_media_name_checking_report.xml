@@ -22,6 +22,7 @@
 
       WHERE #sharing_filter# 
       AND csf.survey_id in (#survey_ids#)
+      AND csnf.media IS NOT NULL
   </query>
   <order_bys>
     <order_by>csf.id DESC</order_by>
