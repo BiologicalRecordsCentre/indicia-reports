@@ -8,17 +8,11 @@
       JOIN indicia.cache_occurrences_nonfunctional conf on conf.id = cof.id
 
       JOIN cache_taxa_taxon_lists cttl_entered_species on cttl_entered_species.id = cof.taxa_taxon_list_id
-      LEFT JOIN cache_taxa_taxon_lists cttl_entered_species_meaning on cttl_entered_species_meaning.taxon_meaning_id = cttl_entered_species.taxon_meaning_id 
-        AND cttl_entered_species_meaning.id != cttl_entered_species.id
-        AND cttl_entered_species_meaning.taxon_list_id = cttl_entered_species.taxon_list_id
 
       LEFT JOIN occurrence_attribute_values oav_correction on oav_correction.occurrence_id = cof.id 
           AND oav_correction.occurrence_attribute_id = #correction_occ_attr_id#
           AND oav_correction.deleted = false  
       LEFT JOIN cache_taxa_taxon_lists cttl_correction on cttl_correction.id = oav_correction.int_value
-      LEFT JOIN cache_taxa_taxon_lists cttl_correction_meaning on cttl_correction_meaning.taxon_meaning_id = cttl_correction.taxon_meaning_id 
-        AND cttl_correction_meaning.id != cttl_correction.id
-        AND cttl_correction.taxon_list_id = cttl_correction.taxon_list_id
 
       WHERE #sharing_filter# 
         AND cof.survey_id in (#survey_ids#)
@@ -35,9 +29,7 @@
     <column name='id' display='Occurrence ID' datatype="integer" sql="cof.id" />
     <column name='correction_oav_id' display='Correction occurrence_attribute_value_id' datatype="text" sql="oav_correction.id" visible = "false" />
     <column name='entered_species_name' display='Entered species name' datatype="text" sql="cttl_entered_species.taxon" />
-    <column name='entered_species_name_synonyms' display='Other names for entered species' datatype="text" sql="string_agg(distinct cttl_entered_species_meaning.taxon,', ')" aggregate = "true"/>
     <column name='corrected_species_name_id' display='Correction' datatype="text" sql="cttl_correction.taxon || '-' || oav_correction.id" />
-    <column name='corrected_species_name_synonyms' display='Other names for corrected species' datatype="text" sql="string_agg(distinct cttl_correction_meaning.taxon,', ')" aggregate = "true"/>
     <column name='images' display='Images' sql='conf.media' img='true' />
   </columns>
 </report>
