@@ -37,6 +37,9 @@
     <param name="corrected_species_smp_attr_id" display="Corrected species sample attribute ID" 
         description="Sample attribute ID that holds the corrected species entered by an expert" datatype="integer"/>
     <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='id' display='ID' datatype="integer" sql="csf.id" />

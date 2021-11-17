@@ -25,6 +25,9 @@
     <param name="correction_occ_attr_id" display="Corrected flower occurrence attribute ID" 
         description="occurrence attribute ID that holds the corrected flower entered by an expert" datatype="integer"/>
     <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; cof.location_ids = true</where>
+    </param>
   </params>
   <columns>
     <column name='id' display='Occurrence ID' datatype="integer" sql="cof.id" />
