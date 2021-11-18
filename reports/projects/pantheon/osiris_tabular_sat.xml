@@ -26,8 +26,8 @@
         tcode.term as "code",
         case
           when count(distinct cttl.preferred_taxa_taxon_list_id)>=it.threshold then 'Favourable'
-          else 'Unfavourable (' || count(distinct cttl.preferred_taxa_taxon_list_id)::text || ' of ' || it.threshold::text || ' species)'
-        end as "condition"
+          else 'Unfavourable'
+        end || ' (' || count(distinct cttl.preferred_taxa_taxon_list_id)::text || ' species, ' || it.threshold::text || ' required)' as "condition"
       -- Start by pulling in the list of SAT terms
       from taxa_taxon_list_attribute_values av_sat
       join cache_termlists_terms t_sat on t_sat.id=av_sat.int_value
