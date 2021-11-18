@@ -32,6 +32,9 @@
     <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
       <where>array[#intersect_location_ids#] &amp;&amp; cof.location_ids = true</where>
     </param>
+    <param name="taxon_group_ids" display="Taxon group IDs" description='Occurrences must be in these taxon groups.' emptyvalue="" default="">
+      <where>cttl_entered_species.taxon_group_id in (#taxon_group_ids#)</where>
+    </param>
   </params>
   <columns>
     <column name='id' display='Occurrence ID' datatype="integer" sql="cof.id" />
