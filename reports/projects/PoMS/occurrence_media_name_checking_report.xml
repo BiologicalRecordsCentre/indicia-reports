@@ -17,13 +17,17 @@
       WHERE #sharing_filter# 
         AND cof.survey_id in (#survey_ids#)
         AND conf.media IS NOT NULL
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR cof.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR cof.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
   </query>
   <order_bys>
     <order_by>cof.id DESC</order_by>
   </order_bys>
   <params>
-    <param name="correction_occ_attr_id" display="Corrected flower occurrence attribute ID" 
+    <param name="correction_occ_attr_id" display="Corrected flower occurrence attribute ID"
         description="occurrence attribute ID that holds the corrected flower entered by an expert" datatype="integer"/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
     <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
       <where>array[#intersect_location_ids#] &amp;&amp; cof.location_ids = true</where>
