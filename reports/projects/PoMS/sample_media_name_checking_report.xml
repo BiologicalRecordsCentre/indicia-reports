@@ -23,6 +23,8 @@
       WHERE #sharing_filter# 
       AND csf.survey_id in (#survey_ids#)
       AND csnf.media IS NOT NULL
+      AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+      AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
   </query>
   <order_bys>
     <order_by>csf.id DESC</order_by>
@@ -36,6 +38,8 @@
         description="Sample attribute ID that holds the Other option text entered by the user" datatype="integer"/>
     <param name="corrected_species_smp_attr_id" display="Corrected species sample attribute ID" 
         description="Sample attribute ID that holds the corrected species entered by an expert" datatype="integer"/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
     <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
       <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
