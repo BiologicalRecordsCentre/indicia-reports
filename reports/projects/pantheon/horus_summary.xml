@@ -3,26 +3,45 @@
     description="Summary view of a sample for HORUS."
 >
   <query website_filter_field="cttl.website_id">
-    select 1 as sort, 'Number of species' as property, count(distinct cttl.preferred_taxa_taxon_list_id)::varchar as value
+    drop table if exists sample_taxa_list;
+    drop table if exists bmwp_data;
+    drop table if exists bmwp_sums;
+
+    select distinct cttl.id, cttl.taxon_meaning_id, cttl.preferred_taxa_taxon_list_id
+    into temporary sample_taxa_list
     from cache_taxa_taxon_lists cttl
     #joins#
+    where cttl.preferred=true;
+
+    select distinct bmwp.higher_taxon_meaning_id, bmwp.original_score, bmwp.revised_score
+    into temporary bmwp_data
+    from pantheon.bmwp_scores bmwp
+    join cache_taxon_paths ctp on bmwp.higher_taxon_meaning_id=any(ctp.path)
+    join sample_taxa_list tl on tl.taxon_meaning_id=ctp.taxon_meaning_id;
+
+    select sum(original_score) as sum_original_score, sum(revised_score) as sum_revised_score
+    into temporary bmwp_sums
+    from bmwp_data;
+
+    select 1 as sort, 'Number of species' as property, count(distinct tl.preferred_taxa_taxon_list_id)::varchar as value
+    from sample_taxa_list tl
+
     union
-    select 2, 'Number of species with habitat scores', count(distinct cttl.preferred_taxa_taxon_list_id)::varchar
-    from cache_taxa_taxon_lists cttl
-    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id and ttlav.deleted=false
+    select 2, 'Number of species with habitat scores', count(distinct tl.preferred_taxa_taxon_list_id)::varchar
+    from sample_taxa_list tl
+    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=tl.preferred_taxa_taxon_list_id and ttlav.deleted=false
     join taxa_taxon_list_attributes ttla on ttla.id=ttlav.taxa_taxon_list_attribute_id and ttlav.deleted=false
       and (ttla.caption='rarity score' or ttla.description='Pantheon quality indices')
-    #joins#
+
     union
     select 3, 'Rarity score (SQI)', round(avg(rscv.int_value)*100)::varchar as sqi
-        from (select distinct cttl.preferred_taxa_taxon_list_id
-          from cache_taxa_taxon_lists cttl
-          #joins#
-        ) as sub
+        from (select distinct tl.preferred_taxa_taxon_list_id from sample_taxa_list tl) as sub
         join taxa_taxon_list_attribute_values rscv on rscv.taxa_taxon_list_id=sub.preferred_taxa_taxon_list_id and rscv.deleted=false
           and rscv.taxa_taxon_list_attribute_id=#rarity_score_attr_id#
+
     union
     select 4, '&lt;h3&gt;Conservation statuses&lt;/h3&gt;', '&lt;hr/&gt;'
+
     union
     select 5,
       case term when 'GB Status' then 'GB Conservation Status (old &amp; new)' else term end,
@@ -30,53 +49,44 @@
         '&lt;a href="/pantheon/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_code=' || code || '"&gt;' || count::varchar || ' ' || code || '&lt;/a&gt;'
         ), '; ')
     from (
-      select cat.term, coalesce(td.code, td.abbreviation) as code, count(distinct cttl.preferred_taxa_taxon_list_id)
+      select cat.term, coalesce(td.code, td.abbreviation) as code, count(distinct tl.preferred_taxa_taxon_list_id)
       from taxon_designations td
       join taxa_taxon_designations ttd on ttd.taxon_designation_id=td.id and ttd.deleted=false
       join taxa_taxon_lists ttl on ttl.taxon_id=ttd.taxon_id and ttl.deleted=false
-      join cache_taxa_taxon_lists cttl on cttl.id=ttl.id
+      join sample_taxa_list tl on tl.id=ttl.id
       join cache_termlists_terms cat on cat.id=td.category_id
-      #joins#
       where td.deleted=false
       and ttl.taxon_list_id=#taxon_list_id#
       and coalesce(td.code, td.abbreviation) &lt;&gt; 'None'
       group by cat.term, td.code, td.abbreviation
     ) as subtable
     group by term
+
     union
     select 6, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'
+
     union
     select 7, ttla.caption,
       case ttla.caption
         -- should count only native species
-        when 'grazing marsh - status' then round(sum(ttlav.int_value)::numeric / count(distinct cttl.preferred_taxa_taxon_list_id), 2)::varchar
+        when 'grazing marsh - status' then round(sum(ttlav.int_value)::numeric / count(distinct tl.preferred_taxa_taxon_list_id), 2)::varchar
         when 'IEC (older version)' then sum(ttlav.int_value)::varchar
         when 'IEC' then sum(ttlav.int_value)::varchar
-        when 'peat bog spiders' then count(distinct cttl.preferred_taxa_taxon_list_id)::varchar || ' indicator species'
-        when 'CCI' then round((sum(ttlav.int_value)::numeric /* cs_sum */ / count(distinct cttl.preferred_taxa_taxon_list_id) /* sp_count */) * case
-          when max(ttlav.int_value) >= 10 then 15
-          when max(ttlav.int_value) = 9 then 12
-          when max(ttlav.int_value) = 8 then 10
-          when max(ttlav.int_value) = 7 then 7
-          when max(ttlav.int_value) in (5, 6) then 5
-          when max(ttlav.int_value) in (3, 4) then 3
-          when max(ttlav.int_value) in (1, 2) then 1
-        else 0 end /* cos */, 2)::varchar
+        when 'peat bog spiders' then count(distinct tl.preferred_taxa_taxon_list_id)::varchar || ' indicator species'
         else
           /* Standard output, just a breakdown of counts of each score category */
           (select string_agg(value, ', ') from (
             select '&lt;a href="/pantheon/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-trait_term_id='
                 || avsub.int_value::varchar || '&amp;dynamic-trait_attr_id=' || asub.id::varchar || '"&gt;'
-              || count(distinct cttl.preferred_taxa_taxon_list_id)::varchar || ' '
+              || count(distinct tl.preferred_taxa_taxon_list_id)::varchar || ' '
               || string_agg(distinct coalesce(sd.value, t.term, avsub.int_value::varchar, avsub.text_value)
               || '&lt;/a&gt;', '|'
               ) as value
             from taxa_taxon_list_attribute_values avsub
-            join cache_taxa_taxon_lists cttl on cttl.preferred_taxa_taxon_list_id=avsub.taxa_taxon_list_id
+            join sample_taxa_list tl on tl.preferred_taxa_taxon_list_id=avsub.taxa_taxon_list_id
             join taxa_taxon_list_attributes asub on asub.id=avsub.taxa_taxon_list_attribute_id and asub.deleted=false
             left join cache_termlists_terms t on t.id=avsub.int_value and t.termlist_id=asub.termlist_id
             left join pantheon.score_details sd on sd.category=asub.caption and sd.key=coalesce(t.term, avsub.int_value::varchar, avsub.text_value)
-            #joins#
             where avsub.deleted=false
             and avsub.taxa_taxon_list_attribute_id=ttla.id
             group by asub.id, avsub.int_value, avsub.text_value
@@ -84,11 +94,60 @@
       end as values
     from taxa_taxon_list_attributes ttla
     join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_attribute_id=ttla.id and ttlav.deleted=false
-    join cache_taxa_taxon_lists cttl on cttl.id=ttlav.taxa_taxon_list_id and cttl.preferred=true
-    #joins#
+    join sample_taxa_list tl on tl.id=ttlav.taxa_taxon_list_id
     where ttla.description='Pantheon quality indices'
     and ttla.deleted=false
-    GROUP BY ttla.id, ttla.caption
+    group by ttla.id, ttla.caption
+
+    union
+    select 8, 'BMWP', 'Original: ' || sum(bmwp.original_score)::text || '; Revised: ' || sum(bmwp.revised_score)::text
+    from bmwp_data bmwp
+
+    union
+    select 9, 'CCI',
+      'Original: ' || round((sum(ttlav.int_value)::numeric /* cs_sum */ / count(distinct tl.preferred_taxa_taxon_list_id) /* sp_count */) * greatest(case
+              when max(ttlav.int_value) >= 10 then 15
+              when max(ttlav.int_value) = 9 then 12
+              when max(ttlav.int_value) = 8 then 10
+              when max(ttlav.int_value) = 7 then 7
+              when max(ttlav.int_value) in (5, 6) then 5
+              when max(ttlav.int_value) in (3, 4) then 3
+              when max(ttlav.int_value) in (1, 2) then 1
+            else 0 end /* cos */, case
+          when sum_original_score >= 301 then 15
+          when sum_original_score >= 251 then 12
+          when sum_original_score >= 201 then 10
+          when sum_original_score >= 151 then 7
+          when sum_original_score >= 101 then 5
+          when sum_original_score>= 51 then 3
+          when sum_original_score >= 1 then 1
+              else 0
+        end), 2)::varchar || '; ' ||
+      'Revised: ' || round((sum(ttlav.int_value)::numeric /* cs_sum */ / count(distinct tl.preferred_taxa_taxon_list_id) /* sp_count */) * greatest(case
+              when max(ttlav.int_value) >= 10 then 15
+              when max(ttlav.int_value) = 9 then 12
+              when max(ttlav.int_value) = 8 then 10
+              when max(ttlav.int_value) = 7 then 7
+              when max(ttlav.int_value) in (5, 6) then 5
+              when max(ttlav.int_value) in (3, 4) then 3
+              when max(ttlav.int_value) in (1, 2) then 1
+            else 0 end /* cos */, case
+          when sum_revised_score >= 301 then 15
+          when sum_revised_score >= 251 then 12
+          when sum_revised_score >= 201 then 10
+          when sum_revised_score >= 151 then 7
+          when sum_revised_score >= 101 then 5
+          when sum_revised_score>= 51 then 3
+          when sum_revised_score >= 1 then 1
+              else 0
+        end), 2)::varchar
+    from bmwp_sums bmwp, taxa_taxon_list_attributes ttla
+    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_attribute_id=ttla.id and ttlav.deleted=false and ttlav.taxa_taxon_list_attribute_id=189
+    join sample_taxa_list tl on tl.id=ttlav.taxa_taxon_list_id
+    where ttla.caption='CCI'
+    and ttla.deleted=false
+    group by sum_original_score, sum_revised_score
+
     order by sort, property
   </query>
   <params>
