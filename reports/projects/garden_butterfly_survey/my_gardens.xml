@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="My gardens" description="List of gardens registered by a user.">
-  <query>
+  <query website_filter_field="" >
     SELECT #columns#
     FROM locations l
     LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
@@ -10,6 +10,9 @@
     AND l.deleted=false
     AND l.created_by_id=#user_id#
   </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
   <params>
     <param name="user_id" display="User ID" description="User to get results for." datatype="integer" />
   </params>
