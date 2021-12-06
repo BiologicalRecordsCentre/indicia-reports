@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="My gardens" description="List of gardens registered by a user.">
+  <query>
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+    #joins#
+    #agreements_join#
+    WHERE lw.website_id in (#website_ids#)
+    AND l.deleted=false
+    AND l.created_by_id=#user_id#
+  </query>
+  <params>
+    <param name="user_id" display="User ID" description="User to get results for." datatype="integer" />
+  </params>
+  <columns>
+    <column name="id" visible="false" sql="l.id" unique="true" in_count="true" datatype="integer" />
+    <column name="name" display="Garden nickname" sql="l.name" datatype="string" />
+  </columns>
+</report>
