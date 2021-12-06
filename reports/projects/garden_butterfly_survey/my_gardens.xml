@@ -14,7 +14,7 @@
     <order_by>l.name ASC</order_by>
   </order_bys>
   <params>
-    <param name="user_id" display="User ID" description="User to get results for." datatype="integer" />
+    <param name="user_id" display="User ID" description="User to get results for." datatype="integer" emptyvalue="0" />
   </params>
   <columns>
     <column name="id" visible="false" sql="l.id" unique="true" in_count="true" datatype="integer" />
