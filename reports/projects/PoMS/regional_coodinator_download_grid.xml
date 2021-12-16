@@ -86,6 +86,7 @@
         AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
         AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
         AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+        AND (array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true)
   </query>
   <order_bys>
     <order_by>s.id DESC</order_by>
@@ -134,9 +135,9 @@
     <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
     <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
     <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
-    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
-      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
-    </param>  </params>
+    <param name = "intersect_location_ids" display="Intersect location IDs" description='Setup page config with intersect_location_ids={profile_indicia_coordinate_country}.' 
+        emptyvalue="0" default="0"/>
+  </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
     <column name='survey_id' sql='s.survey_id' display='Survey ID' visible="false" datatype="integer"/>
