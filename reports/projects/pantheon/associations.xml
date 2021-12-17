@@ -51,6 +51,12 @@
     <column name="kingdom_taxon" display="Kingdom" sql="cttlto.kingdom_taxon" distincton="true" />
     <column name="taxon" display="Associated taxon" sql="cttlto.taxon" distincton="true" />
     <column name="species_count" display="Species count" sql="count(distinct cttl.taxon_meaning_id)" aggregate="true" distincton="true" />
+    <column name="fidelity" display="Fidelity" aggregate="true"
+      sql="case min(ta.fidelity) when 1 then 'High' when 2 then 'Medium' when 3 then 'Low' end ||
+        case min(ta.fidelity)
+          when max(ta.fidelity) then ''
+        else ' to ' || case max(ta.fidelity) when 1 then 'high' when 2 then 'medium' when 3 then 'low' end
+        end" />
     <column name="cons_count" display="Species with conservation status" sql="nullif(count(distinct ttd.taxon_id), 0)" aggregate="true" />
     <column name="cons" display="Conservation status" sql="string_agg(coalesce(td.code, td.abbreviation), '|' order by td.code)" aggregate="true" />
   </columns>
