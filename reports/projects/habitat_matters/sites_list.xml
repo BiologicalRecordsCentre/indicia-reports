@@ -24,11 +24,11 @@
     <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
             population_call='report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=' />
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
-    <param name="search" display="Search for" data_type="text">
+    <param name="search" display="Search for" datatype="text">
       <where>l.name ilike '%#search#%'</where>
     </param>
-    <param name="user_id" display="User ID" data_type="integer" />
-    <param name="limit_to_user" display="Limit to user's own sites" data_type="boolean" emptyvalue="0">
+    <param name="user_id" display="User ID" datatype="integer" />
+    <param name="limit_to_user" display="Limit to user's own sites" datatype="boolean" emptyvalue="0">
       <where>l.created_by_id=#user_id#</where>
     </param>
   </params>
