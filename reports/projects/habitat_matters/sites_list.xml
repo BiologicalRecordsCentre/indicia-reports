@@ -38,7 +38,7 @@
     <column name="code" display="Site code" sql="l.code" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
     <column name="location_type" display="Type" sql="tinput.term" />
-    <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />
+    <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
     <column name="centroid_sref_system" visible="false" sql="l.centroid_sref_system" />
     <column name="geom" visible="false" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
   </columns>
