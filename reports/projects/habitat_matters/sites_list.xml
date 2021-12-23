@@ -25,7 +25,7 @@
             population_call='report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=' />
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
     <param name="search" display="Search for" datatype="text">
-      <where>l.name ilike '%#search#%'</where>
+      <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
     </param>
     <param name="user_id" display="User ID" datatype="integer" />
     <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" emptyvalue="0">
@@ -35,6 +35,7 @@
   <columns>
     <column name="location_id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name" />
+    <column name="code" display="Site code" sql="l.code" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
     <column name="location_type" display="Type" sql="tinput.term" />
     <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />

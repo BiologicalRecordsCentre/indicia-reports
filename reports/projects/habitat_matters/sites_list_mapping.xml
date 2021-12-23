@@ -34,8 +34,8 @@
             such as Sussex">
       <where>(l.code is null or l.code not like '%+%')</where>
     </param>
-    <param name="search" display="Search for sites named" datatype="text">
-      <where>l.name ilike '%#search#%'</where>
+    <param name="search" display="Search for" datatype="text">
+      <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
     </param>
     <param name="user_id" display="User ID" datatype="integer" />
     <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" emptyvalue="0">
