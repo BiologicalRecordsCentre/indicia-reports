@@ -38,7 +38,7 @@
       <where>l.name ilike '%#search#%'</where>
     </param>
     <param name="user_id" display="User ID" datatype="integer" />
-    <param name="limit_to_user" display="Limit to user's own sites" datatype="boolean" emptyvalue="0">
+    <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" emptyvalue="0">
       <where>l.created_by_id=#user_id#</where>
     </param>
   </params>
