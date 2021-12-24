@@ -41,6 +41,8 @@
     <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" emptyvalue="0">
       <where>l.created_by_id=#user_id#</where>
     </param>
+    <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
+      datatype='idlist' fieldname='l.id' alias='location_id' default="" />
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" />
