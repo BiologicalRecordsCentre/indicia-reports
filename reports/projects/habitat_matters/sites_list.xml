@@ -39,6 +39,7 @@
     <column name="location_id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name" />
     <column name="code" display="Site code" sql="l.code" />
+    <column name="can_edit" visible="false" sql="l.created_by_id=#user_id#" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
     <column name="location_type" display="Type" sql="tinput.term" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
