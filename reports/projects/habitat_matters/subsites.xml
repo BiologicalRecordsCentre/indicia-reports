@@ -21,6 +21,7 @@
     <param name="parent_location_id" display="Parent location ID" description="ID of the parent location to load subsites for" datatype="integer" default="">
       <where>l.parent_id=#parent_location_id#</where>
     </param>
+    <param name="user_id" display="User ID" datatype="integer" />
   </params>
   <columns>
     <column name="location_id" sql="l.id" />
@@ -28,8 +29,8 @@
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
     <column name="type" sql="t.term" />
-    <column name="habitat_edit" sql="t.term='Built-environment habitat'" />
-    <column name="feature_edit" sql="t.term='Built-environment feature'" />
+    <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='#user_id#'" />
+    <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='#user_id#'" />
     <column name="inputter" sql="p.surname || case when p.first_name is null or p.first_name='' then '' else ', ' || p.first_name end" />
     <column name="centroid_sref" sql="l.centroid_sref" />
     <column name="comment" sql="l.comment" />
