@@ -25,6 +25,7 @@
   </params>
   <columns>
     <column name="location_id" sql="l.id" />
+    <column name="parent_id" sql="l.parent_id" />
     <column name="location_external_key" sql="l.external_key" />
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
