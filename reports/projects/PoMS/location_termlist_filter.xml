@@ -1,0 +1,59 @@
+<report
+    title="Location termlist filter"
+    description="Limit termlists displayed on page to the country selected by the user."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns#
+    FROM cache_termlists_terms ctt_allowed_terms_with_meanings
+    JOIN cache_termlists_terms ctt_allowed_terms on ctt_allowed_terms.meaning_id = ctt_allowed_terms_with_meanings.meaning_id
+        AND ctt_allowed_terms.termlist_id in (#list_of_termlists_to_check#)
+    #joins#
+    WHERE ctt_allowed_terms_with_meanings.termlist_id in (#list_of_termlists_to_check#)
+  </query>
+  <order_bys>
+    <order_by>ctt_allowed_terms.term asc</order_by>
+  </order_bys>
+  <params>
+    <param name = "sample_country_attribute_id" display="Sample attribute ID" 
+        description="Attribute that holds a sample's country selection (a termlists_term ID)." datatype="integer" emptyvalue = '0' default = '0'/>
+    <param name = "sample_id" display="Sample ID" 
+        description="Optionally limit page to terms associated with this sample's location." datatype="integer" emptyvalue = '0' default = '0'>
+      <join>
+        JOIN sample_attribute_values sav on 
+            sav.sample_id = #sample_id#
+            AND sav.sample_attribute_id = #sample_country_attribute_id# 
+            AND sav.deleted = false
+        -- Must take into account that a country's synonyms might have been used
+        JOIN cache_termlists_terms ctt_loc on ctt_loc.id = sav.int_value
+        JOIN cache_termlists_terms ctt_loc_syn on ctt_loc_syn.meaning_id = ctt_loc.meaning_id 
+
+        JOIN termlists_term_attribute_values ttav on ttav.termlists_term_id = ctt_allowed_terms.id 
+            AND ttav.termlists_term_attribute_id = #location_term_attribute_id# 
+            AND ttav.int_value = ctt_loc_syn.id
+            AND ttav.deleted = false
+      </join>
+    </param>
+    <param name = "location_termlist_and_species_filter" display="Termlists_term ID of filtering country" 
+          description="Limit page to terms associated with this location if sample_id not present." datatype="integer" emptyvalue = '0' default = '0'>
+      <join>
+        -- Must take into account that a country's synonyms might have been used
+        JOIN cache_termlists_terms ctt_loc on ctt_loc.id = #location_termlist_and_species_filter#
+        JOIN cache_termlists_terms ctt_loc_syn on ctt_loc_syn.meaning_id = ctt_loc.meaning_id 
+
+        JOIN termlists_term_attribute_values ttav on ttav.termlists_term_id = ctt_allowed_terms.id 
+            AND ttav.termlists_term_attribute_id = #location_term_attribute_id# 
+            AND ttav.int_value = ctt_loc_syn.id
+            AND ttav.deleted = false
+      </join>
+    </param>
+    <param name = "location_term_attribute_id" display="Location term attribute id" 
+        description="Attribute that holds the locations to limit page termlists to." datatype="integer" />
+    <param name = "list_of_termlists_to_check" display="Termlists list to check" 
+        description="Comma separated list of IDs of termlist to check the language against.
+            This should match the attributes on the page and helps to aid speed" datatype="text" />
+  </params>
+  <columns>
+    <column name='id' sql='ctt_allowed_terms_with_meanings.id' display='Allowed termlists_term ID' in_count="true" datatype="integer"/>
+    <column name='term' sql='ctt_allowed_terms_with_meanings.term' display='Allowed term' datatype="text"/>
+  </columns>
+</report>
