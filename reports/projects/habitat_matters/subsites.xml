@@ -9,6 +9,8 @@
   join people p on p.id=u.person_id
   left join locations_websites lw on lw.location_id=l.id and lw.deleted=false
   left join cache_termlists_terms t on t.id=l.location_type_id
+  left join location_attribute_values v on v.location_id=l.id and v.deleted=false and v.location_attribute_id in (#type_attr_ids#)
+  left join cache_termlists_terms vt on vt.id=v.int_value
   #agreements_join#
   #joins#
   where #sharing_filter#
@@ -22,6 +24,7 @@
       <where>l.parent_id=#parent_location_id#</where>
     </param>
     <param name="user_id" display="User ID" datatype="integer" />
+    <param name="type_attr_ids" display="Type attrs" datatype="integer[]" />
   </params>
   <columns>
     <column name="location_id" sql="l.id" />
@@ -30,6 +33,7 @@
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
     <column name="type" sql="t.term" />
+    <column name="subtype" sql="vt.term" />
     <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='#user_id#'" />
     <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='#user_id#'" />
     <column name="inputter" sql="p.surname || case when p.first_name is null or p.first_name='' then '' else ', ' || p.first_name end" />
