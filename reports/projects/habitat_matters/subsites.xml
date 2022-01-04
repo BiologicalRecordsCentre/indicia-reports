@@ -32,8 +32,7 @@
     <column name="location_external_key" sql="l.external_key" />
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
-    <column name="type" sql="t.term" />
-    <column name="subtype" sql="vt.term" />
+    <column name="type" sql="case when t.term like '%habitat' then 'Habitat' when t.term like '%feature' then 'Feature' else 'Unknown' end || coalesce(' :: ' || vt.term, '')" />
     <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='#user_id#'" />
     <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='#user_id#'" />
     <column name="inputter" sql="p.surname || case when p.first_name is null or p.first_name='' then '' else ', ' || p.first_name end" />
