@@ -4,7 +4,12 @@
   <query count_field="DISTINCT id">
   SELECT #columns#
   FROM locations l
-  WHERE l.name='#site_name#'
+  LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+  WHERE l.deleted=false
+  AND l.name='#site_name#'
+  AND #website_filter#
+  -- Site or parish
+  AND l.location_type_id IN (14, 702)
   </query>
   <params>
     <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
