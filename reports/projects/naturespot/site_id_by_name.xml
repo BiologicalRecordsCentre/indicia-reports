@@ -1,0 +1,15 @@
+<report
+    title="Location ID for a site by name"
+>
+  <query count_field="DISTINCT id">
+  SELECT #columns#
+  FROM locations l
+  WHERE l.name='#site_name#'
+  </query>
+  <params>
+    <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
+  </params>
+  <columns>
+    <column name='id' sql='id' visible="false" />
+  </columns>
+</report>
