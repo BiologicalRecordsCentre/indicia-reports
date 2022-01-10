@@ -1,7 +1,7 @@
 <report
     title="Location ID for a site by name"
 >
-  <query count_field="DISTINCT id">
+  <query count_field="DISTINCT id" website_filter_field="lw.website_id">
   SELECT #columns#
   FROM locations l
   LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
