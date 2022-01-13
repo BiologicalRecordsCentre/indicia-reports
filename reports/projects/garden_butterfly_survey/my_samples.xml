@@ -27,7 +27,7 @@
     <column name="date_end" sql="s.date_end" visible="false" />
     <column name="date_type" sql="s.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
-    <column name="occurrence_count" display="Occurrence count" datatype="integer" sql="count(o.id)" aggregate="true" />
+    <column name="occurrence_count" display="Number of species seen" datatype="integer" sql="count(o.id)" aggregate="true" />
     <column name="input_form" visible="false" sql="case when s.input_form is null then '#default_input_form#' else s.input_form end" datatype="text" />
   </columns>
 </report>
