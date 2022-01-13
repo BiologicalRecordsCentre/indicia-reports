@@ -1,0 +1,32 @@
+<report
+    title="My samples list"
+    description="A general purpose list of samples with record counts."
+>
+<query website_filter_field="su.website_id">
+  SELECT #columns#
+  FROM samples s
+  JOIN surveys su on su.id=s.survey_id and su.deleted=false
+  LEFT JOIN locations l ON l.id=s.location_id
+  LEFT JOIN occurrences o on o.sample_id=s.id and o.deleted=false
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="default_input_form" display="Default input form" description="Input form path to use when no other available" default="" datatype="text" />
+    <param name="user_id" display="User ID" description="User whose samples are to be shown" datatype="integer" />
+  </params>
+  <columns>
+    <column name="sample_id" visible="false" sql="s.id" datatype="integer" in_count="true" />
+    <column name="garden_name" display="Garden" sql="l.name" datatype="text"  />
+    <column name="date_start" sql="s.date_start" visible="false" />
+    <column name="date_end" sql="s.date_end" visible="false" />
+    <column name="date_type" sql="s.date_type" visible="false" />
+    <column name="date" display="Date" datatype="date" />
+    <column name="occurrence_count" display="Occurrence count" datatype="integer" sql="count(o.id)" aggregate="true" />
+    <column name="input_form" visible="false" sql="case when s.input_form is null then '#default_input_form#' else s.input_form end" datatype="text" />
+  </columns>
+</report>
