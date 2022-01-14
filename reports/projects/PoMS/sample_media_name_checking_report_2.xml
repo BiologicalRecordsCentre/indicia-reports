@@ -1,0 +1,64 @@
+<report
+    title="Sample media name checking report"
+    description="Report allows experts to provide a corrected name of a (user entered) sample media item.">
+  <query website_filter_field="" training_filter_field="csf.training" >
+    SELECT #columns# 
+      FROM indicia.cache_samples_functional csf
+      JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = csf.id
+
+      JOIN sample_attribute_values sav_entered_species on sav_entered_species.sample_id = csf.id 
+          AND sav_entered_species.sample_attribute_id = #entered_species_smp_attr_id#
+          AND sav_entered_species.deleted = false
+
+      JOIN cache_termlists_terms ctt_entered_species on ctt_entered_species.id = sav_entered_species.int_value
+
+      LEFT JOIN sample_attribute_values sav_entered_species_other on sav_entered_species_other.sample_id = csf.id 
+          AND sav_entered_species_other.sample_attribute_id = #entered_species_other_option_smp_id#
+          AND sav_entered_species_other.deleted = false
+
+      LEFT JOIN sample_attribute_values sav_corrected_species on sav_corrected_species.sample_id = csf.id 
+          AND sav_corrected_species.sample_attribute_id = #corrected_species_smp_attr_id#
+          AND sav_corrected_species.deleted = false
+
+      WHERE #sharing_filter# 
+      AND csf.survey_id in (#survey_ids#)
+      AND csnf.media IS NOT NULL
+      AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-' || '#min_month_day#' as date))
+      AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-' || '#max_month_day#' as date)))
+  </query>
+  <order_bys>
+    <order_by>csf.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="entered_species_smp_attr_id" display="Entered Species sample attribute ID" 
+        description="Sample attribute ID that holds the entered species termlists_term the user entered" datatype="integer"/>
+    <param name="other_entered_species_tt_id" display="Termlists_term ID for the species Other option" 
+        description="Termlists_term ID for the Other species option" datatype="integer"/>
+    <param name="entered_species_other_option_smp_id" display="Entered Species Other optionsample attribute ID" 
+        description="Sample attribute ID that holds the Other option text entered by the user" datatype="integer"/>
+    <param name="corrected_species_smp_attr_id" display="Corrected species sample attribute ID" 
+        description="Sample attribute ID that holds the corrected species entered by an expert" datatype="integer"/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; csf.location_ids = true</where>
+    </param>
+    <param name = "min_month_day" display = "Earliest month-day for year" description = "The earliest allowed date in the year to return data for.
+        In the format mm-dd" datatype = "text" default = "01-01" emptyvalue = "01-01"/>
+    <param name = "max_month_day" display = "Latest month-day for year" description = "The latest allowed date in the year to return data for.
+        In the format mm-dd" datatype = "text" default = "12-31" emptyvalue = "12-31"/>
+  </params>
+  <columns>
+    <column name='id' display='ID' datatype="integer" sql="csf.id" />
+    <column name='entered_species' display='Entered species (entered by user)' sql="
+      CASE WHEN sav_entered_species.int_value = #other_entered_species_tt_id# 
+      THEN 'Other' || ' (' || sav_entered_species_other.text_value || ')'
+      ELSE ctt_entered_species.term END" datatype="text"/> 
+    -- Leave an empty cell on grid for expert entry
+    <column name='corrected_species_smp_id' display='Corrected species sample_attribute_id' datatype="text" sql="sav_corrected_species.sample_attribute_id" visible="false" />
+    <column name='corrected_species_sav_id' display='Corrected species sample_attribute_value_id' datatype="text" sql="sav_corrected_species.id" visible="false" />
+    <column name='corrected_species_name' display='Corrected species name' datatype="text" sql="sav_corrected_species.text_value" />
+    <column name='images' display='Images' sql='csnf.media' img='true' />
+  </columns>
+</report>

@@ -1,0 +1,50 @@
+<report
+    title="Occurrence media name checking report"
+    description="Report allows experts to provide a corrected name of a (user entered) occurrence media item."
+>
+  <query website_filter_field="" training_filter_field="cof.training" >
+    SELECT #columns# 
+      FROM indicia.cache_occurrences_functional cof
+      JOIN indicia.cache_occurrences_nonfunctional conf on conf.id = cof.id
+
+      JOIN cache_taxa_taxon_lists cttl_entered_species on cttl_entered_species.id = cof.taxa_taxon_list_id
+
+      LEFT JOIN occurrence_attribute_values oav_correction on oav_correction.occurrence_id = cof.id 
+          AND oav_correction.occurrence_attribute_id = #correction_occ_attr_id#
+          AND oav_correction.deleted = false  
+      LEFT JOIN cache_taxa_taxon_lists cttl_correction on cttl_correction.id = oav_correction.int_value
+
+      WHERE #sharing_filter# 
+        AND cof.survey_id in (#survey_ids#)
+        AND conf.media IS NOT NULL
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR cof.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-' || '#min_month_day#' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR cof.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-' || '#max_month_day#' as date)))
+  </query>
+  <order_bys>
+    <order_by>cof.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="correction_occ_attr_id" display="Corrected flower occurrence attribute ID"
+        description="occurrence attribute ID that holds the corrected flower entered by an expert" datatype="integer"/>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; cof.location_ids = true</where>
+    </param>
+    <param name="taxon_group_ids" display="Taxon group IDs" description='Occurrences must be in these taxon groups.' emptyvalue="" default="">
+      <where>cttl_entered_species.taxon_group_id in (#taxon_group_ids#)</where>
+    </param>
+    <param name = "min_month_day" display = "Earliest month-day for year" description = "The earliest allowed date in the year to return data for.
+        In the format mm-dd" datatype = "text" default = "01-01" emptyvalue = "01-01"/>
+    <param name = "max_month_day" display = "Latest month-day for year" description = "The latest allowed date in the year to return data for.
+        In the format mm-dd" datatype = "text" default = "12-31" emptyvalue = "12-31"/>
+  </params>
+  <columns>
+    <column name='id' display='Occurrence ID' datatype="integer" sql="cof.id" />
+    <column name='correction_oav_id' display='Correction occurrence_attribute_value_id' datatype="text" sql="oav_correction.id" visible = "false" />
+    <column name='entered_species_name' display='Entered species name' datatype="text" sql="cttl_entered_species.taxon" />
+    <column name='corrected_species_name_id' display='Correction' datatype="text" sql="cttl_correction.taxon || '-' || oav_correction.id" />
+    <column name='images' display='Images' sql='conf.media' img='true' />
+  </columns>
+</report>
