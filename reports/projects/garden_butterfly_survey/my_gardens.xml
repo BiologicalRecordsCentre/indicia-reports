@@ -3,6 +3,8 @@
   <query website_filter_field="" >
     SELECT #columns#
     FROM locations l
+    LEFT JOIN location_attribute_values v ON v.location_id=l.id AND v.deleted=false
+      AND v.location_attribute_id=304
     LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
     #joins#
     #agreements_join#
@@ -18,7 +20,7 @@
   </params>
   <columns>
     <column name="id" visible="false" sql="l.id" unique="true" in_count="true" datatype="integer" />
-    <column name="name" display="Garden nickname" sql="l.name" datatype="string" />
+    <column name="name" display="Garden name" sql="COALESCE(v.text_value, l.name)" datatype="string" />
     <column name="geom" visible="false" mappable="true" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
   </columns>
 </report>
