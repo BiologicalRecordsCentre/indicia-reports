@@ -12,7 +12,8 @@
   JOIN websites w on w.id=o.website_id and w.deleted=false
   #agreements_join#
   #joins#
-  WHERE #sharing_filter# 
+  WHERE #sharing_filter#
+  AND (CAST(o.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   #idlist#
   </query>
   <order_bys>
