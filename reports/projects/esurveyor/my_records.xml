@@ -22,9 +22,6 @@
     <param name='smpattrs' display='Sample attribute list' description='Comma separated list of sample attribute IDs to include' datatype='smpattrs' />
     <param name='occattrs' display='Occurrence attribute list' description='Comma separated list of occurrence attribute IDs to include' datatype='occattrs' />
     <param name="currentUser" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
-    <param name="ownData" display="My data only?" datatype="checkbox">
-      <where value="1">o.created_by_id=#currentUser#</where>
-    </param>
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
   </params>
   <columns>
