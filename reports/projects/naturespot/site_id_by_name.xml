@@ -1,7 +1,7 @@
 <report
     title="Location ID for a site by name"
 >
-  <query count_field="DISTINCT id" website_filter_field="lw.website_id">
+  <query count_field="DISTINCT l.id" website_filter_field="lw.website_id">
   SELECT #columns#
   FROM locations l
   LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
@@ -12,9 +12,9 @@
   AND l.location_type_id IN (14, 702)
   </query>
   <params>
-    <param name='site_name' display='Site Name' description='Exact name of the site' datatype='text' />
+    <param name="site_name" display="Site Name" description="Exact name of the site" datatype="text" />
   </params>
   <columns>
-    <column name='id' sql='id' visible="false" />
+    <column name="id" sql="l.id" visible="false" />
   </columns>
 </report>
