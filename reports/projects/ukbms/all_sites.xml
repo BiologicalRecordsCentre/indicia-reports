@@ -8,7 +8,7 @@
     SELECT #columns#
     FROM locations l
     JOIN locations_websites lw ON l.id=lw.location_id AND lw.deleted=false
-    LEFT JOIN samples sp ON sp.location_id=l.id
+    LEFT JOIN samples sp ON sp.location_id=l.id AND sp.deleted=false
     #joins#
     WHERE l.deleted=false
       AND (l.code = '' OR l.code IS NULL OR '#blank_code#'!='yes')
