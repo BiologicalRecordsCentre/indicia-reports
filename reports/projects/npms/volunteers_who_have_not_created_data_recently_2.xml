@@ -14,10 +14,12 @@
         AND s_recent.survey_id in (#survey_ids#)
         AND s_recent.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
         AND s_recent.training=false
+        AND s_recent.deleted=false
     LEFT JOIN samples s_last on s_last.created_by_id = u.id
         AND s_last.survey_id in (#survey_ids#)
         AND s_last.date_start::date &lt; date (extract(year from current_date) - 2 || '-1-1')
         AND s_last.training=false
+        AND s_last.deleted=false
     WHERE s_recent.id IS NULL AND p.deleted=false
     AND uw.website_id in (#website_ids#)
   </query>

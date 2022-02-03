@@ -1,0 +1,14 @@
+<report
+    title="Get years for population call."
+    description="Report returns a list of years from current year down to 2015 (first year of project).
+        Used for the Years parameter in reports"
+>
+  <query>
+    SELECT #columns#
+    FROM generate_series (2015,extract(year from now())::int)
+  </query>
+  <columns>
+    <column name='year_sort_order' display='Year sort order' sql='0-generate_series' datatype="text" />
+    <column name='year' display='Site name' sql='generate_series' datatype="text" />
+  </columns>
+</report>

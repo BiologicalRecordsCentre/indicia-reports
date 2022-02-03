@@ -1,0 +1,111 @@
+<report
+    title="Samples List for npms_sample_occurrences form 8"
+    description="Used by the Samples grid to retrieve the samples associated with a survey and user. User can be identified by
+        their Indicia User ID. A second sample may be linked to a first sample, the id of which is stored in a custom attribute. The id
+        of that custom attribute is passed as a parameter to the report. New version of report has automatic incrementation of the year.">
+  <query website_filter_field="" training_filter_field="csf.training">
+    SELECT * FROM
+    (SELECT #columns#
+      FROM users u
+      JOIN person_attribute_values pav
+        ON pav.person_id = u.person_id
+        AND pav.person_attribute_id = #person_square_attr_id#
+        AND pav.updated_by_id &lt;&gt; u.id
+        AND pav.deleted = false
+      JOIN locations plot
+        ON plot.parent_id=pav.int_value
+        AND plot.deleted=false
+      JOIN locations square
+        ON square.id=plot.parent_id
+        AND (square.id=#square_id# OR #square_id#=0)
+        AND square.deleted=false
+      JOIN cache_samples_functional csf
+        ON csf.location_id = plot.id
+        AND csf.survey_id = #survey_id#
+      JOIN cache_samples_nonfunctional csnf
+        ON csnf.id = csf.id
+      -- Need to check if there are two samples from earlier in the year,
+      -- and if there is, then we are going to display a red warning
+      LEFT JOIN cache_samples_functional csf_others_earlier_in_year
+        ON csf_others_earlier_in_year.location_id = csf.location_id
+        AND csf_others_earlier_in_year.survey_id = csf.survey_id
+        AND extract(year from csf_others_earlier_in_year.date_start) = extract(year from csf.date_start) 
+        AND csf_others_earlier_in_year.id &lt; csf.id 
+      LEFT JOIN cache_samples_functional csf_others_earlier_in_year_2
+        ON csf_others_earlier_in_year_2.location_id = csf_others_earlier_in_year.location_id
+        AND csf_others_earlier_in_year_2.survey_id = csf_others_earlier_in_year.survey_id
+        AND extract(year from csf_others_earlier_in_year_2.date_start) = extract(year from csf_others_earlier_in_year.date_start) 
+        AND csf_others_earlier_in_year_2.id &lt; csf.id
+        -- We are counting to see if there are two samples from earlier in the year for the red warning,
+        -- so we need to make sure csf_others_earlier_in_year_2 is not the same one as
+        -- we counted in csf_others_earlier_in_year
+        AND 
+        ((csf_others_earlier_in_year_2.id &gt; csf_others_earlier_in_year.id OR
+        csf_others_earlier_in_year_2.id &lt; csf_others_earlier_in_year.id) AND
+        csf_others_earlier_in_year_2.id != csf_others_earlier_in_year.id)
+      LEFT JOIN location_attribute_values lavPlotName
+        ON lavPlotName.location_attribute_id=#plot_number_attr_id#
+        AND lavPlotName.location_id=plot.id
+        AND lavPlotName.deleted=false
+      JOIN cache_termlists_terms termPlotType
+        ON termPlotType.id = plot.location_type_id
+      #agreements_join#
+      WHERE #sharing_filter# AND u.id=#iUserID# 
+      AND (csf.location_id=#plot_id# OR #plot_id#=0)
+      AND 
+        ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='Click here' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '' OR '#year_sort_order#'='Click here' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+      AND u.deleted=false) as sub
+      #order_by#
+  </query>
+  <order_bys>
+    <order_by>sample_1_id desc, sample_id desc</order_by>
+  </order_bys>
+  <params>
+    <param name='survey_id' display='Survey: ' description='Select the survey to return data for?' datatype='lookup'
+        query='SELECT id, title as caption FROM surveys' />
+    <param name='iUserID' display='Indicia User ID' description='Indicia User ID: use 0 to ignore' datatype='int' />
+    <param name='s1AttrID' display='Sample 1 Attribute ID' description='The ID of the sample attribute that links a second sample to a first' datatype='int' />
+    <param name='plot_number_attr_id' display='Plot number attribute Id' description='Id of the location attribute that holds the plot number label' datatype='int' default='0' empytvalue='0'/>
+    <param name='person_square_attr_id' description='Id of the person attribute that holds user squares' datatype='integer'/>
+    <param name='plot_id' description='ID of plot to limit results to' datatype='integer' emptyvalue="0" default="0"/>
+    <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>
+    <param name='square_id' display='Square' description='Select a square, or leave blank for all squares'
+        population_call='report:projects/npms/get_my_squares_that_have_plots_2:id:name:
+            core_square_location_type_id=#core_square_location_type_id#,additional_square_location_type_id=#core_square_location_type_id#,current_user_id=#iUserID#,
+            no_vice_county_found_message=0,vice_county_location_attribute_id=0,pss_mode=1,user_square_attr_id=#person_square_attr_id#' datatype="lookup"
+        emptyvalue='0'/>
+    <param name='year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/npms/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/></params>
+  <columns>
+    <column name='sample_id' sql='csf.id' display='ID' in_count="true" distincton="true"/>
+    <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
+    <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
+    <column name='square' sql="square.name" display='Square'/>
+    <column name='location_name'
+    sql="
+    COALESCE(
+        case 
+        when (csnf.attrs_json->>'227')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS null
+          then '&lt;div style=&quot;color:red&quot; &gt;' || 'Please check this record, as you have already entered two surveys for this plot for the year' ||
+          '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
+        when (csnf.attrs_json->>'227')::integer IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS NOT NULL
+          then '&lt;div style=&quot;color:red&quot; &gt;' || 'Please check this record, as you have already entered two surveys for this plot for the year' ||
+          '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
+        when lavPlotName.text_value IS null
+          then '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
+        else
+          '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
+        end
+        , csf.location_name, csnf.public_entered_sref)
+    " display='Plot'/>
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='survey_number' sql="
+    case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
+    when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
+    ELSE  '' END" display=' '/>
+  </columns>
+</report>
