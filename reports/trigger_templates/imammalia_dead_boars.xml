@@ -1,0 +1,45 @@
+<report
+    title="Dead Wild Boar records for iMammalia"
+    description="Notification sent on a record of a dead boar.">
+  <query>
+    SELECT o.id as occurrence_id, o.date_start as date, 'Wild Boar' AS species,
+      st_y(st_centroid(st_transform(public_geom, 4326))) AS lat,
+      st_x(st_centroid(st_transform(public_geom, 4326))) AS lon,
+      string_agg(dbn.user_id::text, ', ') as notify_user_ids,
+      'Notification that a Wild Boar carcass has been recorded.' as log_comment,
+      o.website_id
+    FROM cache_occurrences_functional o
+    -- Check dead.
+    JOIN occurrence_attribute_values v on v.occurrence_id=o.id AND v.deleted=false
+      AND v.occurrence_attribute_id=800 AND v.int_value in (17464, 17465)
+    -- Not already notified.
+    LEFT JOIN occurrence_comments ocdone ON ocdone.occurrence_id=o.id AND ocdone.deleted=false
+      AND ocdone.comment like '%Notification that a Wild Boar carcass has been recorded.'
+      AND ocdone.created_on>o.created_on
+    -- Find users for this record
+    JOIN imammalia.dead_boar_notifications dbn
+      ON dbn.location_ids IS NULL
+      OR dbn.location_ids && o.location_ids
+    WHERE o.website_id=122
+    -- Check Wild Board.
+    AND o.taxa_taxon_list_external_key='MWEB0036'
+    -- Need to scan records in past to allow time for spatial indexing.
+    AND o.created_on > '#date#'::date-'2 days'::interval
+    -- Not already notified.
+    AND ocdone.id is null
+    GROUP BY o.id, o.date_start, st_y(st_centroid(st_transform(public_geom, 4326))), st_x(st_centroid(st_transform(public_geom, 4326))), o.website_id
+  </query>
+  <params>
+    <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
+  </params>
+  <columns>
+    <column name="occurrence_id" display="ID" />
+    <column name="date" display="Date" />
+    <column name="species" display="Species" />
+    <column name="lat" display="Latitude" />
+    <column name="lon" display="Longitude" />
+    <column name="notify_user_ids" />
+    <column name="log_comment" />
+    <column name="website_id" visible="false" />
+  </columns>
+</report>
