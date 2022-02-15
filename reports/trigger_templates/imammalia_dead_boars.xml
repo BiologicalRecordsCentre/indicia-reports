@@ -15,7 +15,7 @@
     -- Not already notified.
     LEFT JOIN occurrence_comments ocdone ON ocdone.occurrence_id=o.id AND ocdone.deleted=false
       AND ocdone.comment like '%Notification that a Wild Boar carcass has been recorded.'
-      AND ocdone.created_on>o.created_on
+      AND ocdone.created_on&gt;o.created_on
     -- Find users for this record
     JOIN imammalia.dead_boar_notifications dbn
       ON dbn.location_ids IS NULL
@@ -24,7 +24,7 @@
     -- Check Wild Boar.
     AND o.taxa_taxon_list_external_key='MWEB0036'
     -- Need to scan records in past to allow time for spatial indexing.
-    AND o.created_on > '#date#'::date-'2 days'::interval
+    AND o.created_on &gt; '#date#'::date-'2 days'::interval
     -- Not already notified.
     AND ocdone.id is null
     GROUP BY o.id, o.date_start, st_y(st_centroid(st_transform(public_geom, 4326))), st_x(st_centroid(st_transform(public_geom, 4326))), o.website_id
