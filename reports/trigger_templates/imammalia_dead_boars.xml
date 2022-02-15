@@ -19,9 +19,9 @@
     -- Find users for this record
     JOIN imammalia.dead_boar_notifications dbn
       ON dbn.location_ids IS NULL
-      OR dbn.location_ids && o.location_ids
+      OR dbn.location_ids &amp;&amp; o.location_ids
     WHERE o.website_id=122
-    -- Check Wild Board.
+    -- Check Wild Boar.
     AND o.taxa_taxon_list_external_key='MWEB0036'
     -- Need to scan records in past to allow time for spatial indexing.
     AND o.created_on > '#date#'::date-'2 days'::interval
