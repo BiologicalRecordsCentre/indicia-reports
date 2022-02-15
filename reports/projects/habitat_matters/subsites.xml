@@ -33,8 +33,8 @@
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
     <column name="type" sql="case when t.term like '%habitat' then 'Habitat' when t.term like '%feature' then 'Feature' else 'Unknown' end || coalesce(' :: ' || vt.term, '')" />
-    <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='#user_id#'" />
-    <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='#user_id#'" />
+    <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='0#user_id#'" />
+    <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='0#user_id#'" />
     <column name="habitat_view" sql="t.term='Built-environment habitat'" />
     <column name="feature_view" sql="t.term='Built-environment feature'" />
     <column name="inputter" sql="p.surname || case when p.first_name is null or p.first_name='' then '' else ', ' || p.first_name end" />
