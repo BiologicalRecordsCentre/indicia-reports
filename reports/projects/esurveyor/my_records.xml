@@ -13,6 +13,7 @@
   #agreements_join#
   #joins#
   WHERE #sharing_filter# 
+  AND (CAST(o.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
   #idlist#
   </query>
   <order_bys>
@@ -22,10 +23,12 @@
     <param name='smpattrs' display='Sample attribute list' description='Comma separated list of sample attribute IDs to include' datatype='smpattrs' />
     <param name='occattrs' display='Occurrence attribute list' description='Comma separated list of occurrence attribute IDs to include' datatype='occattrs' />
     <param name="currentUser" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='626:E-Surveyor,627:E-Surveyor Transect' />
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
   </params>
   <columns>
-    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
+    <column name='occurrence_id' visible='false' display='ID' sql='o.id' datatype="integer"
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
     <column name='source' display='Source' datatype="text" 
         sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = w.title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
@@ -39,8 +42,8 @@
     <column name='taxon_group_id' display='Taxon group ID' sql='o.taxon_group_id' visible='false' datatype="integer" />
     <column name='taxa_taxon_list_id' visible='false' sql='o.taxa_taxon_list_id' datatype="integer" />   
     <column name='location_name' display='Site name' sql='o.location_name' datatype="text" visible="false" />
-    <column name='entered_sref' display='Grid ref' sql="coalesce(snf.public_entered_sref, regexp_replace(#sample_sref_field#, ',[^ ]', ', ', 'g'), onf.output_sref)" datatype="text" />
-    <column name='output_sref' display='Output ref' sql="onf.output_sref" datatype="text" />
+    <!--<column name='entered_sref' display='Grid ref' sql="coalesce(snf.public_entered_sref, regexp_replace(#sample_sref_field#, ',[^ ]', ', ', 'g'), onf.output_sref)" datatype="text" />-->
+    <column name='output_sref' display='Grid ref' sql="onf.output_sref" datatype="text" />
     <column name='date_start' sql='o.date_start' visible='false' />
     <column name='date_end' sql='o.date_end' visible='false' />
     <column name='date_type' sql='o.date_type' visible='false' />
