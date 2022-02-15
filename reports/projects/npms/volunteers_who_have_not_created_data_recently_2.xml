@@ -37,6 +37,6 @@
     <column name='email_address' display='Email address' sql='p.email_address' datatype='text' /> 
     <column name='squares' display='Squares' sql="string_agg(distinct(sqr.name), ', ')" datatype='text' aggregate='true'/>   
     <column name='approval_dates' display='Approval dates' sql="string_agg(distinct(to_char(sqrPav.updated_on, 'DD/MM/YYYY')::text), ', ')" datatype='text' aggregate='true'/> 
-    <column name='last_data_entry_date' display='Most recent data entry' sql="to_char(max(s_last.created_on), 'DD/MM/YYYY')" datatype='text' aggregate='true'/> 
+    <column name='last_sample_date' display='Most recent sample date' sql="to_char(max(s_last.date_start), 'DD/MM/YYYY')" datatype='text' aggregate='true'/> 
   </columns>
 </report>
