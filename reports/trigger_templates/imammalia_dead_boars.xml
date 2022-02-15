@@ -5,6 +5,8 @@
     SELECT o.id as occurrence_id, o.date_start as date, 'Wild Boar' AS species,
       st_y(st_centroid(st_transform(public_geom, 4326))) AS lat,
       st_x(st_centroid(st_transform(public_geom, 4326))) AS lon,
+      'Notification that a Wild Boar carcass has been recorded.' as comment,
+      t.term as observation_type,
       string_agg(dbn.user_id::text, ', ') as notify_user_ids,
       'Notification that a Wild Boar carcass has been recorded.' as log_comment,
       o.website_id
@@ -13,6 +15,7 @@
     JOIN occurrence_attribute_values v on v.occurrence_id=o.id AND v.deleted=false
       AND v.occurrence_attribute_id=800 AND v.int_value in (17464, 17465)
     -- Not already notified.
+    JOIN cache_termlists_terms t ON t.id=v.int_value
     LEFT JOIN occurrence_comments ocdone ON ocdone.occurrence_id=o.id AND ocdone.deleted=false
       AND ocdone.comment like '%Notification that a Wild Boar carcass has been recorded.'
       AND ocdone.created_on&gt;o.created_on
@@ -36,6 +39,8 @@
     <column name="occurrence_id" display="ID" />
     <column name="date" display="Date" />
     <column name="species" display="Species" />
+    <column name="comment" display="Comment" />
+    <column name="observation_type" display="Observation type" />
     <column name="lat" display="Latitude" />
     <column name="lon" display="Longitude" />
     <column name="notify_user_ids" />
