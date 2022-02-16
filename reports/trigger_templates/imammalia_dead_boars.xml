@@ -30,7 +30,7 @@
     AND o.created_on &gt; '#date#'::date-'2 days'::interval
     -- Not already notified.
     AND ocdone.id is null
-    GROUP BY o.id, o.date_start, st_y(st_centroid(st_transform(public_geom, 4326))), st_x(st_centroid(st_transform(public_geom, 4326))), o.website_id
+    GROUP BY o.id, o.date_start, st_y(st_centroid(st_transform(public_geom, 4326))), st_x(st_centroid(st_transform(public_geom, 4326))), t.term, o.website_id
   </query>
   <params>
     <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
