@@ -27,7 +27,7 @@
     </param>
     <param name="strokewidth" default="1" datatype="integer" />
     <param name="location_country_code_attr_id" default="" datatype="integer" description="The ID of the attribute that holds the location's country code."/>
-    <param name="parent_country_id" display="Country" datatype="lookup" description="ID of the parent country to filter to"
+    <param name="parent_country_id" display="Country" datatype="lookup" description="Select country to filter to"
         population_call='direct:location:id:name:location_type_id=#country_location_type_id#'>
         <join>
           JOIN location_attribute_values lav 
