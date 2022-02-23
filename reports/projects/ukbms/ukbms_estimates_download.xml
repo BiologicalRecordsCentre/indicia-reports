@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS Estimates Download Report" description="Lists calculated counts and estimates by period. Normally invoked from download tab on annual summary page.">
+  <query website_filter_field="so.website_id" >
+    SELECT #columns#
+    FROM summary_occurrences so
+    JOIN locations l ON l.id = so.location_id
+    #joins#
+    WHERE #website_filter#
+      #filters#
+      #location_list#
+      AND so.user_id=#summary_user_id#
+      AND ('#location_id#' = '' OR so.location_id::text = '#location_id#')
+      #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.id, so.taxa_taxon_list_id</order_by>
+  </order_bys>
+  <params>
+    <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"  
+        population_call="direct:survey:id:title" default="">
+	    <where>so.survey_id=#survey_id#</where>
+	  </param>
+    <param name="year" display="Year" datatype="integer" >
+      <where>so.year=#year#</where>
+    </param>
+    <!-- need to be able to handle zero values in user_id, so can't use wheres in param : see use of empty($value) in function addParamWheres. Always provided -->
+    <param name="summary_user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="integer" />
+    <param name="taxon_list_id" display="Taxon list ID" description="ID of the taxon list to show" datatype="integer" default="" >
+      <where>so.taxon_list_id=#taxon_list_id#</where>
+    </param>
+    <!-- also need to be able to handle zero values in location_id. Optional -->
+    <param name="location_id" display="Location ID" description="Enter the ID of the location" datatype="integer" default="" />
+    <param name="location_list" display="Location List" description="Comma separated list of location IDs" fieldname="so.location_id" datatype="idlist" default="" />
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name="site_name" sql="l.name" display="Site name" />
+    <column name="year" sql="so.year" display="Year" />
+    <column name="week_no" sql="(json_array_elements(so.summarised_data)->'period')::text" display="Week" />
+    <column name="preferred_taxon" sql="so.preferred_taxon" display="Preferred" />
+    <column name="default_common_name" sql="so.default_common_name" display="Common" />
+    <column name="count" sql="REPLACE((json_array_elements(so.summarised_data)->'summary')::text, '&quot;NULL&quot;', '')" display="Count" />
+    <column name="estimate" sql="(json_array_elements(so.summarised_data)->'estimate')::text" display="Estimate" /> 
+  </columns>
+</report>
