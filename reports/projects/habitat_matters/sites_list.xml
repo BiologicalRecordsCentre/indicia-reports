@@ -15,6 +15,8 @@
   WHERE l.deleted=false
   AND #website_filter#
   AND l.location_type_id=#location_type_id#
+  -- Safety check so can't pull other sites.
+  AND l.location_type_id IN (19142, 19143, 19144)
   #idlist#
   #order_by#
   </query>
