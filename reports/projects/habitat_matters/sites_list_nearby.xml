@@ -13,7 +13,7 @@
   ) ON ttl1.id=l.location_type_id
   LEFT JOIN location_attribute_values vc on vc.location_id=l.id and vc.deleted=false
     AND vc.location_attribute_id=312 -- creation date
-  LEFT JOIN location_attribute_values va on vc.location_id=l.id and va.deleted=false
+  LEFT JOIN location_attribute_values va on va.location_id=l.id and va.deleted=false
     AND va.location_attribute_id=159 -- area
   #joins#
   WHERE l.deleted=false
