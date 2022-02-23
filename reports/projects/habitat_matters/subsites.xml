@@ -13,8 +13,8 @@
   left join cache_termlists_terms vt on vt.id=v.int_value
   #agreements_join#
   #joins#
-  where #sharing_filter#
-  and (lw.website_id in (#website_ids#) or l.public=true)
+  where l.deleted=false
+  AND lw.website_id in (#website_ids#)
   -- Safety check so can't pull other sites.
   and l.location_type_id IN (19143, 19144)
   </query>

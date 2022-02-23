@@ -11,9 +11,13 @@
     JOIN termlists_terms ttl2 ON ttl2.meaning_id=ttl1.meaning_id
     JOIN terms t ON t.id=ttl2.term_id
   ) ON ttl1.id=l.location_type_id
+  LEFT JOIN location_attribute_values vc on vc.location_id=l.id and vc.deleted=false
+    AND vc.location_attribute_id=312 -- creation date
+  LEFT JOIN location_attribute_values va on vc.location_id=l.id and va.deleted=false
+    AND va.location_attribute_id=159 -- area
   #joins#
   WHERE l.deleted=false
-  AND #website_filter#
+  AND lw.website_id in (#website_ids#)
   AND l.location_type_id=#location_type_id#
   -- Safety check so can't pull other sites.
   AND l.location_type_id IN (19142, 19143, 19144)
@@ -26,12 +30,12 @@
   </order_bys>
   <params>
     <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer' />
-    <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
-    <param name="search" display="Search for" datatype="text">
+    <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' default="" />
+    <param name="search" display="Search for" datatype="text" default="">
       <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
     </param>
-    <param name="user_id" display="User ID" datatype="integer" />
-    <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" emptyvalue="0">
+    <param name="user_id" display="User ID" datatype="integer" default="" emptyvalue="0" />
+    <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" default="" >
       <where>l.created_by_id=#user_id#</where>
     </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
@@ -42,6 +46,9 @@
     <column name="location_id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name" />
     <column name="code" display="Site code" sql="l.code" />
+    <column name="comment" display="Description" sql="l.comment" />
+    <column name="creation_date" sql="vague_date_to_string(vc.date_start_value, vc.date_end_value, vc.date_type_value)" />
+    <column name="area" sql="va.float_value" />
     <column name="can_edit" visible="false" sql="l.created_by_id=#user_id#" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
     <column name="location_type" display="Type" sql="tinput.term" />
