@@ -14,7 +14,7 @@
   #joins#
   WHERE l.deleted=false
   AND #website_filter#
-  AND (CAST(l.location_type_id AS character varying)='#location_type_id#' OR '#location_type_id#'='' OR t.term='#location_type_id#')
+  AND l.location_type_id=#location_type_id#
   AND st_distance(boundary_geom, st_transform(st_geomfromtext('#near#', 4326), 900913))&lt;25000
   #idlist#
   #order_by#
@@ -23,8 +23,7 @@
     <order_by>st_distance(boundary_geom, st_transform(st_geomfromtext('POINT(-2 54)', 4326), 900913)) ASC</order_by>
   </order_bys>
   <params>
-    <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
-            population_call='report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=' />
+    <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer' />
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
     <param name="search" display="Search for" datatype="text">
       <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
