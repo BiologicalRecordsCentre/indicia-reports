@@ -48,6 +48,7 @@
     <column name="code" display="Site code" sql="l.code" />
     <column name="comment" display="Description" sql="l.comment" />
     <column name="creation_date" sql="vague_date_to_string(vc.date_start_value, vc.date_end_value, vc.date_type_value)" />
+    <column name="created_by_id" sql="l.created_by_id" />
     <column name="area" sql="va.float_value" />
     <column name="can_edit" visible="false" sql="l.created_by_id=#user_id#" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
