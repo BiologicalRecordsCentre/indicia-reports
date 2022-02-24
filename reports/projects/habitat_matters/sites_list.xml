@@ -33,6 +33,9 @@
     <param name="search" display="Search for" datatype="text" default="">
       <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
     </param>
+    <param name="type_termlist_term_id" display="Type term" datatype="integer" default="">
+      <join>JOIN location_attribute_values vt on vt.location_id=l.id and vt.deleted=false AND vt.int_value=#type_termlist_term_id# AND vt.location_attribute_id IN (331, 332, 333)</join>
+    </param>
     <param name="user_id" display="User ID" datatype="integer" default="" emptyvalue="0" />
     <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" default="" >
       <where>l.created_by_id=#user_id#</where>
