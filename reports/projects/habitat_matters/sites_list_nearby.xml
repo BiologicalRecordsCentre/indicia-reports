@@ -1,6 +1,6 @@
 <report
-    title="Locations list"
-    description="A general purpose list of locations."
+    title="Locations list - nearby"
+    description="A general purpose list of locations with proximity search."
 >
   <query website_filter_field="lw.website_id">
   SELECT #columns#
@@ -21,11 +21,12 @@
   AND l.location_type_id=#location_type_id#
   -- Safety check so can't pull other sites.
   AND l.location_type_id IN (19142, 19143, 19144)
+  AND st_distance(boundary_geom, st_transform(st_geomfromtext('#near#', 4326), 900913))&lt;25000
   #idlist#
   #order_by#
   </query>
   <order_bys>
-    <order_by>l.created_on DESC</order_by>
+    <order_by>st_distance(boundary_geom, st_transform(st_geomfromtext('POINT(-2 54)', 4326), 900913)) ASC</order_by>
   </order_bys>
   <params>
     <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer' />
@@ -39,9 +40,7 @@
     </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
       datatype='idlist' fieldname='l.id' alias='location_id' default="" />
-    <param name="near" datatype="string" description="WKT geometry in EPSG:4326" default="">
-      <where>st_distance(boundary_geom, st_transform(st_geomfromtext('#near#', 4326), 900913))&lt;25000</where>
-    </param>
+    <param name="near" datatype="string" description="WKT geometry in EPSG:4326" />
   </params>
   <columns>
     <column name="location_id" display="ID" sql="l.id" />

@@ -8,15 +8,14 @@
     LEFT JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
     #joins#
     WHERE l.deleted=false
-    AND (l.public=true or lw.website_id in (#website_ids#))
-      #filters#
+    AND lw.website_id in (#website_ids#)
+    AND l.location_type_id=#location_type_id#
+    -- Safety check so can't pull other sites.
+    AND l.location_type_id IN (19142, 19143, 19144)
+    #filters#
   </query>
   <params>
-    <param name="location_type_id" display="Location type(s)" datatype="lookup"
-      description="Select the location type, or leave blank to not filter by location type."
-      population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
-        <where>l.location_type_id in (#location_type_id#)</where>
-    </param>
+    <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer' />
     <param name="simplifyFeatureTo" datatype="integer" default="1" />
     <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
       <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
