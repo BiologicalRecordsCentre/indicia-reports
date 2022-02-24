@@ -39,7 +39,7 @@
     </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
       datatype='idlist' fieldname='l.id' alias='location_id' default="" />
-    <param name="near" datatype="string" description="WKT geometry in EPSG:4326">
+    <param name="near" datatype="string" description="WKT geometry in EPSG:4326" default="">
       <where>st_distance(boundary_geom, st_transform(st_geomfromtext('#near#', 4326), 900913))&lt;25000</where>
     </param>
   </params>
