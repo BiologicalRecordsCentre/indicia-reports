@@ -1,0 +1,28 @@
+<report
+    title="Habitat types search"
+    description="Search tool for habitat types."
+>
+  <query website_filter_field="t.website_id">
+  select #columns
+  from cache_termlists_terms t
+  left join cache_termlists_terms ts on ts.meaning_id=t.meaning_id
+  where t.termlist_id in (992, 993, 994)
+  and t.preferred=true
+  and ts.preferred=false
+  and (t.term ilike '%search%' or ts.term ilike '%search%')
+  #idlist#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>t.term ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="search" datatype="string" />
+  </params>
+  <columns>
+    <column name="id" sql="t.id" />
+    <column name="term" sql="t.term" />
+    <column name="code" sql="ts.term" />
+    <column name="termlist_title" sql="t.termlist_title" />
+  </columns>
+</report>
