@@ -28,7 +28,7 @@
       WHERE l.deleted=false
         AND l.location_type_id in (777, 5196)
         AND lw.website_id=27
-      group by l.id, t.term, lav.int_value
+      group by l.id, t.term, lav.int_value, lav2.int_value
       order by samples asc, name) as subsel
     where (ltype=777 or samples>0) and (confidential is NULL or confidential = 0) and (historic is NULL or historic = 0)
   </query>
