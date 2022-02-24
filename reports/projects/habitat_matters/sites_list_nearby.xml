@@ -1,6 +1,6 @@
 <report
-    title="Locations list"
-    description="A general purpose list of locations."
+    title="Locations list - nearby"
+    description="A general purpose list of locations with proximity search."
 >
   <query website_filter_field="lw.website_id">
   SELECT #columns#
