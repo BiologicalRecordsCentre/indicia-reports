@@ -24,7 +24,7 @@
       join termlists_terms tt on l.location_type_id = tt.id
       join terms t on tt.term_id = t.id
       left join location_attribute_values lav on l.id = lav.location_id AND lav.location_attribute_id = 245 AND lav.deleted=false
-      left join location_attribute_values lav2 on l.id = lav.location_id AND lav.location_attribute_id = 322 AND lav.deleted=false
+      left join location_attribute_values lav2 on l.id = lav2.location_id AND lav2.location_attribute_id = 322 AND lav2.deleted=false
       WHERE l.deleted=false
         AND l.location_type_id in (777, 5196)
         AND lw.website_id=27
