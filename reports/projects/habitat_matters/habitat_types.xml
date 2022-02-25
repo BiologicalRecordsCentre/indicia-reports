@@ -6,9 +6,9 @@
   select #columns#
   from cache_termlists_terms t
   left join cache_termlists_terms ts on ts.meaning_id=t.meaning_id
+    and ts.preferred=false
   where t.termlist_id in (992, 993, 994)
   and t.preferred=true
-  and ts.preferred=false
   and (t.term ilike '%#search#%' or ts.term ilike '%#search#%')
   #idlist#
   #order_by#
