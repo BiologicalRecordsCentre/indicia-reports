@@ -40,12 +40,10 @@
               AND countries.id = #parent_country_id#
         </join>
     </param>
-    <param name="idlist" display="Location IDs" description="Comma separated list of location IDs to load" datatype='idlist' default=''>
-      <where>l.id in (#idlist#)</where>
-    </param> 
+    <param name ='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='l.id' alias='id' />
   </params>
   <columns>
-    <column name="id" display="ID" sql="l.id" />
+    <column name="id" display="ID" sql="l.id" datatype="integer" incount="true"/>
     <column name="name" display="Name" sql="l.name" />
     <column name="location_code" display="Code" sql="l.code" />
     <column name="centroid_sref" display="Spatial reference" sql="l.centroid_sref" />
