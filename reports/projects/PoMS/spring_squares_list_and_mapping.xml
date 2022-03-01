@@ -54,6 +54,6 @@
     <column name="sw" visible="false" feature_style="strokeWidth" sql="#strokewidth#" />
     <column name="so" visible="false" feature_style="strokeOpacity" sql="0.8" />
     <column name="fo" visible="false" feature_style="fillOpacity" sql="0.15" />
-    <column name="sc" visible="false" feature_style="strokeColor" sql="'#ff0000'" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="'blue'" />
   </columns>
 </report>
