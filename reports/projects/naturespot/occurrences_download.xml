@@ -15,6 +15,7 @@
     #agreements_join#
     #joins#
     WHERE #sharing_filter#
+    AND o.website_id=8
     #idlist#
   </query>
   <params>

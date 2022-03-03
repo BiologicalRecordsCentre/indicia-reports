@@ -1,0 +1,62 @@
+<report
+    title="Occurrences Download (standard filters)"
+    description="Report designed for downloaded occurrence records as rows in a spreadsheet. Assumes that there is a
+        location layer of vice counties indexed against the records which will be included in the output."
+    featured="true"
+>
+  <query website_filter_field="s.website_id" count_field="s.*">
+    SELECT
+      s.survey_id,
+      sv.title AS "survey_name",
+      s.id AS "sample_id",
+      l.code AS "location_code",
+      l.centroid_sref AS "location_square",
+      samples.location_name,
+      (case snf.entered_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(snf.entered_sref_system) end) AS "sample_projection",
+      snf.public_entered_sref AS "public_spatial_ref",
+      samples.entered_sref AS "entered_spatial_ref",
+      (get_sref_precision(snf.public_entered_sref, snf.entered_sref_system, snf.attr_sref_precision)) AS "original_precision",
+      (SELECT string_agg(vc.code, '; ') FROM locations vc WHERE vc.location_type_id=15 AND vc.name NOT LIKE '%+%' AND vc.id = ANY(s.location_ids)) AS "vc_number",
+      (SELECT string_agg(vc.name, '; ') FROM locations vc WHERE vc.location_type_id=15 AND vc.name NOT LIKE '%+%' AND vc.id = ANY(s.location_ids)) AS "vice_county",
+      (SELECT string_agg(ctry.name, '; ') FROM locations ctry WHERE ctry.location_type_id=2188 AND ctry.id = ANY(s.location_ids)) AS "UK_country",
+      (SELECT string_agg(ctry.name, '; ') FROM locations ctry WHERE ctry.location_type_id=16516 AND ctry.id = ANY(s.location_ids)) AS "country",
+      (extract(year from s.date_start)) AS "year",
+      s.date_start AS "date_from",
+      s.date_end AS "date_to",
+      s.date_type,
+      rtrim(snf.recorders, ', ') AS recorder,
+      s.created_by_id AS "user_account_id",
+      snf.comment AS "sample_comment",
+      s.created_on AS "date_added",
+      s.updated_on AS "date_last_edited",
+      (SELECT snf.attrs_json ->> '1048' AS "habitat"),
+      (SELECT snf.attrs_json ->> '1049' AS "other_habitat"),
+      (SELECT snf.attrs_json ->> '1050' AS "target_flower"),
+      (SELECT snf.attrs_json ->> '1051' AS "other_flower"),
+      (SELECT snf.attrs_json ->> '1052' AS "cover_within_quadrat"),
+      (SELECT snf.attrs_json ->> '1053' AS "total_floral_units"),
+      (SELECT snf.attrs_json ->> '1054' AS "floral_unit"),
+      (SELECT snf.attrs_json ->> '1055' AS "quadrat_context"),
+      (SELECT snf.attrs_json ->> '1056' AS "count_start_time"),
+      (SELECT snf.attrs_json ->> '1057' AS "cloud_cover"),
+      (SELECT snf.attrs_json ->> '1058' AS "wind"),
+      (SELECT snf.attrs_json ->> '1061' AS "quadrat_sunshine"),
+      ti.total_insects AS "total_insects"
+    FROM cache_samples_functional s
+    JOIN samples ON s.id = samples.id
+    JOIN cache_samples_nonfunctional snf ON s.id = snf.id
+    JOIN surveys sv ON s.survey_id = sv.id
+    LEFT JOIN locations l ON s.location_id = l.id
+    LEFT JOIN (SELECT s.id AS "sample_id", sum(cast(onf.attr_sex_stage_count AS integer)) AS "total_insects"
+          FROM cache_samples_functional s
+          JOIN cache_occurrences_functional o ON s.id = o.sample_id AND o.training = FALSE
+          JOIN cache_occurrences_nonfunctional onf ON o.id = onf.id
+          JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id AND cttl.taxon_group LIKE 'Pollinator%'
+          WHERE s.survey_id IN (636,641)
+          GROUP BY s.id) ti ON s.id = ti.sample_id
+    WHERE s.survey_id IN (636,641)
+    ORDER BY s.id DESC;
+  </query>
+  <columns>
+  </columns>
+</report>
