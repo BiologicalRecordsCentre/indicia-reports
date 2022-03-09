@@ -1,5 +1,5 @@
 <report
-    title="Volunteer details leaving per year"
+    title="Volunteer details leaving per year 2"
     description="List details of volunteers who leave each NPMS year. This is no hard definition of the term leaving so we assume they have left if they no longer have a square."
 >
   <query>
