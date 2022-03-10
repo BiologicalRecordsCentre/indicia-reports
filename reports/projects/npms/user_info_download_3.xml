@@ -112,6 +112,7 @@ an event filter to return users associated with a particular event."
     <param name="auth_user_id" datatype="integer" default="-1" />
   </params>
   <columns>
+    <column name="id" sql="p.id" datatype="integer" visible="false"  in_count='true'/>
     <column name='person_full_name_admin_link' display='User administration link' 
         sql="'&lt;a href=&quot;' || '#user_admin_page_link#' || '?dynamic-the_user_id=' || u.id || '&quot;&gt;' || p.first_name || ' ' || p.surname || '&lt;/a&gt;'" 
     datatype='text'/> 
@@ -119,7 +120,7 @@ an event filter to return users associated with a particular event."
     <column name='person_full_name' display='Full name' 
         sql="p.first_name || ' ' || p.surname" 
     datatype='text'/> 
-    <column name='email_address' display='Email address' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' datatype='text' in_count='true'/>
+    <column name='email_address' display='Email address' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' datatype='text'/>
     <!--If we replace all new lines with commas, then we know we only need to deal with commas as address separator -->
     <column name='address' display='Address' sql="
     CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
