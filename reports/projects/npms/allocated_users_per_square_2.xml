@@ -13,9 +13,8 @@
     LEFT JOIN people p on p.id=pav.person_id AND p.deleted=false
     LEFT JOIN users u on u.person_id=pav.person_id AND u.deleted=false
     LEFT JOIN users_websites uw on u.id=uw.user_id AND uw.website_id = lw.website_id AND uw.created_on &gt;= CAST(COALESCE('#ignore_registration_dates_before#','1500-01-01') as date)
-    JOIN users_websites_accesscheck uwac on u.id=uwac.user_id AND uw.website_id=uwac.website_id AND uwac.site_role_id IS NOT NULL
-    LEFT JOIN users_websites accesscheck on accesscheck.website_id=uwac.website_id
-      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    JOIN users_websites uwac on u.id=uwac.user_id AND uw.website_id=uwac.website_id AND uwac.site_role_id IS NOT NULL
+    LEFT JOIN users_websites accesscheck on accesscheck.website_id=uwac.website_id AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE (l.location_type_id=#core_square_type_id#)  
     AND #website_filter# AND l.deleted=false
   </query>
@@ -41,15 +40,21 @@
     <column name='allocated_count' display='No of allocated users (approved)' sql='count(case when pav.updated_by_id!=u.id AND uw.id IS NOT NULL then 1 end)' datatype='integer' aggregate='true'/>   
     --Show unapproved square allocations in red
     <column name='allocated_users' display='Allocated users' 
-      sql="
-      CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
-        array_to_string(array_agg(case when pav.updated_by_id!=u.id AND uw.id IS NOT NULL then p.first_name || ' ' || p.surname || ' (' || p.email_address || ')' when pav.updated_by_id=u.id AND uw.id IS NOT NULL then '&lt;b style=&quot;color:red&quot;&gt;' || p.first_name || ' ' || p.surname || ' (' || p.email_address || ')' || '&lt;/b&gt;' else '' end) , ', ')
-      END"    datatype='text' aggregate='true'/>  
+      sql="array_to_string(array_agg(
+        case 
+          when pav.updated_by_id!=u.id AND uw.id IS NOT NULL 
+            then p.first_name || ' ' || p.surname || ' (' || CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END || ')' 
+          when pav.updated_by_id=u.id AND uw.id IS NOT NULL 
+            then '&lt;b style=&quot;color:red&quot;&gt;' || p.first_name || ' ' || p.surname || ' (' ||  CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END || ')' || '&lt;/b&gt;' else '' 
+        end) , ', ')"    datatype='text' aggregate='true'/>  
     <column name='allocation_dates' display='Allocated dates' 
-      sql="
-      CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
-        array_to_string(array_agg(case when pav.updated_by_id!=u.id AND uw.id IS NOT NULL then to_char(pav.created_on, 'DD/MM/YYYY') when pav.updated_by_id=u.id AND uw.id IS NOT NULL then '&lt;b style=&quot;color:red&quot;&gt;' || to_char(pav.created_on, 'DD/MM/YYYY') || '&lt;/b&gt;' else '' end), ', ')
-      END"
+      sql="array_to_string(array_agg(
+        case 
+          when pav.updated_by_id!=u.id AND uw.id IS NOT NULL 
+            then to_char(pav.created_on, 'DD/MM/YYYY') 
+          when pav.updated_by_id=u.id AND uw.id IS NOT NULL 
+            then '&lt;b style=&quot;color:red&quot;&gt;' || to_char(pav.created_on, 'DD/MM/YYYY') || '&lt;/b&gt;' else '' 
+        end), ', ')"
     datatype='text' aggregate='true'/>  
   </columns>
 </report>
