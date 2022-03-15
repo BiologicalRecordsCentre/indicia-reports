@@ -1,0 +1,35 @@
+<report
+    title="List of 100 species members"
+    description="Lists members of the 100 species scheme and their progress."
+>
+  <query>
+    select #columns#
+    from users u
+    join people p on p.id=u.person_id and p.deleted=false
+    join person_attribute_values vmember on vmember.person_id=u.person_id and vmember.person_attribute_id=30 and vmember.int_value=1 and vmember.deleted=false
+    left join person_attribute_values vsent on vsent.person_id=u.person_id and vsent.person_attribute_id=31 and vsent.deleted=false
+    left join (
+      select o.created_by_id, o.taxon_group_id, least(20, count(distinct o.taxa_taxon_list_external_key)) as sp_count
+      from cache_occurrences_functional o
+        join users u on u.id=o.created_by_id and u.deleted=false
+        join person_attribute_values vmember on vmember.person_id=u.person_id and vmember.person_attribute_id=30 and vmember.int_value=1 and vmember.deleted=false
+      where o.record_status='V'
+      and o.website_id=8
+      group by o.created_by_id, o.taxon_group_id
+    ) as rawdata on rawdata.created_by_id=u.id
+    where u.deleted=false
+    group by u.id, p.first_name, p.surname, vsent.int_value
+  </query>
+  <order_bys>
+    <order_by>coalesce(sum(sp_count), 0) desc;</order_by>
+  </order_bys>
+
+  <columns>
+    <column name="user_id" sql="u.id" display="User ID" datatype="integer" />
+    <column name="first_name" sql="p.first_name" display="First name" datatype="text" />
+    <column name="surname" sql="p.surname" display="Surname" datatype="text" />
+    <column name="certificate_sent" sql="coalesce(vsent.int_value, 0)" display="Certificate sent" datatype="integer" />
+    <column name="species_score" sql="least(100, coalesce(sum(sp_count), 0))" display="Species score" datatype="integer" aggregate="true" />
+    <column name="groups_score" sql="least(10, count(distinct taxon_group_id))" display="Groups score" datatype="integer" aggregate="true" />
+  </columns>
+</report>
