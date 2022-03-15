@@ -18,14 +18,13 @@
       group by o.created_by_id, o.taxon_group_id
     ) as rawdata on rawdata.created_by_id=u.id
     where u.deleted=false
-    group by u.id, p.first_name, p.surname, vsent.int_value
   </query>
   <order_bys>
     <order_by>coalesce(sum(sp_count), 0) desc;</order_by>
   </order_bys>
 
   <columns>
-    <column name="user_id" sql="u.id" display="User ID" datatype="integer" />
+    <column name="member_user_id" sql="u.id" display="User ID" datatype="integer" />
     <column name="first_name" sql="p.first_name" display="First name" datatype="text" />
     <column name="surname" sql="p.surname" display="Surname" datatype="text" />
     <column name="certificate_sent" sql="coalesce(vsent.int_value, 0)" display="Certificate sent" datatype="integer" />
