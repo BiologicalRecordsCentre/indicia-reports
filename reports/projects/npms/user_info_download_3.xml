@@ -7,7 +7,7 @@ an event filter to return users associated with a particular event."
   SELECT #columns#
   FROM people p
   JOIN users u ON u.person_id=p.id AND u.deleted=false 
-  JOIN users_websites uw on u.id=uw.user_id 
+  JOIN users_websites uw on u.id=uw.user_id AND uw.site_role_id IS NOT NULL
     LEFT JOIN person_attribute_values pavAddr ON pavAddr.person_id=u.person_id AND pavAddr.person_attribute_id=#address_attr_id# AND pavAddr.deleted=false
     LEFT JOIN person_attribute_values pavAddr2 ON pavAddr2.person_id=u.person_id AND pavAddr2.person_attribute_id=#address_attr_line_2_id# AND pavAddr2.deleted=false 
     LEFT JOIN person_attribute_values pavAddr3 ON pavAddr3.person_id=u.person_id AND pavAddr3.person_attribute_id=#address_attr_line_3_id# AND pavAddr3.deleted=false
@@ -34,6 +34,8 @@ an event filter to return users associated with a particular event."
   LEFT JOIN person_attribute_values eventPav ON eventPav.person_id=p.id AND eventPav.person_attribute_id=#user_event_attr_id# AND eventPav.deleted=false
   LEFT JOIN person_attribute_values eventPav2 ON eventPav2.person_id=p.id AND eventPav2.person_attribute_id=#user_event_attr_id# AND eventPav2.deleted=false
   LEFT JOIN locations event ON event.id=eventPav.int_value AND event.deleted=false  
+  LEFT JOIN users_websites accesscheck on accesscheck.website_id=uw.website_id
+      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE p.deleted=false
   AND #website_filter#
   AND (('#allocation_status#'='') 
@@ -107,8 +109,10 @@ an event filter to return users associated with a particular event."
     <param name="user_admin_page_link" display="Link to user administration page" description="Link to page which administrators use to manage users." datatype="text" emptyvalue=""/>
     <param name="leitrim_person_id" display="Leitrum Person ID" description="Override the county, country, post code of the person with this person ID as they are in Republic Of Ireland 
         which is not normally supported" datatype="integer" emptyvalue="0" default="0"/>
+    <param name="auth_user_id" datatype="integer" default="-1" />
   </params>
   <columns>
+    <column name="id" sql="p.id" datatype="integer" visible="false"  in_count='true'/>
     <column name='person_full_name_admin_link' display='User administration link' 
         sql="'&lt;a href=&quot;' || '#user_admin_page_link#' || '?dynamic-the_user_id=' || u.id || '&quot;&gt;' || p.first_name || ' ' || p.surname || '&lt;/a&gt;'" 
     datatype='text'/> 
@@ -116,48 +120,59 @@ an event filter to return users associated with a particular event."
     <column name='person_full_name' display='Full name' 
         sql="p.first_name || ' ' || p.surname" 
     datatype='text'/> 
-    <column name='email_address' display='Email address' sql='p.email_address' datatype='text' in_count='true'/>
+    <column name='email_address' display='Email address' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' datatype='text'/>
     <!--If we replace all new lines with commas, then we know we only need to deal with commas as address separator -->
     <column name='address' display='Address' sql="
-    trim(
-      split_part(
-        REPLACE(pavAddr.text_value, E'\n', ',' )
-      ,',',1)
-    )" datatype='text' />
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
+      trim(
+        split_part(
+          REPLACE(pavAddr.text_value, E'\n', ',' )
+        ,',',1)
+      )
+    END" datatype='text' />
     <column name='address_line_2' display='Address Line 2' sql="
-    trim(
-      split_part(
-        REPLACE(pavAddr.text_value, E'\n', ',' )
-      ,',',2)
-    )
-    " datatype='text' />
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
+      trim(
+        split_part(
+          REPLACE(pavAddr.text_value, E'\n', ',' )
+        ,',',2)
+      )
+    END" datatype='text' />
     <!--Get everthing after second comma-->
     <column name='address_line_3' display='Address Line 3' sql="
-    trim(
-      substring(
-        REPLACE(pavAddr.text_value, E'\n', ',' ), '[^,]*,[^,]*,(.*)'
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE 
+      trim(
+        substring(
+          REPLACE(pavAddr.text_value, E'\n', ',' ), '[^,]*,[^,]*,(.*)'
+        )
       )
-    )
-    " datatype='text' />
-    <column name='town' display='Town' sql='pavTown.text_value' datatype='text' />
+    END" datatype='text' />
+    <column name='town' display='Town' sql='
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE
+      pavTown.text_value
+    END' datatype='text' />
     <column name='county' display='County' sql="
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE
       CASE WHEN p.id = #leitrim_person_id#
       THEN 'Co. Leitrim'
       ELSE pavCounty.text_value
       END
+    END
     " datatype='text' />
     <column name='country' display='Country' sql="
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE
       CASE WHEN p.id = #leitrim_person_id#
       THEN 'ROI'
       ELSE pavCountry.text_value
       END
-    " datatype='text' />
+    END" datatype='text' />
     <column name='post_code' display='Post Code' sql="
+    CASE WHEN accesscheck.id IS NULL THEN NULL ELSE
       CASE WHEN p.id = #leitrim_person_id# 
       THEN ''
       ELSE pavPC.text_value
       END
-    " datatype='text' />
+    END" datatype='text' />
     <column name='over_18' display='18 or over?' sql="case pav18.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='mentor' display='Mentor?' sql="case pavMentor.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='request_survey_forms' display='Requested Survey Forms?' sql="case reqSurvForms.text_value  when '1' then 'Yes' else 'No' End" datatype='text' />
