@@ -22,7 +22,7 @@
     WHERE u.deleted=false
   </query>
   <order_bys>
-    <order_by>coalesce(sum(sp_count), 0) desc;</order_by>
+    <order_by>coalesce(sum(sp_count), 0) desc</order_by>
   </order_bys>
   <params>
     <param name="auth_user_id" datatype="integer" default="-1" />
