@@ -17,16 +17,21 @@
       and o.website_id=8
       group by o.created_by_id, o.taxon_group_id
     ) as rawdata on rawdata.created_by_id=u.id
-    where u.deleted=false
+    LEFT JOIN users_websites accesscheck on accesscheck.website_id=8
+      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    WHERE u.deleted=false
   </query>
   <order_bys>
     <order_by>coalesce(sum(sp_count), 0) desc;</order_by>
   </order_bys>
-
+  <params>
+    <param name="auth_user_id" datatype="integer" default="-1" />
+  </param>
   <columns>
     <column name="member_user_id" sql="u.id" display="User ID" datatype="integer" />
     <column name="first_name" sql="p.first_name" display="First name" datatype="text" />
     <column name="surname" sql="p.surname" display="Surname" datatype="text" />
+    <column name="email" sql="CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END" display="Email" datatype="text" />
     <column name="certificate_sent" sql="coalesce(vsent.int_value, 0)" display="Certificate sent" datatype="integer" />
     <column name="species_score" sql="least(100, coalesce(sum(sp_count), 0))" display="Species score" datatype="integer" aggregate="true" />
     <column name="groups_score" sql="least(10, count(distinct taxon_group_id))" display="Groups score" datatype="integer" aggregate="true" />
