@@ -26,7 +26,7 @@
   </order_bys>
   <params>
     <param name="auth_user_id" datatype="integer" default="-1" />
-  </param>
+  </params>
   <columns>
     <column name="member_user_id" sql="u.id" display="User ID" datatype="integer" />
     <column name="first_name" sql="p.first_name" display="First name" datatype="text" />
