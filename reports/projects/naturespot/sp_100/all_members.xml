@@ -33,7 +33,8 @@
     <column name="surname" sql="p.surname" display="Surname" datatype="text" />
     <column name="email" sql="CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END" display="Email" datatype="text" />
     <column name="certificate_sent" sql="coalesce(vsent.int_value, 0)" display="Certificate sent" datatype="integer" />
-    <column name="data_joined" sql="vmember.created_on" display="Date joined" datatype="date" />
+    <column name="data_joined" sql="vmember.created_on" visible="false" datatype="date" />
+    <column name="data_joined_formatted" sql="to_char(created_on, 'DD/MM/YYYY')" display="Date joined" datatype="text" orderby="date_joined" />
     <column name="species_score" sql="least(100, coalesce(sum(sp_count), 0))" display="Species score" datatype="integer" aggregate="true" />
     <column name="groups_score" sql="least(10, count(distinct taxon_group_id))" display="Groups score" datatype="integer" aggregate="true" />
   </columns>
