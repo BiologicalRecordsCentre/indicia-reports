@@ -19,6 +19,7 @@
     LEFT JOIN location_attribute_values vpd ON vpd.location_id=l.id AND vpd.location_attribute_id=260 AND vpd.deleted=false
     #joins#
     WHERE l.deleted=false
+    #idlist#
     #filters#
   </query>
   <params>
@@ -45,6 +46,8 @@
       <param name="bounds" display="Bounds WKT" description="Well known text for the bounding box to load" datatype="text" default="">
         <where>st_intersects(l.boundary_geom, st_geomfromtext('#bounds#', 900913))</where>
       </param>
+      <param name="idlist" display="List of IDs" description="Comma separated list of location IDs to filter to."
+        datatype="idlist" fieldname="l.id" alias="location_id" default="" />
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" />
