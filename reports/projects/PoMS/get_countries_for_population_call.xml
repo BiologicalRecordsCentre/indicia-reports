@@ -1,0 +1,17 @@
+<report
+    title="Get countries for population call."
+    description="Report returns a list of countires for a report filter drop-down."
+>
+  <query>
+    SELECT #columns#
+    FROM locations l
+    WHERE l.location_type_id = #location_type_id# AND l.deleted = false
+  </query>
+  <params>
+    <param name="location_type_id" display="ID of country location type to use" datatype="integer" />
+  </params>
+  <columns>
+    <column name='id' display='ID' sql='l.id' datatype="integer" />
+    <column name='name' display='Country' sql='Name' datatype="text" />
+  </columns>
+</report>
