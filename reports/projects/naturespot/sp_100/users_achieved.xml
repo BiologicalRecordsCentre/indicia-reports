@@ -1,0 +1,17 @@
+<report
+    title="NatureSpot 100 species achievements"
+    description="Selects any new achievements of the 100 species challenge.">
+  <query>
+    SELECT #columns#
+    FROM custom_cache_tables.naturespot_100_species n1s
+    JOIN users u ON u.id=n1s.user_id AND u.deleted=false
+    LEFT JOIN person_attribute_values v ON v.person_id=u.person_id AND v.deleted=false
+      AND v.person_attribute_id=31 -- email sent
+      AND v.int_value=1
+    WHERE n1s.date_achieved IS NOT null
+    AND v.id IS null
+  </query>
+  <columns>
+    <column name="user_id" sql="user_id"  display="User ID" />
+  </columns>
+</report>
