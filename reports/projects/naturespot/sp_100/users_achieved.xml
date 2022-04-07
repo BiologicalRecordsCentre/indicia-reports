@@ -12,6 +12,7 @@
     AND v.id IS null
   </query>
   <columns>
-    <column name="user_id" sql="user_id"  display="User ID" />
+    <column name="user_id" sql="n1s.user_id"  display="User ID" />
+    <column name="person_id" sql="u.person_id"  display="Person ID" />
   </columns>
 </report>
