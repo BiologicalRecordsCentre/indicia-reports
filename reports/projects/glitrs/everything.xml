@@ -20,38 +20,53 @@
   LEFT JOIN survey_attribute_values yav6 ON yav6.survey_id = o.survey_id and yav6.survey_attribute_id = #source_contact_email_id# and yav6.deleted=false
   LEFT JOIN survey_attribute_values yav7 ON yav7.survey_id = o.survey_id and yav7.survey_attribute_id = #source_additional_contact_id# and yav7.deleted=false
   LEFT JOIN survey_attribute_values yav8 ON yav8.survey_id = o.survey_id and yav8.survey_attribute_id = #source_full_title_id# and yav8.deleted=false
+  LEFT JOIN survey_attribute_values yav9 ON yav9.survey_id = o.survey_id and yav9.survey_attribute_id = #source_user_id# and yav9.deleted=false
+  LEFT JOIN cache_termlists_terms ctt2 ON ctt2.id = yav9.int_value
+  LEFT JOIN survey_attribute_values yav10 ON yav10.survey_id = o.survey_id and yav10.survey_attribute_id = #source_data_paper_id# and yav10.deleted=false
   LEFT JOIN locations l on l.id = o.location_id and l.deleted=false
-  LEFT JOIN location_attribute_values lav1 ON lav1.location_id = o.location_id and lav1.location_attribute_id = #location_hemisphere_id# and lav1.deleted=false
-  LEFT JOIN cache_termlists_terms ctt2 ON ctt2.id = lav1.int_value
-  LEFT JOIN location_attribute_values lav2 ON lav2.location_id = o.location_id and lav2.location_attribute_id = #location_coordinate_method_id# and lav2.deleted=false
-  LEFT JOIN cache_termlists_terms ctt3 ON ctt3.id = lav2.int_value
-  LEFT JOIN location_attribute_values lav3 ON lav3.location_id = o.location_id and lav3.location_attribute_id = #location_spatial_precision_id# and lav3.deleted=false
-  LEFT JOIN cache_termlists_terms ctt4 ON ctt4.id = lav3.int_value
+  LEFT JOIN location_attribute_values lav1 ON lav1.location_id = o.location_id and lav1.location_attribute_id = #location_coordinate_method_id# and lav1.deleted=false
+  LEFT JOIN cache_termlists_terms ctt3 ON ctt3.id = lav1.int_value
+  LEFT JOIN location_attribute_values lav2 ON lav2.location_id = o.location_id and lav2.location_attribute_id = #location_spatial_precision_id# and lav2.deleted=false
+  LEFT JOIN cache_termlists_terms ctt4 ON ctt4.id = lav2.int_value
+  LEFT JOIN location_attribute_values lav3 ON lav3.location_id = o.location_id and lav3.location_attribute_id = #location_broad_location_id# and lav3.deleted=false
+  LEFT JOIN cache_termlists_terms ctt5 ON ctt5.id = lav3.int_value
   LEFT JOIN sample_attribute_values sav1 ON sav1.sample_id = o.sample_id and sav1.sample_attribute_id = #sample_plot_id# and sav1.deleted=false
   LEFT JOIN sample_attribute_values sav2 ON sav2.sample_id = o.sample_id and sav2.sample_attribute_id = #sample_effort_reported_id# and sav2.deleted=false
-  LEFT JOIN cache_termlists_terms ctt5 ON ctt5.id = sav2.int_value
+  LEFT JOIN cache_termlists_terms ctt6 ON ctt6.id = sav2.int_value
   LEFT JOIN sample_attribute_values sav3 ON sav3.sample_id = o.sample_id and sav3.sample_attribute_id = #sample_effort_id# and sav3.deleted=false
   LEFT JOIN sample_attribute_values sav4 ON sav4.sample_id = o.sample_id and sav4.sample_attribute_id = #sample_realm_id# and sav4.deleted=false
-  LEFT JOIN cache_termlists_terms ctt6 ON ctt6.id = sav4.int_value
+  LEFT JOIN cache_termlists_terms ctt7 ON ctt7.id = sav4.int_value
   LEFT JOIN sample_attribute_values sav5 ON sav5.sample_id = o.sample_id and sav5.sample_attribute_id = #sample_data_purpose_id# and sav5.deleted=false
-  LEFT JOIN cache_termlists_terms ctt7 ON ctt7.id = sav5.int_value
+  LEFT JOIN cache_termlists_terms ctt8 ON ctt8.id = sav5.int_value
   LEFT JOIN sample_attribute_values sav6 ON sav6.sample_id = o.sample_id and sav6.sample_attribute_id = #sample_data_purpose_info_id# and sav6.deleted=false
   LEFT JOIN sample_attribute_values sav7 ON sav7.sample_id = o.sample_id and sav7.sample_attribute_id = #sample_treatment_id# and sav7.deleted=false
-  LEFT JOIN cache_termlists_terms ctt8 ON ctt8.id = sav7.int_value
+  LEFT JOIN cache_termlists_terms ctt9 ON ctt9.id = sav7.int_value
   LEFT JOIN sample_attribute_values sav8 ON sav8.sample_id = o.sample_id and sav8.sample_attribute_id = #sample_treatment_info_id# and sav8.deleted=false
-  LEFT JOIN occurrence_attribute_values oav1 ON oav1.occurrence_id = o.id and oav1.occurrence_attribute_id = #occurrence_count_type_id# and oav1.deleted=false
-  LEFT JOIN cache_termlists_terms ctt9 ON ctt9.id = oav1.int_value
-  LEFT JOIN occurrence_attribute_values oav2 ON oav2.occurrence_id = o.id and oav2.occurrence_attribute_id = #occurrence_native_status_id# and oav2.deleted=false
-  LEFT JOIN cache_termlists_terms ctt10 ON ctt10.id = oav2.int_value
-  LEFT JOIN occurrence_attribute_values oav3 ON oav3.occurrence_id = o.id and oav3.occurrence_attribute_id = #occurrence_taxon_certainty_id# and oav3.deleted=false
-  LEFT JOIN cache_termlists_terms ctt11 ON ctt11.id = oav3.int_value
-  LEFT JOIN occurrence_attribute_values oav4 ON oav4.occurrence_id = o.id and oav4.occurrence_attribute_id = #occurrence_caste_id# and oav4.deleted=false
-  LEFT JOIN cache_termlists_terms ctt12 ON ctt12.id = oav4.int_value
-  LEFT JOIN occurrence_attribute_values oav5 ON oav5.occurrence_id = o.id and oav5.occurrence_attribute_id = #occurrence_sensitive_data_id# and oav5.deleted=false
-  LEFT JOIN occurrence_attribute_values oav6 ON oav6.occurrence_id = o.id and oav6.occurrence_attribute_id = #occurrence_taxon_name_in_source_id# and oav6.deleted=false
-  LEFT JOIN occurrence_attribute_values oav7 ON oav7.occurrence_id = o.id and oav7.occurrence_attribute_id = #occurrence_taxonomy_notes_id# and oav7.deleted=false
+  LEFT JOIN sample_attribute_values sav9 ON sav9.sample_id = o.sample_id and sav9.sample_attribute_id = #sample_technique_id# and sav9.deleted=false
+  LEFT JOIN cache_termlists_terms ctt10 ON ctt10.id = sav9.int_value
+  LEFT JOIN sample_attribute_values sav10 ON sav10.sample_id = o.sample_id and sav10.sample_attribute_id = #sample_effort_unit_1_id# and sav10.deleted=false
+  LEFT JOIN cache_termlists_terms ctt11 ON ctt11.id = sav10.int_value
+  LEFT JOIN sample_attribute_values sav11 ON sav11.sample_id = o.sample_id and sav11.sample_attribute_id = #sample_effort_unit_2_id# and sav11.deleted=false
+  LEFT JOIN cache_termlists_terms ctt12 ON ctt12.id = sav11.int_value
+  LEFT JOIN sample_attribute_values sav12 ON sav12.sample_id = o.sample_id and sav12.sample_attribute_id = #sample_effort_2_id# and sav12.deleted=false
+  LEFT JOIN sample_attribute_values sav13 ON sav13.sample_id = o.sample_id and sav13.sample_attribute_id = #sample_completeness_id# and sav13.deleted=false
+  LEFT JOIN cache_termlists_terms ctt13 ON ctt13.id = sav13.int_value
+  LEFT JOIN occurrence_attribute_values oav1 ON oav1.occurrence_id = o.id and oav1.occurrence_attribute_id = #occurrence_sex_id# and oav1.deleted=false
+  LEFT JOIN cache_termlists_terms ctt14 ON ctt14.id = oav1.int_value
+  LEFT JOIN occurrence_attribute_values oav2 ON oav2.occurrence_id = o.id and oav2.occurrence_attribute_id = #occurrence_count_type_id# and oav2.deleted=false
+  LEFT JOIN cache_termlists_terms ctt15 ON ctt15.id = oav2.int_value
+  LEFT JOIN occurrence_attribute_values oav3 ON oav3.occurrence_id = o.id and oav3.occurrence_attribute_id = #occurrence_count_id# and oav3.deleted=false
+  LEFT JOIN occurrence_attribute_values oav4 ON oav4.occurrence_id = o.id and oav4.occurrence_attribute_id = #occurrence_taxon_certainty_id# and oav4.deleted=false
+  LEFT JOIN cache_termlists_terms ctt16 ON ctt16.id = oav4.int_value
+  LEFT JOIN occurrence_attribute_values oav5 ON oav5.occurrence_id = o.id and oav5.occurrence_attribute_id = #occurrence_lifestage_id# and oav5.deleted=false
+  LEFT JOIN cache_termlists_terms ctt17 ON ctt17.id = oav5.int_value
+  LEFT JOIN occurrence_attribute_values oav6 ON oav6.occurrence_id = o.id and oav6.occurrence_attribute_id = #occurrence_caste_id# and oav6.deleted=false
+  LEFT JOIN cache_termlists_terms ctt18 ON ctt18.id = oav6.int_value
+  LEFT JOIN occurrence_attribute_values oav7 ON oav7.occurrence_id = o.id and oav7.occurrence_attribute_id = #occurrence_sensitive_data_id# and oav7.deleted=false
+  LEFT JOIN occurrence_attribute_values oav8 ON oav8.occurrence_id = o.id and oav8.occurrence_attribute_id = #occurrence_taxon_name_in_source_id# and oav8.deleted=false
+  LEFT JOIN occurrence_attribute_values oav9 ON oav9.occurrence_id = o.id and oav9.occurrence_attribute_id = #occurrence_taxonomy_notes_id# and oav9.deleted=false
   LEFT JOIN locations l2 ON l2.id = ANY (o.location_ids)
-  LEFT JOIN cache_termlists_terms ctt13 ON ctt13.id = l2.location_type_id AND ctt13.term = 'Countries 2016'
+  LEFT JOIN cache_termlists_terms ctt19 ON ctt19.id = l2.location_type_id AND ctt19.term = 'Countries 2016'
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -98,8 +113,12 @@
       display="ID of Full Title survey attribute" 
       datatype="integer"
     />
-    <param name="location_hemisphere_id" 
-      display="ID of Hemisphere location attribute" 
+    <param name="source_user_id" 
+      display="ID of User survey attribute" 
+      datatype="integer"
+    />
+    <param name="source_data_paper_id" 
+      display="ID of Data Paper survey attribute" 
       datatype="integer"
     />
     <param name="location_coordinate_method_id" 
@@ -108,6 +127,10 @@
     />
     <param name="location_spatial_precision_id" 
       display="ID of Spatial Precision location attribute" 
+      datatype="integer"
+    />
+    <param name="location_broad_location_id" 
+      display="ID of Broad Location location attribute" 
       datatype="integer"
     />
     <param name="sample_plot_id" 
@@ -142,16 +165,44 @@
       display="ID of Treatment Information sample attribute" 
       datatype="integer"
     />
+    <param name="sample_technique_id" 
+      display="ID of Sample Technique sample attribute" 
+      datatype="integer"
+    />
+    <param name="sample_effort_unit_1_id" 
+      display="ID of Sample Effort Unit 1 sample attribute" 
+      datatype="integer"
+    />
+    <param name="sample_effort_unit_2_id" 
+      display="ID of Sample Effort Unit 2 sample attribute" 
+      datatype="integer"
+    />
+    <param name="sample_effort_2_id" 
+      display="ID of Sample Effort 2 sample attribute" 
+      datatype="integer"
+    />
+    <param name="sample_completeness_id" 
+      display="ID of Sample Completeness sample attribute" 
+      datatype="integer"
+    /> 
+    <param name="occurrence_sex_id" 
+      display="ID of Sex occurrence attribute" 
+      datatype="integer"
+    />
     <param name="occurrence_count_type_id" 
       display="ID of Count Type occurrence attribute" 
       datatype="integer"
     />
-    <param name="occurrence_native_status_id" 
-      display="ID of Native Status occurrence attribute" 
+    <param name="occurrence_count_id" 
+      display="ID of Count occurrence attribute" 
       datatype="integer"
     />
     <param name="occurrence_taxon_certainty_id" 
       display="ID of Taxon Certainty occurrence attribute" 
+      datatype="integer"
+    />
+    <param name="occurrence_lifestage_id" 
+      display="ID of Lifestage occurrence attribute" 
       datatype="integer"
     />
     <param name="occurrence_caste_id" 
@@ -174,50 +225,57 @@
   <columns>
     <column name="occurrence_id" display="ID" sql="o.id" datatype="integer" distincton="true" />
     <column name="source_data_type" display="Source Data Type" sql="coalesce(ctt1.term, 'NA')" datatype="text" />
-    <column name="source_title" display="Source Title" sql="snf.survey_title" datatype="text" />
-    <column name="source_full_title" display="Source Full Title" sql="coalesce(yav8.text_value, 'NA')" datatype="text" />
     <column name="source_doi_website" display="Source DOI Website" sql="coalesce(yav2.text_value, 'NA')" datatype="text" />
     <column name="source_publication_year" display="Source Publication Year" sql="coalesce(yav3.int_value::text, 'NA')" datatype="text" />
     <column name="source_contact" display="Source Contact" sql="coalesce(yav4.text_value, 'NA')" datatype="text" />
     <column name="source_contact_affiliation" display="Source Contact Affiliation" sql="coalesce(yav5.text_value, 'NA')" datatype="text" />
     <column name="source_contact_email" display="Source Contact Email" sql="coalesce(yav6.text_value, 'NA')" datatype="text" />
     <column name="source_additional_contact" display="Source Additional Contact" sql="coalesce(yav7.text_value, 'NA')" datatype="text" />
+    <column name="source_title" display="Source Title" sql="snf.survey_title" datatype="text" /> 
+    <column name="source_full_title" display="Source Full Title" sql="coalesce(yav8.text_value, 'NA')" datatype="text" />
+    <column name="source_user" display="Source User" sql="coalesce(ctt2.term, 'NA')" datatype="text" />  
+    <column name="source_data_paper" display="Source Data Paper" sql="coalesce(yav10.text_value, 'NA')" datatype="text" /> 
     <column name="location_country" display="Country" sql="coalesce(l2.name, 'NA')" datatype="text" />
-    <column name="location_site_name" display="Location Site Name" sql="o.location_name" datatype="text" />
     <column name="location_latitude" display="Location Latitude" sql="ST_Y(ST_TRANSFORM(l.centroid_geom, 4326))" datatype="float" />
     <column name="location_longitude" display="Location Longitude" sql="ST_X(ST_TRANSFORM(l.centroid_geom, 4326))" datatype="float" />
-    <column name="location_hemisphere" display="Location Hemisphere" sql="coalesce(ctt2.term, 'NA')" datatype="text" />
     <column name="location_coordinate_method" display="Location Coordinate Method" sql="coalesce(ctt3.term, 'NA')" datatype="text" />
     <column name="location_spatial_precision" display="Location Spatial Precision" sql="coalesce(ctt4.term, 'NA')" datatype="text" />
+    <column name="location_broad_location" display="Location Broad Location" sql="coalesce(ctt5.term, 'NA')" datatype="text" />
     <column name="sample_plot_id" display="Sample Plot ID" sql="coalesce(sav1.text_value, 'NA')" datatype="text" />
+    <column name="sample_location_name" display="Sample Location Name" sql="o.location_name" datatype="text" />
     <column name="sample_plot_latitude" display="Sample Latitude" sql="ST_Y(ST_TRANSFORM(o.public_geom, 4326))" datatype="float" />
     <column name="sample_plot_longitude" display="Sample Longitude" sql="ST_X(ST_TRANSFORM(o.public_geom, 4326))" datatype="float" />
+    <column name="sample_grid_ref" display="Sample Grid Ref" sql="snf.public_entered_sref" datatype="text" />
     <column name="date_start" sql="o.date_start" visible="false" />
     <column name="date_end" sql="o.date_end" visible="false" />
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Sample Date" datatype="date" />
-    <column name="sample_technique" display="Sample Technique" sql="coalesce(snf.attr_sample_method, 'NA')" datatype="text" />
-    <column name="sample_effort_reported" display="Sample Effort Reported" sql="coalesce(ctt5.term, 'NA')" datatype="text" />
+    <column name="sample_effort_reported" display="Sample Effort Reported" sql="coalesce(ctt6.term, 'NA')" datatype="text" />
     <column name="sample_effort" display="Sample Effort" sql="coalesce(sav3.text_value, 'NA')" datatype="text" />
-    <column name="sample_realm" display="Sample Realm" sql="coalesce(ctt6.term, 'NA')" datatype="text" />
-    <column name="sample_data_purpose" display="Sample Data Purpose" sql="coalesce(ctt7.term, 'NA')" datatype="text" />
+    <column name="sample_realm" display="Sample Realm" sql="coalesce(ctt7.term, 'NA')" datatype="text" />
+    <column name="sample_data_purpose" display="Sample Data Purpose" sql="coalesce(ctt8.term, 'NA')" datatype="text" />
     <column name="sample_data_purpose_info" display="Sample Data Purpose Information" sql="coalesce(sav6.text_value, 'NA')" datatype="text" />
-    <column name="sample_treatment" display="Sample Treatment" sql="coalesce(ctt8.term, 'NA')" datatype="text" />
+    <column name="sample_treatment" display="Sample Treatment" sql="coalesce(ctt9.term, 'NA')" datatype="text" />
     <column name="sample_treatment_info" display="Sample Treatment Information" sql="coalesce(sav8.text_value, 'NA')" datatype="text" />
-    <column name="occurrence_count_type" display="Occurrence Count Type" sql="coalesce(ctt9.term, 'NA')" datatype="text" />
-    <column name="occurrence_count" display="Occurrence Count" sql="coalesce(onf.attr_sex_stage_count::text, 'NA')" datatype="text" />
-    <column name="occurrence_native_status" display="Occurrence Native Status" sql="coalesce(ctt10.term, 'NA')" datatype="text" />
-    <column name="occurrence_taxon_certainty" display="Occurrence Taxon Certainty" sql="coalesce(ctt11.term, 'NA')" datatype="text" />
-    <column name="occurrence_lifestage" display="Occurrence Life Stage" sql="coalesce(onf.attr_stage, 'NA')" datatype="text" />
+    <column name="sample_technique" display="Sample Technique" sql="coalesce(snf.attr_sample_method, 'NA')" datatype="text" />
+    <column name="sample_effort_unit_1" display="Sample Effort Unit 1" sql="coalesce(ctt11.term, 'NA')" datatype="text" />
+    <column name="sample_effort_unit_2" display="Sample Effort Unit 2" sql="coalesce(ctt12.term, 'NA')" datatype="text" />
+    <column name="sample_effort_2" display="Sample Effort 2" sql="coalesce(sav12.float_value::text, 'NA')" datatype="float" />
+    <column name="sample_completeness" display="Sample Completeness" sql="coalesce(ctt13.term, 'NA')" datatype="text" />
     <column name="occurrence_sex" display="Occurrence Sex" sql="coalesce(onf.attr_sex, 'NA')" datatype="text" />
-    <column name="occurrence_caste" display="Occurrence Caste" sql="coalesce(ctt12.term, 'NA')" datatype="text" />
-    <column name="occuuurence_sensitive_data" display="Occurrence Sensitive Data" sql="coalesce(oav5.int_value::text, 'NA')" datatype="text" />
-    <column name="taxon_name" display="Taxon Name" sql="cttl.taxon" datatype="species" />
+    <column name="occurrence_count_type" display="Occurrence Count Type" sql="coalesce(ctt15.term, 'NA')" datatype="text" />
+    <column name="occurrence_count" display="Occurrence Count" sql="coalesce(onf.attr_sex_stage_count::text, 'NA')" datatype="text" />
+    <column name="occurrence_taxon_certainty" display="Occurrence Taxon Certainty" sql="coalesce(ctt16.term, 'NA')" datatype="text" />
+    <column name="occurrence_lifestage" display="Occurrence Lifestage" sql="coalesce(onf.attr_stage, 'NA')" datatype="text" />
+    <column name="occurrence_caste" display="Occurrence Caste" sql="coalesce(ctt18.term, 'NA')" datatype="text" />
+    <column name="occurrence_sensitive_data" display="Occurrence Sensitive Data" sql="coalesce(oav7.int_value::text, 'NA')" datatype="text" />
+    <column name="occurrence_sensitivity_precision" display="Occurrence Sensitivity Precision" sql="onf.sensitivity_precision" datatype="text" /> 
     <column name="taxon_order" display="Taxon Order" sql="coalesce(cttl.order_taxon, 'NA')" datatype="text" />
     <column name="taxon_family" display="Taxon Family" sql="coalesce(cttl.family_taxon, 'NA')" datatype="text" />
-    <column name="taxon_binomial" display="Taxon Binomial" sql="coalesce(cttl.preferred_taxon, 'NA')" datatype="species" />
+    <column name="taxon_binomial" display="Taxon Name Preferred" sql="coalesce(cttl.preferred_taxon, 'NA')" datatype="species" />
     <column name="taxon_authority" display="Taxon Authority" sql="coalesce(cttl.preferred_authority, 'NA')" datatype="text" />
-    <column name="occurrence_taxon_name_in_source" display="Taxon Name in Source" sql="coalesce(oav6.text_value, 'NA')" datatype="text" />
-    <column name="occurrence_taxonomy_notes" display="Taxonomy Notes" sql="coalesce(oav7.text_value, 'NA')" datatype="text" />
+    <column name="taxon_name" display="Taxon Name Entered" sql="cttl.taxon" datatype="species" />
+    <column name="occurrence_taxon_name_in_source" display="Taxon Name in Source" sql="coalesce(oav8.text_value, 'NA')" datatype="text" />
+    <column name="occurrence_taxonomy_notes" display="Taxonomy Notes" sql="coalesce(oav9.text_value, 'NA')" datatype="text" />
   </columns>
 </report>
