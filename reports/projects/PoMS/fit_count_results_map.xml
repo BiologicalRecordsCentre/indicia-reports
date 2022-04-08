@@ -60,7 +60,7 @@
         emptyvalue="0" default="0" datatype="text"/>
     <param name = "country_location_type_id" display="Country location type ID" description='Location type ID of countries to populate into drop-down.' datatype="integer"/>
     <param name = "country_location_id" display="Country" description='Allow user to select a country.'
-        population_call='report:projects/PoMS/get_countries_for_population_call:id:name:location_type_id=#country_location_type_id#' datatype="lookup"/>
+        population_call='report:projects/PoMS/get_countries_for_population_call:id:name:location_type_id=#country_location_type_id#' datatype="lookup" emptyvalue="0"/>
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
