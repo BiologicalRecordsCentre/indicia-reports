@@ -1,0 +1,29 @@
+<report
+    title="Get squares for country ID"
+    description="Get a list of squares associated with a given country."
+>
+  <query>
+    SELECT #columns#
+    FROM locations square
+    JOIN indicia.location_attribute_values squareCountryCode on 
+      squareCountryCode.location_attribute_id = #square_country_code_loc_attr_id# AND
+      squareCountryCode.location_id = square.id AND 
+      squareCountryCode.deleted=false
+    JOIN indicia.locations country on
+      country.code = squareCountryCode.text_value AND
+      country.id = #country_id# AND
+      country.deleted = false
+    WHERE 
+      square.location_type_id = #square_location_type_id# AND
+      square.deleted = false
+  </query>
+  <params>
+    <param name="country_id" display="Country id to get squares for" datatype="integer"/>
+    <param name="square_location_type_id" display="Location type ID of 1km squares" datatype="integer"/>
+    <param name="square_country_code_loc_attr_id" display="The attribute that holds the country code for the square" datatype="integer"/>
+  </params>
+  <columns>
+    <column name='id' display='Square ID' sql="square.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='name' display='Square Name' sql="square.name" datatype='text'/>
+  </columns>
+</report>
