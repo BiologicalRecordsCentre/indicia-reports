@@ -1,0 +1,28 @@
+<report
+    title="Get default locations for transect"
+    description="Report that collects the country and square IDs for the provided transect that we are editing."
+>
+  <query>
+    SELECT #columns#
+    FROM locations country
+    JOIN location_attribute_values square_country_code on 
+      square_country_code.location_attribute_id = #square_country_code_loc_attr_id# AND
+      square_country_code.text_value = country.code AND 
+      square_country_code.deleted = false
+    JOIN locations square on square.id = square_country_code.location_id AND square.deleted = false
+    JOIN locations transect on transect.parent_id = square.id AND transect.id = #transect_id# AND square.deleted = false
+    WHERE country.location_type_id = #country_location_type_id# AND country.deleted = false
+  </query>
+  <params>
+    <param name="transect_id" display="ID of transect" datatype="integer" />
+    <param name="country_location_type_id" display="ID of country location type to use" datatype="integer" />
+    <param name="square_country_code_loc_attr_id" display="ID of location attribute that hold's an MSV squares country code" 
+        datatype="integer" />
+  </params>
+  <columns>
+    <column name='country_id' display='Country ID' sql='country.id' datatype="integer" />
+    <column name='country_name' display='Country name' sql='country.name' datatype="text" />
+    <column name='square_id' display='Square ID' sql='square.id' datatype="integer" />
+    <column name='square_name' display='Square name' sql='square.name' datatype="text" />
+  </columns>
+</report>
