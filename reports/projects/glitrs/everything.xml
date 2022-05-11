@@ -223,7 +223,8 @@
     />
   </params>
   <columns>
-    <column name="occurrence_id" display="ID" sql="o.id" datatype="integer" distincton="true" />
+    <column name="sample_id" display="Sample ID" sql="o.sample_id" datatype="integer" />
+    <column name="occurrence_id" display="Occurrence ID" sql="o.id" datatype="integer" distincton="true" />
     <column name="source_data_type" display="Source Data Type" sql="coalesce(ctt1.term, 'NA')" datatype="text" />
     <column name="source_doi_website" display="Source DOI Website" sql="coalesce(yav2.text_value, 'NA')" datatype="text" />
     <column name="source_publication_year" display="Source Publication Year" sql="coalesce(yav3.int_value::text, 'NA')" datatype="text" />
