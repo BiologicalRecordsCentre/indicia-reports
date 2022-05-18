@@ -6,7 +6,7 @@
     select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term as title, tc.term as code,
     case #user_id#
       when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/pantheon/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
     end as number_of_species,
     count(v.*) as spcount,
     true as has_resources
@@ -20,7 +20,7 @@
     select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term, tc.term as code,
     case #user_id#
       when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/pantheon/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
     end as number_of_species,
     count(v.*) as spcount,
     true as has_resources
@@ -34,7 +34,7 @@
     select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term,  tc.term as code,
     case #user_id#
       when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/pantheon/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
     end as number_of_species,
     count(v.*) as spcount,
     false as has_resources
