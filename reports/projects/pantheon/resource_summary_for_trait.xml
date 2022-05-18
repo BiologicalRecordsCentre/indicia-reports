@@ -6,12 +6,12 @@
   with recursive cte_query
   as
   (
-    select t.id, t.term, t.meaning_id, null::integer as parent_id, 0 as sequence
+    select t.id, t.term, t.term as chain, t.meaning_id, null::integer as parent_id, 0 as sequence
     from cache_termlists_terms t
     where t.id=#trait_id#
     and t.preferred=true
     union all
-    select t.id, t.term, t.meaning_id, t.parent_id, q.sequence+1
+    select t.id, t.term, q.chain || ' &gt;&gt; ' || q.term, t.meaning_id, t.parent_id, q.sequence+1
     from cache_termlists_terms t
     join cte_query q on q.id=t.parent_id
     left join taxa_taxon_list_attribute_values sat on sat.int_value=t.id and sat.taxa_taxon_list_attribute_id=20 and sat.deleted=false
@@ -29,7 +29,7 @@
   left join cache_termlists_terms tc on tc.meaning_id=q.meaning_id and tc.preferred=false
   </query>
   <order_bys>
-    <order_by>q.sequence, q.term</order_by>
+    <order_by>q.sequence, q.chain</order_by>
   </order_bys>
   <params>
     <param name="trait_id" datatype="integer" />
@@ -38,6 +38,7 @@
     <column name="id" sql="q.id" />
     <column name="parent_id" sql="q.parent_id" />
     <column name="term" sql="q.term" />
+    <column name="chain" sql="q.chain" />
     <column name="code" sql="tc.term" />
     <column name="sequence" sql="q.sequence" />
     <column name="number_of_species" sql="count(v.*)" aggregate="true" />
