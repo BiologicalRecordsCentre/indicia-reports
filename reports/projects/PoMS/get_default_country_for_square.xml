@@ -1,0 +1,25 @@
+<report
+    title="Get default country for square"
+    description="Report that collects the country for a square ID."
+>
+  <query>
+    SELECT #columns#
+    FROM locations country
+    JOIN location_attribute_values square_country_code on 
+      square_country_code.location_attribute_id = #country_code_location_attribute_id# AND
+      square_country_code.text_value = country.code AND 
+      square_country_code.deleted = false
+    JOIN locations square on square.id = square_country_code.location_id AND square.id = #square_id# AND square.deleted = false
+    WHERE country.location_type_id = #country_location_type_id# AND country.deleted = false
+  </query>
+  <params>
+    <param name="square_id" display="ID of square" datatype="integer" />
+    <param name="country_location_type_id" display="ID of country location type to use" datatype="integer" />
+    <param name="country_code_location_attribute_id" display="ID of location attribute that hold's an MSV squares country code" 
+        datatype="integer" />
+  </params>
+  <columns>
+    <column name='id' display='Country ID' sql='country.id' datatype="integer" />
+    <column name='name' display='Country name' sql='country.name' datatype="text" />
+  </columns>
+</report>
