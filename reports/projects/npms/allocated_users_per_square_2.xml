@@ -13,7 +13,7 @@
     LEFT JOIN people p on p.id=pav.person_id AND p.deleted=false
     LEFT JOIN users u on u.person_id=pav.person_id AND u.deleted=false
     LEFT JOIN users_websites uw on u.id=uw.user_id AND uw.website_id = lw.website_id AND uw.created_on &gt;= CAST(COALESCE('#ignore_registration_dates_before#','1500-01-01') as date)
-    JOIN users_websites uwac on u.id=uwac.user_id AND uw.website_id=uwac.website_id AND uwac.site_role_id IS NOT NULL
+    LEFT JOIN users_websites uwac on u.id=uwac.user_id AND uw.website_id=uwac.website_id AND uwac.site_role_id IS NOT NULL
     LEFT JOIN users_websites accesscheck on accesscheck.website_id=uwac.website_id AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE (l.location_type_id=#core_square_type_id#)  
     AND #website_filter# AND l.deleted=false
