@@ -2,7 +2,7 @@
     title="List of taxa for the ABLE app"
     description="A list of distinct taxa with names."
 >
-  <query website_filter_field="" taxa_taxon_lists_id_field="ttl.id">
+  <query website_filter_field="">
   SELECT #columns#
   FROM cache_taxa_taxon_lists ttl
   #joins#
