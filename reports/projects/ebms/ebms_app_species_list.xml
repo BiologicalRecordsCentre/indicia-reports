@@ -4,7 +4,8 @@
   <query website_filter_field="">
   select #columns#
   from cache_taxa_taxon_lists ttl
-  where ttl.taxon_list_id=#taxon_list_id#
+  where ttl.taxon_list_id = #taxon_list_id#
+  AND allow_data_entry = true
   </query>
   <order_bys>
     <order_by>ttl.taxonomic_sort_order nulls first</order_by>
