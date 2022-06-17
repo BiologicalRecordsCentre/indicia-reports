@@ -26,6 +26,8 @@ about the square e.g. number of samples recorded in 2015."
       AND s20.training=false
     LEFT JOIN samples s21 on s21.location_id=plots.id AND s21.date_start &gt;= '#2021_start_date#' AND s21.date_start &lt; '#2022_start_date#'  AND s21.survey_id in (#survey_ids#) AND s21.deleted=false
       AND s21.training=false
+    LEFT JOIN samples s22 on s22.location_id=plots.id AND s22.date_start &gt;= '#2022_start_date#' AND s22.date_start &lt; '#2023_start_date#'  AND s22.survey_id in (#survey_ids#) AND s22.deleted=false
+      AND s22.training=false
 
   WHERE (l.location_type_id=#core_square_type_id#)  
     AND #website_filter# AND l.deleted=false
@@ -47,6 +49,7 @@ about the square e.g. number of samples recorded in 2015."
     <param name="2020_start_date" description="Start date of the 2020 season." datatype="date"/>
     <param name="2021_start_date" description="Start date of the 2021 season." datatype="date"/>
     <param name="2022_start_date" description="Start date of the 2022 season." datatype="date"/>
+    <param name="2023_start_date" description="Start date of the 2023 season." datatype="date"/>
     <param name="excluded_square_attr_id" display="Excluded squares attribute id" description="Id of attribute that holds whether a square is excluded or not. If it is excluded then don't display on the map." datatype="integer"/>
     <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
   </params>
@@ -61,6 +64,7 @@ about the square e.g. number of samples recorded in 2015."
     <column name='number_samples_2018' display='No of 2018 samples' sql='count(distinct(s18.id))' datatype='date' aggregate='true'/>   
     <column name='number_samples_2019' display='No of 2019 samples' sql='count(distinct(s19.id))' datatype='date' aggregate='true'/> 
     <column name='number_samples_2020' display='No of 2020 samples' sql='count(distinct(s20.id))' datatype='date' aggregate='true'/> 
-    <column name='number_samples_2021' display='No of 2021 samples' sql='count(distinct(s21.id))' datatype='date' aggregate='true'/>         
+    <column name='number_samples_2021' display='No of 2021 samples' sql='count(distinct(s21.id))' datatype='date' aggregate='true'/>
+    <column name='number_samples_2022' display='No of 2022 samples' sql='count(distinct(s22.id))' datatype='date' aggregate='true'/>                  
   </columns>
 </report>
