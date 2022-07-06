@@ -1,8 +1,6 @@
 <report
-    title="Occurrences Download (standard filters)"
-    description="Report designed for downloaded occurrence records as rows in a spreadsheet. Assumes that there is a
-        location layer of vice counties indexed against the records which will be included in the output."
-    featured="true"
+    title="PoMS samples for JBC"
+    description="Sample data for PoMS in Jersey."
 >
   <query website_filter_field="s.website_id" count_field="s.*">
     SELECT

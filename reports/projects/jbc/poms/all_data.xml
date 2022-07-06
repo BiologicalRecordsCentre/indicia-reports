@@ -1,0 +1,61 @@
+<report
+    title="PoMS all data for JBC"
+    description="Sample and occurrence data for PoMS in Jersey."
+>
+  <query website_filter_field="s.website_id" count_field="s.*">
+    SELECT #columns#
+      --recorder_type
+      -- target_flower_family
+      --habitat_type
+      --flower_structure
+      --free_text_tag
+      FROM cache_samples_functional s
+      JOIN cache_samples_nonfunctional snf ON snf.id=s.id
+      JOIN samples smp ON smp.id=s.id AND smp.deleted=false
+      WHERE location_ids @> array[253204]
+      AND s.survey_id IN (636,641)
+  </query>
+  <columns>
+    <column name="sample_id" sql="s.id" in_count="true" />
+    <column name="country" sql="(SELECT string_agg(ctry.name, '; ') FROM locations ctry WHERE ctry.location_type_id=17484 AND ctry.id = ANY(s.location_ids))" />
+    <column name="location_name" sql="smp.location_name" />
+    <column name="sample_gridref" sql="snf.public_entered_sref" />
+    <column name="sample_projection" sql="CASE snf.entered_sref_system WHEN '4326' THEN 'WGS84' WHEN '27700' THEN 'OSGB36' ELSE UPPER(snf.entered_sref_system) END" />
+    <column name="original_precision" sql="get_sref_precision(snf.public_entered_sref, snf.entered_sref_system, snf.attr_sref_precision)" />
+    <column name="date_from" sql="s.date_start"/>,
+    <column name="date_to" sql="s.date_end"/>,
+    <column name="date_type" sql="s.date_type"/>,
+    <column name="date" datatype="date" />
+    <column name="count_start_time" sql="snf.attrs_json ->> '1056'"/>,
+    <column name="comment" sql="snf.comment"/>,
+    <column name="habitat" sql="snf.attrs_json ->> '1048'"/>,
+    <column name="other_habitat" sql="snf.attrs_json ->> '1049'"/>,
+    <column name="target_flower" sql="snf.attrs_json ->> '1050'"/>,
+    <column name="target_other_flower" sql="snf.attrs_json ->> '1051'"/>,
+    <column name="target_flower_corrected" sql="coalesce(snf.attrs_json ->> '1638', snf.attrs_json ->> '1051', snf.attrs_json ->> '1050')"/>,
+    <column name="flower_cover" sql="snf.attrs_json ->> '1052'"/>
+    <column name="floral_unit_count" sql="snf.attrs_json ->> '1053'"/>
+    <column name="floral_unit" sql="snf.attrs_json ->> '1054'"/>
+    <column name="flower_context" sql="snf.attrs_json ->> '1055'"/>
+    <column name="cloud_cover" sql="snf.attrs_json ->> '1057'"/>
+    <column name="sunshine" sql="snf.attrs_json ->> '1061'"/>
+    <column name="wind_speed" sql="snf.attrs_json ->> '1058'"/>
+    <column name="enjoyment" sql="snf.attrs_json ->> '1059'"/>
+    <column name="difficulty" sql="snf.attrs_json ->> '1060'"/>
+    <column name="bumblebees" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418854), 0)"/>
+    <column name="honeybees" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=419001), 0)"/>
+    <column name="solitary_bees" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418855), 0)"/>
+    <column name="wasps" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418856), 0)"/>
+    <column name="hoverflies" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418857), 0)"/>
+    <column name="other_flies" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418858), 0)"/>
+    <column name="butterflies_moths" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418859), 0)"/>
+    <column name="beetles" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418860), 0)"/>
+    <column name="small_insects" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=419076), 0)"/>
+    <column name="other_insects" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id and o.preferred_taxa_taxon_list_id=418861), 0)"/>
+    <column name="insects_total" sql="coalesce((select sum(attr_sex_stage_count::integer) from cache_occurrences_functional o join cache_occurrences_nonfunctional onf on onf.id=o.id where o.sample_id=s.id), 0)"/>
+    <column name="year" sql="extract(year from s.date_start)" />
+    <column name="date_added" sql="s.created_on" />
+    <column name="date_last_edited" sql="s.updated_on" />
+    <column name="hear_about" sql="snf.attrs_json ->> '1307'" />
+  </columns>
+</report>
