@@ -1,0 +1,36 @@
+<report
+    title="Users recording statistics per date"
+    description="List users along with the number of records that they have recorded.
+    The date filter can either be based on the field recording date, or the input date into the website."
+>
+  <query website_filter_field="csf.website_id">
+  SELECT #columns#
+  FROM cache_samples_functional csf
+  JOIN cache_samples_nonfunctional csnf on csf.id = csnf.id
+  JOIN cache_occurrences_functional cof on cof.sample_id = csnf.id
+  WHERE 
+  ('#date_filter_type#' = ''
+  AND 1=2)
+  OR
+  ('#date_filter_type#' = 'field_date'
+  AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end::date &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))
+  OR
+  ('#date_filter_type#' = 'input_date'
+  AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.created_on::date &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.created_on::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))
+  </query>
+  <order_bys>
+    <order_by>record_count desc</order_by>
+  </order_bys>
+  <params>
+    <param name='date_filter_type' display='Date filter type' datatype='lookup' 
+      lookup_values='field_date:Field date,input_date:Input date'/>
+    <param name='date_from' display='Date From' datatype='date' />
+    <param name='date_to' display='Date To' datatype='date' />
+  </params>
+  <columns>
+    <column name='recorder' display='Recorder' sql='csnf.recorders' in_count="true" />
+    <column name='record_count' display='Record count' sql='count(cof.id)' aggregate="true" />
+  </columns>
+</report>
