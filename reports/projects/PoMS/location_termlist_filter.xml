@@ -24,26 +24,26 @@
             AND sav.sample_attribute_id = #sample_country_attribute_id# 
             AND sav.deleted = false
         -- Must take into account that a country's synonyms might have been used
-        JOIN cache_termlists_terms ctt_loc on ctt_loc.id = sav.int_value
-        JOIN cache_termlists_terms ctt_loc_syn on ctt_loc_syn.meaning_id = ctt_loc.meaning_id 
+        JOIN cache_termlists_terms ctt_loc1 on ctt_loc1.id = sav.int_value
+        JOIN cache_termlists_terms ctt_loc_syn1 on ctt_loc_syn1.meaning_id = ctt_loc1.meaning_id 
 
-        JOIN termlists_term_attribute_values ttav on ttav.termlists_term_id = ctt_allowed_terms.id 
-            AND ttav.termlists_term_attribute_id = #location_term_attribute_id# 
-            AND ttav.int_value = ctt_loc_syn.id
-            AND ttav.deleted = false
+        JOIN termlists_term_attribute_values ttav1 on ttav1.termlists_term_id = ctt_allowed_terms.id 
+            AND ttav1.termlists_term_attribute_id = #location_term_attribute_id# 
+            AND ttav1.int_value = ctt_loc_syn1.id
+            AND ttav1.deleted = false
       </join>
     </param>
     <param name = "location_termlist_and_species_filter" display="Termlists_term ID of filtering country" 
           description="Limit page to terms associated with this location if sample_id not present." datatype="integer" emptyvalue = '0' default = '0'>
       <join>
         -- Must take into account that a country's synonyms might have been used
-        JOIN cache_termlists_terms ctt_loc on ctt_loc.id = #location_termlist_and_species_filter#
-        JOIN cache_termlists_terms ctt_loc_syn on ctt_loc_syn.meaning_id = ctt_loc.meaning_id 
+        JOIN cache_termlists_terms ctt_loc2 on ctt_loc2.id = #location_termlist_and_species_filter#
+        JOIN cache_termlists_terms ctt_loc_syn2 on ctt_loc_syn2.meaning_id = ctt_loc2.meaning_id 
 
-        JOIN termlists_term_attribute_values ttav on ttav.termlists_term_id = ctt_allowed_terms.id 
-            AND ttav.termlists_term_attribute_id = #location_term_attribute_id# 
-            AND ttav.int_value = ctt_loc_syn.id
-            AND ttav.deleted = false
+        JOIN termlists_term_attribute_values ttav2 on ttav2.termlists_term_id = ctt_allowed_terms.id 
+            AND ttav2.termlists_term_attribute_id = #location_term_attribute_id# 
+            AND ttav2.int_value = ctt_loc_syn2.id
+            AND ttav2.deleted = false
       </join>
     </param>
     <param name = "location_term_attribute_id" display="Location term attribute id" 

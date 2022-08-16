@@ -12,6 +12,10 @@
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
       LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
 
+      LEFT JOIN sample_attribute_values sav_location_termlist_and_species_filter on sav_location_termlist_and_species_filter.sample_id = csnf.id 
+          AND sav_location_termlist_and_species_filter.sample_attribute_id = #location_termlist_and_species_filter_attr_id#
+          AND sav_location_termlist_and_species_filter.deleted = false
+
       LEFT JOIN sample_attribute_values sav_start_time on sav_start_time.sample_id = csnf.id 
           AND sav_start_time.sample_attribute_id = #start_time_attr_id#
           AND sav_start_time.deleted = false
@@ -140,6 +144,7 @@
     <param name = "argentina_location_id" display="Argentina location ID" description = "Location ID for Argentina." datatype="integer"/> 
     <param name = "brazil_location_id" display="Brazil location ID" description = "Location ID for Brazil." datatype="integer"/> 
     <param name = "chile_location_id" display="Chile location ID" description = "Location ID for Chile." datatype="integer"/>
+    <param name = "location_termlist_and_species_filter_attr_id" display = "Location termlist and species filter smp attr ID" datatype = "integer" />
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
@@ -232,5 +237,9 @@
             THEN true ELSE false END" visible="false" />
     <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
         sql="CASE WHEN CAST(s.survey_id AS character varying) = '#1km_fit_count_survey_id#' THEN true ELSE false END" visible="false" />
+    <column name="location_termlist_and_species_filter_id" display = "Location termlist and species filter id" sql="
+        case when sav_location_termlist_and_species_filter.int_value IS NOT NULL
+        THEN sav_location_termlist_and_species_filter.int_value 
+        ELSE NULL end" datatype="text" visible="false"/>
   </columns>
 </report>
