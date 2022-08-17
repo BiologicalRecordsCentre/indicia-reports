@@ -1,7 +1,7 @@
 <report title="Audit trail for an occurrence"
   description="Describes low level changes to a record">
   <query>
-    select 'Created' as action,
+    select 'Inserted' as action,
       'occurrences' as entity,
       o.id,
       o.created_on as date,
@@ -49,7 +49,6 @@
     <column name="user" display="User" />
     <column name="row_data_before_action" display="Previous row data" />
     <column name="changed_fields" display="Changed data" />
-    <column name="created_on" display="Created on" />
     <column name="notes" display="Notes" />
   </columns>
 </report>
