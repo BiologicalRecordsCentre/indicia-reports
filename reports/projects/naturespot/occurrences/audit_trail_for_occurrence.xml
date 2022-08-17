@@ -34,4 +34,15 @@
   <params>
     <param name='occurrence_id' display='Occurrence ID' description='Enter the ID of the record you would like to view details for.' datatype='integer' />
   </params>
+  <columns>
+    <column name="action" display="Action" />
+    <column name="entity" display="Table" />
+    <column name="id" display="Record ID" />
+    <column name="created_on" display="Date" />
+    <column name="created_by_id" display="User ID" />
+    <column name="row_data_before_action" display="User" />
+    <column name="changed_fields" display="Changed fields" />
+    <column name="created_on" display="Created on" />
+    <column name="notes" display="Notes" />
+  </columns>
 </report>
