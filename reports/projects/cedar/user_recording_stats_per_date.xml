@@ -7,7 +7,8 @@
   SELECT #columns#
   FROM cache_samples_functional csf
   JOIN cache_samples_nonfunctional csnf on csf.id = csnf.id
-  JOIN cache_occurrences_functional cof on cof.sample_id = csnf.id
+  JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.website_id=csf.website_id 
+      AND cof.survey_id=csf.survey_id AND cof.sample_id=csf.id
   WHERE 
   ('#date_filter_type#' = ''
   AND 1=2)
