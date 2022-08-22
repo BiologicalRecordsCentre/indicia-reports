@@ -10,7 +10,8 @@
   JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.website_id=csf.website_id 
       AND cof.survey_id=csf.survey_id AND cof.sample_id=csf.id
   WHERE 
-  ('#date_filter_type#' = ''
+  #website_filter# AND
+  (('#date_filter_type#' = ''
   AND 1=2)
   OR
   ('#date_filter_type#' = 'field_date'
@@ -19,7 +20,7 @@
   OR
   ('#date_filter_type#' = 'input_date'
   AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.created_on::date &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
-  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.created_on::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))
+  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.created_on::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))) 
   </query>
   <order_bys>
     <order_by>record_count desc</order_by>
