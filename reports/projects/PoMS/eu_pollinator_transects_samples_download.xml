@@ -1,0 +1,60 @@
+<report
+    title="EU Pollinator Transects Samples Download"
+    description="Sample download for EU Pollinator transects. 
+        Contains all child section samples along with parent sample columns."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM samples s_parent
+      JOIN cache_samples_nonfunctional s_parent_nonfunct on s_parent_nonfunct.id = s_parent.id
+      JOIN cache_samples_functional s_parent_funct on s_parent_funct.id = s_parent_nonfunct.id
+      LEFT JOIN samples s_section on s_section.parent_id = s_parent.id AND s_section.deleted=false
+      LEFT JOIN cache_samples_nonfunctional s_section_nonfunct on s_section_nonfunct.id = s_section.id
+      WHERE #sharing_filter#
+        AND s_parent.survey_id = #survey_id#
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s_parent.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s_parent.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+  </query>
+  <order_bys>
+    <order_by>s_parent.id DESC, s_section.id desc</order_by>
+  </order_bys>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "survey_id" display="Survey ID" description = "Survey ID to limit results to." datatype="integer"/>
+    <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
+    <param name = "end_time_attr_id" display="End time sample attr ID" description = "ID of the sample attribute that holds the end time." datatype="integer"/>
+    <param name = "wind_direction_attr_id" display="Wind direction sample attr ID" description = "ID of the sample attribute that holds the wind direction." datatype="integer"/>
+    <param name = "wind_speed_attr_id" display="Wind speed sample attr ID" description = "ID of the sample attribute that holds the wind speed." datatype="integer"/>
+    <param name = "temperature_attr_id" display="Temperature sample attr ID" description = "ID of the sample attribute that holds the temperature." datatype="integer"/>
+    <param name = "sun_percentage_attr_id" display="Sun percentage sample attr ID" description = "ID of the sample attribute that holds sun percentage." datatype="integer"/>
+    <param name = "cloud_percentage_attr_id" display="Cloud percentage sample attr ID" description = "ID of the sample attribute that holds cloud percentage." datatype="integer"/>
+    <param name = "intersect_location_ids" display="Intersect location IDs" description='Setup page config with intersect_location_ids={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>(array[#intersect_location_ids#] &amp;&amp; s_parent_funct.location_ids = true)</where>
+    </param>
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">s_parent.created_by_id=#current_user_id#</where>
+    </param>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+  </params>
+  <columns>
+    <column name='transect_sample_id' sql='s_parent.id' display='Transect sample ID' datatype="integer"/>
+    <column name='section_sample_id' sql='s_section.id' display='Section sample ID' in_count="true" datatype="integer"/>
+    <column name='date_start' sql='s_parent_funct.date_start' visible="false"/>
+    <column name='date_end' sql='s_parent_funct.date_end' visible="false"/>
+    <column name='date_type' sql='s_parent_funct.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='transect_name' display='Transect name' sql='s_parent_funct.location_name' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='s_parent.entered_sref' datatype="text"/>
+    <column name='start_time' display='Start time' sql="s_parent_nonfunct.attrs_json->>('#start_time_attr_id#')" datatype="text"/>
+    <column name='end_time' display='End time' sql="s_parent_nonfunct.attrs_json->>('#end_time_attr_id#')" datatype="text"/>
+    <column name='wind_direction' display='Wind direction' sql="s_parent_nonfunct.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
+    <column name='wind_speed' display='Wind speed' sql="s_parent_nonfunct.attrs_json->>('#wind_speed_attr_id#')" datatype="text"/>
+    <column name='temperature' display='Temperature' sql="s_parent_nonfunct.attrs_json->>('#temperature_attr_id#')" datatype="text"/>
+    <column name='transect_sun_percentage' display='Transect sun percentage' sql="s_parent_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
+    <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
+    <column name='section_cloud_percentage' display='Section cloud %' sql="s_section_nonfunct.attrs_json->>('#cloud_percentage_attr_id#')" datatype="text"/>
+    <column name='recorder_names' display='Recorder names' sql='s_parent_nonfunct.recorders' datatype="text"/>
+    <column name="notes" display='Notes' sql="s_parent_nonfunct.comment" datatype="text" />
+  </columns>
+</report>
