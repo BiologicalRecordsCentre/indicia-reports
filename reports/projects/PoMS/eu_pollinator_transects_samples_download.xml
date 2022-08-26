@@ -39,8 +39,8 @@
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
   </params>
   <columns>
-    <column name='transect_sample_id' sql='s_parent.id' display='Transect sample ID' datatype="integer"/>
-    <column name='section_sample_id' sql='s_section.id' display='Section sample ID' in_count="true" datatype="integer"/>
+    <column name='transect_sample_id' sql='s_parent.id' display='Transect sample ID' datatype="integer" in_count="true" />
+    <column name='section_sample_id' sql='s_section.id' display='Section sample ID' datatype="integer" in_count="true" />
     <column name='date_start' sql='s_parent_funct.date_start' visible="false"/>
     <column name='date_end' sql='s_parent_funct.date_end' visible="false"/>
     <column name='date_type' sql='s_parent_funct.date_type' visible="false"/>
