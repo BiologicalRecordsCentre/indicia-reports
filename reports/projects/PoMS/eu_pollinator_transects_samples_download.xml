@@ -52,7 +52,7 @@
     <column name='wind_direction' display='Wind direction' sql="s_parent_nonfunct.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
     <column name='wind_speed' display='Wind speed' sql="s_parent_nonfunct.attrs_json->>('#wind_speed_attr_id#')" datatype="text"/>
     <column name='temperature' display='Temperature' sql="s_parent_nonfunct.attrs_json->>('#temperature_attr_id#')" datatype="text"/>
-    <column name='transect_sun_percentage' display='Transect sun percentage' sql="s_parent_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
+    <column name='transect_sun_percentage' display='Transect sun %' sql="s_parent_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_cloud_percentage' display='Section cloud %' sql="s_section_nonfunct.attrs_json->>('#cloud_percentage_attr_id#')" datatype="text"/>
     <column name='recorder_names' display='Recorder names' sql='s_parent_nonfunct.recorders' datatype="text"/>
