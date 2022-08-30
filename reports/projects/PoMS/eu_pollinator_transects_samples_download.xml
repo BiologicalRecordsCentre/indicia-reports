@@ -46,7 +46,7 @@
     <column name='date_type' sql='s_parent_funct.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='transect_name' display='Transect name' sql='s_parent_funct.location_name' datatype="text"/>
-    <column name='grid_ref' display='Grid ref' sql='s_parent.entered_sref' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='s_parent_nonfunct.public_entered_sref' datatype="text"/>
     <column name='start_time' display='Start time' sql="s_parent_nonfunct.attrs_json->>('#start_time_attr_id#')" datatype="text"/>
     <column name='end_time' display='End time' sql="s_parent_nonfunct.attrs_json->>('#end_time_attr_id#')" datatype="text"/>
     <column name='wind_direction' display='Wind direction' sql="s_parent_nonfunct.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>

@@ -49,7 +49,7 @@
     <column name='date_end' sql='s_parent_funct.date_end' visible="false"/>
     <column name='date_type' sql='s_parent_funct.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='grid_ref' display='Grid ref' sql='cnf.output_sref' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='s_parent_nonfunct.public_entered_sref' datatype="text"/>
     <column name='occurrence_id' sql='cof.id' display='Record ID' in_count="true" datatype="integer"/>
     <column name='taxon' sql='cttl.taxon' display='Species' datatype="integer"/>
     <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
