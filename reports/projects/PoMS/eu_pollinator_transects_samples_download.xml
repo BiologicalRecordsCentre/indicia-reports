@@ -8,6 +8,11 @@
       FROM samples s_parent
       JOIN cache_samples_nonfunctional s_parent_nonfunct on s_parent_nonfunct.id = s_parent.id
       JOIN cache_samples_functional s_parent_funct on s_parent_funct.id = s_parent_nonfunct.id
+      JOIN locations transect on transect.id = s_parent.location_id AND transect.deleted = false AND transect.location_type_id = #transect_location_type_id#
+      JOIN locations mvs_sites on mvs_sites.id = transect.parent_id AND mvs_sites.deleted = false AND mvs_sites.location_type_id = #mvs_square_location_type_id#
+      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = mvs_sites.id AND 
+          country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+      JOIN locations country on country.code = country_code_attr_val.text_value AND country.deleted = false AND country.location_type_id = #country_location_type_id#
       LEFT JOIN samples s_section on s_section.parent_id = s_parent.id AND s_section.deleted=false
       LEFT JOIN cache_samples_nonfunctional s_section_nonfunct on s_section_nonfunct.id = s_section.id
       WHERE #sharing_filter#
@@ -29,14 +34,22 @@
     <param name = "temperature_attr_id" display="Temperature sample attr ID" description = "ID of the sample attribute that holds the temperature." datatype="integer"/>
     <param name = "sun_percentage_attr_id" display="Sun percentage sample attr ID" description = "ID of the sample attribute that holds sun percentage." datatype="integer"/>
     <param name = "cloud_percentage_attr_id" display="Cloud percentage sample attr ID" description = "ID of the sample attribute that holds cloud percentage." datatype="integer"/>
-    <param name = "intersect_location_ids" display="Intersect location IDs" description='Setup page config with intersect_location_ids={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
-      <where>(array[#intersect_location_ids#] &amp;&amp; s_parent_funct.location_ids = true)</where>
+    <param name = "country_id" display="Country ID" description='Setup page config with country_id={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>country.id = #country_id#</where>
     </param>
     <param name="ownData" display="My data only?" datatype="checkbox">
       <where value="1">s_parent.created_by_id=#current_user_id#</where>
     </param>
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "country_code_loc_attr_id" display="Country code location attr ID"
+        description = "ID of the location attribute that holds the country code for an MVS location." datatype="integer"/>
+    <param name = "transect_location_type_id" display="Transect location type ID"
+        description = "ID of the location type for transects." datatype="integer"/>
+    <param name = "mvs_square_location_type_id" display="MVS Square location type ID"
+        description = "ID of the location type for MVS Squares." datatype="integer"/>
+    <param name = "country_location_type_id" display="Country location type ID"
+        description = "ID of the location type for countries." datatype="integer"/>
   </params>
   <columns>
     <column name='transect_sample_id' sql='s_parent.id' display='Transect sample ID' datatype="integer" in_count="true" />
@@ -52,7 +65,6 @@
     <column name='wind_direction' display='Wind direction' sql="s_parent_nonfunct.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
     <column name='wind_speed' display='Wind speed' sql="s_parent_nonfunct.attrs_json->>('#wind_speed_attr_id#')" datatype="text"/>
     <column name='temperature' display='Temperature' sql="s_parent_nonfunct.attrs_json->>('#temperature_attr_id#')" datatype="text"/>
-    <column name='transect_sun_percentage' display='Transect sun %' sql="s_parent_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_cloud_percentage' display='Section cloud %' sql="s_section_nonfunct.attrs_json->>('#cloud_percentage_attr_id#')" datatype="text"/>
     <column name='recorder_names' display='Recorder names' sql='s_parent_nonfunct.recorders' datatype="text"/>
