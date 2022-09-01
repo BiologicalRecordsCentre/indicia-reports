@@ -1,0 +1,99 @@
+<report
+    title="EU Pollinator Fixed Square Results For Samples"
+    description="List of samples for the fixed square survey (also supports My Own Data Only, and Regional Coodinator functionality)."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN locations square on square.id = csf.location_id
+          AND square.location_type_id = #1km_square_location_type_id# AND square.deleted = false 
+      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = square.id  
+          AND country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+      JOIN locations country on country.code = country_code_attr_val.text_value
+          AND country.location_type_id = #country_location_type_id# AND country.deleted = false
+      #agreements_join#
+      WHERE #sharing_filter#
+        #idlist#
+        AND csf.survey_id = #survey_id#
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+  </query>
+  <order_bys>
+    <order_by>csf.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "survey_id" display="1km pan traps survey ID" description = "ID of the pan trap count survey." datatype="integer"/> 
+    <param name = "country_id" display="Country ID" description='Setup page config with country_id={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>country.id = #country_id#</where>
+    </param>
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">csf.created_by_id=#current_user_id#</where>
+    </param>
+    <param name = "country_code_loc_attr_id" display="Country code location attr ID"
+        description = "ID of the location attribute that holds the country code for an 1km location." datatype="integer"/>
+    <param name = "1km_square_location_type_id" display="1km Square location type ID"
+        description = "ID of the location type for 1km Squares." datatype="integer"/>
+    <param name = "country_location_type_id" display="Country location type ID"
+        description = "ID of the location type for countries." datatype="integer"/> 
+    <param name = "pan_trap_moved_attr_id" display="Pan Trap Moved sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Pan Trap Moved question." datatype="integer"/>
+    <param name = "pan_trap_station_attr_id" display="Pan Trap Station sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Pan Trap Station question." datatype="integer"/>
+    <param name = "pan_trap_active_from_attr_id" display="Pan Trap Active From sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Pan Trap Active From question." datatype="integer"/>
+    <param name = "pan_trap_active_to_attr_id" display="Pan Trap Active To sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Pan Trap Active To question." datatype="integer"/>
+    <param name = "pan_trap_disturbed_attr_id" display="Pan Trap Disturbed sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Pan Trap Disturbed question." datatype="integer"/>
+    <param name = "temperature_at_start_attr_id" display="Temperature At Start sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Temperature At Start question." datatype="integer"/>
+    <param name = "wind_speed_at_start_attr_id" display="Wind Speed At Start sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Wind Speed At Start question." datatype="integer"/>
+    <param name = "cloud_cover_at_start_attr_id" display="Cloud Cover At Start sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Cloud Cover At Start question." datatype="integer"/>
+    <param name = "temperature_at_end_attr_id" display="Temperature At End sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Temperature At End question." datatype="integer"/>
+    <param name = "wind_speed_at_end_attr_id" display="Wind Speed At End sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Wind Speed At End question." datatype="integer"/>
+    <param name = "cloud_cover_at_end_attr_id" display="Cloud Cover At End sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Cloud Cover At End question." datatype="integer"/>
+    <param name = "sun_exposure_attr_id" display="Sun Exposure sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Sun Exposure question." datatype="integer"/>
+    <param name = "vegetation_height_attr_id" display="Vegetation Height sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Vegetation Height question." datatype="integer"/>
+    <param name = "primary_habitat_attr_id" display="Primary habitat sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Primary Habitat question." datatype="integer"/>
+    <param name = "secondary_habitat_attr_id" display="Secondary habitat sample attr ID"
+        description = "ID of the sample attribute that holds the answer to the Secondary Habitat question." datatype="integer"/>
+    <param name = 'idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='csf.id' alias='sample_id' />
+  </params>
+  <columns>
+    <column name='sample_id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name='square_name' display='Square name' sql='square.name' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='pan_trap_moved' display='Pan-trap moved?' sql="csnf.attrs_json->>('#pan_trap_moved_attr_id#')" datatype="text"/>
+    <column name='pan_trap_station' display='Pan-trap station' sql="csnf.attrs_json->>('#pan_trap_station_attr_id#')" datatype="text"/>
+    <column name='pan_trap_active_from' display='Pan-trap active from' sql="csnf.attrs_json->>('#pan_trap_active_from_attr_id#')" datatype="text"/>
+    <column name='pan_trap_active_to' display='Pan-trap active to' sql="csnf.attrs_json->>('#pan_trap_active_to_attr_id#')" datatype="text"/>
+    <column name='pan_trap_disturbed' display='Pan-trap disturbed?' sql="csnf.attrs_json->>('#pan_trap_disturbed_attr_id#')" datatype="text"/>
+    <column name='temperature_at_start' display='Temperature at start' sql="csnf.attrs_json->>('#temperature_at_start_attr_id#')" datatype="text"/>
+    <column name='wind_speed_at_start' display='Wind speed at start' sql="csnf.attrs_json->>('#wind_speed_at_start_attr_id#')" datatype="text"/>
+    <column name='cloud_cover_at_start' display='Cloud (% cover) at start' sql="csnf.attrs_json->>('#cloud_cover_at_start_attr_id#')" datatype="text"/>
+    <column name='temperature_at_end' display='Temperature at end' sql="csnf.attrs_json->>('#temperature_at_end_attr_id#')" datatype="text"/>
+    <column name='wind_speed_at_end' display='Wind speed at end' sql="csnf.attrs_json->>('#wind_speed_at_end_attr_id#')" datatype="text"/>
+    <column name='cloud_cover_at_end' display='Cloud (% cover) at end' sql="csnf.attrs_json->>('#cloud_cover_at_end_attr_id#')" datatype="text"/>
+    <column name='sun_exposure' display='Sun (% duration exposure)' sql="csnf.attrs_json->>('#sun_exposure_attr_id#')" datatype="text"/>
+    <column name='vegetation_height' display='Vegetation height' sql="csnf.attrs_json->>('#vegetation_height_attr_id#')" datatype="text"/>
+    <column name='primary_habitat' display='Primary height' sql="csnf.attrs_json->>('#primary_habitat_attr_id#')" datatype="text"/>
+    <column name='secondary_habitat' display='Secondary height' sql="csnf.attrs_json->>('#secondary_habitat_attr_id#')" datatype="text"/>
+    <column name='comments' display='Comments' sql="csnf.comment" datatype="text"/>
+  </columns>
+</report>

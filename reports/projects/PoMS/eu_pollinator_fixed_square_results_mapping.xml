@@ -1,0 +1,57 @@
+<report
+    title="EU Pollinator Fixed Square Results Mapping"
+    description="Map for Fixed Square survey (supports My Own Data Only, and Regional Coodinator functionality)."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      JOIN locations square on square.id = csf.location_id
+          AND square.location_type_id = #1km_square_location_type_id# AND square.deleted = false 
+      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = square.id  
+          AND country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+      JOIN locations country on country.code = country_code_attr_val.text_value
+          AND country.location_type_id = #country_location_type_id# AND country.deleted = false
+      #agreements_join#
+      WHERE #sharing_filter# 
+        #idlist#
+        AND csf.survey_id = #survey_id#
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+  </query>
+  <order_bys>
+    <order_by>csf.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "survey_id" display="1km pan traps survey ID" description = "ID of the pan trap count survey." datatype="integer"/> 
+    <param name = "country_id" display="Country ID" description='Setup page config with country_id={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>country.id = #country_id#</where>
+    </param>
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">csf.created_by_id=#current_user_id#</where>
+    </param>
+    <param name = "country_code_loc_attr_id" display="Country code location attr ID"
+        description = "ID of the location attribute that holds the country code for an 1km location." datatype="integer"/>
+    <param name = "1km_square_location_type_id" display="1km Square location type ID"
+        description = "ID of the location type for 1km Squares." datatype="integer"/>
+    <param name = "country_location_type_id" display="Country location type ID"
+        description = "ID of the location type for countries." datatype="integer"/> 
+    <param name = 'idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='csf.id' alias='sample_id' />
+  </params>
+  <columns>
+    <column name='sample_id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(csf.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case csf.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="csf.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case csf.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="csf.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(csf.public_geom)" />
+  </columns>
+</report>
