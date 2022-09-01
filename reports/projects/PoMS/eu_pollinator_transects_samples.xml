@@ -18,7 +18,9 @@
           AND country.location_type_id = #country_location_type_id# AND country.deleted = false
       LEFT JOIN samples s_section on s_section.parent_id = s.id AND s_section.deleted=false
       LEFT JOIN cache_samples_nonfunctional s_section_nonfunct on s_section_nonfunct.id = s_section.id
+      #agreements_join#
       WHERE #sharing_filter#
+        #idlist#
         AND s.parent_id IS NULL
         AND s.survey_id = #survey_id#
         AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
@@ -54,6 +56,7 @@
         description = "ID of the location type for MVS Squares." datatype="integer"/>
     <param name = "country_location_type_id" display="Country location type ID"
         description = "ID of the location type for countries." datatype="integer"/>
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
   </params>
   <columns>
     <column name='transect_sample_id' sql='s.id' display='Transect sample ID' datatype="integer" in_count="true" />
