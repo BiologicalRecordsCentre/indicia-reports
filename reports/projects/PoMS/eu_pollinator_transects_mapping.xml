@@ -1,0 +1,68 @@
+<report
+    title="EU Pollinator Transects Mapping"
+    description="Map of transect samples. Includes My Own Data only, and regional coordinator options."
+>
+  <query website_filter_field="" training_filter_field="" >
+    SELECT #columns# 
+      FROM samples s
+      JOIN cache_samples_functional csf on csf.id = s.id
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN locations transect on transect.id = s.location_id 
+          AND transect.location_type_id = #transect_location_type_id# AND transect.deleted = false 
+      JOIN locations mvs_sites on mvs_sites.id = transect.parent_id 
+          AND mvs_sites.location_type_id = #mvs_square_location_type_id# AND mvs_sites.deleted = false
+      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = mvs_sites.id 
+          AND country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+      JOIN locations country on country.code = country_code_attr_val.text_value 
+          AND country.location_type_id = #country_location_type_id# AND country.deleted = false
+      #agreements_join#
+      WHERE #sharing_filter#
+        #idlist#
+        AND s.parent_id IS NULL
+        AND s.survey_id = #survey_id#
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+  </query>
+  <params>
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. 
+        Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "survey_id" display="Survey ID" description = "Survey ID to limit results to." datatype="integer"/>
+    <param name = "country_id" display="Country ID" description='Setup page config with country_id={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>country.id = #country_id#</where>
+    </param>
+    <param name="ownData" display="My data only?" datatype="checkbox">
+      <where value="1">s.created_by_id=#current_user_id#</where>
+    </param>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "country_code_loc_attr_id" display="Country code location attr ID"
+        description = "ID of the location attribute that holds the country code for an MVS location." datatype="integer"/>
+    <param name = "transect_location_type_id" display="Transect location type ID"
+        description = "ID of the location type for transects." datatype="integer"/>
+    <param name = "mvs_square_location_type_id" display="MVS Square location type ID"
+        description = "ID of the location type for MVS Squares." datatype="integer"/>
+    <param name = "country_location_type_id" display="Country location type ID"
+        description = "ID of the location type for countries." datatype="integer"/>
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+  </params>
+  <columns>
+    <column name='transect_sample_id' sql='s.id' display='Transect sample ID' datatype="integer" in_count="true" />
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='transect_name' display='Transect name' sql='csf.location_name' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case csf.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="csf.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="csf.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(csf.public_geom)" />
+  </columns>
+</report>
