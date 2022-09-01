@@ -1,31 +1,35 @@
 <report
-    title="EU Pollinator Transects Samples Download"
+    title="EU Pollinator Transects Samples"
     description="Sample download for EU Pollinator transects. 
-        Contains all child section samples along with parent sample columns."
+    Contains all child section samples, along with a selection of parent sample columns."
 >
   <query website_filter_field="" training_filter_field="" >
     SELECT #columns# 
-      FROM samples s_parent
-      JOIN cache_samples_nonfunctional s_parent_nonfunct on s_parent_nonfunct.id = s_parent.id
-      JOIN cache_samples_functional s_parent_funct on s_parent_funct.id = s_parent_nonfunct.id
-      JOIN locations transect on transect.id = s_parent.location_id AND transect.deleted = false AND transect.location_type_id = #transect_location_type_id#
-      JOIN locations mvs_sites on mvs_sites.id = transect.parent_id AND mvs_sites.deleted = false AND mvs_sites.location_type_id = #mvs_square_location_type_id#
-      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = mvs_sites.id AND 
-          country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
-      JOIN locations country on country.code = country_code_attr_val.text_value AND country.deleted = false AND country.location_type_id = #country_location_type_id#
-      LEFT JOIN samples s_section on s_section.parent_id = s_parent.id AND s_section.deleted=false
+      FROM samples s
+      JOIN cache_samples_functional csf on csf.id = s.id
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN locations transect on transect.id = s.location_id 
+          AND transect.location_type_id = #transect_location_type_id# AND transect.deleted = false 
+      JOIN locations mvs_sites on mvs_sites.id = transect.parent_id 
+          AND mvs_sites.location_type_id = #mvs_square_location_type_id# AND mvs_sites.deleted = false
+      JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = mvs_sites.id 
+          AND country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+      JOIN locations country on country.code = country_code_attr_val.text_value 
+          AND country.location_type_id = #country_location_type_id# AND country.deleted = false
+      LEFT JOIN samples s_section on s_section.parent_id = s.id AND s_section.deleted=false
       LEFT JOIN cache_samples_nonfunctional s_section_nonfunct on s_section_nonfunct.id = s_section.id
       WHERE #sharing_filter#
-        AND s_parent.parent_id IS NULL
-        AND s_parent.survey_id = #survey_id#
-        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s_parent.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
-        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s_parent.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+        AND s.parent_id IS NULL
+        AND s.survey_id = #survey_id#
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
   </query>
   <order_bys>
-    <order_by>s_parent.id DESC, s_section.id desc</order_by>
+    <order_by>s.id DESC, s_section.id DESC</order_by>
   </order_bys>
   <params>
-    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. 
+        Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = "survey_id" display="Survey ID" description = "Survey ID to limit results to." datatype="integer"/>
     <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
     <param name = "end_time_attr_id" display="End time sample attr ID" description = "ID of the sample attribute that holds the end time." datatype="integer"/>
@@ -38,7 +42,7 @@
       <where>country.id = #country_id#</where>
     </param>
     <param name="ownData" display="My data only?" datatype="checkbox">
-      <where value="1">s_parent.created_by_id=#current_user_id#</where>
+      <where value="1">s.created_by_id=#current_user_id#</where>
     </param>
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
@@ -52,22 +56,22 @@
         description = "ID of the location type for countries." datatype="integer"/>
   </params>
   <columns>
-    <column name='transect_sample_id' sql='s_parent.id' display='Transect sample ID' datatype="integer" in_count="true" />
+    <column name='transect_sample_id' sql='s.id' display='Transect sample ID' datatype="integer" in_count="true" />
     <column name='section_sample_id' sql='s_section.id' display='Section sample ID' datatype="integer" in_count="true" />
-    <column name='date_start' sql='s_parent_funct.date_start' visible="false"/>
-    <column name='date_end' sql='s_parent_funct.date_end' visible="false"/>
-    <column name='date_type' sql='s_parent_funct.date_type' visible="false"/>
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='transect_name' display='Transect name' sql='s_parent_funct.location_name' datatype="text"/>
-    <column name='grid_ref' display='Grid ref' sql='s_parent_nonfunct.public_entered_sref' datatype="text"/>
-    <column name='start_time' display='Start time' sql="s_parent_nonfunct.attrs_json->>('#start_time_attr_id#')" datatype="text"/>
-    <column name='end_time' display='End time' sql="s_parent_nonfunct.attrs_json->>('#end_time_attr_id#')" datatype="text"/>
-    <column name='wind_direction' display='Wind direction' sql="s_parent_nonfunct.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
-    <column name='wind_speed' display='Wind speed' sql="s_parent_nonfunct.attrs_json->>('#wind_speed_attr_id#')" datatype="text"/>
-    <column name='temperature' display='Temperature' sql="s_parent_nonfunct.attrs_json->>('#temperature_attr_id#')" datatype="text"/>
+    <column name='transect_name' display='Transect name' sql='csf.location_name' datatype="text"/>
+    <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='start_time' display='Start time' sql="csnf.attrs_json->>('#start_time_attr_id#')" datatype="text"/>
+    <column name='end_time' display='End time' sql="csnf.attrs_json->>('#end_time_attr_id#')" datatype="text"/>
+    <column name='wind_direction' display='Wind direction' sql="csnf.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
+    <column name='wind_speed' display='Wind speed' sql="csnf.attrs_json->>('#wind_speed_attr_id#')" datatype="text"/>
+    <column name='temperature' display='Temperature' sql="csnf.attrs_json->>('#temperature_attr_id#')" datatype="text"/>
     <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_cloud_percentage' display='Section cloud %' sql="s_section_nonfunct.attrs_json->>('#cloud_percentage_attr_id#')" datatype="text"/>
-    <column name='recorder_names' display='Recorder names' sql='s_parent_nonfunct.recorders' datatype="text"/>
-    <column name="notes" display='Notes' sql="s_parent_nonfunct.comment" datatype="text" />
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders' datatype="text"/>
+    <column name="notes" display='Notes' sql="csnf.comment" datatype="text" />
   </columns>
 </report>
