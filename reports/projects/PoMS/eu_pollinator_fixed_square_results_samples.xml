@@ -85,10 +85,10 @@
     <column name='pan_trap_active_to' display='Pan-trap active to' sql="csnf.attrs_json->>('#pan_trap_active_to_attr_id#')" datatype="text"/>
     <column name='pan_trap_disturbed' display='Pan-trap disturbed?' sql="csnf.attrs_json->>('#pan_trap_disturbed_attr_id#')" datatype="text"/>
     <column name='temperature_at_start' display='Temperature at start' sql="csnf.attrs_json->>('#temperature_at_start_attr_id#')" datatype="text"/>
-    <column name='wind_speed_at_start' display='Wind speed at start' sql="csnf.attrs_json->>('#wind_speed_at_start_attr_id#')" datatype="text"/>
-    <column name='cloud_cover_at_start' display='Cloud (% cover) at start' sql="csnf.attrs_json->>('#cloud_cover_at_start_attr_id#')" datatype="text"/>
     <column name='temperature_at_end' display='Temperature at end' sql="csnf.attrs_json->>('#temperature_at_end_attr_id#')" datatype="text"/>
+    <column name='wind_speed_at_start' display='Wind speed at start' sql="csnf.attrs_json->>('#wind_speed_at_start_attr_id#')" datatype="text"/>
     <column name='wind_speed_at_end' display='Wind speed at end' sql="csnf.attrs_json->>('#wind_speed_at_end_attr_id#')" datatype="text"/>
+    <column name='cloud_cover_at_start' display='Cloud (% cover) at start' sql="csnf.attrs_json->>('#cloud_cover_at_start_attr_id#')" datatype="text"/>
     <column name='cloud_cover_at_end' display='Cloud (% cover) at end' sql="csnf.attrs_json->>('#cloud_cover_at_end_attr_id#')" datatype="text"/>
     <column name='sun_exposure' display='Sun (% duration exposure)' sql="csnf.attrs_json->>('#sun_exposure_attr_id#')" datatype="text"/>
     <column name='vegetation_height' display='Vegetation height' sql="csnf.attrs_json->>('#vegetation_height_attr_id#')" datatype="text"/>
