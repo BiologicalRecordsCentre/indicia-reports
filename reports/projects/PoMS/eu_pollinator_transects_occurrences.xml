@@ -69,7 +69,7 @@
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='transect_name' display='Transect name' sql='csf.location_name' datatype="text"/>
-    <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='section_grid_ref' display='Section grid ref' sql='s_section_nonfunct.public_entered_sref' datatype="text"/>
     <column name='occurrence_id' sql='cof.id' display='Record ID' in_count="true" datatype="integer"/>
     <column name='taxon' sql='cttl.taxon' display='Species' datatype="integer"/>
     <column name='abundance' display='Count' sql="cnf.attrs_json->>('#abundance_attr_id#')" datatype="text"/>

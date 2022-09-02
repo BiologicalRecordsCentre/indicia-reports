@@ -66,7 +66,8 @@
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='transect_name' display='Transect name' sql='csf.location_name' datatype="text"/>
-    <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='grid_ref' display='Transect grid ref' sql='csnf.public_entered_sref' datatype="text"/>
+    <column name='section_grid_ref' display='Section grid ref' sql='s_section_nonfunct.public_entered_sref' datatype="text"/>
     <column name='start_time' display='Start time' sql="csnf.attrs_json->>('#start_time_attr_id#')" datatype="text"/>
     <column name='end_time' display='End time' sql="csnf.attrs_json->>('#end_time_attr_id#')" datatype="text"/>
     <column name='wind_direction' display='Wind direction' sql="csnf.attrs_json->>('#wind_direction_attr_id#')" datatype="text"/>
