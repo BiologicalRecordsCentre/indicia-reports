@@ -79,7 +79,11 @@
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='pan_trap_moved' display='Pan-trap moved?' sql="csnf.attrs_json->>('#pan_trap_moved_attr_id#')" datatype="text"/>
+    <column name='pan_trap_moved' display='Pan-trap moved?' sql="
+    CASE when csnf.attrs_json->>('#pan_trap_moved_attr_id#') = '1' 
+      THEN 'Yes'
+      ELSE 'No' 
+    END" datatype="text"/>
     <column name='pan_trap_station' display='Pan-trap station' sql="csnf.attrs_json->>('#pan_trap_station_attr_id#')" datatype="text"/>
     <column name='pan_trap_active_from' display='Pan-trap active from' sql="csnf.attrs_json->>('#pan_trap_active_from_attr_id#')" datatype="text"/>
     <column name='pan_trap_active_to' display='Pan-trap active to' sql="csnf.attrs_json->>('#pan_trap_active_to_attr_id#')" datatype="text"/>
