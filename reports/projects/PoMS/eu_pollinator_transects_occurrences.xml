@@ -58,6 +58,7 @@
         description = "ID of the location type for MVS Squares." datatype="integer"/>
     <param name = "country_location_type_id" display="Country location type ID"
         description = "ID of the location type for countries." datatype="integer"/>
+    <param name = "abundance_occ_attr_id" display="Abundance count occurrence attr ID" description = "ID of the abundance count occurrence attribute." datatype="integer"/>  
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
   </params>
   <columns>
@@ -71,6 +72,7 @@
     <column name='grid_ref' display='Grid ref' sql='csnf.public_entered_sref' datatype="text"/>
     <column name='occurrence_id' sql='cof.id' display='Record ID' in_count="true" datatype="integer"/>
     <column name='taxon' sql='cttl.taxon' display='Species' datatype="integer"/>
+    <column name='abundance' display='Count' sql="cnf.attrs_json->>('#abundance_attr_id#')" datatype="text"/>
     <column name='section_sun_percentage' display='Section sun %' sql="s_section_nonfunct.attrs_json->>('#sun_percentage_attr_id#')" datatype="text"/>
     <column name='section_cloud_percentage' display='Section cloud %' sql="s_section_nonfunct.attrs_json->>('#cloud_percentage_attr_id#')" datatype="text"/>
     <column name='recorder_names' display='Recorder names' sql='csnf.recorders' datatype="text"/>
