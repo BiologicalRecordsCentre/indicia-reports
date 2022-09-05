@@ -96,8 +96,8 @@
     <column name='cloud_cover_at_end' display='Cloud (% cover) at end' sql="csnf.attrs_json->>('#cloud_cover_at_end_attr_id#')" datatype="text"/>
     <column name='sun_exposure' display='Sun (% duration exposure)' sql="csnf.attrs_json->>('#sun_exposure_attr_id#')" datatype="text"/>
     <column name='vegetation_height' display='Vegetation height' sql="csnf.attrs_json->>('#vegetation_height_attr_id#')" datatype="text"/>
-    <column name='primary_habitat' display='Primary height' sql="csnf.attrs_json->>('#primary_habitat_attr_id#')" datatype="text"/>
-    <column name='secondary_habitat' display='Secondary height' sql="csnf.attrs_json->>('#secondary_habitat_attr_id#')" datatype="text"/>
+    <column name='primary_habitat' display='Primary habitat' sql="csnf.attrs_json->>('#primary_habitat_attr_id#')" datatype="text"/>
+    <column name='secondary_habitat' display='Secondary habitat' sql="csnf.attrs_json->>('#secondary_habitat_attr_id#')" datatype="text"/>
     <column name='comments' display='Comments' sql="csnf.comment" datatype="text"/>
   </columns>
 </report>
