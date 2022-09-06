@@ -55,5 +55,6 @@
     <column name='date' display='Date' datatype="date"/>
     <column name='floral_unit' display='Floral unit' sql="conf.attrs_json->>('#floral_unit_occ_attr_id#')" datatype="text"/>
     <column name='number_of_floral_units' display='Number Of Floral Units' sql="conf.attrs_json->>('#number_of_floral_units_occ_attr_id#')" datatype="text"/>
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders' datatype="text"/>
   </columns>
 </report>

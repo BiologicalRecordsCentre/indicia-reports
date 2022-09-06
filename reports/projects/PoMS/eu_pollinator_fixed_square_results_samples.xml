@@ -98,6 +98,7 @@
     <column name='vegetation_height' display='Vegetation height' sql="csnf.attrs_json->>('#vegetation_height_attr_id#')" datatype="text"/>
     <column name='primary_habitat' display='Primary habitat' sql="csnf.attrs_json->>('#primary_habitat_attr_id#')" datatype="text"/>
     <column name='secondary_habitat' display='Secondary habitat' sql="csnf.attrs_json->>('#secondary_habitat_attr_id#')" datatype="text"/>
+    <column name='recorder_names' display='Recorder names' sql='csnf.recorders' datatype="text"/>
     <column name='comments' display='Comments' sql="csnf.comment" datatype="text"/>
   </columns>
 </report>
