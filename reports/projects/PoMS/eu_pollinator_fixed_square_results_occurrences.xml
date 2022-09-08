@@ -8,6 +8,7 @@
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
       JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
       JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
+      JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.preferred_taxa_taxon_list_id
       JOIN locations square on square.id = csf.location_id
           AND square.location_type_id = #1km_square_location_type_id# AND square.deleted = false 
       JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = square.id  
@@ -53,6 +54,7 @@
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
+    <column name='taxon' sql='cttl.taxon' display='Species' datatype="integer"/>
     <column name='floral_unit' display='Floral unit' sql="conf.attrs_json->>('#floral_unit_occ_attr_id#')" datatype="text"/>
     <column name='number_of_floral_units' display='Number Of Floral Units' sql="conf.attrs_json->>('#number_of_floral_units_occ_attr_id#')" datatype="text"/>
   </columns>
