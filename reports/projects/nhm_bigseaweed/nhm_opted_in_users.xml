@@ -1,0 +1,47 @@
+<report
+    title="BigSeaweed Marketing Opt-in"
+    description="Returns a list of email addresses which have opted in for marketing in the parent sample." >
+  <query website_filter_field="su.website_id">
+  SELECT #columns#
+  FROM samples s
+  JOIN surveys su on su.id=s.survey_id and su.deleted=false
+  JOIN sample_attribute_values sav ON sav.sample_attribute_id=#opt_in_attr_id# AND sav.sample_id = s.id AND sav.deleted = false AND sav.int_value = 1
+  JOIN sample_attribute_values sav2 ON sav2.sample_attribute_id=#email_attr_id# AND sav2.sample_id = s.id AND sav2.deleted = false
+  LEFT JOIN (SELECT ins.id, ins.created_by_id, insav2.text_value, ins.created_on FROM samples ins
+  JOIN sample_attribute_values insav ON insav.sample_attribute_id=#opt_in_attr_id# AND insav.sample_id = ins.id AND insav.deleted = false
+  JOIN sample_attribute_values insav2 ON insav2.sample_attribute_id=#email_attr_id# AND insav2.sample_id = ins.id AND insav2.deleted = false
+  WHERE ins.survey_id = #survey_id# AND ins.deleted = false AND ins.parent_id IS NULL) later
+  ON LOWER(sav2.text_value) = LOWER(later.text_value) AND later.id > s.id
+  WHERE s.survey_id = #survey_id# AND s.deleted = false AND later.id IS NULL AND s.parent_id IS NULL
+  #filters#
+  </query>
+  <params>
+    <param
+        name='survey_id'
+        display='Survey'
+        description='Select the survey. Mandatory.'
+        datatype='lookup'
+        population_call='direct:survey:id:title' />
+    <param
+        name='email_attr_id'
+        display='Email attribute'
+        description='Select the sample attribute which holds the &quot;email&quot;. Mandatory.'
+        datatype='lookup'
+        population_call='direct:sample_attribute:id:caption' />
+    <param
+        name='opt_in_attr_id'
+        display='Opt in attribute'
+        description='Select the sample attribute which holds the &quot;Opt In&quot; flag. Mandatory.'
+        datatype='lookup'
+        population_call='direct:sample_attribute:id:caption' />
+  </params>
+  <columns>
+    <column name='email' sql='lower(sav2.text_value)' />
+    <column name='sample_id' sql='s.id' />
+    <column name='created_by_id' sql='s.created_by_id' />
+    <column name='created_on' sql='s.created_on' />
+  </columns>
+  <order_bys>
+    <order_by>sav2.text_value ASC</order_by>
+  </order_bys>
+</report>
