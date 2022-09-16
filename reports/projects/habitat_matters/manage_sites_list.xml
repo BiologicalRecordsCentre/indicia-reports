@@ -5,6 +5,7 @@
   <query website_filter_field="lw.website_id">
   SELECT #columns#
   FROM locations l
+  LEFT JOIN locations lp ON lp.id=l.parent_id AND lp.deleted=false
   LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
   LEFT JOIN (termlists_terms ttl1
     JOIN terms tinput ON tinput.id=ttl1.term_id
@@ -19,7 +20,7 @@
   WHERE l.deleted=false
   AND lw.website_id in (#website_ids#)
   -- Safety check so can't pull other sites.
-  AND l.location_type_id IN (19142, 19143, 19144)
+  AND l.location_type_id IN (19142, 19143, 19144, 20207)
   #idlist#
   #order_by#
   </query>
@@ -34,32 +35,31 @@
     <param name="search" display="Search for" datatype="text" default="">
       <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
     </param>
-    <param name="type_termlist_term_id" display="Type term" datatype="integer" default="">
-      <join>JOIN location_attribute_values vt on vt.location_id=l.id and vt.deleted=false AND vt.int_value=#type_termlist_term_id# AND vt.location_attribute_id IN (331, 332, 333)</join>
-    </param>
     <param name="user_id" display="User ID" datatype="integer" default="" emptyvalue="0" />
     <param name="limit_to_user" display="Limit to user's own sites" datatype="checkbox" default="" >
       <where>l.created_by_id=#user_id#</where>
     </param>
     <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.'
       datatype='idlist' fieldname='l.id' alias='location_id' default="" />
-    <param name="near" datatype="string" description="WKT geometry in EPSG:4326" default="">
-      <where>st_distance(boundary_geom, st_transform(st_geomfromtext('#near#', 4326), 900913))&lt;25000</where>
-    </param>
   </params>
   <columns>
-    <column name="location_id" display="ID" sql="l.id" />
-    <column name="name" display="Name" sql="l.name" />
-    <column name="code" display="Site code" sql="l.code" />
-    <column name="comment" display="Description" sql="l.comment" />
-    <column name="creation_date" sql="vague_date_to_string(vc.date_start_value, vc.date_end_value, vc.date_type_value)" />
-    <column name="created_by_id" sql="l.created_by_id" />
-    <column name="area" sql="va.float_value" />
-    <column name="can_edit" visible="false" sql="l.created_by_id=#user_id#" />
-    <column name="location_type_id" visible="false" sql="l.location_type_id" />
-    <column name="location_type" display="Type" sql="tinput.term" />
-    <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" />
-    <column name="centroid_sref_system" visible="false" sql="l.centroid_sref_system" />
+    <column name="location_id" display="ID" sql="l.id" datatype="integer" />
+    <column name="name" display="Name" sql="l.name" datatype="text" />
+    <column name="parent_site_id" visible="false" sql="lp.id" datatype="integer" />
+    <column name="parent_site_name" display="Part of site" sql="lp.name" datatype="text" />
+    <column name="creation_date" display="Date added" sql="to_char(l.created_on, 'DD/MM/YYYY')" datatype="text" />
+    <column name="location_type" display="Type" sql="replace(tinput.term, 'Built-environment ', '')" datatype="text" />
+    <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" datatype="text" />
+    <column name="suggested_parents" display="Suggested parents" sql="CASE WHEN l.location_type_id&lt;&gt;19142 AND l.parent_id IS NULL THEN
+    (SELECT string_agg(s.id::text || '|' || s.name || '|' || s.centroid_sref || '|' || l.id || '|' || l.name, '; ') FROM locations s WHERE St_Intersects(s.boundary_geom, l.boundary_geom) AND s.location_type_id=19142)
+    ELSE NULL END" />
     <column name="geom" visible="false" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
+    <column name="can_edit_site" visible="false" sql="l.created_by_id=#user_id# AND l.location_type_id=19142" />
+    <column name="can_view_site" visible="false" sql="l.location_type_id=19142" />
+    <column name="can_edit_habitat" visible="false" sql="l.created_by_id=#user_id# AND l.location_type_id=19143 AND lp.id IS NOT NULL" />
+    <column name="can_view_habitat" visible="false" sql="l.location_type_id=19143 AND lp.id IS NOT NULL" />
+    <column name="can_edit_feature" visible="false" sql="l.created_by_id=#user_id# AND l.location_type_id=19144 AND lp.id IS NOT NULL" />
+    <column name="can_view_feature" visible="false" sql="l.location_type_id=19144 AND lp.id IS NOT NULL" />
+    <column name="can_set_type" visible="false" sql="l.location_type_id=20207" />
   </columns>
 </report>
