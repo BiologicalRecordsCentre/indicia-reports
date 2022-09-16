@@ -31,8 +31,6 @@
           AND sav_other_target.sample_attribute_id = #other_target_smp_id#
           AND sav_other_target.deleted = false
 
-      LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id 
-        AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
       #agreements_join#
       WHERE #sharing_filter# 
         AND s.survey_id in (
@@ -107,7 +105,6 @@
       THEN 'Other' || ' (' || sav_other_target.text_value || ')'
       ELSE ctt_target_lang.term END" datatype="text"/> 
     <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
-    <column name='number_insects' display='Total number of insects' sql='sum(oav.int_value)' aggregate="true" datatype="integer"/>
     <column name='show_public_fit_count_edit_icon' display='Show public fit count edit icon' 
         sql="CASE WHEN 
             (CAST(s.survey_id AS character varying) = '#public_fit_count_survey_id#' OR
