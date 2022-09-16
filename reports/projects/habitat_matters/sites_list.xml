@@ -18,9 +18,8 @@
   #joins#
   WHERE l.deleted=false
   AND lw.website_id in (#website_ids#)
-  AND l.location_type_id=#location_type_id#
   -- Safety check so can't pull other sites.
-  AND l.location_type_id IN (19142, 19143, 19144)
+  AND l.location_type_id IN (19142, 19143, 19144, 20207)
   #idlist#
   #order_by#
   </query>
@@ -28,7 +27,9 @@
     <order_by>l.created_on DESC</order_by>
   </order_bys>
   <params>
-    <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer' />
+    <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='integer'>
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
     <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' default="" />
     <param name="search" display="Search for" datatype="text" default="">
       <where>l.name ilike '%#search#%' or l.code ilike '%#search#%'</where>
