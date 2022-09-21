@@ -10,6 +10,7 @@
   left join locations_websites lw on lw.location_id=l.id and lw.deleted=false
   left join cache_termlists_terms t on t.id=l.location_type_id
   left join location_attribute_values v on v.location_id=l.id and v.deleted=false and v.location_attribute_id in (#type_attr_ids#)
+  left join location_attribute_values va on va.location_id=l.id and va.deleted=false and va.location_attribute_id in (#area_attr_id#)
   left join cache_termlists_terms vt on vt.id=v.int_value
   #agreements_join#
   #joins#
@@ -26,7 +27,8 @@
       <where>l.parent_id=#parent_location_id#</where>
     </param>
     <param name="user_id" display="User ID" datatype="integer" />
-    <param name="type_attr_ids" display="Type attrs" datatype="integer[]" />
+    <param name="type_attr_ids" display="Type attr IDs" datatype="integer[]" />
+    <param name="area_attr_id" display="Area attr ID" datatype="integer" />
   </params>
   <columns>
     <column name="location_id" sql="l.id" />
@@ -35,6 +37,7 @@
     <column name="name" sql="l.name" />
     <column name="code" sql="l.code" />
     <column name="type" sql="case when t.term like '%habitat' then 'Habitat' when t.term like '%feature' then 'Feature' else 'Unknown' end || coalesce(' :: ' || vt.term, '')" />
+    <column name="area" sql="va.float_value" />
     <column name="habitat_edit" sql="t.term='Built-environment habitat' and l.created_by_id='0#user_id#'" />
     <column name="feature_edit" sql="t.term='Built-environment feature' and l.created_by_id='0#user_id#'" />
     <column name="habitat_view" sql="t.term='Built-environment habitat'" />
