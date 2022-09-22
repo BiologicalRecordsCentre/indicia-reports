@@ -9,7 +9,6 @@
       LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
       JOIN indicia.cache_samples_functional csf on csf.id = s.id
       JOIN indicia.cache_samples_nonfunctional csnf on csnf.id = csf.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
 
       LEFT JOIN sample_attribute_values sav_hab on sav_hab.sample_id = csnf.id 
           AND sav_hab.sample_attribute_id = #habitat_smp_id#
