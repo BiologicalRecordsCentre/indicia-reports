@@ -19,7 +19,7 @@ AND 690=ANY(o.location_ids)
     <column name="occurrence_id" sql="o.id" datatype="integer" />
     <column name="common" sql="cttl.default_common_name" datatype="text" />
     <column name="taxon" sql="cttl.preferred_taxon" datatype="text" />
-    <column name="recorder" sql="snf.attr_cms_username" datatype="text" />
+    <column name="recorder" sql="COALESCE(snf.attr_cms_username, snf.recorders)" datatype="text" />
     <column name="site" sql="o.location_name" datatype="text" />
     <column name="image_path" sql="oi.path" datatype="text" />
     <column name='date_start' sql='o.date_start' visible='false' />
