@@ -1,0 +1,41 @@
+<report
+    title="EU Pollinator Squares Summary Mappable"
+    description="A summary of which squares have been surveyed.
+    Can work with a map."
+>
+  <query website_filter_field="lw.website_id">
+    SELECT #columns# 
+      FROM locations l
+      LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.survey_id in (#survey_ids#)
+          AND ((csf.date_end &gt;= CAST(date_part('year', now()) || '-01-01' as date))
+          AND (csf.date_start &lt;= CAST(date_part('year', now()) || '-12-31' as date)))
+      WHERE l.location_type_id in (#location_type_ids#)
+      AND l.deleted = false
+      AND #website_filter#
+  </query>
+  <order_bys>
+    <order_by>l.code asc</order_by>
+  </order_bys>
+  <params>
+    <param name = "poly" display="Polygon" description = "Draw Polygon to limit data to." datatype="geometry"> 
+      <where>st_intersects(l.centroid_geom, st_geomfromtext('#poly#', 900913))</where>
+    </param> 
+    <param name = "location_type_ids" display="Location type Ids" description = "Comma separated list of Location IDs to limit report to." datatype="integer"/>  
+    <param name = "survey_ids" display="Survey IDs" description = "Comma separated list of Survey IDs to limit report to." datatype="text"/>
+    <param name="idlist" display="Location IDs" description="Comma separated list of location IDs to load" datatype='idlist' default=''>
+      <where>l.id in (#idlist#)</where>
+    </param> 
+  </params>
+  <columns>
+    <column name='id' sql="l.id" display='Square ID' datatype="integer" in_count="true" visible="false"/>
+    <column name='code' sql="l.code" display='Code' datatype="text"/>
+    <column name='name' sql="l.name" display='Square' datatype="text"/>
+    <column name="surveyed" display='Surveyed?' sql="case when count(csf.id) > 0 then 'Yes' else 'No' end" datatype="text" aggregate="true"/> 
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="case when count(csf.id) > 0 then 0.5 else 0.5 end" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="case when count(csf.id) > 0 then 'blue' else 'red' end" aggregate="true"/>
+    <column name="fc" visible="false" feature_style="fillColor" sql="case when count(csf.id) > 0 then 'blue' else 'red' end" aggregate="true"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(l.centroid_geom)"/>
+    <column name="count" display='Count for this year' sql="count(distinct csf.id)" datatype="integer" aggregate="true"/> 
+  </columns>
+</report>
