@@ -1,0 +1,24 @@
+<report
+    title="All product solutions"
+    description="Product solutions for a site, including child features and habitats"
+>
+  <query website_filter_field="lw.website_id">
+  select #columns#
+  from locations l
+  join location_attribute_values v on v.location_id=l.id and v.deleted=false and v.location_attribute_id=336
+  join locations_websites lw on lw.location_id=l.id and lw.deleted=false
+  where l.id=#location_id# OR l.parent_id=#location_id#
+  and l.deleted=false
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.location_type_id, l.name</order_by>
+  </order_bys>
+  <params>
+    <param name="location_id" datatype="integer" />
+  </params>
+  <columns>
+    <column name="location_name" sql="l.name" datatype="text" />
+    <column name="data" sql="v.text_value" datatype="text" />
+  </columns>
+</report>
