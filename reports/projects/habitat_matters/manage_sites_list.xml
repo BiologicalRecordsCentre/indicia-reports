@@ -60,6 +60,7 @@
     <column name="can_view_habitat" visible="false" sql="l.location_type_id=19143 AND lp.id IS NOT NULL" />
     <column name="can_edit_feature" visible="false" sql="l.created_by_id=#user_id# AND l.location_type_id=19144 AND lp.id IS NOT NULL" />
     <column name="can_view_feature" visible="false" sql="l.location_type_id=19144 AND lp.id IS NOT NULL" />
+    <column name="can_preview" visible="false" sql="l.location_type_id in (19143, 19144) and lp.id IS NULL" />
     <column name="can_set_type" visible="false" sql="l.location_type_id=20207" />
   </columns>
 </report>
