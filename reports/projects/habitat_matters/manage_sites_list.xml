@@ -51,7 +51,7 @@
     <column name="location_type" display="Type" sql="replace(tinput.term, 'Built-environment ', '')" datatype="text" />
     <column name="centroid_sref" display="Grid ref." sql="l.centroid_sref" datatype="text" />
     <column name="suggested_parents" display="Suggested parents" sql="CASE WHEN l.location_type_id&lt;&gt;19142 AND lp.id IS NULL THEN
-    (SELECT string_agg(s.id::text || '|' || s.name || '|' || s.centroid_sref || '|' || l.id || '|' || l.name, '; ') FROM locations s WHERE St_Intersects(s.boundary_geom, l.boundary_geom) AND s.location_type_id=19142)
+    (SELECT string_agg(s.id::text || '|' || s.name || '|' || s.centroid_sref || '|' || l.id || '|' || l.name, '; ') FROM locations s WHERE St_Intersects(s.boundary_geom, l.boundary_geom) AND s.location_type_id=19142 AND s.deleted=false)
     ELSE NULL END" />
     <column name="geom" visible="false" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
     <column name="can_edit_site" visible="false" sql="l.created_by_id=#user_id# AND l.location_type_id=19142" />
