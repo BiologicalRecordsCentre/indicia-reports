@@ -59,9 +59,8 @@
       #agreements_join#
       WHERE #sharing_filter# AND u.id=#iUserID# 
       AND (csf.location_id=#plot_id# OR #plot_id#=0)
-      AND 
-        ((trim('#year_sort_order#') = '' OR '#year_sort_order#'='Click here' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
-        AND (trim('#year_sort_order#')  = '' OR '#year_sort_order#'='Click here' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+      -- must include minus sign because year_sort_order is always negative e.g. -2022 (because of the way it needs to work to get the year order right)
+      AND (trim('#year_sort_order#')  = '' OR '-' || extract(year from csf.date_start) = '#year_sort_order#')
       AND u.deleted=false) as sub
       #order_by#
   </query>
