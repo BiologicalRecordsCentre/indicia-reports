@@ -60,7 +60,7 @@
       WHERE #sharing_filter# AND u.id=#iUserID# 
       AND (csf.location_id=#plot_id# OR #plot_id#=0)
       AND 
-        ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='Click here' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        ((trim('#year_sort_order#') = '' OR '#year_sort_order#'='Click here' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
         AND (trim('#year_sort_order#')  = '' OR '#year_sort_order#'='Click here' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
       AND u.deleted=false) as sub
       #order_by#
@@ -83,7 +83,7 @@
             no_vice_county_found_message=0,vice_county_location_attribute_id=0,pss_mode=1,user_square_attr_id=#person_square_attr_id#' datatype="lookup"
         emptyvalue='0'/>
     <param name='year_sort_order' display='Year' description='Select a year, or leave blank for all years'
-        population_call='report:projects/npms/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/></params>
+        population_call='report:projects/npms/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup"/></params>
   <columns>
     <column name='sample_id' sql='csf.id' display='ID' in_count="true" distincton="true"/>
     <column name='sample_1_id' sql="coalesce(case when savSurv1.int_value != 0 then savSurv1.int_value ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
