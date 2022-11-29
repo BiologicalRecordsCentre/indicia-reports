@@ -137,6 +137,7 @@
     <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
     <param name = "intersect_location_ids" display="Intersect location IDs" description='Setup page config with intersect_location_ids={profile_indicia_coordinate_country}.' 
         emptyvalue="0" default="0"/>
+    <param name = "image_path_prefix" display="Image path prefix" description = "Text to be placed in front of image filename to create full path." datatype="text" emptyvalue="" default=""/> 
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
@@ -178,7 +179,12 @@
       CASE WHEN sav_target.int_value = #other_target_tt_id# 
       THEN 'Other' || ' (' || sav_other_target.text_value || ')'
       ELSE ctt_target_lang.term END" datatype="text"/> 
-    <column name='target_photo' display='Photo of target flower' sql='csnf.media' img='true' />
+    <column name='target_photo' display='Photo of target flower' sql="
+      CASE when '#image_path_prefix#' != '' THEN
+        '#image_path_prefix#' || csnf.media
+      ELSE
+        csnf.media
+      END" img='true' />
     <column name="cover_within_patch_attr_id" display='Cover within patch' sql="ctt_cover_lang.term" datatype="text" />
     <column name="flowers_counted_attr_id" display='Flowers counted' sql="sav_flowers_counted.int_value" datatype="text" />
     <column name="flower_unit_attr_id" display='Flower unit' sql="ctt_flowers_unit_lang.term" datatype="text" />
