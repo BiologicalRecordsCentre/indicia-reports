@@ -1,0 +1,52 @@
+<report
+    title="Select occurrences to add insect data mapping."
+    description="Map occurrences with specimen code filter."
+>
+  <query website_filter_field="o.website_id" standard_params="occurrences"
+         created_by_field="o.created_by_id">
+  SELECT #columns#
+  FROM cache_samples_functional csf
+  JOIN cache_samples_nonfunctional snf ON snf.id=csf.id
+  JOIN cache_occurrences_functional o on o.sample_id = snf.id
+  JOIN cache_occurrences_nonfunctional conf on conf.id = o.id
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+    AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+    AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+    AND ('#specimen_code#' = '' OR '#specimen_code#' = conf.attrs_json->>('#specimen_code_occ_attr_id#'))
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>csf.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = "specimen_code_occ_attr_id" display="Specimen code occurrence attribute ID" description = "ID of the occurrence attribute that holds the specimen code." datatype="integer"/>  
+    <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
+           description='Comma separated list of sample attribute IDs to include as columns in the report' />
+    <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "specimen_code" display="Specimen code" description = "Specimen code to search for. Leave blank for all." datatype="text" emptyvalue=''/>  
+  </params>
+  <columns>
+    <column name='sample_id' display='Sample ID' sql='csf.id' datatype="integer"
+        template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
+    <column name='source' display='Source' datatype="text"
+        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
+    <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
+    <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
+    <column name='date_start' sql='csf.date_start' visible='false' />
+    <column name='date_end' sql='csf.date_end' visible='false' />
+    <column name='date_type' sql='csf.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
+    <column name='created_by_id' visible='false' sql='csf.created_by_id' datatype="integer" />
+    <column name='record_status' display='State' sql='csf.record_status' visible="false" />
+    <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(csf.created_by_id AS character varying) = '#user_id#' AND csf.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
+    <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN csf.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
+    <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
+    <column name="geom" visible="false" mappable="true" sql="st_astext(o.public_geom)" in_count="true" />
+    <column name="sref_precision" visible="false" sql="1" />
+  </columns>
+</report>
