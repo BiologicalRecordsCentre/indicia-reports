@@ -1,0 +1,235 @@
+<report
+    title="Autofeed occurrences for Elasticsearch (standard filters)"
+    description="A list of occurrences designed for feeding into Elasticsearch or a similar JSON store."
+    featured="true"
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id" training_filter_field=""
+         standard_params="occurrences" count_field="o.*" blocked_sharing_tasks_field="o.blocked_sharing_tasks">
+    DROP TABLE IF EXISTS filtered_occurrences;
+    DROP TABLE IF EXISTS output_rows;
+
+    SELECT o.*
+    INTO TEMPORARY filtered_occurrences
+    FROM cache_occurrences_functional o
+    LEFT JOIN work_queue q ON q.record_id=o.id AND q.entity='occurrence' and q.task in ('task_cache_builder_attrs_occurrence', 'task_spatial_index_builder_occurrence')
+    #agreements_join#
+    #joins#
+    WHERE #sharing_filter#
+    AND q.id IS NULL
+    #filters#
+    #order_by#
+    LIMIT #limit#;
+
+    SELECT #columns#
+    INTO TEMPORARY output_rows
+    FROM filtered_occurrences o
+    JOIN cache_occurrences_nonfunctional onf ON onf.id=o.id
+    JOIN occurrences occ on occ.id=o.id AND occ.deleted=false
+    JOIN cache_samples_functional s ON s.id=o.sample_id
+    JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
+    LEFT JOIN locations l ON l.id=o.location_id AND l.deleted=false AND o.private=false AND o.sensitive=false;
+
+    -- Parent sample data
+    UPDATE output_rows o
+    SET recorded_parent_location_id = CASE WHEN o.private='false' AND o.sensitive='false' THEN lp.id ELSE null END,
+      recorded_parent_location_name = CASE WHEN o.private='false' AND o.sensitive='false' THEN lp.name ELSE null END,
+      recorded_parent_location_code = CASE WHEN o.private='false' AND o.sensitive='false' THEN lp.code ELSE null END,
+      parent_sample_attrs_json=snfp.attrs_json
+    FROM samples sp
+    JOIN cache_samples_nonfunctional snfp ON snfp.id=sp.id
+    LEFT JOIN locations lp ON lp.id=sp.location_id AND lp.deleted=false
+    WHERE sp.id=o.parent_sample_id AND sp.deleted=false;
+
+    -- Use parents of locations if no parent sample location.
+    UPDATE output_rows o
+    SET recorded_parent_location_id = lp.id,
+      recorded_parent_location_name = lp.name,
+      recorded_parent_location_code = lp.code
+    FROM samples sc
+    JOIN locations lc ON lc.id=sc.location_id AND lc.deleted=false
+    JOIN locations lp ON lp.id = lc.parent_id AND lp.deleted=false
+    WHERE sc.id=o.sample_id AND sc.deleted=false
+    AND o.recorded_parent_location_id IS NULL
+    AND o.private='false' AND o.sensitive='false';
+
+    SELECT *
+    FROM output_rows o
+    #order_by#
+  </query>
+  <count_query>
+    SELECT count(*) FROM filtered_occurrences o
+    WHERE 1=1
+  </count_query>
+  <params>
+    <!-- last_id and autofeed_tracking_from parameters required for autofeed to work. -->
+    <param name="last_id" display="Last ID" datatype="integer" default="" order_by="o.id ASC">
+      <where>o.id &gt; #last_id#</where>
+    </param>
+    <param name="autofeed_tracking_from" display="Autofeed tracking from" datatype="integer" default="" order_by="o.tracking ASC">
+      <where>o.tracking >= #autofeed_tracking_from#</where>
+    </param>
+    <param name="limit" datatype="integer" default="10000" />
+  </params>
+  <columns>
+    <!-- Tracking field called "id" is required for autofeed to work. -->
+    <column name="id" sql="o.id" datatype="integer" />
+    <column name="occurrence_external_key" sql="o.external_key" datatype="text" />
+    <column name="sample_external_key" sql="s.external_key" datatype="text" />
+    <column name="created_by_id" sql="o.created_by_id" datatype="integer" />
+    <column name="website_id" sql="o.website_id" datatype="integer" />
+    <column name="survey_id" sql="o.survey_id" datatype="integer" />
+    <column name="sample_id" sql="o.sample_id" datatype="integer" />
+    <column name="parent_sample_id" sql="o.parent_sample_id" datatype="integer" />
+    <column name="group_id" sql="o.group_id" datatype="integer" />
+    <column name="website_title" sql="snf.website_title" datatype="text" />
+    <column name="survey_title" sql="snf.survey_title" datatype="text" />
+    <column name="group_title" sql="snf.group_title" datatype="text" />
+    <column name="recorders" sql="snf.recorders" datatype="text" />
+    <column name="taxon_key" sql="coalesce(cttl.search_code, cttl.external_key)" datatype="text" />
+    <column name="accepted_taxon_key" sql="cttl.external_key" datatype="text" />
+    <column name="taxa_taxon_list_id" sql="o.taxa_taxon_list_id" datatype="integer" />
+    <column name="taxon_meaning_id" sql="o.taxon_meaning_id" datatype="integer" />
+    <column name="taxon_list_id" sql="cttl.taxon_list_id" datatype="integer" />
+    <column name="taxon_list_title" sql="cttl.taxon_list_title" datatype="text" />
+    <column name="date_start" sql="o.date_start" datatype="date" />
+    <column name="date_end" sql="o.date_end" datatype="date" />
+    <column name="date_type" sql="o.date_type" datatype="text" />
+    <column name="day_of_year" sql="case o.date_type when 'D' then extract(doy from o.date_start) else null end" datatype="integer" />
+    <column name="week" sql="case
+            when coalesce(date_part('year', o.date_start), 0)=coalesce(date_part('year', o.date_end), 0)
+                and coalesce(floor(extract(doy from o.date_start)/7+1), 0)=coalesce(floor(extract(doy from o.date_end)/7+1), 0)
+              then coalesce(floor(extract(doy from o.date_start)/7+1), 0)
+            else null
+          end" datatype="integer" />
+    <column name="ukbms_week" sql="case
+            when coalesce(date_part('year', o.date_start), 0)=coalesce(date_part('year', o.date_end), 0)
+                and
+                  floor((extract('doy' from o.date_start) - extract('doy' from (extract('year' from o.date_start) || '-04-01')::date))/7)
+                  =
+                  floor((extract('doy' from o.date_end) - extract('doy' from (extract('year' from o.date_end) || '-04-01')::date))/7)
+              then floor((extract('doy' from o.date_start) - extract('doy' from (extract('year' from o.date_start) || '-04-01')::date))/7) + 1
+            else null
+          end" datatype="integer" />
+    <column name="month" sql="case
+            when coalesce(date_part('year', o.date_start), 0)=coalesce(date_part('year', o.date_end), 0)
+              and coalesce(date_part('month', o.date_start), 0)=coalesce(date_part('month', o.date_end), 0) then coalesce(date_part('month', o.date_start), 0)
+            else null
+          end" datatype="integer" />
+    <column name="year" sql="case
+            when coalesce(date_part('year', o.date_start), 0)=coalesce(date_part('year', o.date_end), 0) then coalesce(date_part('year', o.date_start), null)
+            else null
+          end" datatype="integer" />
+    <column name="geom" sql="st_astext(st_removerepeatedpoints(st_transform(o.public_geom, 4326)))" datatype="text" />
+    <column name="point" sql="st_y(st_transform(st_centroid(o.public_geom), 4326))::text || ',' || st_x(st_transform(st_centroid(o.public_geom), 4326))::text" datatype="text" />
+    <column name="map_sq_srid" sql="COALESCE(get_output_srid(o.public_geom), 3857)" datatype="integer" />
+    <column name="map_sq_1km" sql="CASE
+      WHEN onf.sensitivity_precision > 1000 THEN NULL
+      ELSE TRIM(leading 'POINT(' FROM TRIM(trailing ')' FROM st_astext(st_centroid(st_transform(reduce_precision(o.public_geom, false, 1000), 4326)))))
+    END" datatype="text" />
+    <column name="map_sq_2km" sql="CASE
+      WHEN onf.sensitivity_precision > 2000 THEN NULL
+      ELSE TRIM(leading 'POINT(' FROM TRIM(trailing ')' FROM st_astext(st_centroid(st_transform(reduce_precision(o.public_geom, false, 2000), 4326)))))
+    END" datatype="text" />
+    <column name="map_sq_10km" sql="CASE
+      WHEN onf.sensitivity_precision > 10000 THEN NULL
+      ELSE TRIM(leading 'POINT(' FROM TRIM(trailing ')' FROM st_astext(st_centroid(st_transform(reduce_precision(o.public_geom, false, 10000), 4326)))))
+    END" datatype="text" />
+    <column name="input_sref" sql="COALESCE(snf.public_entered_sref, onf.output_sref)" datatype="text" />
+    <column name="input_sref_system" sql="CASE WHEN snf.public_entered_sref IS NULL THEN onf.output_sref_system ELSE snf.entered_sref_system END" datatype="text" />
+    <column name="output_sref" sql="onf.output_sref" datatype="text" />
+    <column name="output_sref_system" sql="onf.output_sref_system" datatype="text" />
+    <column name="coordinate_uncertainty_in_meters"
+              sql="CASE
+      WHEN o.sensitive=true OR snf.privacy_precision IS NOT NULL OR snf.entered_sref_system NOT SIMILAR TO '[0-9]+' THEN
+        get_sref_precision(onf.output_sref, onf.output_sref_system, null)
+      ELSE COALESCE(snf.attr_sref_precision, 50)
+    END"
+            datatype="float"
+            term="http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters" />
+    <column name="given_locality_name" sql="o.location_name" datatype="text" />
+    <column name="recorded_location_id" sql="l.id" datatype="integer" />
+    <column name="recorded_location_name" sql="l.name" datatype="text" />
+    <column name="recorded_location_code" sql="l.code" datatype="text" />
+    <column name="recorded_parent_location_id" sql="null::integer" datatype="integer" />
+    <column name="recorded_parent_location_name" sql="null::text" datatype="text" />
+    <column name="recorded_parent_location_code" sql="null::text" datatype="text" />
+    <column name="indexed_location_ids" sql="array_to_string(o.location_ids, ',')" datatype="text" />
+    <column name="comment" sql="onf.comment" datatype="text" />
+    <column name="sample_comment" sql="snf.comment" datatype="text" />
+    <column name="licence_code" sql="onf.licence_code" datatype="text" />
+    <column name="attr_behaviour" sql="onf.attr_behaviour" datatype="text" />
+    <column name="attr_reproductive_condition" sql="onf.attr_reproductive_condition" datatype="text" />
+    <column name="attr_stage" sql="COALESCE(onf.attr_stage, onf.attr_sex_stage)" datatype="text" />
+    <column name="attr_sex" sql="onf.attr_sex" datatype="text" />
+    <column name="attr_sex_stage_count" sql="onf.attr_sex_stage_count" datatype="text" />
+    <column name="attr_sex_stage_count_exact" sql="case when onf.attr_sex_stage_count similar to '[0-9]{1,9}' then onf.attr_sex_stage_count::integer else null end" />
+    <column name="attr_certainty" sql="onf.attr_certainty" datatype="text" />
+    <column name="attr_det_name" sql="coalesce(onf.attr_det_full_name, coalesce(onf.attr_det_first_name, '') || ' ' || onf.attr_det_last_name)" datatype="text" />
+    <column name="attr_biotope" sql="snf.attr_biotope" datatype="text" />
+    <column name="attr_sample_method" sql="snf.attr_sample_method" datatype="text" />
+    <column name="media_data" sql="CASE
+      WHEN o.media_count>0 AND o.sensitive=false AND snf.privacy_precision IS NULL THEN
+        (SELECT string_agg(om.path || '~~' || COALESCE(om.caption, '') || '~~' ||  COALESCE(l.code, '') || '~~' ||  COALESCE(t.term, ''), '@@')
+        FROM occurrence_media om
+        LEFT JOIN licences l ON l.id=om.licence_id
+        LEFT JOIN cache_termlists_terms t ON t.id=om.media_type_id
+        WHERE om.occurrence_id=o.id AND om.deleted=false)
+      ELSE null
+      END" datatype="text" />
+    <column name="event_media_data" sql="CASE
+      WHEN s.media_count>0 AND s.sensitive=false AND s.private=false THEN
+        (SELECT string_agg(sm.path || '~~' || COALESCE(sm.caption, '') || '~~' ||  COALESCE(l.code, '') || '~~' ||  COALESCE(t.term, ''), '@@')
+        FROM sample_media sm
+        LEFT JOIN licences l ON l.id=sm.licence_id
+        LEFT JOIN cache_termlists_terms t ON t.id=sm.media_type_id
+        WHERE sm.sample_id=s.id AND sm.deleted=false)
+      ELSE null
+      END" datatype="text" />
+    <column name="created_on" sql="to_char(o.created_on, 'yyyy-mm-dd HH24:MI:SS.MS')" datatype="date" />
+    <column name="updated_on" sql="to_char(o.updated_on, 'yyyy-mm-dd HH24:MI:SS.MS')" datatype="date" />
+    <column name="record_status" sql="o.record_status" datatype="text" />
+    <column name="record_substatus" sql="coalesce(o.record_substatus, 0)" datatype="integer" />
+    <column name="record_decision_source" sql="occ.record_decision_source" datatype="text" />
+    <column name="verified_by_id" sql="occ.verified_by_id" datatype="integer" />
+    <column name="verifier" sql="onf.verifier" datatype="text" />
+    <column name="verified_on" sql="to_char(o.verified_on, 'yyyy-mm-dd HH24:MI:SS.MS')" datatype="date" />
+    <column name="data_cleaner_info" sql="onf.data_cleaner_info" datatype="text" />
+    <column name="data_cleaner_result" sql="o.data_cleaner_result::text" datatype="text" />
+    <column name="identification_difficulty" sql="o.identification_difficulty" datatype="integer" />
+    <column name='verification_checks_enabled' sql="o.verification_checks_enabled::text" datatype="boolean" />
+    <column name="verification_rule_types_applied_json" sql="to_json(applied_verification_rule_types)::text" datatype="text" />
+    <column name="query" sql="o.query" datatype="text" />
+    <column name="zero_abundance" sql="o.zero_abundance::text" datatype="text" />
+    <column name="trial" sql="o.training::text" datatype="text" />
+    <column name="private" sql="s.private::text" datatype="text" />
+    <column name="privacy_precision" sql="snf.privacy_precision" datatype="integer" />
+    <column name="sensitive" sql="o.sensitive::text" datatype="text" />
+    <column name="sensitivity_precision" sql="onf.sensitivity_precision" datatype="integer" />
+    <!-- Flag sensitivity_blur = B for blurred version of a sensitive or private record. -->
+    <column name="sensitivity_blur" sql="CASE WHEN o.sensitive OR s.private THEN 'B' ELSE null END" datatype="text" />
+    <column name="confidential" sql="o.confidential::text" datatype="boolean" />
+    <column name="release_status" sql="o.release_status" datatype="text" />
+    <column name="sample_attrs_json" sql="snf.attrs_json" datatype="text" />
+    <column name="parent_sample_attrs_json" sql="null::json" datatype="text" />
+    <column name="occurrence_attrs_json" sql="onf.attrs_json" datatype="text" />
+    <column name="tracking" sql="o.tracking" datatype="integer" />
+    <column name="input_form" sql="o.input_form" datatype="text" />
+    <!-- Taxon info should get overwritten by master list data, but obtain default values to use just in case not
+      properly mapped -->
+    <column name="taxon_name" sql="cttl.taxon" datatype="text" />
+    <column name="taxon_authority" sql="cttl.authority" datatype="text" />
+    <column name="accepted_taxon_name" sql="cttl.preferred_taxon" datatype="text" />
+    <column name="accepted_taxon_authority" sql="cttl.preferred_authority" datatype="text" />
+    <column name="taxon_group_id" sql="cttl.taxon_group_id" datatype="integer" />
+    <column name="taxon_group" sql="cttl.taxon_group" datatype="text" />
+    <column name="input_taxon_group_id" sql="cttl.taxon_group_id" datatype="integer" />
+    <column name="input_taxon_group" sql="cttl.taxon_group" datatype="text" />
+    <column name="common_name" sql="cttl.default_common_name" datatype="text" />
+    <column name="taxon_rank" sql="cttl.taxon_rank" datatype="text" />
+    <column name="taxon_rank_sort_order" sql="cttl.taxon_rank_sort_order" datatype="integer" />
+    <column name="taxon_kingdom" sql="cttl.kingdom_taxon" datatype="integer" />
+    <column name="taxon_order" sql="cttl.order_taxon" datatype="integer" />
+    <column name="taxon_family" sql="cttl.order_taxon" datatype="integer" />
+  </columns>
+</report>
