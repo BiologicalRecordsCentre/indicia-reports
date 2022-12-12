@@ -7,6 +7,7 @@
   SELECT #columns#
   FROM cache_occurrences_functional o
   JOIN cache_occurrences_nonfunctional conf on conf.id = o.id
+  JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id and cttl.taxon_list_id in (#taxon_list_ids#)
   JOIN cache_samples_functional csf on csf.id = o.sample_id
   JOIN cache_samples_nonfunctional snf ON snf.id=csf.id
   LEFT JOIN locations l on l.id=csf.location_id and l.deleted=false
@@ -15,7 +16,7 @@
   WHERE #sharing_filter#
     AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
     AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
-    AND ('#specimen_code#' = '' OR '#specimen_code#' = conf.attrs_json->>('#specimen_code_occ_attr_id#'))
+    AND ('#specimen_code_param#' = '' OR '#specimen_code_param#' = conf.attrs_json->>('#specimen_code_occ_attr_id#'))
   #idlist#
   </query>
   <order_bys>
@@ -28,11 +29,18 @@
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
-    <param name = "specimen_code" display="Specimen code" description = "Specimen code to search for. Leave blank for all." datatype="text" emptyvalue=''/>  
+    <param name = "specimen_code_param" display="Specimen code" description = "Specimen code to search for. Leave blank for all.
+        Note: Do not change name to specimen_code otherwise column filter will fail." datatype="text" emptyvalue=''/>
+    <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
+    <param name = "taxon_list_ids" display="Taxon list ids" description = "Only include occurrences in these taxon_list_ids." datatype="text"/>  
   </params>
   <columns>
     <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
-    <column name='occurrence_id' display='Occurrence ID' sql='o.id' datatype="integer" />
+    <column name='occurrence_id' display='Occurrence ID' sql='o.id' datatype="integer" incount="true"/>
+    <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
+    <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text" />
+    <column name='verifier' display='Verifier' sql="conf.verifier" datatype="text" />
+    <column name='verified_on' display='Verified on' sql="o.verified_on" datatype="date" />
     <column name='sample_id' display='Sample ID' sql='csf.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='source' display='Source' datatype="text"
@@ -44,8 +52,7 @@
     <column name='date_start' sql='csf.date_start' visible='false' />
     <column name='date_end' sql='csf.date_end' visible='false' />
     <column name='date_type' sql='csf.date_type' visible='false' />
-    <column name='date' display='Date' datatype="date" />
-    <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
+    <column name='date' display='Sample date' datatype="date" />
     <column name='created_by_id' visible='false' sql='csf.created_by_id' datatype="integer" />
     <column name='record_status' display='State' sql='csf.record_status' visible="false" />
     <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(csf.created_by_id AS character varying) = '#user_id#' AND csf.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
