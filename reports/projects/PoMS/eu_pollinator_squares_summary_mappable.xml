@@ -8,8 +8,6 @@
       FROM locations l
       LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
       LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.survey_id in (#survey_ids#)
-          AND ((csf.date_end &gt;= CAST(date_part('year', now()) || '-01-01' as date))
-          AND (csf.date_start &lt;= CAST(date_part('year', now()) || '-12-31' as date)))
       WHERE l.location_type_id in (#location_type_ids#)
       AND l.deleted = false
       AND #website_filter#
@@ -36,6 +34,6 @@
     <column name="sc" visible="false" feature_style="strokeColor" sql="case when count(csf.id) > 0 then 'blue' else 'red' end" aggregate="true"/>
     <column name="fc" visible="false" feature_style="fillColor" sql="case when count(csf.id) > 0 then 'blue' else 'red' end" aggregate="true"/>
     <column name="geom" visible="false" mappable="true" sql="st_astext(l.centroid_geom)"/>
-    <column name="count" display='Count for this year' sql="count(distinct csf.id)" datatype="integer" aggregate="true"/> 
+    <column name="count" display='Total count' sql="count(distinct csf.id)" datatype="integer" aggregate="true"/> 
   </columns>
 </report>
