@@ -29,7 +29,7 @@
   <params>
     <param name='location_type_ids' display='Location type IDs' description="List of location types to include" datatype='text' />
     <param name='country_loc_attr_id' display='Country location attribute ID' description="ID of the location attribute that hold's a transects country" datatype='integer' />
-    <param name='coordinator_country_id' display='Coordinator country ID' description="ID of the country the coordinator is associated with" datatype='integer' />
+    <param name='coordinator_country_id' display='Coordinator country ID' description="ID of the country the coordinator is associated with" datatype='integer' default="0" emptyvalue="0" />
     <param name='survey_id' display='Survey' description='Select the survey' datatype='integer' />
     <param name="auth_user_id" datatype="integer" default="-1" />
   </params>
