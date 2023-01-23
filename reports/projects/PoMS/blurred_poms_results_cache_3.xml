@@ -8,7 +8,6 @@
       FROM cache_samples_functional s
       JOIN cache_samples_nonfunctional csnf on csnf.id = s.id
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
-      LEFT JOIN cache_occurrences_nonfunctional conf on conf.id = cof.id
       -- We can't get this from cache as logic is involved with the IDs and detecting the Other Flower to show
       LEFT JOIN sample_attribute_values sav_target on sav_target.sample_id = csnf.id 
           AND sav_target.sample_attribute_id = #target_smp_id#
