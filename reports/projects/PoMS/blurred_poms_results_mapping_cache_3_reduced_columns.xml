@@ -1,0 +1,50 @@
+<report
+    title="Blurred PoMS results mapping 3 - Reduced Columns"
+    description="Version of report with columns removed as the popup they were to be used on is not live yet."
+>
+  <query website_filter_field="" training_filter_field="s.training" standard_params="samples">
+    SELECT #columns# 
+      FROM cache_samples_functional s
+      #agreements_join#
+      WHERE #sharing_filter# 
+      #idlist#
+        AND s.survey_id in (
+          #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
+        )
+        AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
+        AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
+        AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
+        population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
+    <param name = "public_fit_count_survey_id" display="Public fit count survey ID" description = "ID of the public fit count survey." datatype="integer"/>  
+    <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
+    <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
+    <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
+      lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
+    <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
+    <param name = "language" display = "Preferred language" datatype="text" default="eng" />
+    <param name="intersect_location_ids" display="Intersect location IDs" description='Sample locations must intersect these locations.' emptyvalue="" default="">
+      <where>array[#intersect_location_ids#] &amp;&amp; s.location_ids = true</where>
+    </param>
+  </params>
+  <columns>
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer" incount="true"/>
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case s.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="s.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="s.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(s.public_geom)" />
+    <column name="language" display = "Preferred language" sql="case when '#language#' = 'cym' then 'cym' else 'eng' end" datatype="text" />
+  </columns>
+</report>
