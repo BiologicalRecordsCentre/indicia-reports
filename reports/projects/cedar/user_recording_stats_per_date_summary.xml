@@ -1,0 +1,35 @@
+<report
+    title="Users recording statistics per date summary"
+    description="A simpler user statistics report with total number of records 
+    and distinct number of recorders values."
+>
+  <query website_filter_field="csf.website_id">
+  SELECT #columns#
+  FROM cache_samples_functional csf
+  JOIN cache_samples_nonfunctional csnf on csf.id = csnf.id
+  JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.website_id=csf.website_id 
+      AND cof.survey_id=csf.survey_id AND cof.sample_id=csf.id
+  WHERE 
+  #website_filter# AND
+  (('#date_filter_type#' = ''
+  AND 1=2)
+  OR
+  ('#date_filter_type#' = 'field_date'
+  AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end::date &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))
+  OR
+  ('#date_filter_type#' = 'input_date'
+  AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.created_on::date &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+  AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.created_on::date &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)))) 
+  </query>
+  <params>
+    <param name='date_filter_type' display='Date filter type' datatype='lookup' 
+      lookup_values='field_date:Field date,input_date:Input date'/>
+    <param name='date_from' display='Date From' datatype='date' />
+    <param name='date_to' display='Date To' datatype='date' />
+  </params>
+  <columns>
+    <column name='recorder' display='Distinct number of recorders' sql='count(distinct csnf.recorders)' aggregate="true" in_count="true" />
+    <column name='record_count' display='Total record count' sql='count(cof.id)' aggregate="true" />
+  </columns>
+</report>
