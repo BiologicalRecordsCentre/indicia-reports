@@ -3,7 +3,7 @@
     description="Count of species in NatureSpot list">
   <query>
     select #columns#
-    from cache_taxa_Taxon_lists where taxon_list_id=1 and preferred=true and allow_data_entry=true
+    from cache_taxa_Taxon_lists where taxon_list_id=8 and preferred=true and allow_data_entry=true
   </query>
   <columns>
     <column name='count' sql='count(distinct external_key)' display="Count" datatype='integer' />
