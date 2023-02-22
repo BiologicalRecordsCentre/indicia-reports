@@ -26,6 +26,7 @@
     <column name="date_to" sql="s.date_end"/>,
     <column name="date_type" sql="s.date_type"/>,
     <column name="date" datatype="date" />
+    <column name="recorder" sql="rtrim(snf.recorders, ', ')" />,
     <column name="count_start_time" sql="snf.attrs_json ->> '1056'"/>,
     <column name="comment" sql="snf.comment"/>,
     <column name="habitat" sql="snf.attrs_json ->> '1048'"/>,
@@ -57,5 +58,6 @@
     <column name="date_added" sql="s.created_on" />
     <column name="date_last_edited" sql="s.updated_on" />
     <column name="hear_about" sql="snf.attrs_json ->> '1307'" />
+    <column name='images' sql='snf.media' img='true' />
   </columns>
 </report>
