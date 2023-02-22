@@ -57,8 +57,8 @@
         <column name="area" display="Area (m2)" datatype="integer" sql="round(st_area(st_transform(l.boundary_geom, 3109)))" />
         <column name="geom" sql="st_astext(ST_SnapToGrid(ST_Simplify(COALESCE(l.boundary_geom, l.centroid_geom), #simplifyFeatureTo#), #simplifyFeatureTo#, #simplifyFeatureTo#))" visible="false" mappable="true"/>
         <column name="sc" visible="false" feature_style="strokeColor"
-          sql="CASE tact.id WHEN 17711 THEN '#0571b0' WHEN 17714 THEN '#80cdc1' WHEN 17713 THEN '#c2a5cf' ELSE '#a6611a' END" />
+          sql="CASE tact.id WHEN 17711 THEN '#66c2a5' WHEN 17714 THEN '#fc8d62' WHEN 17713 THEN '#8da0cb' WHEN 17713 THEN '#e78ac3' WHEN 17713 THEN '#a6d854' WHEN 17713 THEN '#ffd92f' ELSE '#e5c494' END" />
         <column name="fc" visible="false" feature_style="fillColor"
-          sql="CASE tact.id WHEN 17711 THEN '#0571b0' WHEN 17714 THEN '#80cdc1' WHEN 17713 THEN '#c2a5cf' ELSE '#a6611a' END" />
+          sql="CASE tact.id WHEN 17711 THEN '#66c2a5' WHEN 17714 THEN '#fc8d62' WHEN 17713 THEN '#8da0cb' WHEN 17713 THEN '#e78ac3' WHEN 17713 THEN '#a6d854' WHEN 17713 THEN '#ffd92f' ELSE '#e5c494' END" />
   </columns>
 </report>
