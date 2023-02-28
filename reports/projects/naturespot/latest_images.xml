@@ -12,6 +12,13 @@ WHERE o.website_id=8
 AND o.record_status='V'
 AND 690=ANY(o.location_ids)
   </query>
+  <count_query>
+  SELECT #columns#
+   FROM cache_occurrences_functional o
+WHERE o.website_id=8
+AND o.record_status='V'
+AND 690=ANY(o.location_ids)
+  </count_query>
   <order_bys>
     <order_by>o.updated_on DESC</order_by>
   </order_bys>
