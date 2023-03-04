@@ -8,10 +8,10 @@
   JOIN samples sc on sc.id=o.sample_id and sc.deleted=false
   JOIN samples sp on sp.id=sc.parent_id and sp.deleted=false
   JOIN locations l ON sp.location_id=l.id
-  LEFT JOIN location_attribute_values lav ON l.id=lav.location_id
+  LEFT JOIN location_attribute_values lav ON 
+    l.id=lav.location_id
     AND lav.deleted=false
-    AND (lav.location_attribute_id=#alloc_id#)
-    AND (lav.int_value=#cms_user_id#)
+    AND lav.location_attribute_id=#alloc_id#
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
   JOIN locations l2 ON sc.location_id=l2.id
   #agreements_join#
@@ -20,8 +20,8 @@
   #sharing_filter# 
   #idlist#
   AND 
-  (#the_user_id# = 0 OR
-  (sp.created_by_id=#the_user_id# OR lav.location_id = sp.location_id))
+  (#user_id# = 0 OR
+  (sp.created_by_id=#user_id# OR lav.int_value = #cms_user_id#))
   </query>
   <order_bys>
     <order_by>o.id DESC</order_by>
@@ -37,7 +37,7 @@
             population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
       <where>l.location_type_id=#location_type_id#</where>
     </param>
-    <param name="the_user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" emptyvalue="0" default="0" />
+    <param name="user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" emptyvalue="0" default="0" />
     <param name='cms_user_id' display='CMS User ID' description='Enter the CMS ID of the user' datatype='int' emptyvalue="0" default="0" />
     <param name='alloc_id' display='Location Attribute' description='Select the attribute used to allocation locations to the user' datatype='int' emptyvalue="0" default="0" />
   </params>

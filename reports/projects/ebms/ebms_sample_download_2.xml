@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS Sample Download Report 2" description="Lists saved samples. Normally invoked from download bar on annual summary page.
-  Version 2 of this report collects all samples relating to transects you are assigned to unless you are an admin (the_user_id not provided).">
+  Version 2 of this report collects all samples relating to transects you are assigned to unless you are an admin (user_id not provided).">
   <query website_filter_field="su.website_id" samples_id_field="parent.id" >
     SELECT #field_sql#
       FROM samples parent
       JOIN locations l ON parent.location_id=l.id
-      LEFT JOIN location_attribute_values lav ON l.id=lav.location_id
+      LEFT JOIN location_attribute_values lav ON 
+        l.id=lav.location_id
         AND lav.deleted=false
-        AND (lav.location_attribute_id=#alloc_id#)
-        AND (lav.int_value=#cms_user_id#)
+        AND lav.location_attribute_id=#alloc_id#
       JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
       JOIN surveys su ON parent.survey_id = su.id
       #joins#
@@ -16,8 +16,8 @@
         AND parent.parent_id is null
         AND #website_filter#
         AND 
-        (#the_user_id# = 0 OR
-        (parent.created_by_id=#the_user_id# OR lav.location_id = parent.location_id))
+        (#user_id# = 0 OR
+        (parent.created_by_id=#user_id# OR lav.int_value = #cms_user_id#))
         #filters#
       #order_by#
   </query>
@@ -59,7 +59,7 @@
     <param name="date_to" display="Date To" datatype="date">
       <where>parent.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)</where>
     </param>
-    <param name="the_user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" emptyvalue="0" default="0" />
+    <param name="user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" emptyvalue="0" default="0" />
     <param name='cms_user_id' display='CMS User ID' description='Enter the CMS ID of the user' datatype='int' emptyvalue="0" default="0" />
     <param name='alloc_id' display='Location Attribute' description='Select the attribute used to allocation locations to the user' datatype='int' emptyvalue="0" default="0" />
     <param name="smpattrs"
