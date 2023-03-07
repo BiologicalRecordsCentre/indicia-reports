@@ -2,7 +2,7 @@
 <report title="EBMS Occurrence Download Report 2" description="Lists saved occurrences. Normally invoked easy download page.
   Version 2 of this report collects all samples relating to transects you are assigned to unless you are an admin (the_user_id provided as 0).">
   <query website_filter_field="o.website_id" samples_id_field="sp.id" samples2_id_field="sc.id" standard_params="true">
-  SELECT #columns#
+  SELECT distinct #columns#
   FROM cache_occurrences o
   JOIN websites w on w.id=o.website_id and w.deleted=false
   JOIN samples sc on sc.id=o.sample_id and sc.deleted=false

@@ -2,7 +2,7 @@
 <report title="EBMS Sample Download Report 2" description="Lists saved samples. Normally invoked from download bar on annual summary page.
   Version 2 of this report collects all samples relating to transects you are assigned to unless you are an admin (user_id not provided).">
   <query website_filter_field="su.website_id" samples_id_field="parent.id" >
-    SELECT #field_sql#
+    SELECT distinct #field_sql#
       FROM samples parent
       JOIN locations l ON parent.location_id=l.id
       LEFT JOIN location_attribute_values lav ON 
