@@ -58,7 +58,8 @@
     square.id = pavRemovedAlloc18.int_value OR
     square.id = pavRemovedAlloc19.int_value OR
     square.id = pavRemovedAlloc20.int_value OR
-    square.id = pavRemovedAlloc21.int_value)
+    square.id = pavRemovedAlloc21.int_value OR
+    square.id = pavRemovedAlloc22.int_value)
   AND square.location_type_id=#core_square_type_id# AND square.deleted=false
   LEFT JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
   -- Only interested in people who actually made some recordings (i.e. used the scheme_)
