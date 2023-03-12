@@ -1,0 +1,16 @@
+<report
+    title="Overall sample statistics"
+    description="Stats for Beach Track track samples"
+    featured="true"
+>
+  <query>
+    select #columns#
+    from samples s
+    where s.survey_id=721
+    and s.sample_method_id=2424
+  </query>
+  <columns>
+    <column name="total_tracks_count" sql="count(s.*)" aggregate="true" />
+    <column name="total_distance_walked" sql="round(sum(st_length(st_transform(s.geom, 27700))))" aggregate="true" />
+  </columns>
+</report>

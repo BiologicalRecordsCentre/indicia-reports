@@ -1,0 +1,12 @@
+<report
+    title="Overall occurrences count"
+    description="Count of all Beach Track occurrences"
+    featured="true"
+>
+  <query>
+    SELECT #columns# FROM occurrences o WHERE website_id in (#website_ids#)
+  </query>
+  <columns>
+    <column name="count" sql="count(*)" aggregate="true" />
+  </columns>
+</report>
