@@ -23,6 +23,6 @@
     <column name="username" sql="u.username" />
     <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
     <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
-    <column name="total_time_spent" sql="sum(vd.text_value::time)" aggregate="true" />
+    <column name="total_time_spent" sql="extract('epoch' from sum(vd.text_value::time))/60" aggregate="true" />
   </columns>
 </report>

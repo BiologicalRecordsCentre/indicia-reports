@@ -20,7 +20,7 @@
   <columns>
     <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
     <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
-    <column name="total_time_spent" sql="sum(vd.text_value::time)" aggregate="true" />
+    <column name="total_time_spent" sql="extract('epoch' from sum(vd.text_value::time))/60" aggregate="true" />
     <column name="total_occurrences_count" sql="(select count(*) from occurrences where created_by_id=#created_by_id# and website_id=153 and deleted=false)" aggregate="true" />
   </columns>
 </report>
