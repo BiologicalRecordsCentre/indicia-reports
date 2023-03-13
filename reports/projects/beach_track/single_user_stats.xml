@@ -1,15 +1,15 @@
 <report
-    title="Overall sample statistics"
-    description="Stats for Beach Track track samples"
+    title="Single user statistics"
+    description="Stats for Beach Track track recorders"
     featured="true"
 >
   <query>
-  -- User leaderboard
   select #columns#
   from samples s
   join users u on u.id=s.created_by_id and u.deleted=false
   join people p on p.id=u.person_id and p.deleted=false
   join sample_attribute_values vd on vd.sample_id=s.id and vd.sample_attribute_id=1717 and vd.deleted=false
+  join sample_attribute_values vdist on vdist.sample_id=s.id and vdist.sample_attribute_id=1718 and vdist.deleted=false
   where survey_id=721
   and sample_method_id=2424
   and s.created_by_id=#created_by_id#
@@ -19,7 +19,7 @@
   </params>
   <columns>
     <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
-    <column name="total_distance_walked" sql="round(sum(st_length(st_transform(geom, 27700))))" aggregate="true" />
+    <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
     <column name="total_time_spent" sql="sum(vd.text_value::time)" aggregate="true" />
     <column name="total_occurrences_count" sql="(select count(*) from occurrences where created_by_id=#created_by_id# and website_id=153 and deleted=false)" aggregate="true" />
   </columns>
