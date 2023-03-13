@@ -4,10 +4,7 @@
     featured="true"
 >
   <query>
-    select s.created_by_id, p.first_name, p.surname, u.username,
-      count(distinct s.id) as total_tracks_count,
-      round(sum(st_length(st_transform(geom, 27700)))) as total_distance_walked,
-      sum(extract(epoch from (vend.text_value::timestamp - vstart.text_value::timestamp))/3600) as total_time_spent
+    select #columns#
     from samples s
     join users u on u.id=s.created_by_id and u.deleted=false
     join people p on p.id=u.person_id and p.deleted=false
@@ -15,16 +12,17 @@
     join sample_attribute_values vend on vend.sample_id=s.id and vend.sample_attribute_id=1716 and vend.deleted=false
     where survey_id=721
     and sample_method_id=2424
-    group by s.created_by_id, p.first_name, p.surname, u.username
-    order by round(sum(st_length(st_transform(geom, 27700)))) desc
   </query>
+  <order_bys>
+    <order_by>count(distinct s.id) desc</order_by>
+  </order_bys>
   <columns>
-    <column name="user_id" sql="s.created_by_id">
-    <column name="first_name" sql="p.first_name">
-    <column name="surname" sql="p.surname">
-    <column name="username" sql="u.username">
+    <column name="user_id" sql="s.created_by_id" />
+    <column name="first_name" sql="p.first_name" />
+    <column name="surname" sql="p.surname" />
+    <column name="username" sql="u.username" />
     <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
     <column name="total_distance_walked" sql="round(sum(st_length(st_transform(geom, 27700))))" aggregate="true" />
     <column name="total_time_spent" sql="sum(extract(epoch from (vend.text_value::timestamp - vstart.text_value::timestamp))/3600)" aggregate="true" />
-  <columns>
+  </columns>
 </report>
