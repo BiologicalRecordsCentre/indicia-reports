@@ -7,10 +7,12 @@
     select #columns#
     from samples s
     where s.survey_id=721
+    join sample_attribute_values vdist on vdist.sample_id=s.id and vdist.sample_attribute_id=1718 and vdist.deleted=false
     and s.sample_method_id=2424
+    and s.deleted=false
   </query>
   <columns>
     <column name="total_tracks_count" sql="count(s.*)" aggregate="true" />
-    <column name="total_distance_walked" sql="round(sum(st_length(st_transform(s.geom, 27700))))" aggregate="true" />
+    <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
   </columns>
 </report>
