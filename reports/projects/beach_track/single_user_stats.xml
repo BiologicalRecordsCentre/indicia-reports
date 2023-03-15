@@ -3,24 +3,28 @@
     description="Stats for Beach Track track recorders"
     featured="true"
 >
-  <query>
-  select #columns#
-  from samples s
-  join users u on u.id=s.created_by_id and u.deleted=false
-  join people p on p.id=u.person_id and p.deleted=false
-  join sample_attribute_values vd on vd.sample_id=s.id and vd.sample_attribute_id=1717 and vd.deleted=false
-  join sample_attribute_values vdist on vdist.sample_id=s.id and vdist.sample_attribute_id=1718 and vdist.deleted=false
-  where survey_id=721
-  and sample_method_id=2424
-  and s.created_by_id=#created_by_id#
-  </query>
-  <params>
-    <param name="created_by_id" display="User ID" datatype="integer"/>
-  </params>
-  <columns>
-    <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
-    <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
-    <column name="total_time_spent" sql="sum(substring(vd.text_value, 1, 2)::integer*60 + substring(vd.text_value, 4, 2)::integer + substring(vd.text_value, 7, 2)::float/60)" aggregate="true" />
-    <column name="total_occurrences_count" sql="(select count(*) from occurrences where created_by_id=#created_by_id# and website_id=153 and deleted=false)" aggregate="true" />
-  </columns>
+    <query>
+    select #columns#
+    from (
+      select created_by_id, row_number() over (order by count(distinct s.id) desc) as league_position
+      from samples
+      where survey_id=721
+      and sample_method_id=2424
+      group by created_by_id
+    ) as league
+    join samples s on s.survey_id=721 and s.sample_method_id=2424 and s.deleted=false and s.created_by_id=league.created_by_id
+    join sample_attribute_values vd on vd.sample_id=s.id and vd.sample_attribute_id=1717 and vd.deleted=false
+    join sample_attribute_values vdist on vdist.sample_id=s.id and vdist.sample_attribute_id=1718 and vdist.deleted=false
+    where league.created_by_id=#created_by_id#
+    </query>
+    <params>
+      <param name="created_by_id" display="User ID" datatype="integer"/>
+    </params>
+    <columns>
+      <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
+      <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
+      <column name="total_time_spent" sql="sum(substring(vd.text_value, 1, 2)::integer*60 + substring(vd.text_value, 4, 2)::integer + substring(vd.text_value, 7, 2)::float/60)" aggregate="true" />
+      <column name="total_occurrences_count" sql="(select count(*) from occurrences where created_by_id=#created_by_id# and website_id=153 and deleted=false)" aggregate="true" />
+      <column name="league_position" sql="league.league_position" />
+    </columns>
 </report>
