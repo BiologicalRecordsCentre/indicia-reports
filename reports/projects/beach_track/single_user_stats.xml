@@ -6,7 +6,7 @@
     <query>
     select #columns#
     from (
-      select created_by_id, row_number() over (order by count(distinct s.id) desc) as league_position
+      select created_by_id, row_number() over (order by count(distinct id) desc) as league_position
       from samples
       where survey_id=721
       and sample_method_id=2424
