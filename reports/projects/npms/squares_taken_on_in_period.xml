@@ -25,8 +25,8 @@
     AND (lavEx.int_value != 1 OR lavEx.int_value IS NULL) 
     AND square.deleted=false
     AND (#created_data_only#=0 OR (#created_data_only#=1 AND s.id IS NOT NULL))
-    AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR pavAlloc.updated_on &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
-    AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR pavAlloc.updated_on &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
+    AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR CAST(COALESCE(pavAlloc.updated_on,'1500-01-01') as date) &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+    AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR CAST(COALESCE(pavAlloc.updated_on,'1500-01-01') as date) &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
     AND pavAlloc.updated_by_id != u.id
   </query>
   <params>
