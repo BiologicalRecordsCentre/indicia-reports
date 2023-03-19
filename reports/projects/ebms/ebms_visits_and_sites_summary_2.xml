@@ -1,5 +1,5 @@
 <report
-    title='EBMS Visit Summary list'
+    title='EBMS Visit Summary list 2'
     description='A list of the number of sites and visits recorded for each species, with filters for user or scheme, this and previous year.'
 >
   <query website_filter_field='o.website_id'>
