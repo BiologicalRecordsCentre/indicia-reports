@@ -29,7 +29,7 @@
         </where>
       </wheres>
     </param>
-    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,scheme:All scheme data,section:All section data' >
+    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,scheme:All scheme data,region:All region data' >
       <wheres>
         <where value="mine" operator="equal">p.created_by_id = #user_id#</where>
         <!-- Is this right, as is the region held directly on the sample. Is operator correct? -->
