@@ -37,10 +37,10 @@
       <param name="created_by_id" display="User ID" datatype="integer"/>
     </params>
     <columns>
-      <column name="total_tracks_count" sql="samples.total_tracks_count" aggregate="true" />
-      <column name="total_distance_walked" sql="samples.total_distance_walked" aggregate="true" />
-      <column name="total_time_spent" sql="samples.total_time_spent" aggregate="true" />
-      <column name="total_occurrences_count" sql="occurrences.count" aggregate="true" />
+      <column name="total_tracks_count" sql="samples.total_tracks_count" />
+      <column name="total_distance_walked" sql="samples.total_distance_walked" />
+      <column name="total_time_spent" sql="samples.total_time_spent" />
+      <column name="total_occurrences_count" sql="occurrences.count" />
       <column name="league_position" sql="league.league_position" />
     </columns>
 </report>
