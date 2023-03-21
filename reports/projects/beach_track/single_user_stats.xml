@@ -5,7 +5,7 @@
 >
     <query>
 
-      select samples.total_tracks_count, samples.total_distance_walked, occurrences.count, league.league_position
+      select #columns#
       from (
         select 
           count(distinct s.id) as total_tracks_count, 
