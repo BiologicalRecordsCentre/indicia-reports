@@ -4,7 +4,7 @@
 an event filter to return users associated with a particular event."
 >
   <query website_filter_field="uw.website_id">
-  SELECT #columns#
+  SELECT distinct #columns#
   FROM people p
   JOIN users u ON u.person_id=p.id AND u.deleted=false 
   JOIN users_websites uw on u.id=uw.user_id AND uw.site_role_id IS NOT NULL
