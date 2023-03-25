@@ -1,5 +1,5 @@
 <report
-    title="Unallocated Squares"
+    title="Users not allocated a square"
     description="A list of users who have not been allocated a square yet ordered by the date they registered"
 >
   <query website_filter_field="uw.website_id">
