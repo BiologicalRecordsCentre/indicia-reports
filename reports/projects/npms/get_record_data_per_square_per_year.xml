@@ -8,8 +8,7 @@
     FROM locations square
       LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
       JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
-      JOIN users u on u.id=#current_user_id#
-      JOIN samples s on s.location_id = plot.id and s.created_by_id = u.id AND s.deleted=false
+      JOIN samples s on s.location_id = plot.id and s.created_by_id = #current_user_id# AND s.deleted=false
         AND s.training = false
       JOIN occurrences o on o.sample_id = s.id AND o.deleted=false
         AND o.training = false
