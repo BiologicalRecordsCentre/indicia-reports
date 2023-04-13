@@ -16,9 +16,7 @@
       AND (EXTRACT(epoch from age(pavRemovedAlloc.updated_on::DATE, pavRemovedAlloc.created_on::DATE)) / 86400)::int &gt;&#61; #min_time_between_alloc_and_dealloc#
     JOIN people p on p.id=pavRemovedAlloc.person_id AND p.deleted=false
     JOIN users u on u.person_id=p.id AND u.deleted=false
-    JOIN users_websites uw on u.id=uw.user_id AND uw.website_id=lw.website_id AND uw.created_on &gt;= CAST(COALESCE('#ignore_registration_dates_before#','1500-01-01') as date)
-    LEFT JOIN users_websites uwac on u.id=uwac.user_id AND uwac.site_role_id IS NOT NULL
-    LEFT JOIN users_websites accesscheck on accesscheck.website_id=uwac.website_id
+    LEFT JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE (square.location_type_id=#core_square_type_id#)  
     AND #website_filter# 
@@ -39,8 +37,6 @@
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
-    <param name="ignore_registration_dates_before" display="Ignore Registration Dates Before" description="Ignore anyone who registered earlier than this date
-        where working out if a square has been allocated or not." datatype="date" emptyvalue="" default=""/>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
         Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default="">
       <where>square.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
