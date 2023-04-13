@@ -1,0 +1,40 @@
+<report title="Scratchpads lists for group members" description="A general purpose list of scratchpads, for all members of the linked group.">
+  <query>
+    SELECT #columns#
+    FROM scratchpad_lists s
+    LEFT JOIN scratchpad_list_entries e on e.scratchpad_list_id=s.id
+    LEFT JOIN cache_termlists_terms t ON t.id=s.scratchpad_type_id
+    JOIN groups_users gu ON gu.user_id=s.created_by_id AND gu.group_id=#implicit_group_id# AND gu.deleted=false
+    #joins#
+    WHERE (s.website_id in (#website_ids#) or s.website_id is null)
+    AND s.deleted=false
+  </query>
+  <order_bys>
+    <order_by>s.title ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="created_by_id" display="Creator's User ID" description="Warehouse user ID of the filter creator"
+           datatype="text" default="">
+      <where>s.created_by_id=#created_by_id#</where>
+    </param>
+    <param name="entity" display="Entity" description="Filter to lists for a given entity"
+           datatype="text" default="">
+      <where>s.entity='#entity#'</where>
+    </param>
+    <param name="scratchpad_type_id" display="Scratchpad type ID" description="Filter to lists of a given type"
+           datatype="integer" default="">
+      <where>s.scratchpad_type_id='#scratchpad_type_id#'</where>
+    </param>
+    <param name="implicit_group_id" display="Group ID" description="Group ID to identify the list of group members" datatype="integer" />
+  </params>
+  <columns>
+    <column name="id" visible="false" sql="s.id" in_count="true" />
+    <column name="title" display='Title' datatype="text" sql="s.title" />
+    <column name="entity" display='Entity' datatype="text" sql="s.entity" />
+    <column name="items" display="Items" datatype="integer" aggregate="true" sql="count(e.*)" />
+    <column name="description" display='Description' datatype="text" sql="s.description" />
+    <column name="created_on" display='Created on' datatype="date" sql="s.created_on" />
+    <column name="scratchpad_type_id" display='Scratchpad type ID' datatype="integer" sql="s.scratchpad_type_id" />
+    <column name="scratchpad_type_term" display='Scratchpad type term' datatype="text" sql="t.term" />
+  </columns>
+</report>
