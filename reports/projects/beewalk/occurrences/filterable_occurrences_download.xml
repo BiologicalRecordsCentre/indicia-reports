@@ -1,0 +1,92 @@
+<report
+    title="Occurrences Download using standard filters for BeeWalk"
+    description="Report suitable for downloading data, compatible with the standard report filter parameters."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id" standard_params="true">
+  SELECT #columns#
+  FROM cache_occurrences o
+  JOIN occurrences occ on occ.id=o.id and occ.deleted=false
+  JOIN samples s on s.id=o.sample_id AND s.deleted=false
+  JOIN samples sp on sp.id=s.parent_id AND sp.deleted=false
+  LEFT JOIN (index_locations_samples ils
+    JOIN locations l on l.id=ils.location_id
+    JOIN cache_termlists_terms ctt on ctt.id=l.location_type_id AND ctt.term='Vice County'
+  ) on ils.sample_id=o.sample_id
+  left join location_attribute_values lavest on lavest.location_id=sp.location_id and lavest.location_attribute_id=40 and lavest.deleted=false
+  left join location_attribute_values lavtl on lavtl.location_id=sp.location_id and lavtl.location_attribute_id=39 and lavtl.deleted=false
+  left join location_attribute_values lavsl on lavsl.location_id=s.location_id and lavsl.location_attribute_id=49 and lavsl.deleted=false
+  left join location_attribute_values lavh1 on lavh1.location_id=s.location_id and lavh1.location_attribute_id=44 and lavh1.deleted=false
+  left join cache_termlists_terms th1 on th1.id=lavh1.int_value
+  left join location_attribute_values lavh2 on lavh2.location_id=s.location_id and lavh2.location_attribute_id=45 and lavh2.deleted=false
+  left join cache_termlists_terms th2 on th2.id=lavh2.int_value
+  left join location_attribute_values lavh3 on lavh3.location_id=s.location_id and lavh3.location_attribute_id=46 and lavh3.deleted=false
+  left join cache_termlists_terms th3 on th3.id=lavh3.int_value
+  left join location_attribute_values lavh4 on lavh4.location_id=s.location_id and lavh4.location_attribute_id=47 and lavh4.deleted=false
+  left join cache_termlists_terms th4 on th4.id=lavh4.int_value
+  left join location_attribute_values lavhd on lavhd.location_id=s.location_id and lavhd.location_attribute_id=48 and lavhd.deleted=false
+  left join location_attribute_values lavlu1 on lavlu1.location_id=s.location_id and lavlu1.location_attribute_id=82 and lavlu1.deleted=false
+  left join cache_termlists_terms tlu1 on tlu1.id=lavlu1.int_value
+  left join location_attribute_values lavlu2 on lavlu2.location_id=s.location_id and lavlu2.location_attribute_id=83 and lavlu2.deleted=false
+  left join cache_termlists_terms tlu2 on tlu2.id=lavlu2.int_value
+  left join location_attribute_values lavlud on lavlud.location_id=s.location_id and lavlud.location_attribute_id=84 and lavlud.deleted=false
+  join sample_attribute_values savst on savst.sample_id=sp.id and savst.sample_attribute_id=287 and savst.deleted=false
+  join sample_attribute_values savet on savet.sample_id=sp.id and savet.sample_attribute_id=288 and savet.deleted=false
+  left join sample_attribute_values savs on savs.sample_id=sp.id and savs.sample_attribute_id=375 and savs.deleted=false
+  left join cache_termlists_terms ts on ts.id=savs.int_value
+  left join sample_attribute_values savws on savws.sample_id=sp.id and savws.sample_attribute_id=290 and savws.deleted=false
+  left join cache_termlists_terms tws on tws.id=savws.int_value
+  left join sample_attribute_values savt on savt.sample_id=sp.id and savt.sample_attribute_id=376 and savt.deleted=false
+  left join cache_termlists_terms tt on tt.id=savt.int_value
+  left join occurrence_attribute_values oavq on oavq.occurrence_id=o.id and oavq.occurrence_attribute_id=144 and oavq.deleted=false
+  left join occurrence_attribute_values oavw on oavw.occurrence_id=o.id and oavw.occurrence_attribute_id=145 and oavw.deleted=false
+  left join occurrence_attribute_values oavm on oavm.occurrence_id=o.id and oavm.occurrence_attribute_id=146 and oavm.deleted=false
+  left join occurrence_attribute_values oavu on oavu.occurrence_id=o.id and oavu.occurrence_attribute_id=262 and oavu.deleted=false
+  left join occurrence_attribute_values oavfv on oavfv.occurrence_id=o.id and oavfv.occurrence_attribute_id=149 and oavfv.deleted=false
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>o.id DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name='occurrence_id' display='ID' sql='o.id' datatype='integer' distincton="true" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" />
+    <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
+    <column name='site_section' display='Site section' sql="o.location_name" datatype='text' />
+    <column name="vicecounty" display="ViceCounty" sql="array_to_string(array_agg(l.name), ', ')" datatype="text" aggregate="true" />
+    <column name='sample_id' visible='false' sql='o.sample_id' datatype='integer' />
+    <column name="established" sql="lavest.int_value" datatype="integer" />
+    <column name="transect_grid_ref" sql="sp.entered_sref" datatype="text" />
+    <column name="transect_length" sql="lavtl.int_value" datatype="integer" />
+    <column name="section_length" sql="lavsl.int_value" datatype="integer" />
+    <column name="section_grid_ref" sql="s.entered_sref" datatype="text" />
+    <column name="h1" sql="th1.term" datatype="text" />
+    <column name="h2" sql="th2.term" datatype="text" />
+    <column name="h3" sql="th3.term" datatype="text" />
+    <column name="h4" sql="th4.term" datatype="text" />
+    <column name="habitat_description" sql="lavhd.text_value" datatype="text" />
+    <column name="l1" sql="tlu1.term" datatype="text" />
+    <column name="l2" sql="tlu2.term" datatype="text" />
+    <column name="land_use_description" sql="lavlud.text_value" datatype="text" />
+    <column name='recorder' sql="o.recorders" datatype="text" />
+    <column name='date_start' sql='o.date_start' visible='false' />
+    <column name='date_end' sql='o.date_end' visible='false' />
+    <column name='date_type' sql='o.date_type' visible='false' />
+    <column name='date' display='Date' datatype='date' />
+    <column name="start_time" sql="savst.text_value" datatype="text" />
+    <column name="end_time" sql="savet.text_value" datatype="text" />
+    <column name="sunshine" sql="ts.term" datatype="text" />
+    <column name="wind_speed" sql="tws.term" datatype="text" />
+    <column name="temperature" sql="tt.term" datatype="text" />
+    <column name="species" sql="o.default_common_name" datatype="text" />
+    <column name="latin" sql="o.preferred_taxon" datatype="text" />
+    <column name="queens" sql="oavq.int_value" datatype="integer" />
+    <column name="workers" sql="oavw.int_value" datatype="integer" />
+    <column name="males" sql="oavm.int_value" datatype="integer" />
+    <column name="unknown" sql="oavu.int_value" datatype="integer" />
+    <column name="comment" sql="occ.comment" datatype="text" />
+    <column name="transect_comment" sql="sp.comment" datatype="text" />
+    <column name="flower_visited" sql="oavfv.text_value" datatype="integer" />
+  </columns>
+</report>
