@@ -29,11 +29,10 @@
         </where>
       </wheres>
     </param>
-    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,scheme:All scheme data,region:All region data' >
+    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,region:All region data,scheme:All scheme data' >
       <wheres>
         <where value="mine" operator="equal">p.created_by_id = #user_id#</where>
-        <!-- Is this right, as is the region held directly on the sample. Is operator correct? -->
-        <where value="region" operator="in">l.id in (#region_ids#)</where>
+        <where value="region" operator="equal">l.id in (#region_site_ids#)</where>
       </wheres>
       <joins>
         <join value="scheme" operator="equal">
@@ -44,7 +43,7 @@
         </join>
       </joins>
     </param>
-    <param name='region_ids' display='Region IDs' description='Region IDs' datatype='text' />
+    <param name='region_site_ids' display='Region Site IDs' description='Site IDs contained in users Region' datatype='text' />
     <param name='user_id' display='Indicia User ID' description='Enter the Indicia ID of the user' datatype='int' />
     <param name="country_location_attribute_id"
         display="Country attribute"
