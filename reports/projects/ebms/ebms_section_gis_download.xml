@@ -14,17 +14,20 @@
       WHERE lw.deleted=false AND #website_filter#
       AND l.location_type_id=#location_type_id#
       AND (GeometryType(section.boundary_geom) = 'LINESTRING' OR GeometryType(section.boundary_geom) = 'MULTILINESTRING')
+      #location_ids#
     </query>
     <order_bys>
         <order_by>name</order_by>
     </order_bys>
     <params>
-        <param name='location_type_id' display='Parent Location Type' description='Select the parent site location type, or leave blank to not filter by location type.' datatype='lookup'
+      <param name='location_type_id' display='Parent Location Type' description='Select the parent site location type, or leave blank to not filter by location type.' datatype='lookup'
             population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=' />
-    	<param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
+      <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
       <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
         <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, l.centroid_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
       </param>
+      <param name='location_ids' display='List of Location IDs' description='Comma separated list of location IDs to filter to.'
+        datatype='idlist' fieldname='l.id' alias='location_id' default="" />
     </params>
     <columns>
         <column name="name" display="Section Code" sql="coalesce(l.code,l.name)||'.'||substring(section.code from 2)" datatype="text" />

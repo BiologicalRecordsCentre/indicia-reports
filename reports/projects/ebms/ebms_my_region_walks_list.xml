@@ -1,22 +1,17 @@
 <report
     title="EBMS My Region Walks: Walks relevant to a region"
     description="A list of top level samples for use in the EBMS My Region Walks report calendar grid - walks in user's region. 
-    Filtered according to comma separated regions list, and optional location ID.
     Top level means that the parent_id field of the samples is null."
 >
 <query website_filter_field="su.website_id">
   SELECT #field_sql#
   FROM samples s
-    JOIN locations l ON l.id=s.location_id
-    LEFT JOIN location_attribute_values lav on lav.location_id = l.id
-        AND lav.location_attribute_id = #region_loc_attr_id#
-        AND lav.int_value in (#region_ids#)
-        AND lav.deleted=false
+  JOIN locations l ON l.id=s.location_id
   #joins#
   WHERE s.deleted = FALSE
   AND s.parent_id IS NULL
   AND s.survey_id=#survey_id#
-  AND (s.created_by_id=#user_id# OR lav.id IS NOT NULL)
+  #location_ids#
   #filters#
   #order_by#
   </query>
@@ -37,25 +32,21 @@
   <params>
     <param name='survey_id' display='Survey' description='Select the survey' datatype='lookup'
         population_call='direct:survey:id:title' />
-    <param name='alloc_id' display='Location Attribute' description='Select the attribute used to allocation locations to the user' datatype='lookup'
-        population_call='direct:location_attribute:id:caption' />
     <param name="date_from" display="Date From" datatype="date">
-        <where>s.date_start&gt;='#date_from#'</where>
+        <where>s.date_start &gt;= '#date_from#'</where>
     </param>
     <param name="date_to" display="Date To" datatype="date">
-      <where>s.date_start&lt;='#date_to#'</where>
+      <where>s.date_start &lt;= '#date_to#'</where>
     </param>
-    <param name='user_id' display='Indicia User ID' description='Enter the Indicia ID of the user' datatype='int' />
-    <param name='cms_user_id' display='CMS User ID' description='Enter the CMS ID of the user' datatype='int' />
-    <param name='location_id' display='Location ID' description='Enter the Location ID.' datatype='int'>
+    <param name='location_id' display='Location ID' description='Enter the Location ID.' datatype='int' default="" >
       <where>l.id=#location_id#</where>
     </param>
     <param name='sample_method_id' display='Sample Method' description='Select the sample method.' datatype='lookup'
             population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:sample_methods,termlist_id='>
       <where>s.sample_method_id=#sample_method_id#</where>
     </param>
-    <param name='region_loc_attr_id' display='Region location attribute ID' description="ID of the location attribute that hold's a transects region" datatype='integer' />
-    <param name='region_ids' display='Regional coordinator region ID' description="Comma separated IDs of the region the regional coordinator is associated with" datatype='integer' default="0" emptyvalue="0" />
+    <param name='location_ids' display='List of Location IDs' description='Comma separated list of location IDs to filter to.'
+      datatype='idlist' fieldname='l.id' default="" />
   </params>
   <columns>
     <column name='sample_id' visible='true' />

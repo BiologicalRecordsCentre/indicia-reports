@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<report title="Branch sites list for EBMS"
-    description="Lists sites and count of samples/species.">
-      <query website_filter_field="lw.website_id">
-      SELECT #columns#
-      FROM locations l
-      JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
-      JOIN location_attribute_values vUserLink ON vUserLink.location_id=l.id
-        AND vUserLink.location_attribute_id=#user_link_attr_id# AND vUserLink.deleted = FALSE
-        AND vUserLink.int_value = #user_id#
-      LEFT JOIN samples sp ON sp.location_id=l.id
-      LEFT JOIN cache_occurrences_functional o ON parent_sample_id=sp.id
-      #joins#
-      WHERE #website_filter#
+<report title="Country/Region sites list for EBMS" description="Lists sites and count of samples/species.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations l
+    JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
+    LEFT JOIN samples sp ON sp.location_id=l.id AND sp.deleted=false
+    LEFT JOIN cache_occurrences_functional o ON parent_sample_id=sp.id
+    #joins#
+    WHERE #website_filter#
       AND l.deleted=false
-      </query>
-      <order_bys>
-        <order_by>samples DESC</order_by>
-        <order_by>name ASC</order_by>
-      </order_bys>
-      <params>
-        <param name='location_type_id' display='Site type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
-            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id='>
-          <where>l.location_type_id=#location_type_id#</where>
-        </param>
-        <param name="user_id" display="User ID" datatype="integer"/>
-        <param name="user_link_attr_id" display="User link location attribute ID" datatype="integer" />
-        <param name="search" display="Search" datatype="text">
-          <where>l.name ilike '%#search#%'</where>
-        </param>
-      </params>
-      <columns>
-            <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
-            <column name="name" display="Site Name" sql="l.name" />
-            <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
-            <column name="samples_this_year" display="Samples this year" sql="COUNT(DISTINCT CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN sp.id ELSE null END)" aggregate="true" />
-            <column name="taxa" display="Taxa recorded" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
-      </columns>
+      #location_ids#
+  </query>
+  <order_bys>
+    <order_by>samples DESC</order_by>
+    <order_by>name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="link_attr_value" display="Link attribute value" description="Value to use for linking Location Attribute between location and person" datatype="integer" default="" />
+    <param name="link_attr_id" display="Link attribute id" description="Location Attribute used to hold the link between location and person" datatype="integer" default="" >
+      <where>
+        EXISTS (SELECT id FROM location_attribute_values lav WHERE lav.location_id = l.id
+        AND lav.location_attribute_id = #link_attr_id#
+        AND lav.int_value = #link_attr_value# AND lav.deleted=false)
+      </where>
+    </param>
+    <param name='location_ids' display='List of Location IDs' description='Comma separated list of location IDs to filter to.'
+      datatype='idlist' fieldname='l.id' alias='location_id' default="" />
+    <param name='location_type_id' display='Site type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
+        population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id='>
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+    <param name="search" display="Search" datatype="text">
+       <where>l.name ilike '%#search#%'</where>
+    </param>
+  </params>
+  <columns>
+    <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
+    <column name="name" display="Site Name" sql="l.name" />
+    <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
+    <column name="samples_this_year" display="Samples this year" sql="COUNT(DISTINCT CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN sp.id ELSE null END)" aggregate="true" />
+    <column name="taxa" display="Taxa recorded" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
+    <column name="ids" display="ids" sql="'#location_ids#'" aggregate="true" />
+  </columns>
 </report>

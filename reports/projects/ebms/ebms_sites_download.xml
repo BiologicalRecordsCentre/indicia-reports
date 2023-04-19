@@ -6,6 +6,7 @@
   JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
   #joins#
   WHERE #website_filter#
+  #location_ids#
   #filters#
   #order_by#
   </query>
@@ -33,6 +34,8 @@
             population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
       <where>l.location_type_id=#location_type_id#</where>
     </param>
+    <param name='location_ids' display='List of Location IDs' description='Comma separated list of location IDs to filter to.'
+      datatype='idlist' fieldname='l.id' alias='location_id' default="" />
   </params>
   <columns>
     <column name="site_id" display="Site ID" />
