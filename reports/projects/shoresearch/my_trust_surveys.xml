@@ -8,7 +8,7 @@
   join cache_samples_nonfunctional snf on snf.id=s.id
   left join cache_samples_functional sc on sc.parent_sample_id=s.id
   join groups_users gu on gu.user_id=s.created_by_id and gu.deleted=false
-  join groups_users guadmin on guadmin.group_id=s.group_id and guadmin.administrator=true and guadmin.deleted=false
+  join groups_users guadmin on guadmin.group_id=gu.group_id and guadmin.administrator=true and guadmin.deleted=false
   where s.website_id in (#website_ids#)
   and s.parent_sample_id is null
   and guadmin.user_id=#auth_user_id#
@@ -22,6 +22,7 @@
   <columns>
     <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
     <column name="survey_title" display="Survey type" sql="snf.survey_title" datatype="text" />
+    <column name="recorders" display="Recorders" sql="snf.recorders" datatype="text" />
     <column name='date_start' visible='false' sql='s.date_start' />
     <column name='date_end' visible='false' sql='s.date_end' />
     <column name='date_type' visible='false' sql='s.date_type' />
