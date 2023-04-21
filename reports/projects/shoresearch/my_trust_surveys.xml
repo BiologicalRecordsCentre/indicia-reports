@@ -1,0 +1,34 @@
+<report
+    title="My surveys"
+    description="List of a user's surveys"
+>
+  <query website_filter_field="s.website_id">
+  select #columns#
+  from cache_samples_functional s
+  join cache_samples_nonfunctional snf on snf.id=s.id
+  left join cache_samples_functional sc on sc.parent_sample_id=s.id
+  join groups_users gu on gu.user_id=s.created_by_id and gu.deleted=false
+  join groups_users guadmin on guadmin.group_id=s.group_id and guadmin.administrator=true and guadmin.deleted=false
+  where s.website_id in (#website_ids#)
+  and s.parent_sample_id is null
+  and guadmin.user_id=#user_id#
+  </query>
+  <order_bys>
+    <order_by>s.date_start desc</order_by>
+  </order_bys>
+  <params>
+    <param name="user_id" display="User ID" description="ID of the user to show surveys for" datatype="integer" />
+  </params>
+  <columns>
+    <column name="sample_id" display="ID" sql="s.id" datatype="integer" />
+    <column name="survey_title" display="Survey type" sql="snf.survey_title" datatype="text" />
+    <column name='date_start' visible='false' sql='s.date_start' />
+    <column name='date_end' visible='false' sql='s.date_end' />
+    <column name='date_type' visible='false' sql='s.date_type' />
+    <column name='date' display='Date' datatype="date" />
+    <column name="site_name" display="Site name" sql="s.location_name" datatype="text" />
+    <column name="input_form" visible="false" sql="s.input_form" datatype="text" />
+    <column name="subsamples" display="Samples" sql="count(sc.id)" datatype="integer" aggregate="true" />
+    <column name="draft" display="Draft" sql="case s.record_status when 'I' then 'Draft' else null end" datatype="text" aggregate="true" />
+  </columns>
+</report>
