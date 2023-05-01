@@ -27,6 +27,6 @@
     <column name="site_name" display="Site name" sql="s.location_name" datatype="text" />
     <column name="input_form" visible="false" sql="s.input_form" datatype="text" />
     <column name="subsamples" display="Samples" sql="count(sc.id)" datatype="integer" aggregate="true" />
-    <column name="draft" display="Draft" sql="case s.record_status when 'I' then 'Draft' else null end" datatype="text" aggregate="true" />
+    <column name="draft" display="Draft" sql="case s.record_status when 'I' then 'Draft' else 'Published' end" datatype="text" aggregate="true" />
   </columns>
 </report>
