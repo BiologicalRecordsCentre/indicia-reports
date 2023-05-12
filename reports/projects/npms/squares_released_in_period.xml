@@ -4,7 +4,7 @@
     Report is very similar to Squares Taken On In Period and Deallocated Squares 2 report."
 >
   <query website_filter_field="lw.website_id">
-  SELECT distinct #columns#
+  SELECT #columns#
   FROM locations square
     LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
     LEFT JOIN location_attribute_values lavEx on lavEx.location_id=square.id 
