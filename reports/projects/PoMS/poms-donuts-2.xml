@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report 
+  title="Counts per record with group and flower" 
+  description="Filtered for indexed location ID."
+>
+  <query>
+    select csn.id as sample,
+    cttl.taxon as taxon,
+    csn.attrs_json -&gt;&gt; '1050' as flower,
+    coalesce((con.attrs_json -&gt;&gt; '666')::int, 0) as pomscount
+    from cache_occurrences_functional cof
+    join cache_occurrences_nonfunctional con on con.id = cof.id
+    right join cache_samples_nonfunctional csn on cof.sample_id = csn.id
+    join cache_samples_functional csf on csf.id = csn.id
+    join cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
+    where cof.survey_id in (636, 641, 637)
+    and cttl.taxon_group LIKE 'Pollinator%'
+    and extract(month from cof.date_end) &gt; 3
+    and extract(month from cof.date_end) &lt; 10
+    and #filter-indexed_location_list# = ANY(cof.location_ids)
+  </query>
+  <params>
+    <param name="filter-indexed_location_list" display="ID of indexed location to filter on" datatype="integer" />
+  </params>
+</report>
