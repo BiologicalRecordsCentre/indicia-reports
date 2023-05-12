@@ -23,13 +23,14 @@
     AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR CAST(COALESCE(pavAlloc.updated_on,'1500-01-01') as date) &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
     AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR CAST(COALESCE(pavAlloc.updated_on,'1500-01-01') as date) &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
     AND pavAlloc.updated_by_id != u.id
-    AND (#created_data_only#=0 OR (#created_data_only#=1 AND EXISTS
-      (SELECT s.id
-      FROM samples s
-      JOIN locations plot on plot.id = s.location_id AND plot.parent_id=square.id AND plot.deleted=false
-      WHERE s.deleted=false AND s.training = false)))
+    AND (#created_data_only#=0 OR (#created_data_only#=1 AND square.id in
+      (SELECT distinct plot.parent_id
+      FROM cache_samples_functional csf
+      JOIN locations plot on plot.id = csf.location_id AND plot.deleted=false
+      WHERE csf.survey_id in (#survey_ids#) AND csf.training = false)))
   </query>
   <params>
+    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='text' />
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any squares created before this date.
