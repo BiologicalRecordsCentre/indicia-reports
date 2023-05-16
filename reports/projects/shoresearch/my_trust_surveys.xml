@@ -4,19 +4,22 @@
 >
   <query website_filter_field="s.website_id">
   select #columns#
-  from cache_samples_functional s
+  from users_websites uw, cache_samples_functional s
   join cache_samples_nonfunctional snf on snf.id=s.id
   left join cache_samples_functional sc on sc.parent_sample_id=s.id
   join groups_users gu on gu.user_id=s.created_by_id and gu.deleted=false
   join groups_users guadmin on guadmin.group_id=gu.group_id and guadmin.administrator=true and guadmin.deleted=false
   where s.website_id in (#website_ids#)
   and s.parent_sample_id is null
-  and guadmin.user_id=#auth_user_id#
+  and uw.user_id=#auth_user_id#
+  and (guadmin.user_id=#auth_user_id# or uw.site_role_id&lt;3)
+  and gu.group_id=#group_id#
   </query>
   <order_bys>
     <order_by>s.date_start desc</order_by>
   </order_bys>
   <params>
+    <param name="group_id" display="Gropu ID" description="ID of the group (Trust) to show surveys for" datatype="integer" />
     <param name="auth_user_id" display="User ID" description="ID of the user to show surveys for" datatype="integer" />
   </params>
   <columns>
