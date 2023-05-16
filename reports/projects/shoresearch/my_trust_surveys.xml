@@ -1,5 +1,5 @@
 <report
-    title="My surveys"
+    title="My trust surveys"
     description="List of a user's surveys"
 >
   <query website_filter_field="s.website_id">
@@ -33,6 +33,6 @@
     <column name="site_name" display="Site name" sql="s.location_name" datatype="text" />
     <column name="input_form" visible="false" sql="s.input_form" datatype="text" />
     <column name="subsamples" display="Samples" sql="count(sc.id)" datatype="integer" aggregate="true" />
-    <column name="draft" display="Draft" sql="case s.record_status when 'I' then 'Draft' else null end" datatype="text" aggregate="true" />
+    <column name="status" display="Status" sql="case s.record_status when 'I' then 'Draft' else 'Published' end" datatype="text" aggregate="true" />
   </columns>
 </report>
