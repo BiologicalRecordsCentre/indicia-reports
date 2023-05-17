@@ -1,6 +1,7 @@
 <report
     title="Get PoMS projects for country"
-    description="Get a list of projects for a country code or ID. Returns all projects if country filter is empty."
+    description="Get a list of projects for a country code or ID. Returns all projects if country filter is empty.
+      Note that the Allow Data Entry flag is used to indicate if the project is active."
 >
   <query>
     SELECT #columns#
@@ -25,6 +26,7 @@
       AND ttav_url.termlists_term_attribute_id = #url_for_project_tt_attribute_id#
       AND ttav_url.deleted = false
     WHERE ctt.termlist_id = #projects_termlist_id#
+      AND ctt.allow_data_entry=true
   </query>
   <params>
     <param name="country_id" display="Country id to get projects for" datatype="integer" emptyvalue="" default="">
