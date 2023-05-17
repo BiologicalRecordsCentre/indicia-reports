@@ -1,0 +1,27 @@
+<report
+    title="Notify added surveys"
+    description="Notifies Wildlife Trusts when surveys added."
+    >
+  <query>
+    SELECT s.id, g.title as trust, string_agg(gua.user_id::text, ',') as notify_user_ids
+    FROM cache_samples_functional s
+    JOIN groups_users gu ON gu.user_id=s.created_by_id and gu.deleted=false
+    JOIN groups g ON g.id=gu.group_id AND g.deleted=false and g.group_type_id=3254
+    JOIN groups_users gua ON gua.group_id=g.id AND gua.deleted=false AND gua.administrator=true
+    WHERE s.updated_on&gt;'#date#' AND s.created_on&gt;'#date#'
+    AND s.parent_sample_id IS NULL
+    AND s.website_id=121
+	  GROUP BY s.id, g.title
+  </query>
+  <params>
+    <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
+  </params>
+  <columns>
+    <column name="id" display="ID" sql="s.id" />
+    <column name="trust" display="Trust" sql="g.title" />
+    <column name="site" display="Site" sql="s.location_name" />
+    <column name="date" display="Date" sql="s.date_start" />
+    <column name="website_id" visible="false" sql="s.website_id" />
+    <column name="notify_user_ids" sql="string_agg(gua.user_id::text, ',')" aggregate="true" />
+  </columns>
+</report>
