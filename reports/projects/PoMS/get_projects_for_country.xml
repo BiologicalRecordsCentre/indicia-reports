@@ -1,0 +1,48 @@
+<report
+    title="Get PoMS projects for country"
+    description="Get a list of projects for a country code or ID. Returns all projects if country filter is empty."
+>
+  <query>
+    SELECT #columns#
+    FROM cache_termlists_terms ctt
+    JOIN termlists_term_attribute_values ttav_country 
+      ON ttav_country.termlists_term_id = ctt.id 
+      AND ttav_country.termlists_term_attribute_id = #country_for_project_tt_attribute_id#
+      AND ttav_country.deleted = false
+    JOIN indicia.cache_termlists_terms country_linked 
+      ON country_linked.id = ttav_country.int_value
+      AND country_linked.termlist_id = #countries_termlist_id#
+    JOIN indicia.cache_termlists_terms country_name
+      ON country_name.meaning_id = country_linked.meaning_id
+      AND country_name.preferred = true
+      AND country_name.termlist_id = #countries_termlist_id#
+    JOIN indicia.cache_termlists_terms country_code
+      ON country_code.meaning_id = country_linked.meaning_id
+      AND country_code.preferred = false
+      AND country_code.termlist_id = #countries_termlist_id#
+    LEFT JOIN termlists_term_attribute_values ttav_url
+      ON ttav_url.termlists_term_id = ctt.id 
+      AND ttav_url.termlists_term_attribute_id = #url_for_project_tt_attribute_id#
+      AND ttav_url.deleted = false
+    WHERE ctt.termlist_id = #projects_termlist_id#
+  </query>
+  <params>
+    <param name="country_id" display="Country id to get projects for" datatype="integer" emptyvalue="" default="">
+      <where>country_name.id = #country_id#</where>
+    </param>
+    <param name="country_code" display="Country code to get projects for" datatype="text" emptyvalue="" default="">
+      <where>country_code.term = '#country_code#'</where>
+    </param>
+    <param name="country_for_project_tt_attribute_id" display="Termlists term attribute ID that holds a project country" datatype="integer"/>
+    <param name="url_for_project_tt_attribute_id" display="Termlists term attribute ID that holds a project website URL" datatype="integer"/>
+    <param name="countries_termlist_id" display="Countries termlist ID" datatype="integer"/>
+    <param name="projects_termlist_id" display="Projects termlist ID" datatype="integer"/>
+  </params>
+  <columns>
+    <column name='id' display='Project ID' sql="ctt.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='name' display='Project name' sql="ctt.term" datatype='text'/>
+    <column name='country_name' display='Project country name' sql="country_name.term" datatype='text'/>
+    <column name='country_code' display='Project country code' sql="country_code.term" datatype='text'/>
+    <column name='website_url' display='Project website URL' sql="ttav_url.text_value" datatype='text'/>
+  </columns>
+</report>
