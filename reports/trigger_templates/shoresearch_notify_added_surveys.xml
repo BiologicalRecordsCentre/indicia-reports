@@ -11,7 +11,6 @@
     WHERE s.updated_on&gt;'#date#' AND s.created_on&gt;'#date#'
     AND s.parent_sample_id IS NULL
     AND s.website_id=121
-	  GROUP BY s.id, g.title
   </query>
   <params>
     <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
