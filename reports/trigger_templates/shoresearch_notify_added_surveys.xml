@@ -1,5 +1,5 @@
 <report
-    title="Notify added surveys"
+    title="Shoresearch notify added surveys"
     description="Notifies Wildlife Trusts when surveys added."
     >
   <query>
