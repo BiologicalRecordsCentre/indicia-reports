@@ -18,6 +18,8 @@
         population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
           <where>l.location_type_id in (#location_type_id#)</where>
       </param>
+      <param name="locattrs" display="Location attribute list" datatype="locattrs" default=""
+           description="Comma separated list of location attribute IDs to include" />
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" />
