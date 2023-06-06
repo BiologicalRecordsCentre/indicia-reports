@@ -38,6 +38,7 @@
   <columns>
     <column name="location_id" display="ID" sql="l.id" />
     <column name="section_name" display="Section name" sql="l.name" />
+    <column name="section_code" display="Code" sql="l.code" />
     <column name="transect_name" display="Transect name" sql="lp.name" />
     <column name="comment" display="Comment" sql="l.comment" />
     <column name="location_type_id" visible="false" sql="l.location_type_id" />
