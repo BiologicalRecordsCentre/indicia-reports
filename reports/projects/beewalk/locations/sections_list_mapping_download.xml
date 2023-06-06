@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="List of sections for GIS downloads"
+        description="Basic list of locations designed for mapping.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+    #joins#
+    WHERE l.deleted=false
+    AND (l.public=true or lw.website_id in (#website_ids#))
+      #filters#
+  </query>
+  <params>
+      <param name="location_type_id" display="Location type(s)" datatype="lookup"
+        description="Select the location type, or leave blank to not filter by location type."
+        population_call="report:library/terms/terms_list:id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+          <where>l.location_type_id in (#location_type_id#)</where>
+      </param>
+      <param name="locattrs" display="Location attribute list" datatype="locattrs" default=""
+           description="Comma separated list of location attribute IDs to include" />
+  </params>
+  <columns>
+        <column name="id" display="ID" sql="l.id" datatype="integer" />
+        <column name="name" display="Site name" sql="l.name" />
+        <column name="code" display="Site code" sql="l.code" />
+        <column name="grid_ref" display="Grid ref" sql="l.centroid_sref" />
+        <column name="length" display="Calculated length" sql="st_length(st_transform(l.boundary_geom, 27700))" />
+        <column name="geom" display="Boundary" sql="st_astext(st_transform(l.boundary_geom, 4326))" visible="false" mappable="true" />
+  </columns>
+</report>
