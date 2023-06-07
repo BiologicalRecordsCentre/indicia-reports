@@ -91,7 +91,7 @@
             WHEN group_type_id=#standard_mode_group_type_id# THEN '#standard_mode_label_wording#'
             ELSE '' END"
       datatype="text" />
-    <column name="year" display="Year created" sql="extract(year from g.created_on)" datatype="integer" />
+    <column name="year" display="Project creation date" sql="extract(year from g.created_on)" datatype="integer" />
     <column name="administrator" display="Admin" sql="('#CMSAdminPerm#' = '1' OR (gu.id is not null AND gu.pending=false AND gu.administrator=true))" datatype="boolean" visible="false" />
     <!-- following is required to meet group by requirements -->
     <column name="administrator_raw" display="Admin" sql="gu.administrator" datatype="boolean" visible="false" />
