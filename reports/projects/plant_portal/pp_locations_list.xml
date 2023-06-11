@@ -6,22 +6,47 @@
     SELECT #columns#
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id=l.id and lw.deleted=false
+    LEFT JOIN samples locationSamples on locationSamples.location_id = l.id 
+      AND locationSamples.training=false AND locationSamples.deleted=false
     #joins#
     WHERE l.deleted=false
     AND (l.public=true or lw.website_id in (#website_ids#))
-    AND (l.parent_id = #parent_id# AND l.location_type_id in (#location_type_ids#))
+    <!--AND (l.parent_id = #parent_id# AND l.location_type_id in (#location_type_ids#))-->
       #filters#
   </query>
   <params>
       <param name="current_user" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
       <param name="location_type_ids" display="Location type(s)" datatype="text"/>  
       <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
+      <param name="admin_mode" description="Should user be able to edit plots user didn't create" datatype="boolean" default="false" emptyvalue="false"/>
   </params>
   <columns>
-        <column name="id" visible="false" sql="l.id" datatype="integer" />
+        <column name="id" visible="false" sql="l.id" datatype="integer" in_count="true"/>
         <column name="name" display="Site name" sql="l.name" />
         <column name="parent_id" display="Parent ID" sql="l.parent_id" visible="false"/>
-        <column name='show_plot_view_control' display='Show Plot View Control' sql="case when l.created_by_id != #current_user#  then true else false end" visible="false"/>
-        <column name='show_plot_edit_control' display='Show Plot Edit Control' sql="case when l.created_by_id = #current_user# then true else false end" visible="false"/>
+        <column name='show_plot_view_control' display='Show Plot View Control' sql="
+        CASE WHEN 
+          (#admin_mode# = false AND l.created_by_id = #current_user# AND count(locationSamples.id) = 0) 
+        THEN 
+          false 
+        WHEN
+          (#admin_mode# = true AND count(locationSamples.id) = 0) 
+        THEN 
+          false
+        ELSE 
+          true 
+        END" visible="false" aggregate="true"/>
+        <column name='show_plot_edit_control' display='Show Plot Edit Control' sql="
+        CASE WHEN 
+          (#admin_mode# = false AND l.created_by_id = #current_user# AND count(locationSamples.id) = 0) 
+        THEN 
+          true 
+        WHEN
+          (#admin_mode# = true AND count(locationSamples.id) = 0) 
+        THEN 
+          true 
+        ELSE 
+          false 
+        END" visible="false" aggregate="true"/>
   </columns>
 </report>
