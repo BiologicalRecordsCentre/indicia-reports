@@ -11,7 +11,7 @@
     #joins#
     WHERE l.deleted=false
     AND (l.public=true or lw.website_id in (#website_ids#))
-    <!--AND (l.parent_id = #parent_id# AND l.location_type_id in (#location_type_ids#))-->
+    AND (l.parent_id = #parent_id# AND l.location_type_id in (#location_type_ids#))
       #filters#
   </query>
   <params>
