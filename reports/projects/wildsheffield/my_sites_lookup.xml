@@ -15,12 +15,12 @@
       #joins#
       WHERE l.deleted=false
       AND #website_filter#
-      AND l.location_type_id IN (1371, 14689, 17965, 17966)
+      AND l.location_type_id IN (1371, 14689, 17963, 17965, 17966)
       AND (
         -- include sites the user created
         (l.created_by_id=#user_id# AND l.location_type_id=1371)
         -- plus designated or project sites
-        OR l.location_type_id in (14689, 17965, 17966)
+        OR l.location_type_id in (14689, 17963, 17965, 17966)
         --
       )
 
