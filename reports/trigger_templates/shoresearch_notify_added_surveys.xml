@@ -3,7 +3,7 @@
     description="Notifies Wildlife Trusts when surveys added."
     >
   <query>
-    SELECT s.id, g.title as trust, string_agg(gua.user_id::text, ',') as notify_user_ids
+    SELECT #columns#
     FROM cache_samples_functional s
     JOIN groups_users gu ON gu.user_id=s.created_by_id and gu.deleted=false
     JOIN groups g ON g.id=gu.group_id AND g.deleted=false and g.group_type_id=3254
