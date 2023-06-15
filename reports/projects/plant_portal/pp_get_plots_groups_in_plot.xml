@@ -27,7 +27,6 @@
       description="The id of the location attribute that holds the plot groups for a plot." datatype="integer"/>
     <param name="plot_id" display="Plot id" description="Id of current plot being edited." datatype="integer"/>
     <param name="recording_group_id" display="Recording group id" description="Recording group ID of current project." datatype="integer"/>
-    <param name="plot_location_type_id" display="Plot location type ID" description="Location type ID of a plot." datatype="integer"/>
   </params>
   <columns>
     <column name="group_and_plot_attr_val_id" sql="lav.id" display="ID" visible="false"/>
