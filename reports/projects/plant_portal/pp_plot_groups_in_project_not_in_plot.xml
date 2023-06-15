@@ -1,0 +1,35 @@
+<report
+    title="List plot groups in project not linked to plot."
+    description="List plots for a project, not already link to a plot."
+    >
+  <query>
+    SELECT #columns#
+    FROM cache_termlists_terms ctt
+    JOIN termlists_term_attribute_values ttav  
+      on ttav.termlists_term_id = ctt.id
+      AND ttav.int_value = #recording_group_id#
+      AND ttav.termlists_term_attribute_id = #plot_group_project_termlists_term_attr_id#
+      AND ttav.deleted=false
+    LEFT JOIN location_attribute_values lav on lav.location_id = #plot_id#
+      AND lav.int_value = ctt.id
+      AND lav.location_attribute_id = #plot_group_location_attr_id# 
+      AND lav.deleted=false
+    WHERE 
+      ctt.termlist_id = #plot_groups_termlist_id#
+      AND lav.id IS NULL
+  </query>
+  <params>
+    <param name="plot_id" display="Plot id" description="Id of the plot we are currently editing" datatype="integer"/>
+    <param name="plot_group_project_termlists_term_attr_id" display="Plot group termlists term attr id" 
+      description="The id of the termlists term attribute that holds the project for a plot group." />
+    <param name="plot_group_location_attr_id" display="Plot group location attr id" 
+      description="The id of the location attribute that holds the plot groups for a plot." datatype="integer"/>
+    <param name="recording_group_id" display="Recording group id" description="Recording group ID of current project." datatype="integer"/>
+    <param name="plot_location_type_id" display="Plot location type ID" description="Location type ID of a plot." datatype="integer"/>
+    <param name="plot_groups_termlist_id" display="Plot groups termlist ID" description="Plot groups termlist ID." datatype="integer"/>
+  </params>
+  <columns>
+    <column name="plot_group_id" sql="ctt.id" display="ID"/>
+    <column name="plot_group_name" sql="ctt.term" display="Plot Group Name"/>
+  </columns>
+</report>
