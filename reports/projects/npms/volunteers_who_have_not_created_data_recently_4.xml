@@ -1,15 +1,15 @@
 <report
     title="Volunteer who have not created data recently 4"
     description="List of volunteers who have not created any data in past two years.">
-  <query website_filter_field="lw.website_id">
-    SELECT distinct #columns#
+  <query website_filter_field="uw.website_id">
+    SELECT #columns#
     FROM people p
     JOIN users u on u.person_id = p.id and u.deleted=false
+    LEFT JOIN users_websites uw ON u.id = uw.user_id AND uw.site_role_id IS NOT NULL
     JOIN person_attribute_values sqrPav ON sqrPav.person_id=u.person_id AND sqrPav.updated_by_id!=u.id AND sqrPav.person_attribute_id=#person_square_attr_id# 
         AND sqrPav.created_on::date &lt; date (extract(year from current_date) - 2 || '-1-1')
         AND sqrPav.deleted=false 
     JOIN locations sqr ON sqr.id=sqrPav.int_value AND sqr.created_on::date >= date '#ignore_square_dates_before#' AND sqr.location_type_id = #core_square_type_id# AND sqr.deleted=false 
-    LEFT JOIN locations_websites lw on lw.location_id=sqr.id AND lw.deleted=false
     LEFT JOIN samples s_recent on s_recent.created_by_id = u.id
         AND s_recent.survey_id in (#survey_ids#)
         AND s_recent.date_start::date &gt;= date (extract(year from current_date) - 2 || '-1-1')
@@ -20,10 +20,10 @@
         AND s_last.date_start::date &lt; date (extract(year from current_date) - 2 || '-1-1')
         AND s_last.training=false
         AND s_last.deleted=false
-    LEFT JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
-        AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    LEFT JOIN users_websites accesscheck on accesscheck.website_id=uw.website_id
+      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
     WHERE s_recent.id IS NULL AND p.deleted=false
-    AND #website_filter#
+    AND uw.website_id in (#website_ids#)
   </query>
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
