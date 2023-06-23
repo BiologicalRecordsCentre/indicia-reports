@@ -1,0 +1,33 @@
+<report
+    title="My Plot Groups in Project."
+    description="List plot groups in project for a user."
+    >
+  <query>
+    SELECT #columns#
+    FROM cache_termlists_terms ctt
+    JOIN termlists_term_attribute_values ttav  
+      on ttav.termlists_term_id = ctt.id
+      AND ttav.int_value = #recording_group_id#
+      AND ttav.termlists_term_attribute_id = #plot_group_project_termlists_term_attr_id#
+      AND ttav.deleted=false
+    JOIN person_attribute_values pav on pav.person_id = #person_id#
+      AND pav.int_value = ctt.id
+      AND pav.person_attribute_id = #plot_group_person_attr_id# 
+      AND pav.deleted=false
+    WHERE 
+      ctt.termlist_id = #plot_groups_termlist_id#
+  </query>
+  <params>
+    <param name="plot_group_project_termlists_term_attr_id" display="Plot group termlists term attr id" 
+      description="The id of the termlists term attribute that holds the project for a plot group." />
+    <param name="plot_group_person_attr_id" display="Plot group person attribute id" 
+      description="The id of the person attribute that holds the plot groups for a person." datatype="integer"/>
+    <param name="recording_group_id" display="Recording group id" description="Recording group ID of current project." datatype="integer"/>
+    <param name="plot_groups_termlist_id" display="Plot groups termlist ID" description="Plot groups termlist ID." datatype="integer"/>
+    <param name="person_id" display="Person ID" description="Current user's person ID." datatype="integer"/>
+  </params>
+  <columns>
+    <column name="plot_group_id" sql="ctt.id" display="ID"/>
+    <column name="plot_group_name" sql="ctt.term" display="Plot Group Name"/>
+  </columns>
+</report>

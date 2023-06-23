@@ -1,0 +1,34 @@
+<report
+    title="Get plots for plot group ID"
+    description="Get a list of plots for a selected plot group."
+>
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations plot
+    LEFT JOIN locations_websites lw on lw.location_id=plot.id AND lw.deleted=false
+    JOIN groups_locations gl 
+      ON gl.location_id = plot.id
+      AND gl.group_id = #recording_group_id#
+      AND gl.deleted = false
+    JOIN location_attribute_values lav 
+      ON lav.location_id = gl.location_id
+      AND lav.int_value = #plot_group_id#
+      AND lav.location_attribute_id = #plot_group_location_attr_id#
+      AND lav.deleted=false
+    WHERE plot.location_type_id in (#plot_location_type_ids#)
+    AND #website_filter# AND plot.deleted=false
+  </query>
+  <order_bys>
+    <order_by>plot.id</order_by>
+  </order_bys>
+  <params>
+    <param name="recording_group_id" display="ID of current project (recording group)" datatype="integer"/>
+    <param name="plot_group_id" display="Plot Group ID to get plots for" datatype="integer" emptyvalue="0"/>
+    <param name="plot_group_location_attr_id" display="Location attribute ID that holds the plot group for a plot" datatype="integer"/>
+    <param name="plot_location_type_ids" display="Location type IDs of plots" datatype="text"/>
+  </params>
+  <columns>
+    <column name='id' display='Plot ID' sql="plot.id" datatype='integer' visible="false" in_count="true"/>
+    <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
+  </columns>
+</report>
