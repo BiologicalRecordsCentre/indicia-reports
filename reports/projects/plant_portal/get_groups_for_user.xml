@@ -17,8 +17,7 @@
     <param name="user_id" display="Indicia user id" description="Indicia user id to find group permissions for." datatype="integer"/>
   </params>
   <columns>
-    <column name="group_id" sql="groupTT.id" display="Group ID" in_count="true"/>
-    <column name="group_identifier_name" sql="groupT.term" display="Group identifier name"/>
-    <column name="group_count" sql="count(distinct groupT.term)" display="Group name count" aggregate="true"/>
+    <column name="group_id" sql="groupTT.id" display="Plot group ID" in_count="true"/>
+    <column name="group_name" sql="groupT.term" display="Plot group name"/>
   </columns>
 </report>
