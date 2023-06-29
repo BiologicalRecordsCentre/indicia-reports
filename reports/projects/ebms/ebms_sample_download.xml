@@ -29,7 +29,7 @@
       (SELECT AVG(savs.int_value)
         FROM samples ss
         JOIN sample_attribute_values savs ON savs.sample_id = ss.id AND savs.deleted = FALSE 
-        JOIN sample_attributes sas ON savs.sample_attribute_id = sas.id AND sas.deleted = FALSE AND sas.caption = '% sun'
+        JOIN sample_attributes sas ON savs.sample_attribute_id = sas.id AND sas.deleted = FALSE AND sas.caption = '% Sun'
         WHERE parent.id = ss.parent_id AND ss.deleted = FALSE) as mean_sun
   </field_sql>
   

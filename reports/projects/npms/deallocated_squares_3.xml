@@ -7,9 +7,6 @@
   FROM locations square
     LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
     LEFT JOIN location_attribute_values lavEx on lavEx.location_id=square.id AND lavEx.location_attribute_id=#excluded_square_attr_id# AND lavEx.deleted=false
-    --We are not interested in squares which were de-allocated without any data being created
-    LEFT JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
-    LEFT JOIN samples s on s.location_id=plot.id AND s.deleted=false AND s.training=false
     --If square is de-allocated it must have a deleted allocation
     JOIN person_attribute_values pavRemovedAlloc on pavRemovedAlloc.int_value=square.id AND pavRemovedAlloc.person_attribute_id=#user_square_attr_id# AND pavRemovedAlloc.deleted=true
     AND (EXTRACT(epoch from age(pavRemovedAlloc.updated_on::DATE, pavRemovedAlloc.created_on::DATE)) / 86400)::int &gt;&#61; #min_time_between_alloc_and_dealloc#
@@ -32,9 +29,14 @@
         (select max(pavMostRecentRemovedAlloc.id)
          from person_attribute_values pavMostRecentRemovedAlloc
          where pavMostRecentRemovedAlloc.int_value=square.id AND pavMostRecentRemovedAlloc.deleted=true)
-      AND (#created_data_only#=0 OR (#created_data_only#=1 AND s.id IS NOT NULL))
+    AND (#created_data_only#=0 OR (#created_data_only#=1 AND square.id in
+      (SELECT distinct plot.parent_id
+      FROM cache_samples_functional csf
+      JOIN locations plot on plot.id = csf.location_id AND plot.deleted=false
+      WHERE csf.survey_id in (#survey_ids#) AND csf.training = false)))
   </query>
   <params>
+    <param name='survey_ids' display='Surveys' description='Comma separated list of NPMS surveys to take into account' datatype='text' />
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name="ignore_registration_dates_before" display="Ignore Registration Dates Before" description="Ignore anyone who registered earlier than this date

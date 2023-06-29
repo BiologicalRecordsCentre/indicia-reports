@@ -1,0 +1,29 @@
+<report
+    title="List plots in project not in plot group."
+    description="List plots for a project, not already selected for a plot group."
+    >
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM locations plot
+    LEFT JOIN locations_websites lw on lw.location_id = plot.id AND lw.deleted
+    JOIN groups_locations gl on gl.location_id = plot.id 
+      AND gl.group_id = #recording_group_id# AND gl.deleted=false
+    LEFT JOIN location_attribute_values lav on lav.location_id = plot.id AND
+      lav.int_value = #plot_group_id# AND
+      lav.location_attribute_id = #plot_group_location_attr_id# and lav.deleted=false
+    WHERE plot.deleted=false AND lav.id IS NULL
+    AND plot.location_type_id in (#plot_location_type_ids#)
+    AND #website_filter#
+  </query>
+  <params>
+    <param name="plot_group_location_attr_id" display="Plot group location attr id" 
+      description="The id of the location attribute that holds the plot groups for a plot." datatype="integer"/>
+    <param name="plot_group_id" display="Plot group id" description="Id of current plot group being edited." datatype="integer"/>
+    <param name="recording_group_id" display="Recording group id" description="Recording group ID of current project." datatype="integer"/>
+    <param name="plot_location_type_ids" display="Plot location type IDs" description="Location type IDs for the different plot types." datatype="text"/>
+  </params>
+  <columns>
+    <column name="plot_id" sql="plot.id" display="Plot ID"/>
+    <column name="plot_name" sql="plot.name" display="Name"/>
+  </columns>
+</report>
