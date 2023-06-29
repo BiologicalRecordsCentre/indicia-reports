@@ -3,12 +3,12 @@
     description="Traits plus species counts"
 >
   <query website_filter_field="" training_filter_field="">
-    select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term as title, tc.term as code,
+    select t.id, 'Broad biotope' as module, v.taxa_taxon_list_attribute_id as attribute_id, '&lt;span&gt;' || t.term || '&lt;/span&gt;' as title, tc.term as code,
     case #user_id#
-      when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      when 0 then count(distinct v.taxa_taxon_list_id)::text
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(distinct v.taxa_taxon_list_id)::text || '&lt;/a&gt;'
     end as number_of_species,
-    count(v.*) as spcount,
+    count(distinct v.taxa_taxon_list_id) as spcount,
     true as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
@@ -17,12 +17,12 @@
     and t.parent_id is null
     group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term, tc.term as code,
+    select t.id, 'Habitat' as module, v.taxa_taxon_list_attribute_id as attribute_id, '&lt;span&gt;' || t.term || '&lt;/span&gt;', tc.term as code,
     case #user_id#
-      when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      when 0 then count(distinct v.taxa_taxon_list_id)::text
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(distinct v.taxa_taxon_list_id)::text || '&lt;/a&gt;'
     end as number_of_species,
-    count(v.*) as spcount,
+    count(distinct v.taxa_taxon_list_id) as spcount,
     true as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
@@ -31,12 +31,12 @@
     and t.parent_Id in (10460,10268,10512,10158)
     group by t.id, v.taxa_taxon_list_attribute_id, t.term, tc.term
     union
-    select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, t.term,  tc.term as code,
+    select t.id, 'Specific assemblage type' as module, v.taxa_taxon_list_attribute_id as attribute_id, '&lt;span&gt;' || t.term || '&lt;/span&gt;',  tc.term as code,
     case #user_id#
-      when 0 then count(v.*)::text
-      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(v.*)::text || '&lt;/a&gt;'
+      when 0 then count(distinct v.taxa_taxon_list_id)::text
+      else '&lt;a title=&quot;Show the species associated with this trait&quot; href=&quot;/species-index?dynamic-trait_attr_id=' || v.taxa_taxon_list_attribute_id::text || '&amp;dynamic-trait_term_id=' || t.id::text || '&quot;&gt;' || count(distinct v.taxa_taxon_list_id)::text || '&lt;/a&gt;'
     end as number_of_species,
-    count(v.*) as spcount,
+    count(distinct v.taxa_taxon_list_id) as spcount,
     false as has_resources
     from cache_termlists_terms t
     left join cache_termlists_terms tc on tc.meaning_id=t.meaning_id and tc.preferred=false
