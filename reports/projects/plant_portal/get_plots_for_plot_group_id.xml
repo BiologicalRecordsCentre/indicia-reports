@@ -3,19 +3,19 @@
     description="Get a list of plots for a selected plot group."
 >
   <query website_filter_field="lw.website_id">
-    SELECT #columns#
+    SELECT distinct #columns#
     FROM locations plot
     LEFT JOIN locations_websites lw on lw.location_id=plot.id AND lw.deleted=false
     JOIN groups_locations gl 
       ON gl.location_id = plot.id
       AND gl.group_id = #recording_group_id#
       AND gl.deleted = false
-    JOIN location_attribute_values lav 
+    LEFT JOIN location_attribute_values lav 
       ON lav.location_id = gl.location_id
-      AND lav.int_value = #plot_group_id#
       AND lav.location_attribute_id = #plot_group_location_attr_id#
       AND lav.deleted=false
     WHERE plot.location_type_id in (#plot_location_type_ids#)
+    AND (#plot_group_id# = 0 OR lav.int_value = #plot_group_id#)
     AND #website_filter# AND plot.deleted=false
   </query>
   <order_bys>
