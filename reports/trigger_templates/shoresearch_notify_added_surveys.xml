@@ -16,6 +16,7 @@
     <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
   </params>
   <columns>
+    <column name="message" display="Message" sql="'This alert is being sent from The Wildlife Trusts Shoresearch system as a survey has been submitted for your region.'" />
     <column name="id" display="ID" sql="s.id" />
     <column name="trust" display="Trust" sql="g.title" />
     <column name="site" display="Site" sql="s.location_name" />
