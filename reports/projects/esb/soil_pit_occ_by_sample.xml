@@ -1,0 +1,156 @@
+<report
+    title="Summary of earthworm occurrences by soil pit sample"
+    description="Gives earthworm species counts for Earthworm Socieity Soil Pit Surveys dataset, summarised by sample."
+>
+  <query>
+    with records as ( 
+      select cof.sample_id,  
+      coalesce(cast(con.attrs_json ->> '93' as integer), 1) as quantity,  
+      cttl.taxon 
+      from cache_occurrences_functional cof 
+      join cache_occurrences_nonfunctional con on con.id = cof.id 
+      join cache_taxa_taxon_lists cttl on cttl.id = cof.preferred_taxa_taxon_list_id 
+      where cof.survey_id = 586 
+      and cof.record_status = 'V'
+    ), samples as ( 
+      select csf.id,  
+      csf.date_start as date,  
+      csn.public_entered_sref as gridref,  
+      csf.location_name as location,  
+      csn.recorders,  
+      csn.comment, 
+      csn.attrs_json::jsonb ->> '551' habitat, 
+      csn.attrs_json::jsonb ->> '1480' pits, 
+      csn.attrs_json::jsonb ->> '549' idguide, 
+      csn.attrs_json::jsonb ->> '1478' unidentified 
+      from cache_samples_functional csf 
+      join cache_samples_nonfunctional csn on csn.id = csf.id 
+      where csf.survey_id = 586 
+    ), main as (
+      select s.id, s.date, s.gridref, s.location, s.recorders, s.comment, s.habitat, s.pits, s.idguide, s.unidentified, 
+      coalesce(sum(r_lumbr.quantity), 0) as lumbricidae,
+      coalesce(sum(r_a_chlor.quantity), 0) as a_chlor, 
+      coalesce(sum(r_a_calig_pre.quantity), 0) as a_calig_pre, 
+      coalesce(sum(r_a_calig_post.quantity), 0) as a_calig_post, 
+      coalesce(sum(r_a_cupul.quantity), 0) as a_cupul, 
+      coalesce(sum(r_a_icter.quantity), 0) as a_icter, 
+      coalesce(sum(r_a_limic.quantity), 0) as a_limic,
+      coalesce(sum(r_a_longa.quantity), 0) as a_longa, 
+      coalesce(sum(r_a_noctu.quantity), 0) as a_noctu, 
+      coalesce(sum(r_a_rosea.quantity), 0) as a_rosea, 
+      coalesce(sum(r_b_eisen.quantity), 0) as b_eisen, 
+      coalesce(sum(r_b_rubid.quantity), 0) as b_rubid, 
+      coalesce(sum(r_d_attem.quantity), 0) as d_attem,
+      coalesce(sum(r_d_horte.quantity), 0) as d_horte,
+      coalesce(sum(r_d_octae.quantity), 0) as d_octae, 
+      coalesce(sum(r_d_pygma.quantity), 0) as d_pygma, 
+      coalesce(sum(r_d_venet.quantity), 0) as d_venet,
+      coalesce(sum(r_e_andre.quantity), 0) as e_andre,
+      coalesce(sum(r_e_fetid.quantity), 0) as e_fetid,
+      coalesce(sum(r_e_tetra.quantity), 0) as e_tetra,
+      coalesce(sum(r_h_ocula.quantity), 0) as h_ocula,
+      coalesce(sum(r_k_armad.quantity), 0) as k_armad,
+      coalesce(sum(r_l_casta.quantity), 0) as l_casta,
+      coalesce(sum(r_l_festi.quantity), 0) as l_festi,
+      coalesce(sum(r_l_frend.quantity), 0) as l_frend,
+      coalesce(sum(r_l_rubel.quantity), 0) as l_rubel,
+      coalesce(sum(r_l_terre.quantity), 0) as l_terre,
+      coalesce(sum(r_m_mulda.quantity), 0) as m_mulda,
+      coalesce(sum(r_m_phosp.quantity), 0) as m_phosp,
+      coalesce(sum(r_o_cyane.quantity), 0) as o_cyane,
+      coalesce(sum(r_o_lacte.quantity), 0) as o_lacte,
+      coalesce(sum(r_p_ampil.quantity), 0) as p_ampil,
+      coalesce(sum(r_s_mamma.quantity), 0) as s_mamma,
+      coalesce(sum(r_s_tames.quantity), 0) as s_tames
+      from samples s 
+      left join records r_a_chlor on r_a_chlor.sample_id = s.id and r_a_chlor.taxon = 'Allolobophora chlorotica' 
+      left join records r_a_calig_pre on r_a_calig_pre.sample_id = s.id and r_a_calig_pre.taxon = 'Aporrectodea caliginosa s.l. (pre Sherlock, 2018)' 
+      left join records r_a_calig_post on r_a_calig_post.sample_id = s.id and r_a_calig_post.taxon = 'Aporrectodea caliginosa s.s. (post Sherlock, 2018)' 
+      left join records r_a_cupul on r_a_cupul.sample_id = s.id and r_a_cupul.taxon = 'Allolobophora cupulifera' 
+      left join records r_a_icter on r_a_icter.sample_id = s.id and r_a_icter.taxon = 'Aporrectodea icterica' 
+      left join records r_a_limic on r_a_limic.sample_id = s.id and r_a_limic.taxon = 'Aporrectodea limicola' 
+      left join records r_a_longa on r_a_longa.sample_id = s.id and r_a_longa.taxon = 'Aporrectodea longa' 
+      left join records r_a_noctu on r_a_noctu.sample_id = s.id and r_a_noctu.taxon = 'Aporrectodea nocturna' 
+      left join records r_a_rosea on r_a_rosea.sample_id = s.id and r_a_rosea.taxon = 'Aporrectodea rosea' 
+      left join records r_b_eisen on r_b_eisen.sample_id = s.id and r_b_eisen.taxon = 'Bimastos eiseni' 
+      left join records r_b_rubid on r_b_rubid.sample_id = s.id and r_b_rubid.taxon = 'Bimastos rubidus' 
+      left join records r_d_attem on r_d_attem.sample_id = s.id and r_d_attem.taxon = 'Dendrobaena attemsi' 
+      left join records r_d_horte on r_d_horte.sample_id = s.id and r_d_horte.taxon = 'Dendrobaena hortensis'
+      left join records r_d_octae on r_d_octae.sample_id = s.id and r_d_octae.taxon = 'Dendrobaena octaedra' 
+      left join records r_d_pygma on r_d_pygma.sample_id = s.id and r_d_pygma.taxon = 'Dendrobaena pygmaea'
+      left join records r_d_venet on r_d_venet.sample_id = s.id and r_d_venet.taxon = 'Dendrobaena veneta' 
+      left join records r_e_andre on r_e_andre.sample_id = s.id and r_e_andre.taxon = 'Eisenia andrei'
+      left join records r_e_fetid on r_e_fetid.sample_id = s.id and r_e_fetid.taxon = 'Eisenia fetida' 
+      left join records r_e_tetra on r_e_tetra.sample_id = s.id and r_e_tetra.taxon = 'Eiseniella tetraedra' 
+      left join records r_h_ocula on r_h_ocula.sample_id = s.id and r_h_ocula.taxon = 'Helodrilus oculatus'
+      left join records r_k_armad on r_k_armad.sample_id = s.id and r_k_armad.taxon = 'Kenleenus armadas'
+      left join records r_lumbr on r_lumbr.sample_id = s.id and r_lumbr.taxon = 'Lumbricidae' 
+      left join records r_l_casta on r_l_casta.sample_id = s.id and r_l_casta.taxon = 'Lumbricus castaneus' 
+      left join records r_l_festi on r_l_festi.sample_id = s.id and r_l_festi.taxon = 'Lumbricus festivus' 
+      left join records r_l_frend on r_l_frend.sample_id = s.id and r_l_frend.taxon = 'Lumbricus friendi'
+      left join records r_l_rubel on r_l_rubel.sample_id = s.id and r_l_rubel.taxon = 'Lumbricus rubellus' 
+      left join records r_l_terre on r_l_terre.sample_id = s.id and r_l_terre.taxon = 'Lumbricus terrestris' 
+      left join records r_m_mulda on r_m_mulda.sample_id = s.id and r_m_mulda.taxon = 'Murchieona muldali' 
+      left join records r_m_phosp on r_m_phosp.sample_id = s.id and r_m_phosp.taxon = 'Microscolex phosphoreus' 
+      left join records r_o_cyane on r_o_cyane.sample_id = s.id and r_o_cyane.taxon = 'Octolasion cyaneum' 
+      left join records r_o_lacte on r_o_lacte.sample_id = s.id and r_o_lacte.taxon = 'Octolasion lacteum' 
+      left join records r_p_ampil on r_p_ampil.sample_id = s.id and r_p_ampil.taxon = 'Prosellodrilus amplisetosus' 
+      left join records r_s_mamma on r_s_mamma.sample_id = s.id and r_s_mamma.taxon = 'Satchellius mammalis'
+      left join records r_s_tames on r_s_tames.sample_id = s.id and r_s_tames.taxon = 'Sparganophilus tamesis'
+
+      group by s.id, s.date, s.gridref, s.location, s.recorders, s.comment, s.habitat, s.pits, s.idguide, s.unidentified 
+      order by s.id 
+    )
+    SELECT #columns# from main
+  </query>
+  <order_bys>
+    <order_by>id DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name="id" visible="true" sql="id" datatype="integer" in_count="true" />
+    <column name="date" sql="date" datatype="date" />
+    <column name="gridref" sql="gridref" datatype="text" />
+    <column name="location" sql="location" datatype="text" />
+    <column name="recorders" sql="recorders" datatype="text" />
+    <column name="idguide" sql="idguide" datatype="text" />
+    <column name="comment" sql="comment" datatype="text" />
+    <column name="habitat" sql="habitat" datatype="text" />
+    <column name="pits" sql="pits" datatype="integer" />
+    <column name="pits" sql="pits" datatype="integer" />
+    <column name="unidentified" sql="unidentified" datatype="integer" />
+    <column name="lumbricidae" sql="lumbricidae" datatype="integer" />
+    <column name="a_chlor" sql="a_chlor" datatype="integer" />
+    <column name="a_calig_pre" sql="a_calig_pre" datatype="integer" />
+    <column name="a_calig_post" sql="a_calig_post" datatype="integer" />
+    <column name="a_cupul" sql="a_cupul" datatype="integer" />
+    <column name="a_icter" sql="a_icter" datatype="integer" />
+    <column name="a_limic" sql="a_limic" datatype="integer" />
+    <column name="a_longa" sql="a_longa" datatype="integer" />
+    <column name="a_noctu" sql="a_noctu" datatype="integer" />
+    <column name="a_rosea" sql="a_rosea" datatype="integer" />
+    <column name="b_eisen" sql="b_eisen" datatype="integer" />
+    <column name="b_rubid" sql="b_rubid" datatype="integer" />
+    <column name="d_attem" sql="d_attem" datatype="integer" />
+    <column name="d_horte" sql="d_horte" datatype="integer" />
+    <column name="d_octae" sql="d_octae" datatype="integer" />
+    <column name="d_pygma" sql="d_pygma" datatype="integer" />
+    <column name="d_venet" sql="d_venet" datatype="integer" />
+    <column name="e_andre" sql="e_andre" datatype="integer" />
+    <column name="e_fetid" sql="e_fetid" datatype="integer" />
+    <column name="e_tetra" sql="e_tetra" datatype="integer" />
+    <column name="h_ocula" sql="h_ocula" datatype="integer" />
+    <column name="k_armad" sql="k_armad" datatype="integer" />
+    <column name="l_casta" sql="l_casta" datatype="integer" />
+    <column name="l_festi" sql="l_festi" datatype="integer" />
+    <column name="l_frend" sql="l_frend" datatype="integer" />
+    <column name="l_rubel" sql="l_rubel" datatype="integer" />
+    <column name="l_terre" sql="l_terre" datatype="integer" />
+    <column name="m_mulda" sql="m_mulda" datatype="integer" />
+    <column name="m_phosp" sql="m_phosp" datatype="integer" />
+    <column name="o_cyane" sql="o_cyane" datatype="integer" />
+    <column name="o_lacte" sql="o_lacte" datatype="integer" />
+    <column name="p_ampil" sql="p_ampil" datatype="integer" />
+    <column name="s_mamma" sql="s_mamma" datatype="integer" />
+    <column name="s_tames" sql="s_tames" datatype="integer" />
+  </columns>
+</report>
