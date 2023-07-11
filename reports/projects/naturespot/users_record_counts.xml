@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Users record counts"
+    description="Lists user IDs and NatureSpot record counts.">
+  <query website_filter_field="">
+    select #columns#
+    from cache_occurrences_functional
+    where website_id=8
+  </query>
+  <columns>
+    <column name="created_by_id" display="Warehouse user ID" datatype="integer" sql="created_by_id" />
+    <column name="records_submitted" display="Records submitted" datatype="integer" sql="count(*)" aggregate="true" />
+  </columns>
+</report>
