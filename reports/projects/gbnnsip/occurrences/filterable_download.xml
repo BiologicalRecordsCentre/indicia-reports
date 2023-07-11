@@ -60,6 +60,7 @@
     <column name="source" display="Source" datatype="text" sql="snf.website_title || ' | ' || snf.survey_title" />
     <column name="location_name" display="Site name" datatype="text" sql="o.location_name" />
     <column name="recorder_profession" display="Recorder profession" datatype="text" sql="snf.attrs_json->>'1304'" />
+	<column name="species_url" display="Species details" datatype="text" sql="'https://gbnnsip.brc.ac.uk/record/details?occurrence_id=' || o.id" />
     <column name="investigation_status" display="Investigation status" datatype="text"
       sql="case occ.metadata->>'Statutory body status'
         when 'P' then 'Pending'
