@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Administration - All Users For Event" description="Roughly the same as general All User Sites 
+but email column visible by default (otherwise will not show in download file). 
+Some functionality removed for simplicity.">
+  <query website_filter_field="lw.website_id">
+    SELECT #columns#
+    FROM person_attribute_values pav
+      LEFT JOIN locations l on l.id = pav.int_value AND l.deleted = false
+      LEFT JOIN people p on p.id = pav.person_id AND p.deleted=false
+      LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      LEFT JOIN users u ON u.person_id=p.id
+      LEFT JOIN users_websites accesscheck ON accesscheck.website_id = lw.website_id
+        AND accesscheck.user_id=#auth_user_id# AND accesscheck.banned=false
+        AND accesscheck.site_role_id=1
+      #joins#
+    WHERE 1=1
+      #filters#
+      AND pav.deleted=false
+      AND pav.person_attribute_id=#person_site_attr_id#
+      AND #website_filter#
+   </query>
+  <order_bys>
+    <order_by>pav.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="person_site_attr_id" display="Person Sites Attribute ID" description="The person attribute ID used to store My Sites" datatype="integer" />
+    <param name="location_id" display="Location Id" description="A location id used if we only want to return results for a single location." datatype="integer" default='' emptyvalue=''>
+      <where>l.id=#location_id#</where>
+    </param>
+    <param name="location_type_ids" display="Location Type Ids" description="Comma separated list of location type ids we want to return results for." datatype="text" default='' emptyvalue=''>
+      <where>l.location_type_id in (#location_type_ids#)</where>
+    </param>
+    <param name="auth_user_id" default="-1" datatype="integer" />
+  </params>
+  <columns>
+    <column name="id" sql="pav.id" unique="true" in_count="integer" type="hidden" visible="false"/>
+    --note: Do not rename this as user_id as there appears to be automatic code associated with the website filter that looks for that name
+    <column name="pav_user_id" display="User Id" sql="u.id" datatype="integer" visible="false"/>
+    <column name="person_name" display="User's Name" sql="p.first_name || ' ' || p.surname" datatype="text"/>
+    --Default to invisible as this field was added later and don't want to affect old reports
+    <column name="person_email" display="User's Email" sql="CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END" datatype="text"/>
+  </columns>
+</report>
