@@ -14,22 +14,22 @@
     -- Check dead.
     JOIN occurrence_attribute_values v on v.occurrence_id=o.id AND v.deleted=false
       AND v.occurrence_attribute_id=800 AND v.int_value in (17464, 17465)
-    -- Not already notified.
     JOIN cache_termlists_terms t ON t.id=v.int_value
-    LEFT JOIN occurrence_comments ocdone ON ocdone.occurrence_id=o.id AND ocdone.deleted=false
-      AND ocdone.comment like '%Notification that a Wild Boar carcass has been recorded.'
-      AND ocdone.created_on&gt;o.created_on
     -- Find users for this record
     JOIN imammalia.dead_boar_notifications dbn
       ON dbn.location_ids IS NULL
       OR dbn.location_ids &amp;&amp; o.location_ids
+    -- Not already notified.
+	  LEFT JOIN notifications ndone ON ndone.user_id=dbn.user_id
+      AND ndone.source='iMammalia dead Wild Boars'
+      AND ndone.data like '%[["' || o.id::text || '"%'
     WHERE o.website_id=122
     -- Check Wild Boar.
     AND o.taxa_taxon_list_external_key='MWEB0036'
     -- Need to scan records in past to allow time for spatial indexing.
     AND o.created_on &gt; '#date#'::date-'2 days'::interval
     -- Not already notified.
-    AND ocdone.id is null
+    AND ndone.id is null
     GROUP BY o.id, o.date_start, st_y(st_centroid(st_transform(public_geom, 4326))), st_x(st_centroid(st_transform(public_geom, 4326))), t.term, o.website_id
   </query>
   <params>
