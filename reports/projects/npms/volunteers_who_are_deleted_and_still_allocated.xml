@@ -12,9 +12,11 @@
     (
       SELECT u.id 
       FROM users u 
+      JOIN people p2 on p2.id = u.person_id AND p2.deleted = false
       JOIN users_websites uw on uw.user_id = u.id AND uw.site_role_id IS NOT NULL 
         AND uw.website_id in (#website_ids#)
       WHERE u.person_id = p.id
+      AND u.deleted=false
     )
   </query>
   <params>
