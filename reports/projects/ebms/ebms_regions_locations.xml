@@ -5,14 +5,15 @@
   <query website_filter_field="lw.website_id">
   SELECT #columns#
     FROM locations l
-    JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted = false
+    LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted = false
     JOIN locations region ON region.id IN (#region_location_ids#)
+      AND region.location_type_id = #region_type_id#
       AND region.deleted = false
-      AND st_intersects(region.boundary_geom, coalesce(l.boundary_geom, l.centroid_geom))
+      AND st_intersects(region.boundary_geom, l.centroid_geom)
   #joins#
   WHERE l.deleted = false 
     AND l.location_type_id IN (#location_type_ids#)
-    AND #website_filter#
+    AND (l.public=true or lw.website_id in (#website_ids#))
   #order_by#
   </query>
   <order_bys>

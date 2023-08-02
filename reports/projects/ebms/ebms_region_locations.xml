@@ -1,6 +1,6 @@
 <report
-    title="EBMS: Locations contained in a region."
-    description="Returns the list of locations that falls within a parent region. Uses the country location attribute, rather than st_intersects."
+    title="EBMS: Locations contained in a country."
+    description="Returns the list of locations that falls within a parent country. Uses the country location attribute, rather than st_intersects."
     >
   <query website_filter_field="lw.website_id">
   SELECT #columns#
@@ -24,7 +24,7 @@
         description="The ID of the location_attribute that holds the region for a location"
         datatype="lookup"
         population_call="direct:location_attribute:id:caption" />
-    <param name="region_location_id" display="Region location ID" description="The ID of the parent location (region) to filter for" datatype="integer" default="" >
+    <param name="region_location_id" display="Region location ID" description="The ID of the parent location (country) to filter for" datatype="integer" default="" >
       <where>region.id=#region_location_id#</where>
     </param>
     <param name="locattrs" display="Location attribute list" description="Comma separated list of location attribute IDs to include" datatype="locattrs" default=""/>
