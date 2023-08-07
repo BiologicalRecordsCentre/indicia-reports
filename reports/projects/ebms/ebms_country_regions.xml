@@ -1,0 +1,32 @@
+<report
+    title="EBMS: Regions contained in a country."
+    description="Returns the list of Regions that are linked to a country."
+    >
+  <query>
+  SELECT #columns#
+    FROM locations country
+    JOIN locations nuts1 ON nuts1.parent_id = country.id AND nuts1.deleted = FALSE
+    JOIN locations nuts2 ON nuts2.parent_id = nuts1.id AND nuts1.deleted = FALSE
+      AND nuts2.location_type_id = #region_location_type_id#
+  #joins#
+  WHERE country.deleted = false 
+    AND country.id = #country_location_id#
+    AND country.location_type_id = #country_location_type_id#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>nuts2.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name='country_location_id' display="Country location ID" description="Location ID of country" datatype="string" />
+    <param name='country_location_type_id' display='Country Location Types' description='Comma separated list of location_type_ids of Countries.' datatype="string" />
+    <param name='region_location_type_id' display='Region Location Type' description='Location_type_id of regions. (NUTS2)' datatype="integer" />
+  </params>
+  <columns>
+    <column name='location_id' display='ID' sql="nuts2.id" datatype="integer" />
+    <column name='name' display='Name' sql="nuts2.name" datatype="text" />
+    <column name='country' display='Country' sql="country.name" datatype="text" />
+    <column name='location_type_id' visible='false' sql="nuts2.location_type_id" datatype="integer" />
+    <column name='centroid_sref' display='Centroid' sql="nuts2.centroid_sref" datatype="text" />
+  </columns>
+</report>
