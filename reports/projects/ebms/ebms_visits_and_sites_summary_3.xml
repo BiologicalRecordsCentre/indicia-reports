@@ -1,0 +1,79 @@
+<report
+    title='EBMS Visit Summary list 3'
+    description='A list of the number of sites and visits recorded for each species, 
+        with filters for user or scheme, this and previous year.
+        Additionally allows the names output by the report to be overriden by particular schemes to 
+        use the native language for the scheme.'
+>
+  <query website_filter_field='o.website_id'>
+    select #columns#
+    from cache_taxa_taxon_lists cttl
+      JOIN occurrences o ON o.taxa_taxon_list_id = cttl.id AND o.deleted = false
+      JOIN samples s ON o.sample_id=s.id and s.deleted=false
+      JOIN samples p ON s.parent_id = p.id AND p.deleted = false
+      JOIN locations l  ON p.location_id = l.id AND l.deleted = false
+      JOIN cache_termlists_terms ctt on ctt.id=l.location_type_id
+      LEFT JOIN cache_taxa_taxon_lists cttl_other_meaning on cttl_other_meaning.taxon_meaning_id = cttl.taxon_meaning_id
+          AND cttl_other_meaning.language_iso = (cast('#country_ids_language_override#' as json)->>('#country_id#'))::varchar
+          AND cttl_other_meaning.id != cttl.id
+          <!-- Make sure if more than one common name, we only return 1-->
+          AND cttl_other_meaning.id in (
+            select max(cttl_other_meaning_2.id) 
+            from cache_taxa_taxon_lists cttl_other_meaning_2
+            where 
+              cttl_other_meaning_2.taxon_meaning_id = cttl_other_meaning.taxon_meaning_id AND 
+              cttl_other_meaning_2.language_iso = cttl_other_meaning.language_iso
+          )
+      #joins#
+    WHERE l.location_type_id = #location_type_id#
+      AND #website_filter#
+  </query>
+  <order_bys>
+    <order_by>coalesce(cttl.default_common_name, cttl.preferred_taxon)</order_by>
+  </order_bys>
+  <params>
+    <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >
+      <wheres>
+        <where value="this" operator="equal">
+          p.date_end &gt;= CAST(extract(YEAR from NOW())||'-01-01' as date)
+        </where>
+        <where value="last" operator="equal">
+          p.date_end &gt;= CAST((extract(YEAR from NOW())-1)||'-01-01' as date)
+          AND p.date_start &lt;= CAST((extract(YEAR from NOW())-1)||'-12-31' as date)
+        </where>
+      </wheres>
+    </param>
+    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,scheme:All scheme data' >
+      <wheres>
+        <where value="mine" operator="equal">p.created_by_id = #user_id#</where>
+      </wheres>
+      <joins>
+        <join value="scheme" operator="equal">
+          JOIN location_attribute_values lav on l.id = lav.location_id
+            AND lav.location_attribute_id = #country_location_attribute_id#
+            AND lav.int_value = #country_id#
+            AND lav.deleted = false
+        </join>
+      </joins>
+    </param>
+    <param name='user_id' display='Indicia User ID' description='Enter the Indicia ID of the user' datatype='int' />
+    <param name="country_location_attribute_id"
+        display="Country attribute"
+        description="The ID of the location_attribute that assigns a location to a country"
+        datatype="lookup"
+        population_call="direct:location_attribute:id:caption" />
+    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name='location_type_id' display='Location Type ID' description='Enter the type of location' datatype='lookup'
+            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=' />
+    <param name='country_ids_language_override' display='Country IDs language override' 
+        description='JSON where the key is the country_id and the value is the language_iso to use.
+            e.g. {"1":"eng","2":"jpn"} country 1 uses English, country 2 uses Japanese' datatype='text' emptyvalue='{}' default='{}'/>
+  </params>
+  <columns>
+    <column name='taxon_meaning_id' visible="false" sql="cttl.taxon_meaning_id" in_count="true"/>
+    <column name='taxon' display='Name' visible="false" sql="coalesce(cttl_other_meaning.taxon, cttl.preferred_taxon)"/>
+    <column name='common' display='Common Name' sql="coalesce(cttl.default_common_name, cttl.preferred_taxon)"/> />   
+    <column name='num_visits' display='Visits' sql="count(distinct p.id)" aggregate="true"/>    
+    <column name='num_sites' display='Sites' sql="count(distinct l.id)" aggregate="true"/>    
+  </columns> 
+</report>
