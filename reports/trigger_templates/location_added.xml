@@ -4,6 +4,7 @@
   <query>
     SELECT #columns#
     FROM locations l
+    JOIN locations_websites lw ON lw.location_id=l.id and lw.deleted=false
     WHERE l.created_on > '#date#'
     AND l.location_type_id=#location_type_id#
     AND l.deleted=false
@@ -16,5 +17,6 @@
     <column name="id" display="ID" sql="l.id" />
     <column name="name" display="Name" sql="l.name"  />
     <column name="centroid_sref" display="Spatial ref." sql="l.centroid_sref" />
+    <column name="website_id" visible="false" sql="lw.id" />
   </columns>
 </report>
