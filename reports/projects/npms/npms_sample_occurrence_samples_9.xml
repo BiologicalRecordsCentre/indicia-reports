@@ -113,5 +113,6 @@
     case when (savSurv1.int_value IS NOT NULL AND savSurv1.int_value != 0) THEN 'Survey 2' 
     when (savSurv1.int_value IS NULL OR savSurv1.int_value = 0) THEN 'Survey 1'
     ELSE  '' END" display=' '/>
+    <column name='input_form' sql='csf.input_form' visible="false"/>
   </columns>
 </report>
