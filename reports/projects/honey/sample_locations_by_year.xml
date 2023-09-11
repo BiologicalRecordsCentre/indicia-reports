@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="Sample locations by year and status" definition="Report for mapping samples.">
+	<query>
+		SELECT #columns#
+		FROM cache_samples_functional s
+		LEFT JOIN sample_attribute_values v ON v.sample_id=s.id AND v.deleted=false AND v.sample_attribute_id=#status_attr_id#
+		#joins#
+		WHERE s.website_id = #website_id#
+		AND s.survey_id = #survey_id#
+		AND CASE 
+			WHEN #pack_status# = 0 THEN v.int_value IN (#pack_status_all#)
+			WHEN #pack_status# = 1 THEN v.int_value IN (#pack_status_ret#)
+			WHEN #pack_status# = 2 THEN v.int_value IN (#pack_status_not#)
+			WHEN #pack_status# = 3 THEN v.int_value IN (#pack_status_pro#)
+		END
+		AND date_part('year', s.created_on) = #year#
+	</query>
+	<params>
+		<param name='website_id' display='Website' description='Enter the website id' datatype='text'></param>
+		<param name='survey_id' display='Survey' description='Enter the survey id' datatype='text'></param>
+		<param name='status_attr_id' display='Status ID' description='Enter the id of the status attribute' datatype='text'></param>
+		<param name='year' display='Year' description='Enter the year' datatype='text'></param>
+		<param name="pack_status" display="Pack status" datatype="lookup"
+			  description="Status of sample pack."
+			  lookup_values="0:All,
+			  1:Returned,
+			  2:Not returned,
+			  3:Processed">
+		<param name='pack_status_all' display='Pack status - all' description='Enter the list of term_list_term_ids for pack status = all' datatype='integer[]'></param>
+		<param name='pack_status_ret' display='Pack status - returned' description='Enter the list of term_list_term_ids for pack status = returned' datatype='integer[]'></param>
+		<param name='pack_status_not' display='Pack status - not returned' description='Enter the list of term_list_term_ids for pack status = not returned' datatype='integer[]'></param>
+		<param name='pack_status_pro' display='Pack status - processed' description='Enter the list of term_list_term_ids for pack status = processed' datatype='integer[]'></param>
+	    </param>
+	</params>
+
+	<columns>
+		<column name="public_geom" display="Geom" sql="st_astext(s.public_geom)" visible="true" mappable="true"/>
+	</columns>
+
+</report>
