@@ -67,12 +67,13 @@
   LEFT JOIN occurrence_attribute_values oav8 ON oav8.occurrence_id = o.id and oav8.occurrence_attribute_id = #occurrence_taxon_name_in_source_id# and oav8.deleted=false
   LEFT JOIN occurrence_attribute_values oav9 ON oav9.occurrence_id = o.id and oav9.occurrence_attribute_id = #occurrence_taxonomy_notes_id# and oav9.deleted=false
   LEFT JOIN locations l2 ON l2.id = ANY (o.location_ids)
-  LEFT JOIN cache_termlists_terms ctt19 ON ctt19.id = l2.location_type_id AND ctt19.term = 'Countries 2016'
+  LEFT JOIN cache_termlists_terms ctt19 ON ctt19.id = l2.location_type_id
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
   #idlist#
   and o.created_on >= '#input_date_from#'
+  and (ctt19.id is null or ctt19.term = 'Countries 2016')
   </query>
   <order_bys>
     <order_by>o.id ASC</order_by>
