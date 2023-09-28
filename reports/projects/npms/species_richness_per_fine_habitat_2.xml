@@ -27,8 +27,8 @@ level."
   <params>
     <param name='habitat_attr_id' display='Habitat Sample Attribute Id' description='Id of the sample attribute that holds the habitat.' datatype='integer'/>
     <param name='fine_habitat' display='Fine Scale Habitat' description='Restrict report to specific habitat.' datatype='lookup' emptyvalue='0'
-        population_call='report:reports_for_prebuilt_forms/Splash/fine_habitats_for_population_call:id:term'/>   
-    <param name='survey_id' display='Survey' description='Survey' datatype='lookup' population_call='report:reports_for_prebuilt_forms/Splash/get_surveys_for_population_call:id:title' emptyvalue='0'/>
+        population_call='report:projects/npms/fine_habitats_for_population_call:id:term'/>   
+    <param name='survey_id' display='Survey' description='Survey' datatype='lookup' population_call='report:projects/npms/get_surveys_for_population_call:id:title' emptyvalue='0'/>
     <param name="ignore_dates_before" display="Ignore Dates Before" description="Ignore samples whose date is before this date (we can ignore previous years data)" datatype="date" emptyvalue="" default=""/>
     <param name="limit_survey_ids" display="Limit Survey IDs" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
     <param name="habitat_termlist_id" display="Id of the habitat termlist" datatype="integer"/>

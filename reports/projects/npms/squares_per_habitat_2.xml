@@ -22,11 +22,11 @@ broad scale habitat is reported on, we need to work out the related broad scale 
   <params>
     <param name='core_square_type_id' display='Core Square Type Id' description='' datatype='integer'/>
     <param name='broad_habitat' display='Broad Scale Habitat' description='Broad scale habitat to report on.' datatype='lookup' emptyvalue=''
-        population_call='report:reports_for_prebuilt_forms/Splash/broad_habitats_for_population_call:id:term'>
+        population_call='report:projects/npms/broad_habitats_for_population_call:id:term'>
       <where>(sampHabVal.int_value=#broad_habitat# OR habTt.parent_id=#broad_habitat#)</where>
     </param>
     <param name='fine_habitat' display='Fine Scale Habitat' description='Fine scale habitat to report on.' datatype='lookup' emptyvalue=''
-        population_call='report:reports_for_prebuilt_forms/Splash/fine_habitats_for_population_call:id:term'>
+        population_call='report:projects/npms/fine_habitats_for_population_call:id:term'>
       <where>sampHabVal.int_value=#fine_habitat#</where>
     </param>
     <param name='habitat_attr_id' display='Habitat Sample Attribute Id' description='Id of the sample attribute that holds the habitat.' datatype='integer'/>

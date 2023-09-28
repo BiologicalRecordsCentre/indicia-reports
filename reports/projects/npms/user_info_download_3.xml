@@ -72,7 +72,7 @@ an event filter to return users associated with a particular event."
   </order_bys>
   <params>
     <param name='event_id' display='Event' description='Select an event to see people signed up up for that event.' datatype='lookup'
-        population_call='report:reports_for_prebuilt_forms/Splash/events_for_population_call:id:name' emptyvalue='0'>
+        population_call='report:projects/npms/events_for_population_call:id:name' emptyvalue='0'>
       <where>(eventPav2.int_value=#event_id# OR '#event_id#'='0')</where>
     </param>
     <param name="core_square_location_type_id" display="Core Square location type id" datatype="integer"/>

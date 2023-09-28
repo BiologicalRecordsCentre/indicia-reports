@@ -27,7 +27,7 @@ using a basic integer for the cover, whilst on others this number is represented
     <param name='habitat_attr_id' display='Habitat Sample Attribute Id' description='Id of the sample attribute that holds the habitat.' datatype='integer'/>
     <param name='cover_int_occ_attr_id' display='Species cover value integer attribute id' description='Id of the occurrence attribute that holds the cover integer value' datatype='integer'/>
     <param name='cover_tt_occ_attr_id' display='Species cover value termlist attribute id' description='Id of the occurrence attribute that holds the cover termlist value' datatype='lookup'/>
-    <param name="survey_id" display="Surveys" datatype="lookup" population_call='report:reports_for_prebuilt_forms/Splash/get_surveys_for_population_call:id:title' emptyvalue=''>
+    <param name="survey_id" display="Surveys" datatype="lookup" population_call='report:projects/npms/get_surveys_for_population_call:id:title' emptyvalue=''>
       <where>co.survey_id=#survey_id#</where>
     </param>
     <param name="taxa_taxon_list_id" display="Species" datatype="lookup" population_call='autocomplete:species' emptyvalue=''>
@@ -35,7 +35,7 @@ using a basic integer for the cover, whilst on others this number is represented
       <where>ttl.id = #taxa_taxon_list_id#</where>
     </param>  
     <param name='habitat' display='Fine Habitat' description='Habitat to report on.' datatype='lookup' emptyvalue=''
-        population_call='report:reports_for_prebuilt_forms/Splash/fine_habitats_for_population_call:id:term'>
+        population_call='report:projects/npms/fine_habitats_for_population_call:id:term'>
       <where>savHab.int_value=#habitat#</where>
     </param>
     <param name="ignore_dates_before" display="Ignore samples whose date is before this date (we can ignore previous years data)" description="Ignore data created before this date." datatype="date" emptyvalue="" default="">

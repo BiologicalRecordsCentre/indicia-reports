@@ -20,7 +20,7 @@ When reporting on an individual taxon, the report will return data for any taxa 
     <order_by>cttl.taxon asc</order_by>
   </order_bys>
   <params>
-    <param name="survey_id" display="Surveys" datatype="lookup" population_call='report:reports_for_prebuilt_forms/Splash/get_surveys_for_population_call:id:title' emptyvalue=''>
+    <param name="survey_id" display="Surveys" datatype="lookup" population_call='report:projects/npms/get_surveys_for_population_call:id:title' emptyvalue=''>
       <where>co.survey_id=#survey_id#</where>
     </param>
     <param name="taxa_taxon_list_id" display="Species" datatype="lookup" population_call='autocomplete:species' emptyvalue=''>
