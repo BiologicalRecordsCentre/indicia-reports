@@ -57,7 +57,7 @@
     <column name="preferred" display="Preferred" sql="o.preferred_taxon" /> 
     <column name='created_by_id' visible='false' sql='o.created_by_id' datatype="integer" />
     <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
-    <column name='belongs_to_user' display='Belongs to User' sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#the_user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
+    <column name='belongs_to_user' display='Belongs to User' sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
     <column name='belongs_to_site' display='Belongs to Site' sql="CASE WHEN o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
   </columns>
 </report>
