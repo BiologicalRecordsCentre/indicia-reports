@@ -10,10 +10,11 @@
       AND ttav.int_value = #recording_group_id#
       AND ttav.termlists_term_attribute_id = #plot_group_project_termlists_term_attr_id#
       AND ttav.deleted=false
-    JOIN person_attribute_values pav on pav.person_id = #person_id#
-      AND pav.int_value = ctt.id
+    JOIN person_attribute_values pav on 
+      pav.int_value = ctt.id
       AND pav.person_attribute_id = #plot_group_person_attr_id# 
       AND pav.deleted=false
+    JOIN users u on u.person_id = pav.person_id AND u.id = #user_id# AND u.deleted = false
     WHERE 
       ctt.termlist_id = #plot_groups_termlist_id#
   </query>
@@ -24,7 +25,7 @@
       description="The id of the person attribute that holds the plot groups for a person." datatype="integer"/>
     <param name="recording_group_id" display="Recording group id" description="Recording group ID of current project." datatype="integer"/>
     <param name="plot_groups_termlist_id" display="Plot groups termlist ID" description="Plot groups termlist ID." datatype="integer"/>
-    <param name="person_id" display="Person ID" description="Current user's person ID." datatype="integer"/>
+    <param name="user_id" display="User ID" description="Indicia User ID for current user." datatype="integer"/>
   </params>
   <columns>
     <column name="plot_group_id" sql="ctt.id" display="ID"/>
