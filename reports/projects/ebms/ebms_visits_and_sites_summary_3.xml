@@ -2,44 +2,42 @@
     title='EBMS Visit Summary list 3'
     description='A list of the number of sites and visits recorded for each species, 
         with filters for user or scheme, this and previous year.
-        Additionally allows the names output by the report to be overriden by particular schemes to 
-        use the native language for the scheme.'
+        Additionally provides the common names in the currently selected language.'
 >
   <query website_filter_field='o.website_id'>
-    select #columns#
-    from cache_taxa_taxon_lists cttl
-      JOIN occurrences o ON o.taxa_taxon_list_id = cttl.id AND o.deleted = false
-      JOIN samples s ON o.sample_id=s.id and s.deleted=false
-      JOIN samples p ON s.parent_id = p.id AND p.deleted = false
-      JOIN locations l  ON p.location_id = l.id AND l.deleted = false
-      JOIN cache_termlists_terms ctt on ctt.id=l.location_type_id
-      LEFT JOIN cache_taxa_taxon_lists cttl_other_meaning on cttl_other_meaning.taxon_meaning_id = cttl.taxon_meaning_id
-          AND cttl_other_meaning.language_iso = (cast('#country_ids_language_override#' as json)->>('#country_id#'))::varchar
-          AND cttl_other_meaning.id != cttl.id
-          <!-- Make sure if more than one common name, we only return 1-->
-          AND cttl_other_meaning.id in (
-            select max(cttl_other_meaning_2.id) 
-            from cache_taxa_taxon_lists cttl_other_meaning_2
-            where 
-              cttl_other_meaning_2.taxon_meaning_id = cttl_other_meaning.taxon_meaning_id AND 
-              cttl_other_meaning_2.language_iso = cttl_other_meaning.language_iso
-          )
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists preferred
+        ON o.preferred_taxa_taxon_list_id = preferred.id
+      JOIN samples p
+        ON o.parent_sample_id = p.id
+          AND p.deleted = false
+          AND p.location_id IS NOT NULL
+          AND p.parent_id IS NULL
+          AND p.survey_id IN (#survey_ids#)
+      LEFT JOIN (
+        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
+          FROM cache_taxa_taxon_lists
+          WHERE language_iso = '#language_iso#'
+            AND preferred = false
+            AND taxon_list_id in (#taxon_list_ids#)
+          GROUP BY taxon_meaning_id) common
+        ON common.taxon_meaning_id = o.taxon_meaning_id
       #joins#
-    WHERE l.location_type_id = #location_type_id#
-      AND #website_filter#
+    WHERE #website_filter# AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
-    <order_by>coalesce(cttl.default_common_name, cttl.preferred_taxon)</order_by>
+    <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
   </order_bys>
   <params>
     <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >
       <wheres>
         <where value="this" operator="equal">
-          p.date_end &gt;= CAST(extract(YEAR from NOW())||'-01-01' as date)
+          o.date_end &gt;= CAST(extract(YEAR from NOW())||'-01-01' as date)
         </where>
         <where value="last" operator="equal">
-          p.date_end &gt;= CAST((extract(YEAR from NOW())-1)||'-01-01' as date)
-          AND p.date_start &lt;= CAST((extract(YEAR from NOW())-1)||'-12-31' as date)
+          o.date_end &gt;= CAST((extract(YEAR from NOW())-1)||'-01-01' as date)
+          AND o.date_start &lt;= CAST((extract(YEAR from NOW())-1)||'-12-31' as date)
         </where>
       </wheres>
     </param>
@@ -49,7 +47,7 @@
       </wheres>
       <joins>
         <join value="scheme" operator="equal">
-          JOIN location_attribute_values lav on l.id = lav.location_id
+          JOIN location_attribute_values lav ON p.location_id = lav.location_id
             AND lav.location_attribute_id = #country_location_attribute_id#
             AND lav.int_value = #country_id#
             AND lav.deleted = false
@@ -63,17 +61,16 @@
         datatype="lookup"
         population_call="direct:location_attribute:id:caption" />
     <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
-    <param name='location_type_id' display='Location Type ID' description='Enter the type of location' datatype='lookup'
-            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=' />
-    <param name='country_ids_language_override' display='Country IDs language override' 
-        description='JSON where the key is the country_id and the value is the language_iso to use.
-            e.g. {"1":"eng","2":"jpn"} country 1 uses English, country 2 uses Japanese' datatype='text' emptyvalue='{}' default='{}'/>
+    <param name='survey_ids' display='Surveys' description='Comma separated list of survey ids' datatype='text' />
+    <param name='taxon_list_ids' display='Taxon lists' description='Comma separated list of Taxon list ids' datatype='text' />
+    <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
   </params>
   <columns>
-    <column name='taxon_meaning_id' visible="false" sql="cttl.taxon_meaning_id" in_count="true"/>
-    <column name='taxon' display='Name' visible="false" sql="coalesce(cttl_other_meaning.taxon, cttl.preferred_taxon)"/>
-    <column name='common' display='Common Name' sql="coalesce(cttl.default_common_name, cttl.preferred_taxon)"/> />   
-    <column name='num_visits' display='Visits' sql="count(distinct p.id)" aggregate="true"/>    
-    <column name='num_sites' display='Sites' sql="count(distinct l.id)" aggregate="true"/>    
+    <column name='taxon_meaning_id' visible="false" sql="o.taxon_meaning_id" in_count="true"/>
+    <column name='taxon' display='Name' visible="false" sql="preferred.taxon"/>
+    <column name='common' display='Common Name' sql="common.combined"/> />   
+    <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
+    <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
   </columns> 
 </report>
