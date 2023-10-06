@@ -19,7 +19,7 @@
     <column name="current_determination" display="Current determination" datatype="text" sql="cttl.taxon" />
     <column name="current_determination_date" display="Current determination date" datatype="text" sql="case
       when d.updated_on=d.created_on then
-        (select string_agg(oc.created_on::text', ', ') || ' (estimate from edit comments)
+        (select string_agg(oc.created_on::text, ', ') || ' (estimate from edit comments)'
       from occurrence_comments oc
       where oc.occurrence_id=o.id
       and oc.deleted=false
