@@ -69,7 +69,7 @@
   <columns>
     <column name='taxon_meaning_id' visible="false" sql="o.taxon_meaning_id" in_count="true"/>
     <column name='taxon' display='Name' visible="false" sql="preferred.taxon"/>
-    <column name='common' display='Common Name' sql="common.combined"/> />   
+    <column name='common' display='Common Name' sql="common.combined"/> 
     <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
     <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
   </columns> 
