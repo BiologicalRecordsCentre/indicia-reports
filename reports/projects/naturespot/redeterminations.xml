@@ -2,21 +2,35 @@
 <report title="Redeterminations"
     description="Lists redeterminations of NS records.">
   <query website_filter_field="">
-    select #columns#
+    select distinct on (o.id)
+      #columns#
     from cache_occurrences_functional o
+    join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
     join determinations d on d.occurrence_id=o.id and d.deleted=false
-    join cache_taxa_taxon_lists cttl on cttl.id=d.taxa_taxon_list_id
+    join cache_taxa_taxon_lists cttld on cttld.id=d.taxa_taxon_list_id
+    left join occurrence_comments ocv on ocv.occurrence_id=o.id and ocv.deleted=false and ocv.record_status is not null and ocv.created_on&lt;o.verified_on
     where o.website_id=8
   </query>
   <order_bys>
-    <order_by>o.id ASC</order_by>
+    <order_by>o.id, d.id desc, ocv.id desc</order_by>
   </order_bys>
   <columns>
     <column name="occurrence_id" display="Occurrence ID" datatype="integer" sql="o.id" />
-    <column name="determination_id" display="Determination ID" datatype="integer" sql="d.id" />
-    <column name="person_name" display="Determiner" datatype="text" sql="d.person_name" />
-    <column name="taxon" display="Determined as taxon" datatype="text" sql="cttl.taxon" />
-    <column name="common_name" display="Common name" datatype="text" sql="cttl.default_common_name" />
-    <column name="accepted_name" display="Accepted name" datatype="text" sql="cttl.preferred_taxon" />
+    <column name="current_determination" display="Current determination" datatype="text" sql="cttl.taxon" />
+    <column name="current_determination_date" display="Current determination date" datatype="text" sql="case
+      when d.updated_on=d.created_on then
+        (select string_agg(oc.created_on::text', ', ') || ' (estimate from edit comments)
+      from occurrence_comments oc
+      where oc.occurrence_id=o.id
+      and oc.deleted=false
+      and oc.comment='This record''s verification status needs to be rechecked as it has been edited.')
+      else d.updated_on::text
+    end" />
+    <column name="last_determination" display="Last determination" datatype="text" sql="cttld.taxon" />
+    <column name="last_determination_date" display="Last determination date" datatype="date" sql="d.created_on" />
+    <column name="current_status" display="Current status" datatype="text" sql="o.record_status || coalesce(o.record_substatus::text, '')" />
+    <column name="current_verification_date" display="Current verification date" datatype="date" sql="o.verified_on" />
+    <column name="previous_status" display="Previous status" datatype="text" sql="ocv.record_status || coalesce(ocv.record_substatus::text, '')" />
+    <column name="previous_verification_date" display="Previous verification date" datatype="date" sql="ocv.created_on" />
   </columns>
 </report>
