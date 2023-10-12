@@ -56,9 +56,6 @@
     </param>
     <param name="date_from" display="Date From" datatype="date" default="" />
     <param name="date_to" display="Date To" datatype="date" default="" />
-    <param name="user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" >
-      <where>parent.created_by_id=#user_id#</where>
-    </param>
     <param name="taxon_list_id" display="Taxon list ID" description="ID of the taxon list to show" datatype="int"  default="" />
     <param name="locattrs" display="Sample attribute list" description="Comma separated list of sample attribute IDs to include" datatype="locattrs"  default="" />
     <param name="loc2attrs" display="Section sample attribute list" description="Comma separated list of section sample attribute IDs to include" datatype="loc2attrs" default="" />
