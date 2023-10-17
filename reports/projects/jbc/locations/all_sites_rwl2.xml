@@ -9,6 +9,7 @@
       LEFT JOIN cache_occurrences_functional o ON o.website_id in (#website_ids#)
         AND ST_INTERSECTS(o.public_geom, COALESCE(l.boundary_geom, l.centroid_geom))
         AND (st_geometrytype(o.public_geom)='ST_Point' OR NOT st_touches(o.public_geom, coalesce(l.boundary_geom, l.centroid_geom)))
+        AND o.survey_id=579
       LEFT JOIN locations lc ON lc.parent_id=l.id AND lc.deleted=false AND lc.location_type_id IN (17562, 17563)
       #joins#
       #agreements_join#
