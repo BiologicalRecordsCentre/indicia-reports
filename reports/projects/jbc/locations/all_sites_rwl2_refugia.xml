@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="My Sites (JBC, Reptilewatch L2 refugia)" description="A list of refugia for Reptilewatch L2.">
+      <query website_filter_field="" training_filter_field="" >
+      SELECT #columns#
+      FROM locations l
+      JOIN locations lp on lp.id=l.parent_id AND lp.deleted=false
+      LEFT JOIN cache_termlists_terms lt ON lt.id=l.location_type_id
+      LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      #joins#
+      #agreements_join#
+      WHERE (#sharing_filter#)
+      AND (l.public=true or lw.website_id in (#website_ids#))
+      AND l.deleted=false
+      #idlist#
+      #filters#
+      #group_bys#
+      </query>
+      <order_bys>
+        <order_by>lpad(l.name, 10, '0') ASC</order_by>
+      </order_bys>
+      <params>
+        <param name='location_type_ids' display='Location Types' description='Comma separated list of location_type_ids to allow for inclusion in the results.' datatype="integer[]" emptyvalue="0">
+          <where>l.location_type_id in (#location_type_ids#)</where>
+        </param>
+        <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
+        <param name='idlist' display='List of IDs' description='Comma separated list of location IDs to filter to.' datatype='idlist' fieldname='l.id' alias='id' default='' />
+      </params>
+      <columns>
+        <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
+        <column name="parent_id" visible="false" sql="l.parent_id" />
+        <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
+        <column name="route" display="Route" sql="lp.name" datatype="text" />
+      </columns>
+</report>
