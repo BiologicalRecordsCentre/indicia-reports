@@ -36,8 +36,8 @@
         <column name="occurrences" display="No. of Records" sql="COUNT(DISTINCT o.id)" aggregate="true" datatype="integer" />
         <column name="visits" display="No. of Visits" sql="COUNT(DISTINCT o.sample_id)" aggregate="true" datatype="integer" />
         <column name="taxa" display="No. of Taxa" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" datatype="integer" />
-        <column name="sections" display="No. of Sections" sql="SUM(CASE WHEN lc.location_type_id=17562 THEN 1 ELSE 0 END)" aggregate="true" datatype="integer" />
-        <column name="refugia" display="No. of Refugia" sql="SUM(CASE WHEN lc.location_type_id=17563 THEN 1 ELSE 0 END)" aggregate="true" datatype="integer" />
+        <column name="sections" display="No. of Sections" sql="COUNT(DISTINCT CASE WHEN lc.location_type_id=17562 THEN lc.id ELSE null END)" aggregate="true" datatype="integer" />
+        <column name="refugia" display="No. of Refugia" sql="COUNT(DISTINCT CASE WHEN lc.location_type_id=17563 THEN lc.id ELSE null END)" aggregate="true" datatype="integer" />
         <column name="geom" visible="false" mappable="true" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
       </columns>
 </report>
