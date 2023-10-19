@@ -31,8 +31,8 @@
       <columns>
         <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
         <column name="parent_id" visible="false" sql="l.parent_id" />
+        <column name="route" display="Route" sql="lp.name" datatype="text" />
         <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
         <column name="recorder" display="Recorder" sql="COALESCE(p.first_name || ' ', '') || p.surname" datatype="text" />
-        <column name="route" display="Route" sql="lp.name" datatype="text" />
       </columns>
 </report>
