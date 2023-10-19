@@ -7,6 +7,8 @@
       JOIN locations lp on lp.id=l.parent_id AND lp.deleted=false
       LEFT JOIN cache_termlists_terms lt ON lt.id=l.location_type_id
       LEFT JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
+      JOIN users u ON u.id=l.created_by_id
+      JOIN people p ON p.id=u.person_id
       #joins#
       #agreements_join#
       WHERE (#sharing_filter#)
@@ -30,6 +32,7 @@
         <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
         <column name="parent_id" visible="false" sql="l.parent_id" />
         <column name="name" display="Refugium ID" sql="l.name" datatype="text" />
+        <column name="recorder" display="Recorder" sql="COALESCE(p.first_name || ' ', '') || p.surname" datatype="text" />
         <column name="route" display="Route" sql="lp.name" datatype="text" />
       </columns>
 </report>
