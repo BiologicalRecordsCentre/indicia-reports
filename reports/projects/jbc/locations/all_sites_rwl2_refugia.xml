@@ -19,7 +19,7 @@
       #group_bys#
       </query>
       <order_bys>
-        <order_by>lpad(l.name, 10, '0') ASC</order_by>
+        <order_by>lp.name, lpad(l.name, 10, '0') ASC</order_by>
       </order_bys>
       <params>
         <param name='location_type_ids' display='Location Types' description='Comma separated list of location_type_ids to allow for inclusion in the results.' datatype="integer[]" emptyvalue="0">
