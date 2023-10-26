@@ -1,0 +1,39 @@
+<report
+    title="Locations for drop down (UKBMS)"
+    description="List of user's locations available to show on the report calendar grid."
+>
+  <query website_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    JOIN location_attribute_values v ON v.location_id=l.id AND v.deleted=false AND v.int_value=#cms_user_id#
+    JOIN location_attributes a ON a.id=v.location_attribute_id AND a.deleted=false
+    JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false AND lw.website_id in (#website_ids#)
+    WHERE l.deleted=false
+	#filters#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="cms_user_id" display="CMS user ID" datatype="integer"/>
+    <param name="survey_id" display="Survey ID" datatype="integer"/>
+    <param name="location_type_id" display="Location type ID" datatype="integer" default="" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+    <param name="allocation_attribute_id" display="Allocation attribute id" datatype="integer" default="" >
+      <where>a.id=#allocation_attribute_id#</where>
+    </param>
+    <param name='allocation_attribute_caption'
+           display='Attribute caption'
+           description='The caption of the location attribute used to assign the users to the locations.'
+           datatype="string"
+           default="" >
+      <where>a.caption='#allocation_attribute_caption#'</where>
+    </param>
+  </params>
+  <columns>
+    <column name="id" sql="l.id" />
+    <column name="name" sql="l.name" />
+    <column name="centroid_sref" sql="l.centroid_sref" />
+  </columns>
+</report>
