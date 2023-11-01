@@ -2,6 +2,8 @@
   <query>
     SELECT #columns#
     FROM scratchpad_lists s
+    JOIN users u ON u.id=s.created_by_id
+    JOIN people p ON p.id=u.person_id
     LEFT JOIN scratchpad_list_entries e on e.scratchpad_list_id=s.id
     LEFT JOIN cache_termlists_terms t ON t.id=s.scratchpad_type_id
     JOIN groups_users gu ON gu.user_id=s.created_by_id AND gu.group_id=#implicit_group_id# AND gu.deleted=false
@@ -34,6 +36,7 @@
     <column name="items" display="Items" datatype="integer" aggregate="true" sql="count(e.*)" />
     <column name="description" display='Description' datatype="text" sql="s.description" />
     <column name="created_on" display='Created on' datatype="date" sql="s.created_on" />
+    <column name="created_on" display='Created by' datatype="text" sql="coalesce(p.first_name || ' ', '') || p.surname" />
     <column name="scratchpad_type_id" display='Scratchpad type ID' datatype="integer" sql="s.scratchpad_type_id" />
     <column name="scratchpad_type_term" display='Scratchpad type term' datatype="text" sql="t.term" />
   </columns>
