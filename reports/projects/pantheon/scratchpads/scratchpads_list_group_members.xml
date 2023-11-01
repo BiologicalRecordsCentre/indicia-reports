@@ -36,7 +36,7 @@
     <column name="items" display="Items" datatype="integer" aggregate="true" sql="count(e.*)" />
     <column name="description" display='Description' datatype="text" sql="s.description" />
     <column name="created_on" display='Created on' datatype="date" sql="s.created_on" />
-    <column name="created_on" display='Created by' datatype="text" sql="coalesce(p.first_name || ' ', '') || p.surname" />
+    <column name="created_by" display='Created by' datatype="text" sql="coalesce(p.first_name || ' ', '') || p.surname" />
     <column name="scratchpad_type_id" display='Scratchpad type ID' datatype="integer" sql="s.scratchpad_type_id" />
     <column name="scratchpad_type_term" display='Scratchpad type term' datatype="text" sql="t.term" />
   </columns>
