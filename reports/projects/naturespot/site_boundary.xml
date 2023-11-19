@@ -17,6 +17,6 @@
     <column name="geom" visible="false" mappable="true" sql="st_astext(l.boundary_geom)" />
     <column name="fo" visible="false" feature_style="fillOpacity" sql="0" />
     <column name="sw" visible="false" feature_style="strokeWidth" sql="3" />
-    <column name="sw" visible="false" feature_style="strokeColor" sql="#e66101" />
+    <column name="sw" visible="false" feature_style="strokeColor" sql="'#e66101'" />
   </columns>
 </report>
