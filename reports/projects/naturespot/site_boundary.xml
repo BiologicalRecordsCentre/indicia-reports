@@ -1,0 +1,22 @@
+<report
+  title="Site boundary"
+  description="Retrieves the boundary for a NatureSpot wild place or parish."
+  row_class="biota"
+>
+  <query>
+    SELECT DISTINCT #columns#
+    FROM locations l
+    JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=8 AND lw.deleted=false
+    WHERE l.name="#site_name#"
+    AND l.deleted=false
+  </query>
+  <params>
+    <param name="site_name" display="Site name" description="Exact name of site" datatype="text" />
+  </params>
+  <columns>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(l.boundary_geom)" />
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0" />
+    <column name="sw" visible="false" feature_style="strokeWidth" sql="3" />
+    <column name="sw" visible="false" feature_style="strokeColor" sql="#e66101" />
+  </columns>
+</report>
