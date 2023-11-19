@@ -7,7 +7,7 @@
     SELECT DISTINCT #columns#
     FROM locations l
     JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id=8 AND lw.deleted=false
-    WHERE l.name="#site_name#"
+    WHERE l.name='#site_name#'
     AND l.deleted=false
   </query>
   <params>
