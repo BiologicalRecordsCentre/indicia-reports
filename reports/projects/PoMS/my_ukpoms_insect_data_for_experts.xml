@@ -53,6 +53,7 @@
     <column name='sample_id' display='Sample ID' sql='csf.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
+    <column name='location_code' display='Site code' sql='l.code' datatype="text" />
     <column name='date_start' sql='csf.date_start' visible='false' />
     <column name='date_end' sql='csf.date_end' visible='false' />
     <column name='date_type' sql='csf.date_type' visible='false' />
