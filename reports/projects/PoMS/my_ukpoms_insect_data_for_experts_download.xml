@@ -1,6 +1,6 @@
 <report
     title="Download my insect species data for UKPoMS"
-    description="Download my insect species data for UKPoMS."
+    description="Download my insect species data for UKPoM (extra columns in comparison to grid report)."
 >
   <query website_filter_field="o.website_id" standard_params="occurrences"
          created_by_field="o.created_by_id">
@@ -47,9 +47,9 @@
     <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
     <column name='occurrence_id' display='Occurrence ID' sql='o.id' datatype="integer" incount="true"/>
     <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
-    <column name='sex' display='Sex' sql="conf.attrs_json->>('#sex_occ_attr_id#')" datatype="text" visible="false"/>
+    <column name='sex' display='Sex' sql="conf.attrs_json->>('#sex_occ_attr_id#')" datatype="text" />
     <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text"/>
-    <column name="occurrence_comment" display="Occurrence comment" sql="conf.comment" datatype="text" visible="false" />
+    <column name="occurrence_comment" display="Occurrence comment" sql="conf.comment" datatype="text" />
     <column name='sample_id' display='Sample ID' sql='csf.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
@@ -67,7 +67,7 @@
       when csf.location_ids @> ARRAY[#jersey_location_id#] THEN 'Jersey'
       when csf.location_ids @> ARRAY[#guernsey_location_id#] THEN 'Guernsey'
       ELSE '' END"
-      datatype="text" visible="false"/>
+      datatype="text" />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
   </columns>
 </report>
