@@ -4,12 +4,12 @@
     row_class="biota"
 >
   <query>
-  SELECT DISTINCT #columns#   
+  SELECT DISTINCT #columns#
   FROM cache_occurrences_functional o
   JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
   JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
   JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
-  LEFT JOIN occurrence_comments ocv on ocv.occurrence_id=o.id and ocv.deleted=false 
+  LEFT JOIN occurrence_comments ocv on ocv.occurrence_id=o.id and ocv.deleted=false
     and ocv.record_status=o.record_status and coalesce(ocv.record_substatus, 0)=coalesce(o.record_substatus, 0)
   WHERE o.website_id=8
   AND o.record_status&lt;&gt;'R'
@@ -19,7 +19,7 @@
     <order_by>o.id /* don't optimise */ DESC</order_by>
   </order_bys>
   <params>
-     <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:naturespot/used_taxon_groups:id:title'>
+     <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:projects/naturespot/used_taxon_groups:id:title'>
       <where>o.taxon_group_id=#taxon_group_id#</where>
     </param>
     <param name='site_name' display='Site name contains' datatype='text'>

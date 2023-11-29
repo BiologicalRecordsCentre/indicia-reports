@@ -28,7 +28,7 @@
   </query>
   <params>
     <param name='user_id' display='User ID' datatype='integer' />
-    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:naturespot/used_taxon_groups:id:title' />
+    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:projects/naturespot/used_taxon_groups:id:title' />
     <param name='site_name' display='Site name contains' datatype='text' />
     <param name='date_from' display='Date From' datatype='date' />
     <param name='date_to' display='Date To' datatype='date' />

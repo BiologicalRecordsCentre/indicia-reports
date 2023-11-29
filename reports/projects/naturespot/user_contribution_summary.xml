@@ -8,7 +8,7 @@
     #filters#
   </query>
   <params>
-    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:naturespot/used_taxon_groups:id:title'>
+    <param name='taxon_group_id' display='Taxon Group' datatype='lookup' population_call='report:projects/naturespot/used_taxon_groups:id:title'>
       <where>o.taxon_group_id=#taxon_group_id#</where>
     </param>
     <param name='site_name' display='Site name contains' datatype='text'>
