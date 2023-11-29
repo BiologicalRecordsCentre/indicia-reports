@@ -1,0 +1,35 @@
+<report
+    title="Preview of record import recorder tidy"
+    description="Lists proposed changes to record ownership after an import to ensure records owned by correct people"
+>
+  <query>
+select #columns#
+from occurrences o
+join sample_attribute_values vemail on vemail.sample_id=o.sample_id and vemail.sample_attribute_id=46
+join sample_attribute_values vsurname on vsurname.sample_id=o.sample_id and vsurname.sample_attribute_id=58
+left join sample_attribute_values vfirstname on vfirstname.sample_id=o.sample_id and vfirstname.sample_attribute_id=36
+join users u on u.id=o.created_by_id
+join people p on p.id=u.person_id
+left join people pposs on lower(pposs.email_address)=lower(vemail.text_value) and pposs.deleted=false
+where o.website_id=8
+and o.import_guid is not null
+and lower(vemail.text_value) &lt;&gt; lower(p.email_address)
+and o.created_by_id=#user_id#
+and o.deleted=false
+  </query>
+  <columns>
+    <column name="id" display="Record ID" datatype="integer" sql="o.id" in_count="true" />
+	<column name="current_record_owner" display="Current record owner" datatype="text" sql="p.surname || coalesce(', ' || p.first_name, '')" />
+	<column name="current_email" display="Current record email" datatype="text" sql="p.email_address" />
+	<column name="proposed_record_owner" display="Proposed record owner name" datatype="text" sql="vsurname.text_value || coalesce(', ' || vfirstname.text_value, '')" />
+	<column name="proposed_email" display="Proposed person's email" datatype="text" sql="vemail.text_value" />
+	<column name="person_exists_on_warehouse" display="Person already exists on warehouse?" datatype="text" sql="case when pposs.id is null then 'No' else 'Yes' end" />
+  </columns>
+  <order_bys>
+    <order_by>o.id+0 asc</order_by>
+  </order_bys>
+  <params>
+    <param name='user_id' display='User ID' description='ID of user who imported the records' datatype='integer' />
+  </params>
+  
+</report>

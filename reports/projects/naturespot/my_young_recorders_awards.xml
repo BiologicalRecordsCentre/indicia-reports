@@ -1,0 +1,29 @@
+<report
+    title="My Young Recorders awards"
+    description="Summary of a young recorder's quiz and species achievements"
+>
+  <query website_filter_field="m.website_id">
+select #columns#
+from generate_series(1, #levels#) as level
+join groups g on g.title like 'People who passed %' and g.title like '%Level ' || level::varchar || '%' and g.deleted=false
+left join groups_users gu on gu.group_id=g.id and gu.deleted=false and gu.user_id=#indicia_user_id#
+join milestones m on m.title = 'YoungRecordersLevel' || level
+left join milestone_awards ma on ma.milestone_id=m.id and ma.deleted=false and ma.user_id=#indicia_user_id#
+  </query>  
+  <order_bys>
+    <order_by>level</order_by>
+  </order_bys>
+  <params>
+    <param name="indicia_user_id" display="Indicia User ID" description="Current user's warehouse ID." datatype="integer" />
+	<param name='levels' display='Number of levels' datatype='integer' default='5' />
+	<param name='award_names' display='Award names' description="Comma separated list of awards" datatype='text' />
+  </params>
+  <columns>
+    <column name="level" visible="false" sql="substring(g.title from 'Level [0-9]+')" />
+	<column name="award" display="Award" sql="'Level ' || level || ' - ' || (string_to_array('#award_names#', ','))[level] || ' award'" />
+    <column name="species" display="Species" sql="case when ma.id is null then '' else 'Passed' end" />
+    <column name="quiz" display='Quiz' sql="case when gu.id is null then '' else 'Passed' end" />
+    <column name="certificate" display="Certificate" 
+	    sql="case when gu.id is null or ma.id is null then '' else '&lt;a href=&quot;/sites/default/files/downloads/YRcertificate' || level || '.pdf&quot;&gt;View certificate&lt;/a&gt;' end" />
+  </columns>
+</report>
