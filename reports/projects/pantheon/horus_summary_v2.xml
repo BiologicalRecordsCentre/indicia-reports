@@ -43,7 +43,7 @@
     select 4, '&lt;h3&gt;Conservation statuses&lt;/h3&gt;', '&lt;hr/&gt;'
 
     union
-      select 5,
+      (select 5,
         designation_group,
       array_to_string(array_agg(
         '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;' || count::varchar || ' ' || output_label || '&lt;/a&gt;'
@@ -64,7 +64,7 @@
         group by dm.mapping_class, dm.output_label
     ) as subtable
     group by mapping_class, designation_group
-    order by mapping_class, designation_group desc
+    order by mapping_class, designation_group desc)
 
     union
     select 6, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'
