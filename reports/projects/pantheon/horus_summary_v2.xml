@@ -23,30 +23,32 @@
     into temporary bmwp_sums
     from bmwp_data;
 
-    select 1 as sort, 'Number of species' as property, count(distinct tl.preferred_taxa_taxon_list_id)::varchar as value
+    select 1 as sort, null::integer as subsort, 'Number of species' as property, count(distinct tl.preferred_taxa_taxon_list_id)::varchar as value
     from sample_taxa_list tl
 
     union
-    select 2, 'Number of species with habitat scores', count(distinct tl.preferred_taxa_taxon_list_id)::varchar
+    select 2, null, 'Number of species with habitat scores', count(distinct tl.preferred_taxa_taxon_list_id)::varchar
     from sample_taxa_list tl
     join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=tl.preferred_taxa_taxon_list_id and ttlav.deleted=false
     join taxa_taxon_list_attributes ttla on ttla.id=ttlav.taxa_taxon_list_attribute_id and ttlav.deleted=false
       and (ttla.caption='rarity score' or ttla.description='Pantheon quality indices')
 
     union
-    select 3, 'Rarity score (SQI)', round(avg(rscv.int_value)*100)::varchar as sqi
+    select 3, null, 'Rarity score (SQI)', round(avg(rscv.int_value)*100)::varchar as sqi
         from (select distinct tl.preferred_taxa_taxon_list_id from sample_taxa_list tl) as sub
         join taxa_taxon_list_attribute_values rscv on rscv.taxa_taxon_list_id=sub.preferred_taxa_taxon_list_id and rscv.deleted=false
           and rscv.taxa_taxon_list_attribute_id=#rarity_score_attr_id#
 
     union
-    select 4, '&lt;h3&gt;Conservation statuses&lt;/h3&gt;', '&lt;hr/&gt;'
+    select 4, null, '&lt;h3&gt;Conservation statuses&lt;/h3&gt;', '&lt;hr/&gt;'
 
     union
-      (select 5,
+      (select 5, row_number() over (),
         designation_group,
       array_to_string(array_agg(
-        '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;' || count::varchar || ' ' || output_label || '&lt;/a&gt;'
+        '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;'
+          || output_label || '( ' || count::varchar || ')'
+          || '&lt;/a&gt;'
         ), '; ')
     from (
         select dm.mapping_class,
@@ -67,10 +69,10 @@
     order by mapping_class, designation_group desc)
 
     union
-    select 6, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'
+    select 6, null, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'
 
     union
-    select 7, ttla.caption,
+    select 7, null, ttla.caption,
       case ttla.caption
         -- should count only native species
         when 'grazing marsh - status' then round(sum(ttlav.int_value)::numeric / count(distinct tl.preferred_taxa_taxon_list_id), 2)::varchar
@@ -104,11 +106,11 @@
     group by ttla.id, ttla.caption
 
     union
-    select 8, 'BMWP', 'Original: ' || sum(bmwp.original_score)::text || '; Revised: ' || sum(bmwp.revised_score)::text
+    select 8, null, 'BMWP', 'Original: ' || sum(bmwp.original_score)::text || '; Revised: ' || sum(bmwp.revised_score)::text
     from bmwp_data bmwp
 
     union
-    select 9, 'CCI',
+    select 9, null, 'CCI',
       'Original: ' || round((sum(ttlav.int_value)::numeric /* cs_sum */ / count(distinct tl.preferred_taxa_taxon_list_id) /* sp_count */) * greatest(case
               when max(ttlav.int_value) >= 10 then 15
               when max(ttlav.int_value) = 9 then 12
@@ -152,7 +154,7 @@
     and ttla.deleted=false
     group by sum_original_score, sum_revised_score
 
-    order by sort, property
+    order by sort, subsort, property
   </query>
   <params>
     <param name="sample_id" display="Sample or scratchpad ID"  datatype="integer[]"/>
