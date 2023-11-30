@@ -47,7 +47,7 @@
         designation_group,
       array_to_string(array_agg(
         '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;'
-          || output_label || '( ' || count::varchar || ')'
+          || output_label || ' (' || count::varchar || ')'
           || '&lt;/a&gt;'
         ), '; ')
     from (
