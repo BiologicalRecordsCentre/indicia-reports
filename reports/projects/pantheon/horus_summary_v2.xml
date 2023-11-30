@@ -1,6 +1,6 @@
 <report
     title="HORUS summary"
-    description="Summary view of a sample for HORUS."
+    description="Summary view of a sample for HORUS (v2)."
 >
   <query website_filter_field="cttl.website_id">
     drop table if exists sample_taxa_list;
@@ -43,24 +43,28 @@
     select 4, '&lt;h3&gt;Conservation statuses&lt;/h3&gt;', '&lt;hr/&gt;'
 
     union
-    select 5,
-      case term when 'GB Status' then 'GB Conservation Status (old &amp; new)' else term end,
+      select 5,
+        designation_group,
       array_to_string(array_agg(
-        '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_code=' || code || '"&gt;' || count::varchar || ' ' || code || '&lt;/a&gt;'
+        '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;' || count::varchar || ' ' || output_label || '&lt;/a&gt;'
         ), '; ')
     from (
-      select cat.term, coalesce(td.code, td.abbreviation) as code, count(distinct tl.preferred_taxa_taxon_list_id)
-      from taxon_designations td
-      join taxa_taxon_designations ttd on ttd.taxon_designation_id=td.id and ttd.deleted=false
-      join taxa_taxon_lists ttl on ttl.taxon_id=ttd.taxon_id and ttl.deleted=false
-      join sample_taxa_list tl on tl.id=ttl.id
-      join cache_termlists_terms cat on cat.id=td.category_id
-      where td.deleted=false
-      and ttl.taxon_list_id=#taxon_list_id#
-      and coalesce(td.code, td.abbreviation) &lt;&gt; 'None'
-      group by cat.term, td.code, td.abbreviation
+        select dm.mapping_class,
+          case dm.mapping_class
+            when 'Legal listing' then ''
+            else case substring(dm.output_label, 1, 1) when '[' then 'Legacy ' else 'New ' end
+          end || dm.mapping_class as designation_group,
+          dm.output_label,
+          count(*)
+        from sample_taxa_list tl
+        join taxa_Taxon_lists ttl on ttl.id=tl.preferred_taxa_taxon_list_id and ttl.deleted=false
+        join taxa_taxon_designations ttd on ttd.taxon_id=ttl.taxon_id and ttd.deleted=false
+        join pantheon.designation_mappings dm on dm.taxon_designation_id=ttd.taxon_designation_id
+        where ttl.taxon_list_id=#taxon_list_id#
+        group by dm.mapping_class, dm.output_label
     ) as subtable
-    group by term
+    group by mapping_class, designation_group
+    order by mapping_class, designation_group desc
 
     union
     select 6, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'

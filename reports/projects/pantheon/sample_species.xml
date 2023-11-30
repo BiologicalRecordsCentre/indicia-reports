@@ -63,6 +63,13 @@
           and td.abbreviation='#has_designation_code#'
       </join>
     </param>
+    <param name="has_designation_output_label" display="Has designation output label" default="" datatype="text">
+      <join>
+        join taxa_taxon_designations ttd on ttd.taxon_id=cttlpref.taxon_id and ttd.deleted=false
+        join pantheon.designation_mappings dm on dm.taxon_designation_id=ttd.taxon_designation_id
+          and td.output_label='#has_designation_output_label#'
+      </join>
+    </param>
     <param name="duplicates" display="Only show duplicates?" default="" datatype="boolean">
       <where>case '#sample_type#'
   when 'scratchpad' then
