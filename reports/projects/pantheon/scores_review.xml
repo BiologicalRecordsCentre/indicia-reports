@@ -1,0 +1,71 @@
+<report
+    title="Full species index"
+    description="A report which lists all Pantheon species along with trait data."
+    >
+  <query website_filter_field="">
+    select #columns#
+    from pantheon.species_index si
+    join cache_taxa_taxon_lists cttl on cttl.id=si.preferred_taxa_taxon_list_id
+    left join (taxa_taxon_designations ttdt
+      join pantheon.designation_mappings dmt on dmt.taxon_designation_id=ttdt.taxon_designation_id and dmt.mapping_class='IUCN Threat listing'
+    ) on ttdt.taxon_id=cttl.taxon_id and ttdt.deleted=false
+    left join (taxa_taxon_designations ttdr
+      join pantheon.designation_mappings dmr on dmr.taxon_designation_id=ttdr.taxon_designation_id and dmr.mapping_class='GB Rarity listing'
+    ) on ttdr.taxon_id=cttl.taxon_id and ttdr.deleted=false
+    left join (taxa_taxon_designations ttdall
+      join taxon_designations tdall on tdall.id=ttdall.taxon_designation_id and tdall.deleted=false
+    ) on ttdall.taxon_id=cttl.taxon_id and ttdall.deleted=false
+    where 1=1
+    #filters
+    group by si.preferred_taxa_taxon_list_id, cttl.taxon_id, si.species, si.rarity_score
+    order by species desc;
+  </query>
+  <order_bys>
+    <order_by>si.species desc</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="species" sql="si.species" display="Species" in_count="true" datatype="text" />
+    <column name="vernacular" sql="si.vernacular" display="Vernacular" in_count="true" datatype="text" />
+    <column name="family" sql="si.family" display="Family" in_count="true" datatype="text" />
+    <column name="order" sql="si.order" display="Order" in_count="true" datatype="text" />
+    <column name="rarity_score" sql="si.rarity_score" display="Score in species index" datatype="integer" />
+    <column name="proposed_score" display="Proposed new score" datatype="integer" aggregate="true" sql="
+      case
+          when array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', 'Nationally Scarce', 'Nationally Scarce (marine species)'] -- also 'Extinct' but not in mapping data
+          and array_agg(dmt.output_label::text) &amp;&amp; array['CR', 'CR(PE)', 'RE', 'pCR'] -- also 'EX' and 'EW' but not in data
+          then 32
+        when (array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', 'Nationally Scarce', 'Nationally Scarce (marine species)']
+          and array_agg(dmt.output_label::text) &amp;&amp; array['EN', 'pEN']) -- EN (European) is excluded.
+          then 16
+        when array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', 'Nationally Scarce', 'Nationally Scarce (marine species)']
+          and array_agg(dmt.output_label::text) &amp;&amp; array['VU', 'pVU']
+          then 8
+        when (array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', '[Rare]'] -- Include [Rare] as probably wrong but assume Scarce (email 2023-12-04 D. Heaver)
+          and array_agg(dmt.output_label::text) &amp;&amp; array['LC', 'NA', 'DD', 'NT', 'pLC', 'pDD', 'pNT']) -- Also 'NE' but not in the data. DD & NT (European) are excluded?
+          then 8
+        when array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Scarce', 'Nationally Scarce (marine species)']
+          and array_agg(dmt.output_label::text) &amp;&amp; array['LC', 'NA', 'DD', 'NT', 'NT'] -- Also 'NE' but not in the data. DD & NT (European) are excluded. What about pLC & pNS?
+          then 4
+        when array_agg(dmr.output_label) = array[null::varchar] -- also 'Introduced' but not in the data.
+          and array_agg(dmt.output_label::text) &amp;&amp; array['LC', 'NA', 'DD', 'NT', 'VU', 'EN', 'CR', 'CR(PE)', 'pLC', 'pDD', 'pNT', 'pVU', 'pEN', 'pCR'] -- DD, EN & NT (European) are excluded.
+          then 1
+        -- If the new review finds nothing, use the original old review designations.
+        when array_agg(tdall.code::text) &amp;&amp; array['RDB 1', 'pRDB 1'] -- also RDB - App but not in data. Does [RDB - 1] get counted?
+          then 16
+        when array_agg(tdall.abbreviation::text) &amp;&amp; array['RDB 2', 'pRDB 2', 'RDB 3', 'pRDB 3', 'Notable', 'Notable-A', 'Notable-B']
+          then 8
+        when array_agg(tdall.abbreviation::text) &amp;&amp; array['RDB I', 'RDB K']
+          then 4
+          -- default to 1 if no rarity score.
+        else 1
+        end
+      " />
+    <column name="original_threat" sql="string_agg(distinct dmt.abbreviation, '; ')" display="Original threat" datatype="text" aggregate="true"/>
+    <column name="original_rarity" sql="string_agg(distinct dmr.abbreviation, '; ')" display="Original rarity" datatype="text" aggregate="true"/>
+    <column name="updated_iucn_threat" sql="string_agg(distinct dmt.output_label, '; ')" display="Updated IUCN threat" datatype="text" aggregate="true"/>
+    <column name="updated_rarity" sql="string_agg(distinct dmr.output_label, '; ')" display="Updated rarity" datatype="text" aggregate="true"/>
+    <column name="all_current_designations" sql="string_agg(distinct coalesce(tdall.abbreviation, tdall.code, tdall.title), '; ')" display="All current designations" datatype="text" aggregate="true"/>
+  </columns>
+</report>
