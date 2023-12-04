@@ -24,7 +24,8 @@
   <params>
   </params>
   <columns>
-    <column name="species" sql="si.species" display="Species" in_count="true" datatype="text" />
+    <column name="preferred_taxa_taxon_list_id" sql="si.preferred_taxa_taxon_list_id" visible="false" in_count="true" datatype="integer" />
+    <column name="species" sql="si.species" display="Species" datatype="text" />
     <column name="vernacular" sql="si.vernacular" display="Vernacular" in_count="true" datatype="text" />
     <column name="family" sql="si.family" display="Family" in_count="true" datatype="text" />
     <column name="order" sql="si.order" display="Order" in_count="true" datatype="text" />
