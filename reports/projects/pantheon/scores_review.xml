@@ -19,7 +19,7 @@
     #filters#
   </query>
   <order_bys>
-    <order_by>si.species desc</order_by>
+    <order_by>si.species</order_by>
   </order_bys>
   <params>
   </params>
