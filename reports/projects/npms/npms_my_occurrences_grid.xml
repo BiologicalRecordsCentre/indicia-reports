@@ -42,6 +42,7 @@
   </params>
   <columns>
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
+    <column name='sample_id' sql='csf.id' display='Sample ID' visible="false"/>
     <column name='taxon' sql='cttl.taxon' display='Taxon' />
     <column name='common' display='Common name'
       template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
@@ -57,8 +58,6 @@
     END" datatype="integer" />
     <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name="entered_sref" display="Original map ref" sql="csnf.public_entered_sref" datatype="text" />
-    <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
-    <column name='long' display='Longitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\((.+) ')" datatype="text" />
     <column name="date" display="Date interpreted" datatype="date" />
     <column name="date_start" display="Date from" sql="cof.date_start" visible="false" />
     <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
