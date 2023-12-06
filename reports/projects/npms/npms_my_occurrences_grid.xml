@@ -63,5 +63,6 @@
     <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
     <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
     <column name='images' display='Images' sql="case when conf.media is null then null else '#uploadFolder#' || replace(conf.media, ',', ', #uploadFolder#') end"/>
+    <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
   </columns>
 </report>
