@@ -48,14 +48,13 @@
       sql="cttl.default_common_name" datatype='text' />
     <column name='family' display='Family' sql='cttl.family_taxon' datatype='text' />
     <column name="abundance" display='Abundance' sql="
-    CASE 
-    WHEN 
-      (conf.attrs_json->>('#wildflower_abundance_attr_id#'))::integer IS NOT NULL 
-    THEN 
-      (conf.attrs_json->>('#wildflower_abundance_attr_id#'))::integer 
-    ELSE 
-      (conf.attrs_json->>('#other_abundance_attr_id#'))::integer 
-    END" datatype="integer" />
+      CASE WHEN 
+        (conf.attrs_json->>('#wildflower_abundance_attr_id#'))::text IS NOT NULL 
+      THEN 
+        (conf.attrs_json->>('#wildflower_abundance_attr_id#'))::text 
+      ELSE 
+        (conf.attrs_json->>('#other_abundance_attr_id#'))::text
+      END" datatype="text" />
     <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name="entered_sref" display="Original map ref" sql="csnf.public_entered_sref" datatype="text" />
     <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
