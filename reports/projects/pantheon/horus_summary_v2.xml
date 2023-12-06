@@ -1,5 +1,5 @@
 <report
-    title="HORUS summary"
+    title="HORUS summary v2"
     description="Summary view of a sample for HORUS (v2)."
 >
   <query website_filter_field="cttl.website_id">
@@ -46,9 +46,9 @@
       (select 5, row_number() over (),
         designation_group,
       array_to_string(array_agg(
-        '&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;'
+        '&lt;span class="designation-class-' || regexp_replace(lower(mapping_class), '\W+', '', 'g') || '"&gt;&lt;a href="/species-for-sample?dynamic-sample_id=#sample_id#&amp;dynamic-sample_type=#sample_type#&amp;dynamic-has_designation_output_label=' || output_label || '"&gt;'
           || output_label || ' (' || count::varchar || ')'
-          || '&lt;/a&gt;'
+          || '&lt;/a&gt;&lt;span&gt;'
         ), '; ')
     from (
         select dm.mapping_class,
