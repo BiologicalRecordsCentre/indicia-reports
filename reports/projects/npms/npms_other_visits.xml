@@ -19,14 +19,15 @@
       JOIN cache_samples_functional csf
         ON csf.location_id = plot.id
         AND csf.survey_id in (#survey_ids#)
+        AND csf.created_by_id!=#current_user#
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
       LEFT JOIN location_attribute_values lavPlotName on lavPlotName.location_attribute_id=#plot_number_attr_id# AND lavPlotName.location_id=plot.id AND lavPlotName.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       #agreements_join#
       WHERE #sharing_filter# 
+        AND u.id=#current_user#
         AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
         AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
-        AND csf.survey_id in (#survey_ids#)
         AND csf.website_id in (#website_ids#)
       #order_by#
   </query>
