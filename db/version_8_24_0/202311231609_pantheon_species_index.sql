@@ -1,7 +1,3 @@
--- FUNCTION: pantheon.f_pantheon_rebuild_species_index()
-
--- DROP FUNCTION IF EXISTS pantheon.f_pantheon_rebuild_species_index();
-
 CREATE OR REPLACE FUNCTION pantheon.f_pantheon_rebuild_species_index(
 	OUT success boolean)
     RETURNS boolean
@@ -11,6 +7,7 @@ CREATE OR REPLACE FUNCTION pantheon.f_pantheon_rebuild_species_index(
 AS $BODY$
 BEGIN
 DROP TABLE IF EXISTS pantheon.species_index2;
+DROP TABLE IF EXISTS pantheon.designation_summary_data;
 
 CREATE TABLE pantheon.species_index2 AS
 select cttl.preferred_taxa_taxon_list_id,
@@ -19,8 +16,9 @@ cttl.default_common_name as "vernacular",
 cttl.family_taxon as "family",
 cttl.order_taxon as "order",
 rscv.int_value as "rarity_score",
-case count(td.*) when 0 then null else array_to_string(array_agg(distinct coalesce(td.code, td.abbreviation, td.id::varchar)), ';') END as "designations",
-case count(dm.*) when 0 then null else array_to_string(array_agg(distinct coalesce(td.code, td.abbreviation, td.id::varchar)), ';') END as "new_designations",
+case count(td.*) when 0 then null else array_to_string(array_agg(distinct coalesce(td.code, td.abbreviation, td.id::varchar)), '; ') END as "designations",
+case count(dm.*) when 0 then null else array_to_string(array_agg(distinct '<span class="designation-class-' || regexp_replace(lower(dm.mapping_class), '\W+', '', 'g') || '">' || dm.output_label || '</span>'), '; ') END as "current_designations",
+null::text as designation_summary,
 string_agg(distinct lguildterm.term,';') as "larval_guild",
 string_agg(distinct aguildterm.term,';') as "adult_guild",
 array_to_string(array_agg(distinct t_bb.term), '; ') as "broad_biotope",
@@ -64,6 +62,9 @@ left join (taxa_taxon_designations ttd
     or (cat.term not in ('GB Red List', 'GB Status'))
   )
 ) on ttd.taxon_id=ttl.taxon_id and ttd.deleted=false
+left join (taxa_taxon_designations ttdmapped
+  join pantheon.designation_mappings dm on dm.taxon_designation_id=ttdmapped.taxon_designation_id
+) on ttdmapped.taxon_id=ttl.taxon_id and ttdmapped.deleted=false
 left join taxa_taxon_list_attribute_values av_bb on av_bb.taxa_taxon_list_id=ttl.id and av_bb.deleted=false
 and av_bb.taxa_taxon_list_attribute_id=15
 left join cache_termlists_terms t_bb on t_bb.id=av_bb.int_value
@@ -105,12 +106,30 @@ AND (av_bb.id is not null or av_sb.id is not null or av_r.id is not null or av_s
         or lguildv.id is not null or aguildv.id is not null or horusv.id is not null or rscv.id is not null)
 GROUP BY cttl.preferred_taxa_taxon_list_id, cttl.preferred_taxon, cttl.default_common_name, cttl.family_taxon, cttl.order_taxon, rscv.int_value, cttl.taxon_meaning_id, cttl.taxon_list_id;
 
+CREATE TABLE pantheon.designation_summary_data AS
+SELECT preferred_taxa_taxon_list_id, species, string_agg('<span class="designation-class-' || regexp_replace(lower(mapping_class_label), '\W+', '', 'g') || '">' || mapping_class_label || ' (' || sp_in_class::text || ')' || '</span>', '; ' order by mapping_class_label collate "C") as designation_summary
+FROM
+	(SELECT si.preferred_taxa_taxon_list_id,
+	  si.species,
+	 CASE WHEN output_label LIKE '[%' THEN '[' ELSE '' END || dm.mapping_class || CASE WHEN output_label LIKE '[%' THEN ']' ELSE '' END AS mapping_class_label,
+	 count(*) as sp_in_class
+	FROM pantheon.species_index si
+	JOIN taxa_taxon_lists ttl ON ttl.id=si.preferred_taxa_taxon_list_id and ttl.deleted=false
+	JOIN taxa_taxon_designations ttd ON ttd.taxon_id=ttl.taxon_id and ttd.deleted=false
+	JOIN pantheon.designation_mappings dm ON dm.taxon_designation_id=ttd.taxon_designation_id
+	GROUP BY si.preferred_taxa_taxon_list_id, si.species, CASE WHEN output_label LIKE '[%' THEN '[' ELSE '' END || dm.mapping_class || CASE WHEN output_label LIKE '[%' THEN ']' ELSE '' END
+	) AS by_class
+GROUP BY preferred_taxa_taxon_list_id, species;
+
+UPDATE pantheon.species_index2 si2
+SET designation_summary=dsd.designation_summary
+FROM designation_summary_data dsd
+WHERE dsd.preferred_taxa_taxon_list_id=si2.preferred_taxa_taxon_list_id;
+
+DROP TABLE IF EXISTS pantheon.designation_summary_data;
 DROP TABLE IF EXISTS pantheon.species_index;
 ALTER TABLE pantheon.species_index2 RENAME TO species_index;
 GRANT SELECT ON pantheon.species_index TO indicia_report_user;
 
 END;
 $BODY$;
-
-ALTER FUNCTION pantheon.f_pantheon_rebuild_species_index()
-    OWNER TO postgres;
