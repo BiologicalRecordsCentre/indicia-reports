@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="UKBMS site species" description="Todo description note that SQL has to avoid intersection operator">
   <query>
-    select cttl.preferred_taxon, cttl.default_common_name, count(*)
+    select cttl.preferred_taxon, cttl.default_common_name, cof.taxon_meaning_id, count(*)
     from cache_samples_functional csf
     join cache_occurrences_functional cof on cof.sample_id = csf.id
     join locations l on l.id = csf.location_id
@@ -12,7 +12,7 @@
     and cof.zero_abundance = False
 	  and cof.training = False
 	  and cttl.preferred = True
-    group by cttl.preferred_taxon, cttl.default_common_name
+    group by cttl.preferred_taxon, cttl.default_common_name, cof.taxon_meaning_id
   </query>
   <params>
     <param name="location_id" display="Location ID" description="Location ID" datatype="integer" default="77868"></param>
