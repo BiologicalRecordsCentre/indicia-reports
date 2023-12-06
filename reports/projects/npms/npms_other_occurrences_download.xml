@@ -84,9 +84,10 @@ Version of reports to be used for download link on grid."
         WHERE vc.location_type_id=#vice_county_location_type_term#
         AND vc.name NOT LIKE '%+%'
         AND vc.id = ANY(cof.location_ids))" />
-    <column name="date" display="Date interpreted" datatype="date" />
+    <column name="date" display="Date" datatype="date" />
     <column name="date_start" display="Date from" sql="cof.date_start" visible="false" />
     <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
+    <column name='date_type' sql='cof.date_type' visible='false' />
     <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
     <column name='determiner' display='Determiner' datatype="text"
       sql="CASE WHEN conf.attr_det_full_name IS NULL THEN

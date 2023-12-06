@@ -70,9 +70,10 @@ Version of reports to be used for download link on grid."
       END" datatype="text" />
     <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name="entered_sref" display="Original map ref" sql="csnf.public_entered_sref" datatype="text" />
-    <column name="date" display="Date interpreted" datatype="date" />
+    <column name="date" display="Date" datatype="date" />
     <column name="date_start" display="Date from" sql="cof.date_start" visible="false" />
     <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
+    <column name='date_type' sql='cof.date_type' visible='false' />
     <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
     <column name='images' display='Images' sql="case when conf.media is null then null else '#uploadFolder#' || replace(conf.media, ',', ', #uploadFolder#') end"/>
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
