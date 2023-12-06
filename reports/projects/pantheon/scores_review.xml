@@ -41,7 +41,7 @@
         when array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', 'Nationally Scarce', 'Nationally Scarce (marine species)']
           and array_agg(dmt.output_label::text) &amp;&amp; array['VU', 'pVU']
           then 8
-        when (array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)', '[Rare]']
+        when (array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Rare', 'Nationally Rare (marine species)']
           and array_agg(dmt.output_label::text) &amp;&amp; array['LC', 'NA', 'DD', 'NT', 'pLC', 'pDD', 'pNT'])
           then 8
         when array_agg(dmr.output_label::text) &amp;&amp; array['Nationally Scarce', 'Nationally Scarce (marine species)']
