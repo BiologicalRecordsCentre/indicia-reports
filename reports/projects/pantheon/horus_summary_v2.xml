@@ -66,7 +66,7 @@
         group by dm.mapping_class, dm.output_label
     ) as subtable
     group by mapping_class, designation_group
-    order by mapping_class, designation_group desc)
+    order by mapping_class, designation_group)
 
     union
     select 6, null, '&lt;h3&gt;Scores&lt;/h3&gt;', '&lt;hr/&gt;'
