@@ -69,7 +69,7 @@ Version of reports to be used for download link on grid."
         (conf.attrs_json->>('#other_abundance_attr_id#'))::text
       END" datatype="text" />
     <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
-    <column name="entered_sref" display="Original map ref" sql="csnf.public_entered_sref" datatype="text" />
+    <column name="output_sref" sql="conf.output_sref" display="Output map ref" datatype="text" />
     <column name='output_sref_projection' display='Output map ref projection' datatype='text'
       sql="case conf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(conf.output_sref_system) end" />
     <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
