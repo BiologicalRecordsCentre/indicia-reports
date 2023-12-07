@@ -18,7 +18,9 @@ cttl.order_taxon as "order",
 rscv.int_value as "rarity_score",
 case count(td.*) when 0 then null else array_to_string(array_agg(distinct coalesce(td.code, td.abbreviation, td.id::varchar)), '; ') END as "designations",
 case count(dm.*) when 0 then null else array_to_string(array_agg(distinct '<span class="designation-class-' || regexp_replace(lower(dm.mapping_class), '\W+', '', 'g') || '">' || dm.output_label || '</span>'), '; ') END as "current_designations",
+case count(dm.*) when 0 then null else array_to_string(array_agg(distinct dm.output_label), '; ') END as "current_designations_plaintext",
 null::text as designation_summary,
+null::text as designation_summary_plaintext,
 string_agg(distinct lguildterm.term,';') as "larval_guild",
 string_agg(distinct aguildterm.term,';') as "adult_guild",
 array_to_string(array_agg(distinct t_bb.term), '; ') as "broad_biotope",
@@ -107,7 +109,9 @@ AND (av_bb.id is not null or av_sb.id is not null or av_r.id is not null or av_s
 GROUP BY cttl.preferred_taxa_taxon_list_id, cttl.preferred_taxon, cttl.default_common_name, cttl.family_taxon, cttl.order_taxon, rscv.int_value, cttl.taxon_meaning_id, cttl.taxon_list_id;
 
 CREATE TABLE pantheon.designation_summary_data AS
-SELECT preferred_taxa_taxon_list_id, species, string_agg('<span class="designation-class-' || regexp_replace(lower(mapping_class_label), '\W+', '', 'g') || '">' || mapping_class_label || ' (' || sp_in_class::text || ')' || '</span>', '; ' order by mapping_class_label collate "C") as designation_summary
+SELECT preferred_taxa_taxon_list_id, species,
+  string_agg('<span class="designation-class-' || regexp_replace(lower(mapping_class_label), '\W+', '', 'g') || '">' || mapping_class_label || ' (' || sp_in_class::text || ')' || '</span>', '; ' order by mapping_class_label collate "C") as designation_summary,
+  string_agg(mapping_class_label || ' (' || sp_in_class::text || ')', '; ' order by mapping_class_label collate "C") as designation_summary_plaintext
 FROM
 	(SELECT si.preferred_taxa_taxon_list_id,
 	  si.species,
@@ -122,8 +126,9 @@ FROM
 GROUP BY preferred_taxa_taxon_list_id, species;
 
 UPDATE pantheon.species_index2 si2
-SET designation_summary=dsd.designation_summary
-FROM designation_summary_data dsd
+SET designation_summary=dsd.designation_summary,
+  designation_summary_plaintext=dsd.designation_summary_plaintext
+FROM pantheon.designation_summary_data dsd
 WHERE dsd.preferred_taxa_taxon_list_id=si2.preferred_taxa_taxon_list_id;
 
 DROP TABLE IF EXISTS pantheon.designation_summary_data;
