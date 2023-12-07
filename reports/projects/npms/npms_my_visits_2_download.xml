@@ -1,34 +1,22 @@
 <report
-    title="NPMS Other Visits"
-    description="Display a list of visits created by other users for plots you currently have rights to."
+    title="NPMS My Visits 2 Download"
+    description="Display a list of visits suitable for users to download their own data."
 >
   <query website_filter_field="" training_filter_field="csf.training" >
-    SELECT distinct #columns#
-      FROM users u
-      JOIN person_attribute_values pav
-        ON pav.person_id = u.person_id
-        AND pav.person_attribute_id = #person_square_attr_id#
-        AND pav.updated_by_id &lt;&gt; u.id
-        AND pav.deleted = false
-      JOIN locations plot
-        ON plot.parent_id=pav.int_value
-        AND plot.deleted=false
-      JOIN locations square
-        ON square.id=plot.parent_id
-        AND square.deleted=false
-      JOIN cache_samples_functional csf
-        ON csf.location_id = plot.id
-        AND csf.survey_id in (#survey_ids#)
-        AND csf.created_by_id!=#current_user#
+    SELECT #columns# 
+      FROM cache_samples_functional csf
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
+      JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
       LEFT JOIN location_attribute_values lavPlotName on lavPlotName.location_attribute_id=#plot_number_attr_id# AND lavPlotName.location_id=plot.id AND lavPlotName.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       #agreements_join#
       WHERE #sharing_filter# 
-        AND u.id=#current_user#
-        AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
-        AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
-        AND csf.website_id in (#website_ids#)
+      AND csf.created_by_id=#current_user#
+      AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+      AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
+      AND csf.survey_id in (#survey_ids#)
+      AND csf.website_id in (#website_ids#)
       #order_by#
   </query>
   <order_bys>
@@ -36,7 +24,6 @@
   </order_bys>
   <params>
     <param name="current_user" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
-    <param name='person_square_attr_id' description='Id of the person attribute that holds user squares' datatype='integer'/>
     <param name='plot_number_attr_id' display='Plot number attribute Id' description='Id of the location attribute that holds the plot number label' datatype='int' default='0' empytvalue='0'/>
     <param name='date_from' display='Date From' datatype='date' />
     <param name='date_to' display='Date To' datatype='date' />
@@ -48,17 +35,9 @@
     <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
     <column name='square_name' sql="square.centroid_sref" display='Square'/>
-    <column name='plot_name'
-    sql="
-    COALESCE(
-        case 
-        when lavPlotName.text_value IS null 
-          then '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
-        else 
-          '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
-        end
-        , csf.location_name, csnf.public_entered_sref)
-    " display='Plot' />
+    <column name="output_sref" sql="csnf.output_sref" display="Output map ref" datatype="text" />
+    <column name='output_sref_projection' display='Output map ref projection' datatype='text'
+        sql="case csnf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(conf.output_sref_system) end" />
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
