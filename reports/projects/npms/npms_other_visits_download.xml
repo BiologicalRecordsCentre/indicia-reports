@@ -55,7 +55,7 @@
     <column name='square_name' sql="square.centroid_sref" display='Square'/>
     <column name="output_sref" sql="csnf.output_sref" display="Output map ref" datatype="text" />
     <column name='output_sref_projection' display='Output map ref projection' datatype='text'
-        sql="case csnf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(conf.output_sref_system) end" />
+        sql="case csnf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(csnf.output_sref_system) end" />
     <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(csf.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
     <column name='long' display='Longitude' sql="substring(st_astext(st_transform(st_centroid(csf.public_geom), 4326)) from E'POINT\\((.+) ')" datatype="text" />
     <column name="vicecounty_number" display="VC number" datatype="text"
