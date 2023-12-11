@@ -32,6 +32,14 @@
       COALESCE(l.name, s.location_name) || ' (Butterflies)'
     WHEN sav.int_value = #bees_hoverflies_tt_id# THEN
       COALESCE(l.name, s.location_name) || ' (Bees/Hoverflies)'
+    WHEN sav.int_value = #bees_tt_id# THEN
+      COALESCE(l.name, s.location_name) || ' (Bees)'
+    WHEN sav.int_value = #hoverflies_tt_id# THEN
+      COALESCE(l.name, s.location_name) || ' (Hoverflies)'
+    WHEN sav.int_value = #bees_morpho_tt_id# THEN
+      COALESCE(l.name, s.location_name) || ' (Bees morpho-groups)'
+    WHEN sav.int_value = #hoverflies_morpho_tt_id# THEN
+      COALESCE(l.name, s.location_name) || ' (Hoverflies morpho-groups)'
     END as location_name,
     s.location_id,
     l.code,
@@ -49,9 +57,13 @@
         population_call='direct:survey:id:title' />
     <param name='alloc_id' display='Location Attribute' description='Select the attribute used to allocation locations to the user' datatype='lookup'
         population_call='direct:location_attribute:id:caption' />
-    <param name='mode_smp_attr_id' display='Butterfly/Bee Hoverfly mode smp attr ID' description='The sample attribute that hold the Butterfly/Bee Hoverfly mode' datatype='int'/>
-    <param name='butterflies_tt_id' display='Butterfly mode termlists terms ID' description='The termlist_terms ID that holds the mode butterfly mode' datatype='int'/>
-    <param name='bees_hoverflies_tt_id' display='Bees/Hoverflies mode termlists terms ID' description='The termlist_terms ID that holds the mode bees/hoverflies mode' datatype='int'/>
+    <param name='mode_smp_attr_id' display='Data entry mode smp attr ID' description='The sample attribute that holds the data entry mode' datatype='int'/>
+    <param name='butterflies_tt_id' display='Butterfly Species mode termlists terms ID' description='The termlist_terms ID that indicates the butterfly species mode' datatype='int'/>
+    <param name='bees_hoverflies_tt_id' display='Bees/Hoverflies Species mode termlists terms ID' description='The termlist_terms ID that indicates the bees/hoverflies species mode' datatype='int'/>
+    <param name='bees_tt_id' display='Bees Species mode termlists terms ID' description='The termlist_terms ID that indicates the bee species mode' datatype='int'/>
+    <param name='hoverflies_tt_id' display='Hoverflies Species mode termlists terms ID' description='The termlist_terms ID that indicates the hoverfly species mode' datatype='int'/>
+    <param name='bees_morpho_tt_id' display='Bees Morpho Groups mode termlists terms ID' description='The termlist_terms ID that indiciates the bee morpho-groups mode' datatype='int'/>
+    <param name='hoverflies_morpho_tt_id' display='Hoverflies Morpho Groups mode termlists terms ID' description='The termlist_terms ID that indicates the hoverfly morpho-groups mode' datatype='int'/>
     <param name="date_from" display="Date From" datatype="date">
         <where>s.date_start&gt;='#date_from#'</where>
     </param>
