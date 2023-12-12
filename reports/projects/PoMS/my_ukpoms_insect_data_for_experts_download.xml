@@ -8,7 +8,7 @@
   FROM cache_occurrences_functional o
   JOIN cache_occurrences_nonfunctional conf on conf.id = o.id
   JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id and cttl.taxon_list_id in (#taxon_list_ids#)
-  JOIN cache_samples_functional csf on csf.id = o.sample_id
+  JOIN cache_samples_functional csf on csf.id = o.sample_id AND csf.input_form != '#input_form_to_ignore#'
   JOIN cache_samples_nonfunctional snf ON snf.id=csf.id
   LEFT JOIN locations l on l.id=csf.location_id and l.deleted=false
   #agreements_join#
@@ -42,6 +42,7 @@
     <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
     <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
     <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
+    <param name = "input_form_to_ignore" display="Input form to ignore" description = "Input form to ignore data from." datatype="text" default='' emptyvalue=''/>
   </params>
   <columns>
     <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
