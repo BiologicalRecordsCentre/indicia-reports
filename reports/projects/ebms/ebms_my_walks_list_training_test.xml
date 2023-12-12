@@ -1,0 +1,66 @@
+<report
+    title="EBMS My Walks: Walks relevant for an Indicia user"
+    description="A list of top level samples for use in the EBMS My Walks report calendar grid - walks created by the user, or created by others on locations allocated to the user. Filtered according to the Indicia ID of the user, and optional location ID. Top level means that the parent_id field of the samples is null."
+>
+<query website_filter_field="su.website_id" training_filter_field="s.training">
+  SELECT #field_sql#
+  FROM samples s
+    JOIN surveys su on su.id = s.survey_id AND su.deleted=false
+    JOIN locations l ON l.id=s.location_id
+    LEFT JOIN location_attribute_values lav ON l.id=lav.location_id
+      AND lav.deleted=false
+      AND lav.location_attribute_id=#alloc_id#
+      AND lav.int_value=#cms_user_id#
+  #joins#
+  WHERE #sharing_filter#
+  AND s.deleted = FALSE
+  AND s.parent_id IS NULL
+  AND s.survey_id=#survey_id#
+  AND (s.created_by_id=#user_id# OR lav.id IS NOT NULL)
+  #filters#
+  #order_by#
+  </query>
+  <field_sql>
+    s.id as sample_id,
+    COALESCE(l.name, s.location_name) as location_name,
+    s.location_id,
+    l.code,
+    s.entered_sref,
+    s.date_start,
+    s.date_end,
+    s.date_type
+  </field_sql>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+    <order_by>s.date_start DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='survey_id' display='Survey' description='Select the survey' datatype='lookup'
+        population_call='direct:survey:id:title' />
+    <param name='alloc_id' display='Location Attribute' description='Select the attribute used to allocation locations to the user' datatype='lookup'
+        population_call='direct:location_attribute:id:caption' />
+    <param name="date_from" display="Date From" datatype="date">
+        <where>s.date_start&gt;='#date_from#'</where>
+    </param>
+    <param name="date_to" display="Date To" datatype="date">
+      <where>s.date_start&lt;='#date_to#'</where>
+    </param>
+    <param name='user_id' display='Indicia User ID' description='Enter the Indicia ID of the user' datatype='int' />
+    <param name='cms_user_id' display='CMS User ID' description='Enter the CMS ID of the user' datatype='int' />
+    <param name='location_id' display='Location ID' description='Enter the Location ID.' datatype='int'>
+      <where>l.id=#location_id#</where>
+    </param>
+    <param name='sample_method_id' display='Sample Method' description='Select the sample method.' datatype='lookup'
+            population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:sample_methods,termlist_id='>
+      <where>s.sample_method_id=#sample_method_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name='sample_id' visible='true' />
+    <column name='survey' display='Survey' />
+    <column name='location_name' display='Site name' />
+    <column name='code' display='Site code' />
+    <column name='entered_sref' display='SRef' />
+    <column name='date' display='Date' />
+  </columns>
+</report>
