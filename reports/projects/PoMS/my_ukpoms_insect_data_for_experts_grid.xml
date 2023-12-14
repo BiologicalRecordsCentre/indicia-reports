@@ -46,18 +46,17 @@
     <param name = "taxon_group_ids" display="Taxon Group IDs To Include" description = "Comma separated list of taxon group_ids to include." datatype="text" default='0' emptyvalue='0'/>
   </params>
   <columns>
-    <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
     <column name='occurrence_id' display='Occurrence ID' sql='o.id' datatype="integer" incount="true"/>
-    <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
-    <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text"/>
     <column name='sample_id' display='Sample ID' sql='csf.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
-    <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
-    <column name='location_code' display='Site code' sql='l.code' datatype="text" />
+    <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
+    <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
+    <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text"/>
     <column name='date_start' sql='csf.date_start' visible='false' />
     <column name='date_end' sql='csf.date_end' visible='false' />
     <column name='date_type' sql='csf.date_type' visible='false' />
     <column name='date' display='Sample date' datatype="date" />
+    <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
   </columns>
 </report>
