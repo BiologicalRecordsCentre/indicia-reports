@@ -36,6 +36,7 @@
     <param name = "sex_occ_attr_id" display="Sex occurrence attribute ID" description = "ID of the occurrence attribute that holds the sex." datatype="integer"/>
     <param name = "abundance_occ_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds the abudance." datatype="integer"/>
     <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
+    <param name = "pan_trap_station_smp_attr_id" display="Pan trap station sample attribute ID" description = "ID of the sample attribute that holds the pan trap station." datatype="integer"/>
     <param name = "taxon_list_ids" display="Taxon list ids" description = "Only include occurrences in these taxon_list_ids." datatype="text"/>  
     <param name = "england_location_id" display="England location ID" description = "Location ID for England." datatype="integer"/>
     <param name = "scotland_location_id" display="Scotland location ID" description = "Location ID for Scotland." datatype="integer"/>  
@@ -58,6 +59,7 @@
     <column name='date_end' sql='csf.date_end' visible='false' />
     <column name='date_type' sql='csf.date_type' visible='false' />
     <column name='date' display='Sample date' datatype="date" />
+    <column name='pan_trap_station' display='Pan trap station' sql="snf.attrs_json->>('#pan_trap_station_smp_attr_id#')" datatype="text"/>
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
   </columns>
