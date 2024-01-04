@@ -37,7 +37,10 @@
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "specimen_code_param" display="Specimen code" description = "Specimen code to search for. Leave blank for all." datatype="text" emptyvalue=''/>
-    <param name = "sex_occ_attr_id" display="Sex occurrence attribute ID" description = "ID of the occurrence attribute that holds the sex." datatype="integer"/>
+    <param name = "sex_butter_hover_occ_attr_id" display="Sex occurrence attribute ID for Butterflies/Hoverflies" 
+      description = "ID of the occurrence attribute that holds the sex for butteflies and hoverflies." datatype="integer"/>
+    <param name = "sex_bee_occ_attr_id" display="Sex occurrence attribute ID for Bees" 
+      description = "ID of the occurrence attribute that holds the sex for bees." datatype="integer"/>
     <param name = "abundance_occ_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds the abudance." datatype="integer"/>
     <param name = "stage_occ_attr_id" display="Stage occurrence attribute ID" description = "ID of the occurrence attribute that holds the stage." datatype="integer"/>
     <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
@@ -66,7 +69,9 @@
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
     <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
-    <column name='sex' display='Sex' sql="conf.attrs_json->>('#sex_occ_attr_id#')" datatype="text" />
+    <column name='sex' display='Sex' 
+      sql="coalesce(conf.attrs_json->>('#sex_butter_hover_occ_attr_id#'),conf.attrs_json->>('#sex_bee_occ_attr_id#'))" 
+    datatype="text" />
     <column name='abundance' display='Abundance' sql="conf.attrs_json->>('#abundance_occ_attr_id#')" datatype="text" />
     <column name='stage' display='Stage' sql="conf.attrs_json->>('#stage_occ_attr_id#')" datatype="text" />
     <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text"/>

@@ -37,7 +37,6 @@
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "specimen_code_param" display="Specimen code" description = "Specimen code to search for. Leave blank for all." datatype="text" emptyvalue=''/>
-    <param name = "sex_occ_attr_id" display="Sex occurrence attribute ID" description = "ID of the occurrence attribute that holds the sex." datatype="integer"/>
     <param name = "abundance_occ_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds the abudance." datatype="integer"/>
     <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
     <param name = "pan_trap_station_smp_attr_id" display="Pan trap station sample attribute ID" description = "ID of the sample attribute that holds the pan trap station." datatype="integer"/>
