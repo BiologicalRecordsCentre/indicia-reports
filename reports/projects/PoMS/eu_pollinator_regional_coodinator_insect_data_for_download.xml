@@ -46,13 +46,6 @@
     <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
     <param name = "pan_trap_station_smp_attr_id" display="Pan trap station sample attribute ID" description = "ID of the sample attribute that holds the pan trap station." datatype="integer"/>
     <param name = "taxon_list_ids" display="Taxon list ids" description = "Only include occurrences in these taxon_list_ids." datatype="text"/>  
-    <param name = "england_location_id" display="England location ID" description = "Location ID for England." datatype="integer"/>
-    <param name = "scotland_location_id" display="Scotland location ID" description = "Location ID for Scotland." datatype="integer"/>  
-    <param name = "wales_location_id" display="Wales location ID" description = "Location ID for Wales." datatype="integer"/>  
-    <param name = "ni_location_id" display="Northern Ireland location ID" description = "Location ID for Northern Ireland." datatype="integer"/>  
-    <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
-    <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
-    <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
     <param name = "country_code_loc_attr_id" display="Country code location attr ID"
         description = "ID of the location attribute that holds the country code for an 1km location." datatype="integer"/>
     <param name = "1km_square_location_type_id" display="1km Square location type ID"
@@ -82,15 +75,7 @@
     <column name='pan_trap_station' display='Pan trap station' sql="snf.attrs_json->>('#pan_trap_station_smp_attr_id#')" datatype="text"/>
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
     <column name='location_code' display='Site code' sql='l.code' datatype="text" />
-    <column name='country' display='Country/Island' sql="
-      case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
-      when csf.location_ids @> ARRAY[#scotland_location_id#] THEN 'Scotland'
-      when csf.location_ids @> ARRAY[#wales_location_id#] THEN 'Wales'
-      when csf.location_ids @> ARRAY[#ni_location_id#] THEN 'Northern Ireland'
-      when csf.location_ids @> ARRAY[#man_location_id#] THEN 'Isle of Man'
-      when csf.location_ids @> ARRAY[#jersey_location_id#] THEN 'Jersey'
-      when csf.location_ids @> ARRAY[#guernsey_location_id#] THEN 'Guernsey'
-      ELSE '' END"
+    <column name='country' display='Country/Island' sql="country.name"
       datatype="text" />
     <column name="occurrence_comment" display="Occurrence comment" sql="conf.comment" datatype="text" />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
