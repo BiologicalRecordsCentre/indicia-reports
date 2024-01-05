@@ -22,7 +22,6 @@
     AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
     AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
     AND ('#specimen_code_param#' = '' OR conf.attrs_json->>('#specimen_code_occ_attr_id#') like '%' || '#specimen_code_param#' || '%')
-    AND o.created_by_id=#current_user_id#
   #idlist#
   </query>
   <order_bys>
