@@ -73,7 +73,7 @@
     <column name='date' display='Sample date' datatype="date" />
     <column name='pan_trap_station' display='Pan trap station' sql="snf.attrs_json->>('#pan_trap_station_smp_attr_id#')" datatype="text"/>
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
-    <column name='location_code' display='Site code' sql='l.code' datatype="text" />
+    <column name='location_code' display='Site code' sql='square.code' datatype="text" />
     <column name='country' display='Country/Island' sql="country.name"
       datatype="text" />
     <column name="occurrence_comment" display="Occurrence comment" sql="conf.comment" datatype="text" />
