@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="SPRING site/survey info" description="Information for a SPRING site/survey.">
+  <query>
+    SELECT
+      l.id as id,
+      l.name as name,
+      l.code as lcode,
+      t.term as type,
+      COUNT(DISTINCT sp.id) as samples,
+      COUNT(DISTINCT extract(YEAR from sp.date_start)) as n_year,
+      min(extract(YEAR from sp.date_start)) first_year,
+      max(extract(YEAR from sp.date_start)) last_year,
+      st_x(st_centroid(st_transform(l.centroid_geom, 4326))) as lon,
+      st_y(st_centroid(st_transform(l.centroid_geom, 4326))) as lat
+      FROM locations l
+      left JOIN cache_samples_functional sp ON sp.location_id=l.id
+      join termlists_terms tt on l.location_type_id = tt.id
+      join terms t on tt.term_id = t.id
+      where survey_id=#survey_id#
+      and l.id=#location_id#
+      group by l.id, t.term
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer"></param>
+    <param name="survey_id" display="Survey ID" description="Survey ID" datatype="integer"></param>
+  </params>
+</report>
