@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="SPRING site/survey info" description="Information for a SPRING site/survey.">
+  <query>
+    select l.name as name,
+    l.code as code,
+    t.term as type,
+    csf.date_start,
+    extract('Year' from csf.date_start) as year,
+    extract('Month' from csf.date_start) as month,
+    count(*)
+    from cache_samples_functional csf 
+    join locations l on l.id = csf.location_id
+    join termlists_terms tt on l.location_type_id = tt.id
+    join terms t on tt.term_id = t.id
+    where survey_id=#survey_id#
+    and l.id=#location_id#
+    group by l.name, l.code, t.term, csf.date_start, extract('Year' from csf.date_start), extract('Month' from csf.date_start)
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer"></param>
+    <param name="survey_id" display="Survey ID" description="Survey ID" datatype="integer"></param>
+  </params>
+</report>

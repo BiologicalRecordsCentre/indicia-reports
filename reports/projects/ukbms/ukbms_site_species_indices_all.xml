@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS site indices" description="Retrieve all UKBMS species indices for a given site.">
+  <query>
+    select ukbms.year, ukbms.index, cttl.taxon_meaning_id as tmid 
+    from ukbms_year_index_values ukbms
+    join cache_taxa_taxon_lists cttl on cttl.id = ukbms.taxa_taxon_list_id 
+    where ukbms.location_id=#location_id#
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer" default="0"></param>
+  </params>
+</report>

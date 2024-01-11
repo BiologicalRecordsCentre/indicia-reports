@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="SPRING site/survey taxa" description="Plant taxa with counts form SPRING site/survey.">
+  <query>
+    SELECT cttl.preferred_taxon, cttl.default_common_name, cttl.taxon_group, cttl.taxon_group_id,
+      extract('Year' from cof.date_start) as year,
+      count(*) 
+      from cache_occurrences_functional cof
+      join cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
+      where survey_id = #survey_id#
+      and location_id = #location_id#
+      and taxon_group = 'flowering plant'
+      group by cttl.preferred_taxon, cttl.default_common_name, cttl.taxon_group, cttl.taxon_group_id, extract('Year' from cof.date_start)
+      order by cttl.taxon_group_id, cttl.preferred_taxon
+  </query>
+  <params>
+    <param name="location_id" display="Location ID" description="Location ID" datatype="integer"></param>
+    <param name="survey_id" display="Survey ID" description="Survey ID" datatype="integer"></param>
+  </params>
+</report>

@@ -1,6 +1,6 @@
 <report
-    title="Download my insect species data for UKPoMS"
-    description="Download my insect species data for UKPoM (extra columns in comparison to grid report)."
+    title="Show regional coordinator insect species data for SPRING"
+    description="Show regional coordinator insect species data for SPRING."
 >
   <query website_filter_field="o.website_id" standard_params="occurrences"
          created_by_field="o.created_by_id">
@@ -8,17 +8,20 @@
   FROM cache_occurrences_functional o
   JOIN cache_occurrences_nonfunctional conf on conf.id = o.id
   JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id and cttl.taxon_list_id in (#taxon_list_ids#)
-    AND cttl.taxon_group_id IN (#taxon_group_ids#)
   JOIN cache_samples_functional csf on csf.id = o.sample_id
   JOIN cache_samples_nonfunctional snf ON snf.id=csf.id
-  LEFT JOIN locations l on l.id=csf.location_id and l.deleted=false
+  JOIN locations square on square.id = csf.location_id
+    AND square.location_type_id = #1km_square_location_type_id# AND square.deleted = false 
+  JOIN location_attribute_values country_code_attr_val on country_code_attr_val.location_id = square.id  
+    AND country_code_attr_val.location_attribute_id = #country_code_loc_attr_id# AND country_code_attr_val.deleted = false
+  JOIN locations country on country.code = country_code_attr_val.text_value
+    AND country.location_type_id = #country_location_type_id# AND country.deleted = false
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
     AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
     AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR csf.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
     AND ('#specimen_code_param#' = '' OR conf.attrs_json->>('#specimen_code_occ_attr_id#') like '%' || '#specimen_code_param#' || '%')
-    AND o.created_by_id=#current_user_id#
   #idlist#
   </query>
   <order_bys>
@@ -33,20 +36,19 @@
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/PoMS/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup" emptyvalue='0'/>
     <param name = "specimen_code_param" display="Specimen code" description = "Specimen code to search for. Leave blank for all." datatype="text" emptyvalue=''/>
-    <param name = "sex_occ_attr_id" display="Sex occurrence attribute ID" description = "ID of the occurrence attribute that holds the sex." datatype="integer"/>
     <param name = "abundance_occ_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds the abudance." datatype="integer"/>
-    <param name = "stage_occ_attr_id" display="Stage occurrence attribute ID" description = "ID of the occurrence attribute that holds the stage." datatype="integer"/>
     <param name = "identified_by_occ_attr_id" display="Identified by occurrence attribute ID" description = "ID of the occurrence attribute that holds the identifier." datatype="integer"/>  
     <param name = "pan_trap_station_smp_attr_id" display="Pan trap station sample attribute ID" description = "ID of the sample attribute that holds the pan trap station." datatype="integer"/>
     <param name = "taxon_list_ids" display="Taxon list ids" description = "Only include occurrences in these taxon_list_ids." datatype="text"/>  
-    <param name = "england_location_id" display="England location ID" description = "Location ID for England." datatype="integer"/>
-    <param name = "scotland_location_id" display="Scotland location ID" description = "Location ID for Scotland." datatype="integer"/>  
-    <param name = "wales_location_id" display="Wales location ID" description = "Location ID for Wales." datatype="integer"/>  
-    <param name = "ni_location_id" display="Northern Ireland location ID" description = "Location ID for Northern Ireland." datatype="integer"/>  
-    <param name = "man_location_id" display="Isle of Mann location ID" description = "Location ID for Isle of Mann." datatype="integer"/>  
-    <param name = "jersey_location_id" display="Jersey location ID" description = "Location ID for Jersey." datatype="integer"/>  
-    <param name = "guernsey_location_id" display="Guernsey location ID" description = "Location ID for Guernsey." datatype="integer"/> 
-    <param name = "taxon_group_ids" display="Taxon Group IDs To Include" description = "Comma separated list of taxon group_ids to include." datatype="text" default='0' emptyvalue='0'/>
+    <param name = "country_code_loc_attr_id" display="Country code location attr ID"
+        description = "ID of the location attribute that holds the country code for an 1km location." datatype="integer"/>
+    <param name = "1km_square_location_type_id" display="1km Square location type ID"
+        description = "ID of the location type for 1km Squares." datatype="integer"/>
+    <param name = "country_location_type_id" display="Country location type ID"
+        description = "ID of the location type for countries." datatype="integer"/> 
+    <param name = "country_id" display="Country ID" description='Setup page config with country_id={profile_indicia_coordinate_country}.' emptyvalue="0" default="0">
+      <where>country.id = #country_id#</where>
+    </param>
   </params>
   <columns>
     <column name='occurrence_id' display='Occurrence ID' sql='o.id' datatype="integer" incount="true"/>
@@ -54,9 +56,7 @@
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
     <column name='taxon' display='Species' sql='cttl.taxon' datatype="text" />
     <column name='specimen_code' display='Specimen code' sql="conf.attrs_json->>('#specimen_code_occ_attr_id#')" datatype="text" />
-    <column name='sex' display='Sex' sql="conf.attrs_json->>('#sex_occ_attr_id#')" datatype="text" />
     <column name='abundance' display='Abundance' sql="conf.attrs_json->>('#abundance_occ_attr_id#')" datatype="text" />
-    <column name='stage' display='Stage' sql="conf.attrs_json->>('#stage_occ_attr_id#')" datatype="text" />
     <column name='identified_by' display='Identified by' sql="conf.attrs_json->>('#identified_by_occ_attr_id#')" datatype="text"/>
     <column name='date_start' sql='csf.date_start' visible='false' />
     <column name='date_end' sql='csf.date_end' visible='false' />
@@ -64,18 +64,6 @@
     <column name='date' display='Sample date' datatype="date" />
     <column name='pan_trap_station' display='Pan trap station' sql="snf.attrs_json->>('#pan_trap_station_smp_attr_id#')" datatype="text"/>
     <column name='location_name' display='Site name' sql='csf.location_name' datatype="text" />
-    <column name='location_code' display='Site code' sql='l.code' datatype="text" />
-    <column name='country' display='Country/Island' sql="
-      case when csf.location_ids @> ARRAY[#england_location_id#] THEN 'England'
-      when csf.location_ids @> ARRAY[#scotland_location_id#] THEN 'Scotland'
-      when csf.location_ids @> ARRAY[#wales_location_id#] THEN 'Wales'
-      when csf.location_ids @> ARRAY[#ni_location_id#] THEN 'Northern Ireland'
-      when csf.location_ids @> ARRAY[#man_location_id#] THEN 'Isle of Man'
-      when csf.location_ids @> ARRAY[#jersey_location_id#] THEN 'Jersey'
-      when csf.location_ids @> ARRAY[#guernsey_location_id#] THEN 'Guernsey'
-      ELSE '' END"
-      datatype="text" />
-    <column name="occurrence_comment" display="Occurrence comment" sql="conf.comment" datatype="text" />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" datatype="text" />
   </columns>
 </report>
