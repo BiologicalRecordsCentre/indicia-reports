@@ -37,12 +37,7 @@
       <where>st_dwithin(ST_GeomFromText('#post_code_geom#',3857), ST_Transform(l.centroid_geom,3857), #distance_from_post_code#)</where>
     </param>
     <param name="distance_from_post_code" display="Distance from post code" description="The distance to return items from the specified post code." datatype="integer" default='0' emptyvalue='0'/>
-    <param name="return_all_squares" display="Return all squares" description="If true, return all squares else return nothing or return squares using the post code search."  default='true' emptyvalue='true'/>
-    <param name="historic_attr_id" display="Exclude historic events" description="Optional parameter. Exclude historic events by including the attribute." datatype="integer" emptyvalue="0" default="0">
-      <join>LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false</join>
-      <where>(lavHistoric.id IS NULL OR lavHistoric.int_value = 0)
-      </where>       
-    </param>    
+    <param name="return_all_squares" display="Return all squares" description="If true, return all squares else return nothing or return squares using the post code search."  default='true' emptyvalue='true'/>   
   </params>
   <columns>
     <column name='id' display='Location ID' sql="l.id" datatype='integer' visible="false" in_count="true"/>
