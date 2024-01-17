@@ -34,15 +34,10 @@
     <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
     <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
+    <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
     <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
-    <column name='taxon_group' display='Taxon group' sql='cttl.taxon_group' datatype="text" />
-    <column name='taxon_group_id' display='Taxon group ID' sql='o.taxon_group_id' visible='false' datatype="integer" />
     <column name='taxa_taxon_list_id' visible='false' sql='o.taxa_taxon_list_id' datatype="integer" />
-    <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
-    <column name='entered_sref' display='Original grid ref' datatype="text" visible="false"
-        sql="coalesce(regexp_replace(#sample_sref_field#, ',[^ ]', ', ', 'g'), snf.public_entered_sref, onf.output_sref)" />
-    <column name="output_sref" sql="onf.output_sref" display="Grid ref" datatype="text" />
     <column name='date_start' sql='o.date_start' visible='false' />
     <column name='date_end' sql='o.date_end' visible='false' />
     <column name='date_type' sql='o.date_type' visible='false' />
@@ -59,7 +54,7 @@
     <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
     <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
     <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
-    <column name='status_hint' visible="false"
+    <column name='status_hint' visible="true"
             sql="case o.record_status when 'V' then 'Accepted' when 'R' then 'Not accepted' when 'T' then 'Test'
               when 'C' then case when record_substatus=3 then 'Plausible' when o.certainty='C' then 'Recorder considered this certain' when o.certainty='L' then 'Recorder considered this likely' when o.certainty='U' then 'Recorder considered this uncertain' else 'Not reviewed' end
             end ||
