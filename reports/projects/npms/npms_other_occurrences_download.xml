@@ -55,10 +55,12 @@ Version of reports to be used for download link on grid."
   </params>
   <columns>
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
+    <column name='recordkey' display='RecordKey' sql="'#warehouse_id#' || o.id" datatype="text" />
     <column name='taxon' sql='cttl.taxon' display='Taxon' />
     <column name='common' display='Common name'
       template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
       sql="cttl.default_common_name" datatype='text' />
+    <column name='order' display='Order' sql='cttl.order_taxon' datatype='text' />
     <column name='family' display='Family' sql='cttl.family_taxon' datatype='text' />
     <column name="abundance" display='Abundance' sql="
       CASE WHEN 
