@@ -54,7 +54,7 @@
     <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
     <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
     <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
-    <column name='status_hint' visible="true"
+    <column name='status_hint' visible="true" display="Record status"
             sql="case o.record_status when 'V' then 'Accepted' when 'R' then 'Not accepted' when 'T' then 'Test'
               when 'C' then case when record_substatus=3 then 'Plausible' when o.certainty='C' then 'Recorder considered this certain' when o.certainty='L' then 'Recorder considered this likely' when o.certainty='U' then 'Recorder considered this uncertain' else 'Not reviewed' end
             end ||
