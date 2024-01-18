@@ -40,7 +40,10 @@
     <param name='plot_number_attr_id' display='Plot number attribute Id' description='Id of the location attribute that holds the plot number label' datatype='int' default='0' empytvalue='0'/>
     <param name='date_from' display='Date From' datatype='date' />
     <param name='date_to' display='Date To' datatype='date' />
-    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
+    <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>  
+    <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
+      description="Image upload folder on the warehouse including the trailing slash" />
   </params>
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true"/>
@@ -59,6 +62,7 @@
         end
         , csf.location_name, csnf.public_entered_sref)
     " display='Plot' />
+    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
@@ -67,6 +71,8 @@
     case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
     when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
     ELSE  '' END" display=' '/>
+    <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
+    <column name='images' display='Images' sql="case when csnf.media is null then null else '#uploadFolder#' || replace(csnf.media, ',', ', #uploadFolder#') end"/>   
     <column name='geom' visible='false' mappable="true" sql='st_astext(csf.public_geom)' />
     <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
   </columns>

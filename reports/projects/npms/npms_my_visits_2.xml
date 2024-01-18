@@ -27,8 +27,8 @@
     <param name='plot_number_attr_id' display='Plot number attribute Id' description='Id of the location attribute that holds the plot number label' datatype='int' default='0' empytvalue='0'/>
     <param name='date_from' display='Date From' datatype='date' />
     <param name='date_to' display='Date To' datatype='date' />
-    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
-    <param name = "habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
+    <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
     <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
       description="Image upload folder on the warehouse including the trailing slash" />
   </params>
