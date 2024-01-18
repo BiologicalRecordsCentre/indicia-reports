@@ -37,6 +37,10 @@
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true"/>
     <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
+    <column name='survey_number' sql="
+      case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
+      when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
+      ELSE  '' END" display='Survey number'/>
     <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
     <column name='square_name' sql="square.centroid_sref" display='Square'/>
@@ -57,16 +61,13 @@
         WHERE vc.location_type_id=#vice_county_location_type_term#
         AND vc.name NOT LIKE '%+%'
         AND vc.id = ANY(csf.location_ids))" />
+    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
-    <column name='survey_number' sql="
-    case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
-    when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
-    ELSE  '' END" display=' '/>
     <column name='sample_comment' display='Sample comment' sql="csnf.comment" datatype="text" />
+    <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
     <column name='images' display='Images' sql="case when csnf.media is null then null else '#uploadFolder#' || replace(csnf.media, ',', ', #uploadFolder#') end"/>   
     <column name='input_date' sql='csf.created_on' display='Input on date' datatype='date' />
     <column name='last_edit_date' sql='csf.updated_on' display='Last edited on date' datatype='date' />

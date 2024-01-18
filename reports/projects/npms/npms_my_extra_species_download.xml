@@ -1,7 +1,6 @@
 <report
     title="NPMS My Extra Species Download"
     description="List user's extra species in download file. Based on library/occurrences/filterable_explore_list."
-    featured="true"
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
          standard_params="occurrences" count_field="o.*">
