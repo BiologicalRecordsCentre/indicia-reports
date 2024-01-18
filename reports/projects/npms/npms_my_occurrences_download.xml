@@ -38,14 +38,18 @@
       description="Image upload folder on the warehouse including the trailing slash" />
     <param name = "habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
     <param name = "wildflower_abundance_attr_id" display="Wildflower abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds wildflower abundance." datatype="integer"/>
-    <param name = "other_abundance_attr_id" display="Other (Indicator/Inventory) abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds Indicator/Inventory abundance." datatype="integer"/>  
+    <param name = "other_abundance_attr_id" display="Other (Indicator/Inventory) abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds Indicator/Inventory abundance." datatype="integer"/>
+    <param name="warehouse_id" display="Warehouse unique ID" default="iBRC"
+        description="Unique identifier code for the warehouse which can be prepended to occurrence IDs to make a globally unique record key"/>  
   </params>
   <columns>
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
+    <column name='recordkey' display='RecordKey' sql="'#warehouse_id#' || o.id" datatype="text" />
     <column name='taxon' sql='cttl.taxon' display='Taxon' />
     <column name='common' display='Common name'
       template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
       sql="cttl.default_common_name" datatype='text' />
+    <column name='order' display='Order' sql='cttl.order_taxon' datatype='text' />
     <column name='family' display='Family' sql='cttl.family_taxon' datatype='text' />
     <column name="abundance" display='Abundance' sql="
       CASE WHEN 
