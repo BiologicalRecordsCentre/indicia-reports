@@ -46,7 +46,7 @@
       description="Image upload folder on the warehouse including the trailing slash" />
   </params>
   <columns>
-    <column name='id' sql='csf.id' display='ID' in_count="true"/>
+    <column name='id' sql='csf.id' display='ID' in_count="true" datatype='integer'/>
     <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
     <column name='sample_1_id' sql="coalesce(case when (csnf.attrs_json->>'227')::integer != 0 then (csnf.attrs_json->>'227')::integer ELSE NULL END,csf.id)" display='ID' datatype="integer" visible='false'/>
     <column name='created_by_id' sql='csf.created_by_id' display='Created BY ID Sample' visible='false'/>
