@@ -43,7 +43,7 @@
   <columns>
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
     <column name='sample_id' sql='csf.id' display='Sample ID' visible="false"/>
-    <column name='taxon' sql='cttl.taxon' display='Taxon' />
+    <column name='taxon' sql='cttl.taxon' display='Taxon' datatype='text' />
     <column name='common' display='Common name'
       template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
       sql="cttl.default_common_name" datatype='text' />
