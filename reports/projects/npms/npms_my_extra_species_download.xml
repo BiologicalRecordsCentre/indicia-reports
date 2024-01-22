@@ -28,36 +28,76 @@
            description='Input form path to use when no other available. Can be used to generate the path in report_grid action links.' />
     <param name="force_default_input_form" display="Force default input form" default="0"
            description="Force the defaault input form to be used instead of the one specified by the record" />
+    <param name='vice_county_location_type_term' default='Vice County'
+           preprocess="SELECT id FROM cache_termlists_terms WHERE termlist_title='Location types' AND term='#vice_county_location_type_term#'" />
+    <param name="warehouse_id" display="Warehouse unique ID" default="iBRC"
+           description="Unique identifier code for the warehouse which can be prepended to occurrence IDs to make a globally unique record key"/>
+    <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
+           description="Image upload folder on the warehouse including the trailing slash" />
   </params>
   <columns>
-    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
-        template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
-    <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
-    <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
+    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer" />
+    <column name='recordkey' display='RecordKey' sql="'#warehouse_id#' || o.id" datatype="text" />
     <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
-    <column name='taxa_taxon_list_id' visible='false' sql='o.taxa_taxon_list_id' datatype="integer" />
+    <column name="output_sref" sql="onf.output_sref" display="Output map ref" datatype="text" />
+    <column name='output_sref_projection' display='Output map ref projection' datatype='text'
+      sql="case onf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(onf.output_sref_system) end" />
+    <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(o.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
+    <column name='long' display='Longitude' sql="substring(st_astext(st_transform(st_centroid(o.public_geom), 4326)) from E'POINT\\((.+) ')" datatype="text" />
+    <column name="vicecounty_number" display="VC number" datatype="text"
+      sql="(SELECT string_agg(vc.code, '; ')
+        FROM locations vc
+        WHERE vc.location_type_id=#vice_county_location_type_term#
+        AND vc.name NOT LIKE '%+%'
+        AND vc.id = ANY(o.location_ids))" />
+    <column name="vicecounty" display="Vice county" datatype="text"
+      sql="(SELECT string_agg(vc.name, '; ')
+        FROM locations vc
+        WHERE vc.location_type_id=#vice_county_location_type_term#
+        AND vc.name NOT LIKE '%+%'
+        AND vc.id = ANY(o.location_ids))" />
     <column name='date_start' sql='o.date_start' visible='false' />
     <column name='date_end' sql='o.date_end' visible='false' />
     <column name='date_type' sql='o.date_type' visible='false' />
     <column name='date' display='Date' datatype="date" />
-    <column name='cache_created_on' sql="to_char(o.created_on,'DD/MM/YYYY')" display='Submitted date' datatype="date" visible="false" orderby="cache_created_on_raw" />
-    <column name='cache_created_on_raw' sql="o.created_on" display='Submitted date unformatted' visible="false" />
-    <column name='cache_updated_on' sql="to_char(o.updated_on,'DD/MM/YYYY HH24:MI')" display='Last updated' visible="false" orderby="cache_updated_on_raw" />
-    <column name='cache_updated_on_raw' sql="o.updated_on" display='Last updated unformatted' visible="false" />
+    <column name='recorder' display='Recorder' sql="rtrim(snf.recorders, ', ')" datatype="text" />
     <column name='zero_abundance' display='Zero abundance' sql='o.zero_abundance' visible="false" />
-    <column name='created_by_id' visible='false' sql='o.created_by_id' datatype="integer" />
-    <column name='record_status' display='State' sql='o.record_status' visible="false" />
-    <column name='record_substatus' display='State' sql='o.record_substatus' visible="false" />
-    <column name='release_status' display='State' sql='o.release_status' visible="false" />
-    <column name='certainty' display='Certainty' sql='o.certainty' visible="false" />
-    <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
-    <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
-    <column name='status_hint' visible="true" display="Record status"
-            sql="case o.record_status when 'V' then 'Accepted' when 'R' then 'Not accepted' when 'T' then 'Test'
-              when 'C' then case when record_substatus=3 then 'Plausible' when o.certainty='C' then 'Recorder considered this certain' when o.certainty='L' then 'Recorder considered this likely' when o.certainty='U' then 'Recorder considered this uncertain' else 'Not reviewed' end
-            end ||
-            case o.record_substatus when 1 then ' as correct' when 2 then ' as considered correct' when 4 then ' as unable to verify' when 5 then ' as incorrect' else '' end ||
-            case o.query when 'A' then ', query raised and answered' when 'Q' then ', query raised' else '' end" />
+    <column name='determiner' display='Determiner' datatype="text"
+      sql="CASE WHEN onf.attr_det_full_name IS NULL THEN
+        CASE WHEN onf.attr_det_last_name IS NULL THEN NULL ELSE onf.attr_det_last_name || COALESCE(', ' || onf.attr_det_first_name, '') END
+      ELSE onf.attr_det_full_name END" />
+    <column name='certainty' display="Recorder certainty" sql="CASE o.certainty WHEN 'C' THEN 'Certain' WHEN 'L' THEN 'Likely' WHEN 'U' THEN 'Uncertain' END" />
+    <column name='record_comment' display='Comment' sql="onf.comment" datatype="text" />
+    <column name='sample_comment' display='Sample comment' sql="snf.comment" datatype="text" />
+    <column name='images' display='Images' sql="case when onf.media is null then null else '#uploadFolder#' || replace(onf.media, ',', ', #uploadFolder#') end"/>
+    <column name='input_date' sql='o.created_on' display='Input on date' datatype='date' />
+    <column name='last_edit_date' sql='o.updated_on' display='Last edited on date' datatype='date' />
+    <column name='record_status' display='Verification status 1'
+        sql="CASE o.record_status
+        WHEN 'V' THEN 'Accepted'
+        WHEN 'C' THEN 'Unonfirmed'
+        WHEN 'R' THEN 'Rejected'
+        WHEN 'I' THEN 'Input still in progress'
+        WHEN 'D' THEN 'Queried'
+        WHEN 'S' THEN 'Awaiting check'
+        ELSE o.record_status
+        END" />
+    <column name="record_substatus" display="Verification status 2"
+        sql="CASE o.record_status
+        WHEN 'V' THEN
+          CASE o.record_substatus WHEN 1 THEN 'correct' WHEN 2 THEN 'Considered correct' ELSE NULL END
+        WHEN 'C' THEN
+          CASE o.record_substatus WHEN 3 THEN 'Plausible' ELSE 'Not reviewed' END
+        WHEN 'R' THEN
+          CASE o.record_substatus WHEN 4 THEN 'Unable to verify' WHEN 5 THEN 'Incorrect' ELSE NULL END
+        ELSE NULL
+        END" />
+    <column name="query" display="Query" sql="case o.query when 'A' then 'Answered' when 'Q' then 'Queried' end" />
+    <column name='verifier' display='Verifier' sql='onf.verifier' datatype="text" />
+    <column name='verified_on' display='Verified on' sql='o.verified_on' datatype="text" />
+    <column name='licence_code' sql='onf.licence_code' display="Licence" />
+    <column name="autochecks" display="Automated checks"
+      sql="CASE WHEN o.data_cleaner_result='t' THEN 'pass' WHEN not o.verification_checks_enabled THEN 'checks disabled' WHEN o.data_cleaner_result IS NULL THEN 'pending' ELSE onf.data_cleaner_info END" />
   </columns>
 </report>
