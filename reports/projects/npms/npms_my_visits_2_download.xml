@@ -66,8 +66,9 @@
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
-    <column name='sample_comment' display='Sample comment' sql="csnf.comment" datatype="text" />
     <column name='recorder' display='Recorder' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
+    <column name='sample_comment' display='Sample comment' sql="csnf.comment" datatype="text" />
+    <column name='images' display='Images' sql="case when csnf.media is null then null else '#uploadFolder#' || replace(csnf.media, ',', ', #uploadFolder#') end"/>   
     <column name='input_date' sql='csf.created_on' display='Input on date' datatype='date' />
     <column name='last_edit_date' sql='csf.updated_on' display='Last edited on date' datatype='date' />
   </columns>
