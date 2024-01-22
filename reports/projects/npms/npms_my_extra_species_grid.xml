@@ -33,7 +33,7 @@
     <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
     <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
-    <column name='location_name' display='Site name' sql='o.location_name' datatype="text" />
+    <column name='location_name' display='Site' sql='o.location_name' datatype="text" />
     <column name='date_start' sql='o.date_start' visible='false' />
     <column name='date_end' sql='o.date_end' visible='false' />
     <column name='date_type' sql='o.date_type' visible='false' />

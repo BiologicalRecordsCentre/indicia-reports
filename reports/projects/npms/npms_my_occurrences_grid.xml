@@ -40,8 +40,6 @@
     <param name = "other_abundance_attr_id" display="Other (Indicator/Inventory) abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds Indicator/Inventory abundance." datatype="integer"/>  
   </params>
   <columns>
-    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
-        template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
     <column name='sample_id' sql='csf.id' display='Sample ID' visible="false"/>
     <column name='taxon' sql='cttl.taxon' display='Taxon' datatype='text' />
