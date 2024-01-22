@@ -36,7 +36,6 @@
       preprocess="SELECT id FROM cache_termlists_terms WHERE termlist_title='Location types' AND term='#vice_county_location_type_term#'" />
     <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
       description="Image upload folder on the warehouse including the trailing slash" />
-    <param name = "habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
     <param name = "wildflower_abundance_attr_id" display="Wildflower abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds wildflower abundance." datatype="integer"/>
     <param name = "other_abundance_attr_id" display="Other (Indicator/Inventory) abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds Indicator/Inventory abundance." datatype="integer"/>  
   </params>
@@ -55,7 +54,6 @@
       ELSE 
         (conf.attrs_json->>('#other_abundance_attr_id#'))::text
       END" datatype="text" />
-    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name='plot_name'
       sql="
       COALESCE(

@@ -28,7 +28,6 @@
     <param name='date_from' display='Date From' datatype='date' />
     <param name='date_to' display='Date To' datatype='date' />
     <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
-    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
     <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
       description="Image upload folder on the warehouse including the trailing slash" />
   </params>
@@ -49,7 +48,6 @@
         end
         , csf.location_name, csnf.public_entered_sref)
     " display='Plot' />
-    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
