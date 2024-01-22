@@ -29,8 +29,7 @@
            description="Force the defaault input form to be used instead of the one specified by the record" />
   </params>
   <columns>
-    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
-        template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
+    <column name='occurrence_id' display='ID' sql='o.id' datatype="integer" visible="false"/>
     <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
     <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
