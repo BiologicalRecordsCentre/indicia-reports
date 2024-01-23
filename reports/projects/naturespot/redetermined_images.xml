@@ -23,6 +23,7 @@
   </params>
   <columns>
     <column name="occurrence_id" sql="o.id" datatype="integer" />
+    <column name="determination_id" sql="d.id" datatype="integer" />
     <column name="image_path" sql="oi.path" datatype="integer" />
     <column name="was_ttl_id" sql="cttlwas.id" datatype="integer" />
     <column name="was_taxon" sql="cttlwas.taxon" datatype="text" />
