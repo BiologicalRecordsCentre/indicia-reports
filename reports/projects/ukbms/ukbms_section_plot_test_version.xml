@@ -16,7 +16,7 @@
             AND preferred = false
             AND taxon_list_id in (#taxon_list_id#)
           GROUP BY taxon_meaning_id) common
-        ON common.taxon_meaning_id = octtl.taxon_meaning_id
+        ON common.taxon_meaning_id = cttl.taxon_meaning_id
       #joins#
       WHERE transect.deleted=false AND transect.id = #location_id#
       AND #website_filter#
