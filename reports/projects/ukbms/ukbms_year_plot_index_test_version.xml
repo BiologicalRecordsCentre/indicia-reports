@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="UKBMS Year Plot Index report" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data.">
+  <query>
+      SELECT #columns#
+      FROM ukbms_year_index_values yiv
+      JOIN cache_taxa_taxon_lists cttl ON yiv.taxa_taxon_list_id = cttl.id
+      LEFT JOIN (
+        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
+          FROM cache_taxa_taxon_lists
+          WHERE language_iso = '#language_iso#'
+            AND preferred = false
+            AND taxon_list_id in (#taxon_list_id#)
+          GROUP BY taxon_meaning_id) common
+        ON common.taxon_meaning_id = cttl.taxon_meaning_id
+      #joins#
+      WHERE yiv.location_id = #location_id#
+  </query>
+  <params>
+    <param name='location_id' display='Location ID' description='Enter the ID of the location' datatype='int' />
+    <param name='taxon_list_id' display='Taxon List ID' datatype='int' >
+      <where>cttl.taxon_list_id = #taxon_list_id#</where>
+    </param>
+    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
+  </params>
+  <columns>
+    <column name="location_id" display="ID" sql="yiv.location_id" in_count="true" datatype="integer" />
+    <column name="taxon" display="Taxon" sql="coalesce(cttl.default_common_name, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
+    <column name="preferred_taxon" display="Preferred Taxon" sql="cttl.taxon" datatype="text" />
+    <column name='common' display='Common Name' sql="common.combined" /> 
+    <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="cttl.taxon_meaning_id" datatype="integer" />
+    <column name="year" display="Year" sql="yiv.year" datatype="integer" />
+    <column name="index" display="Index" sql="yiv.index" datatype="integer" />
+  </columns>
+</report>
