@@ -52,6 +52,8 @@ Version of reports to be used for download link on grid."
     <param name = "habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
     <param name = "wildflower_abundance_attr_id" display="Wildflower abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds wildflower abundance." datatype="integer"/>
     <param name = "other_abundance_attr_id" display="Other (Indicator/Inventory) abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds Indicator/Inventory abundance." datatype="integer"/>
+    <param name="warehouse_id" display="Warehouse unique ID" default="iBRC"
+      description="Unique identifier code for the warehouse which can be prepended to occurrence IDs to make a globally unique record key"/>  
   </params>
   <columns>
     <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>

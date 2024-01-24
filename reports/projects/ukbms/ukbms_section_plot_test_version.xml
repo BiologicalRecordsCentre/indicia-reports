@@ -48,7 +48,7 @@
             <column name="name" display="Site Name" style="background-color: #e7e7e7;" sql="transect.name" datatype="text" />
             <column name="taxon" display="Taxon" sql="coalesce(cttl.default_common_name, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
             <column name="preferred_taxon" display="Preferred Taxon" sql="cttl.taxon" datatype="text" />
-            <column name='common' display='Common Name' sql="common.combined"/> 
+            <column name='common' display='Common Name' sql="common.combined" /> 
             <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="cttl.taxon_meaning_id" datatype="integer" />
             <column name="date" display="Count" sql="ps.date_start" datatype="text" />
       </columns>
