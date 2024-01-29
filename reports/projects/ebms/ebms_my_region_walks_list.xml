@@ -3,14 +3,17 @@
     description="A list of top level samples for use in the EBMS My Region Walks report calendar grid - walks in user's region. 
     Top level means that the parent_id field of the samples is null."
 >
-<query website_filter_field="su.website_id">
+<query website_filter_field="" training_filter_field="s.training">
   SELECT #field_sql#
   FROM samples s
+  JOIN surveys su on su.id = s.survey_id AND su.deleted=false
   JOIN locations l ON l.id=s.location_id
-  #joins#
-  WHERE s.deleted = FALSE
+  #agreements_join#
+  WHERE #sharing_filter#
+  AND s.deleted = FALSE
   AND s.parent_id IS NULL
   AND s.survey_id=#survey_id#
+  AND su.website_id in (#website_ids#)
   #location_ids#
   #filters#
   #order_by#
