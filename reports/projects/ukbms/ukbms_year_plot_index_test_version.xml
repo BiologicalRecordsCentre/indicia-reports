@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Year Plot Index report" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data.">
+<report title="UKBMS Year Plot Index Report Japan Test Version" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
   <query>
       SELECT #columns#
       FROM ukbms_year_index_values yiv
