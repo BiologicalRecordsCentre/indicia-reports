@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS Sample Download Report" description="Lists saved samples. Normally invoked from download bar on annual summary page.">
+  <query website_filter_field="" samples_id_field="parent.id" 
+    training_filter_field="parent.training">
+    SELECT #field_sql#
+      FROM samples parent
+      JOIN locations l ON parent.location_id=l.id
+      JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
+      JOIN surveys su ON parent.survey_id = su.id
+      #agreements_join#
+      WHERE #sharing_filter#
+        AND parent.deleted = false
+        AND parent.parent_id is null
+        AND su.website_id in (#website_ids#)
+        #filters#
+      #order_by#
+  </query>
+  
+  <field_sql>
+      parent.id as sample_id,
+      ctt.term as site_type,
+      l.code as site_code,
+      l.name as site_name,
+      l.centroid_sref as centroid_sref,
+      '' as date, --- allows proper positioning of date column in report
+      parent.date_start,
+      parent.date_end,
+      parent.date_type,
+      parent.comment,
+      parent.entered_sref,
+      (SELECT AVG(savs.int_value)
+        FROM samples ss
+        JOIN sample_attribute_values savs ON savs.sample_id = ss.id AND savs.deleted = FALSE 
+        JOIN sample_attributes sas ON savs.sample_attribute_id = sas.id AND sas.deleted = FALSE AND sas.caption = '% Sun'
+        WHERE parent.id = ss.parent_id AND ss.deleted = FALSE) as mean_sun
+  </field_sql>
+  
+  <order_bys>
+    <order_by>l.code, parent.date_start</order_by>
+  </order_bys>
+  
+  <params>
+    <param name="survey_list" display="Survey IDs" description="Comma separated list of survey IDs" datatype="integer[]" default="" >
+      <where>parent.survey_id in (#survey_list#)</where>
+    </param>
+    <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"
+        population_call="direct:survey:id:title">
+	    <where>parent.survey_id=#survey_id#</where>
+	  </param>
+    <param name="date_from" display="Date From" datatype="date">
+      <where>parent.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date)</where>
+    </param>
+    <param name="date_to" display="Date To" datatype="date">
+      <where>parent.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)</where>
+    </param>
+    <param name="user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int" >
+      <where>parent.created_by_id=#user_id#</where>
+    </param>
+    <param name="smpattrs"
+            display="Sample attribute list"
+            description="Comma separated list of sample attribute IDs to include"
+            datatype="smpattrs"
+            />
+    <param name="location_id" display="Location ID" description="Enter the ID of the location" datatype="int" default="" >
+      <where>parent.location_id=#location_id#</where>
+    </param>
+    <param name="location_list" display="Location List" description="Enter a comma separated list of location IDs" datatype="text" default="" >
+      <where>('#location_list#' = '-1' OR parent.location_id IN (#location_list#))</where>
+    </param>
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+  </params>
+
+  <columns>
+    <column name="sample_id" display="Sample ID" />
+    <column name="site_type" display="Site Type" />
+    <column name="site_name" display="Site name" />
+    <column name="site_code" display="Site Code" />
+    <column name="centroid_sref" display="Site Grid Ref." />
+    <column name="date" display="Visit date" />
+    <column name="comment" display="Notes" />
+    <column name="entered_sref" display="Grid Ref." />
+    <column name="mean_sun" display="Mean % Sun" />
+  </columns>
+
+</report>
