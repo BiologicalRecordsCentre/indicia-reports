@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS Occurrence Download Report" description="Lists saved occurrences. Normally invoked from download tab on annual summary page.">
-  <query website_filter_field="o.website_id" samples_id_field="parent.id" samples2_id_field="s.id" >
+  <query website_filter_field="o.website_id" 
+        samples_id_field="parent.id" samples2_id_field="s.id" 
+        training_filter_field="o.training">
   SELECT #field_sql#
   FROM samples parent
   JOIN surveys su ON su.id = parent.survey_id
@@ -11,8 +13,10 @@
   JOIN occurrences o ON o.sample_id=s.id AND o.deleted=false
   JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
       AND (CAST(cttl.taxon_list_id AS character varying)='#taxon_list_id#' OR '#taxon_list_id#' = '')
+  #agreements_join#
   #joins#
-  WHERE parent.deleted = false
+  WHERE #sharing_filter# 
+  AND parent.deleted = false
   AND #website_filter#
   #filters#
   AND (trim('#date_from#')='' OR s.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))

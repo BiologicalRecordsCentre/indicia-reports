@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS Sample Download Report" description="Lists saved samples. Normally invoked from download bar on annual summary page.">
-  <query website_filter_field="su.website_id" samples_id_field="parent.id" >
+  <query website_filter_field="" samples_id_field="parent.id" 
+    training_filter_field="parent.training">
     SELECT #field_sql#
       FROM samples parent
       JOIN locations l ON parent.location_id=l.id
       JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
       JOIN surveys su ON parent.survey_id = su.id
+      #agreements_join#
       #joins#
-      WHERE parent.deleted = false
+      WHERE #sharing_filter#
+        AND parent.deleted = false
         AND parent.parent_id is null
-        AND #website_filter#
+        AND su.website_id in (#website_ids#)
         #filters#
       #order_by#
   </query>
