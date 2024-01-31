@@ -13,8 +13,10 @@
   JOIN occurrences o ON o.sample_id=s.id AND o.deleted=false
   JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.taxa_taxon_list_id
       AND (CAST(cttl.taxon_list_id AS character varying)='#taxon_list_id#' OR '#taxon_list_id#' = '')
+  #agreements_join#
   #joins#
-  WHERE parent.deleted = false
+  WHERE #sharing_filter# 
+  AND parent.deleted = false
   AND #website_filter#
   #filters#
   AND (trim('#date_from#')='' OR s.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
