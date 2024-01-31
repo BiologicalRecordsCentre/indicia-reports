@@ -17,8 +17,10 @@
             AND taxon_list_id in (#taxon_list_id#)
           GROUP BY taxon_meaning_id) common
         ON common.taxon_meaning_id = cttl.taxon_meaning_id
+      #agreements_join#
       #joins#
-      WHERE transect.deleted=false AND transect.id = #location_id#
+      WHERE #sharing_filter# 
+      AND transect.deleted=false AND transect.id = #location_id#
       AND #website_filter#
       AND transect.location_type_id = #location_type_id#
       </query>

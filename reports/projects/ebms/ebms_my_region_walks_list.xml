@@ -9,6 +9,7 @@
   JOIN surveys su on su.id = s.survey_id AND su.deleted=false
   JOIN locations l ON l.id=s.location_id
   #agreements_join#
+  #joins#
   WHERE #sharing_filter#
   AND s.deleted = FALSE
   AND s.parent_id IS NULL

@@ -12,6 +12,7 @@
       AND lav.location_attribute_id=#alloc_id#
       AND lav.int_value=#cms_user_id#
   #agreements_join#
+  #joins#
   WHERE #sharing_filter#
   AND s.deleted = FALSE
   AND s.parent_id IS NULL
