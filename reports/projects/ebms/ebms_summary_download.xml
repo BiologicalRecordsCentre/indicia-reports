@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS Summary Level Download Report" description="Lists saved samples. Normally invoked from download bar on annual summary page.">
-  <query website_filter_field='o.website_id'>
+  <query website_filter_field='o.website_id' training_filter_field="o.training">
   SELECT #field_sql#
   FROM samples parent
   JOIN samples s ON s.parent_id=parent.id AND s.deleted=false
@@ -12,8 +12,10 @@
     JOIN sample_attribute_values sav ON sav.sample_attribute_id = sa.id AND sav.deleted = false)
       ON sa.caption = 'Recorder Name' AND sa.deleted = false AND sav.sample_id = parent.id
   JOIN occurrence_attribute_values oav ON oav.deleted = false AND oav.occurrence_id = o.id
+  #agreements_join#
   #joins#
-  WHERE parent.deleted = false
+  WHERE #sharing_filter#
+  AND parent.deleted = false
   AND #website_filter#
   #filters#
   AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR s.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))

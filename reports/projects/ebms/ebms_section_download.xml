@@ -2,7 +2,7 @@
     title='EBMS Section Level Download Report'
     description='An occurrence list with a count attribute to be used as the EBMS Section Level Download Report, with filters for Indicia user, date start and end, location.'
 >
-  <query website_filter_field='o.website_id'>
+  <query website_filter_field='o.website_id' training_filter_field="o.training">
   SELECT #field_sql#
   FROM samples parent
   JOIN samples s ON s.parent_id=parent.id AND s.deleted=false
@@ -14,8 +14,10 @@
   LEFT JOIN (sample_attributes sa 
     JOIN sample_attribute_values sav ON sav.sample_attribute_id = sa.id AND sav.deleted = false)
       ON sa.caption = 'Recorder Name' AND sa.deleted = false AND sav.sample_id = parent.id
+  #agreements_join#
   #joins#
-  WHERE parent.deleted = false
+  WHERE #sharing_filter#
+  AND parent.deleted = false
   AND #website_filter#
   #filters#
   AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR s.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
