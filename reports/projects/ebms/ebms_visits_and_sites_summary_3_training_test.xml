@@ -1,0 +1,79 @@
+<report
+    title='EBMS Visit Summary list 3'
+    description='A list of the number of sites and visits recorded for each species, 
+        with filters for user or scheme, this and previous year.
+        Additionally provides the common names in the currently selected language.'
+>
+  <query website_filter_field='o.website_id' training_filter_field="o.training">
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists preferred
+        ON o.preferred_taxa_taxon_list_id = preferred.id
+      JOIN samples p
+        ON o.parent_sample_id = p.id
+          AND p.deleted = false
+          AND p.location_id IS NOT NULL
+          AND p.parent_id IS NULL
+          AND p.survey_id IN (#survey_ids#)
+      LEFT JOIN (
+        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
+          FROM cache_taxa_taxon_lists
+          WHERE language_iso = '#language_iso#'
+            AND preferred = false
+            AND taxon_list_id in (#taxon_list_ids#)
+          GROUP BY taxon_meaning_id) common
+        ON common.taxon_meaning_id = o.taxon_meaning_id
+      #agreements_join#  
+      #joins#
+    WHERE #sharing_filter#
+      AND #website_filter# 
+      AND p.survey_id IN (#survey_ids#)
+  </query>
+  <order_bys>
+    <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
+  </order_bys>
+  <params>
+    <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >
+      <wheres>
+        <where value="this" operator="equal">
+          o.date_end &gt;= CAST(extract(YEAR from NOW())||'-01-01' as date)
+        </where>
+        <where value="last" operator="equal">
+          o.date_end &gt;= CAST((extract(YEAR from NOW())-1)||'-01-01' as date)
+          AND o.date_start &lt;= CAST((extract(YEAR from NOW())-1)||'-12-31' as date)
+        </where>
+      </wheres>
+    </param>
+    <param name='data' display='Data' datatype='lookup' lookup_values='mine:My data,scheme:All scheme data' >
+      <wheres>
+        <where value="mine" operator="equal">p.created_by_id = #user_id#</where>
+      </wheres>
+      <joins>
+        <join value="scheme" operator="equal">
+          JOIN location_attribute_values lav ON p.location_id = lav.location_id
+            AND lav.location_attribute_id = #country_location_attribute_id#
+            AND lav.int_value = #country_id#
+            AND lav.deleted = false
+        </join>
+      </joins>
+    </param>
+    <param name='user_id' display='Indicia User ID' description='Enter the Indicia ID of the user' datatype='int' />
+    <param name="country_location_attribute_id"
+        display="Country attribute"
+        description="The ID of the location_attribute that assigns a location to a country"
+        datatype="lookup"
+        population_call="direct:location_attribute:id:caption" />
+    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name='survey_ids' display='Surveys' description='Comma separated list of survey ids' datatype='text' />
+    <param name='taxon_list_ids' display='Taxon lists' description='Comma separated list of Taxon list ids' datatype='text' />
+    <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
+  </params>
+  <columns>
+    <column name='taxon_meaning_id' visible="false" sql="o.taxon_meaning_id" in_count="true"/>
+    <column name='taxon' display='Latin Name' sql="preferred.taxon"/>
+    <column name='common' display='Common Name' sql="common.combined"/> 
+    <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
+    <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
+  </columns> 
+</report>
