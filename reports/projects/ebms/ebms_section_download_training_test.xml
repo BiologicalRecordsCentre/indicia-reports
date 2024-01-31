@@ -15,6 +15,7 @@
     JOIN sample_attribute_values sav ON sav.sample_attribute_id = sa.id AND sav.deleted = false)
       ON sa.caption = 'Recorder Name' AND sa.deleted = false AND sav.sample_id = parent.id
   #agreements_join#
+  #joins#
   WHERE #sharing_filter#
   AND parent.deleted = false
   AND #website_filter#
