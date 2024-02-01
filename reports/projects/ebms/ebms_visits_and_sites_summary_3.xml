@@ -4,7 +4,7 @@
         with filters for user or scheme, this and previous year.
         Additionally provides the common names in the currently selected language.'
 >
-  <query website_filter_field='o.website_id'>
+  <query website_filter_field='o.website_id' training_filter_field="o.training">
     SELECT #columns#
     FROM cache_occurrences_functional o
       JOIN cache_taxa_taxon_lists preferred
@@ -23,8 +23,11 @@
             AND taxon_list_id in (#taxon_list_ids#)
           GROUP BY taxon_meaning_id) common
         ON common.taxon_meaning_id = o.taxon_meaning_id
+      #agreements_join#  
       #joins#
-    WHERE #website_filter# AND p.survey_id IN (#survey_ids#)
+    WHERE #sharing_filter#
+      AND #website_filter# 
+      AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
     <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
