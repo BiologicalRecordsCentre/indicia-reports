@@ -1,0 +1,40 @@
+<report
+    title="Transect and section lengths review"
+    description="Summary of data held regarding transect and section lengths"
+>
+  <query website_filter_field="" training_filter_field="">
+    select #columns#
+    from locations l
+    join locations_websites lw on lw.location_id=l.id and lw.website_id=48 and lw.deleted=false
+    -- parent transects
+    join locations lp on lp.id=l.parent_id and lp.deleted=false
+    -- sibling sections
+    join locations ls on ls.parent_id=lp.id and ls.deleted=false
+    left join location_attribute_values lv on lv.location_id=l.id AND lv.location_attribute_id=49 and lv.deleted=false
+    left join location_attribute_values lpv on lpv.location_id=lp.id AND lpv.location_attribute_id=39 and lpv.deleted=false
+    left join location_attribute_values lsv on lsv.location_id=ls.id AND lsv.location_attribute_id=49 and lsv.deleted=false
+    where l.deleted=false
+    and l.location_type_id=778
+    -- Following line limits to transect discrepancies.
+    -- having abs(sum(st_length(st_transform(ls.boundary_geom, 27700))) - lpv.int_value) &gt; 1
+  </query>
+  <order_bys>
+    <order_by>lp.id, l.code ASC</order_by>
+  </order_bys>
+  <params>
+  </params>
+  <columns>
+    <column name="section_id" display="ID" sql="l.id" datatype="integer" in_count="true" />
+    <column name="section_name" display="Section name" sql="l.name" datatype="text" />
+    <column name="section_code" display="Code" sql="l.code" datatype="text" />
+    <column name="transect_id" display="Transect ID" sql="lp.id" datatype="integer" />
+    <column name="transect_name" display="Transect name" sql="lp.name" datatype="text" />
+    <column name="centroid_sref" display="Centroid" sql="lp.centroid_sref" datatype="text" />
+    <column name="stored_section_length" display="Stored section length" sql="lv.int_value" datatype="integer" />
+    <column name="calculated_section_length" display="Calculated section length" sql="round(st_length(st_transform(l.boundary_geom, 27700)))" datatype="integer" />
+    <column name="stored_transect_length" display="Stored transect length" sql="lpv.int_value" datatype="integer" />
+    <column name="summed_calculated_section_length" display="Transect total calculated section length" sql="round(sum(st_length(st_transform(ls.boundary_geom, 27700))))" datatype="integer" aggregate="true" />
+    <column name="section_descrepancy" display="Section discrepancy" sql="case when abs(st_length(st_transform(l.boundary_geom, 27700)) - lv.int_value) &gt; 1 then 'x' else '' end" datatype="text" />
+    <column name="transect_descrepancy" display="Transect discrepancy" sql="case when abs(sum(st_length(st_transform(ls.boundary_geom, 27700))) - lpv.int_value) &gt; 1 then 'x' else '' end" datatype="text" aggregate="true" />
+  </columns>
+</report>
