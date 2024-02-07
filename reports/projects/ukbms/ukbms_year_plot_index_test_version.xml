@@ -21,7 +21,6 @@
     <param name='taxon_list_id' display='Taxon List ID' datatype='int' >
       <where>cttl.taxon_list_id = #taxon_list_id#</where>
     </param>
-    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
     <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
     <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
   </params>
