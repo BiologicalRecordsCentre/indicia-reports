@@ -9,6 +9,7 @@
     #joins#
     WHERE l.deleted=false
     AND (l.public=true or lw.website_id in (#website_ids#))
+    AND l.boundary_geom IS NOT NULL
       #filters#
   </query>
   <params>
