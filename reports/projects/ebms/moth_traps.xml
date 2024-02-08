@@ -3,7 +3,7 @@
 <report title="Moth Trap Locations list with trap information"
     description="Lists trap locations and location attributes,
     decoding the complex lamp attribute from JSON.">
-  <query website_filter_field='lw.website_id'>
+  <query website_filter_field='' training_filter_field="s.training">
     SELECT #columns# FROM 
       (
         SELECT l.id, pl.name AS country, l.name, l.centroid_sref, 
@@ -44,7 +44,7 @@
           lav_lamp_type.deleted = false
         WHERE l.deleted=false
           AND l.location_type_id = #location_type_id#
-          AND #website_filter#
+          AND lw.website_id in (#website_ids#)
         GROUP BY l.id, pl.name, l.name, l.centroid_sref, trap_type, other_trap
       ) traps
     JOIN
@@ -53,9 +53,10 @@
         FROM locations l
         JOIN locations_websites lw ON l.id = lw.location_id AND lw.deleted = false
         JOIN samples s ON s.location_id = l.id AND s.deleted = false
-        WHERE l.deleted=false
+        WHERE #sharing_filter#
+          AND l.deleted=false
           AND l.location_type_id = #location_type_id#
-          AND #website_filter#
+          AND lw.website_id in (#website_ids#)
         GROUP BY l.id
       ) counts
     ON traps.id = counts.id

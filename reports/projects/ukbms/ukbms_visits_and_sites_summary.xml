@@ -2,15 +2,17 @@
     title='UKBMS Visit Summary list'
     description='A list of the number of sites and visits recorded for each species, with filters for user, date start and end.'
 >
-  <query website_filter_field='o.website_id'>
+  <query website_filter_field='o.website_id' training_filter_field="o.training">
     select #columns#
     from cache_taxa_taxon_lists cttl
       JOIN occurrences o ON o.taxa_taxon_list_id = cttl.id AND o.deleted = false AND #website_filter#
       JOIN samples s ON o.sample_id=s.id and s.deleted=false
       JOIN samples p ON s.parent_id = p.id AND p.deleted = false
       JOIN locations l  ON p.location_id = l.id AND l.deleted = false
+      #agreements_join#
       #joins#
-    WHERE #website_filter#
+    WHERE #sharing_filter#
+    AND #website_filter#
   </query>
   <order_bys>
     <order_by>coalesce(cttl.default_common_name, cttl.preferred_taxon)</order_by>
