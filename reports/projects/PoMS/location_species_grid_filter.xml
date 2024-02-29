@@ -29,7 +29,7 @@
 
         JOIN taxa_taxon_list_attribute_values ttlav1 on ttlav1.taxa_taxon_list_id = cttl_allowed_taxa.id 
             AND ttlav1.taxa_taxon_list_attribute_id = #location_taxon_attribute_id#
-            AND ttlav1.int_value = ctt_loc1_syn.id
+            AND ttlav1.int_value = ctt_loc_syn1.id
             AND ttlav1.deleted = false
       </join>
     </param>
