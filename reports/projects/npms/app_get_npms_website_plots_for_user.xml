@@ -1,5 +1,5 @@
 <report
-    title="App - Get Plot For User"
+    title="App - Get NPMS Website Plots For User"
     description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse."
 >
   <query>
