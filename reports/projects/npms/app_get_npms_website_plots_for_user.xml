@@ -9,7 +9,7 @@
       JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
       LEFT JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       LEFT JOIN location_attribute_values lav on lav.location_attribute_id=118 AND lav.location_id=plot.id
-      JOIN users u on u.id=#current_user_id#
+      JOIN users u on u.id=#warehouse_user_id#
       JOIN person_attribute_values pavOthers on pavOthers.int_value=square.id AND pavOthers.person_attribute_id=2 AND pavOthers.deleted=false
       LEFT JOIN person_attribute_values pav on pav.int_value=square.id AND pav.person_id=u.person_id AND pav.person_attribute_id=2 AND pav.deleted=false
     WHERE square.location_type_id=4009
@@ -17,13 +17,13 @@
       AND pav.updated_by_id != u.id
     #filters#
     GROUP BY square.id,lav.text_value,plot.id,plot.created_by_id,pav.updated_by_id,u.id,cache_ttPlotType.term
-    HAVING (plot.created_by_id=#current_user_id# OR count(distinct pavOthers.id) &lt; 2)
+    HAVING (plot.created_by_id=#warehouse_user_id# OR count(distinct pavOthers.id) &lt; 2)
   </query>
   <order_bys>
     <order_by>square.id</order_by>
   </order_bys>
   <params>
-    <param name="current_user_id" display="Id of the currently logged in user" datatype="integer"/>
+    <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
   </params>
   <columns>
     <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />

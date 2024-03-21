@@ -1,0 +1,48 @@
+<report
+    title="App - Get Standard Mode Plots For User"
+    description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse."
+>
+  <query>
+    SELECT #columns#
+    FROM groups g
+    JOIN groups_users gu on gu.group_id=g.id AND gu.user_id=#warehouse_user_id# AND gu.deleted=false
+    JOIN groups_locations gl on gl.group_id=g.id and gl.deleted=false
+    JOIN locations plot on plot.id = gl.location_id AND plot.location_type_id = 17677 AND plot.deleted=false
+    LEFT JOIN location_attribute_values plot_groups_for_plot_attr_val on 
+        plot_groups_for_plot_attr_val.location_id = plot.id AND
+        plot_groups_for_plot_attr_val.location_attribute_id = 280 AND 
+        plot_groups_for_plot_attr_val.deleted=false
+    LEFT JOIN cache_termlists_terms plot_groups_for_plot on plot_groups_for_plot.id = plot_groups_for_plot_attr_val.int_value AND plot_groups_for_plot.termlist_id=912
+    LEFT JOIN users u on u.id = gu.user_id AND u.deleted = false
+    LEFT JOIN person_attribute_values plot_groups_for_user_project_attr_val on 
+        plot_groups_for_user_project_attr_val.person_id = u.person_id AND
+        plot_groups_for_user_project_attr_val.person_attribute_id = 26 AND 
+        plot_groups_for_user_project_attr_val.deleted=false
+    LEFT JOIN cache_termlists_terms plot_groups_for_project_user on plot_groups_for_project_user.id = plot_groups_for_user_project_attr_val.int_value AND 
+        plot_groups_for_plot.termlist_id=912
+    #joins#
+    WHERE 
+      g.website_id=106
+      AND (g.id=#project_id# OR #project_id#=0)
+      AND g.deleted=false
+  </query>
+  <order_bys>
+    <order_by>plot.id</order_by>
+  </order_bys>
+  <params>
+    <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
+    <param name="project_id" display="Project ID (optional)" datatype="integer" empty_value="0" default="0"/>
+  </params>
+  <columns>
+    <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='plot_name' display='Plot Name' sql="plot.name" datatype='text'/>
+    <column name='plot_group_ids_for_plot' display='Plot Group IDs for Plot' sql="string_agg(plot_groups_for_plot.id::text,',')" datatype='integer' aggregate="true" />
+    <column name='plot_group_names_for_plot' display='Plot Group Names for Plot' sql="string_agg(plot_groups_for_plot.term,',')" 
+        datatype='text' aggregate="true" />
+    <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
+    <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
+    <column name='warehouse_user_id' display='Warehouse User ID' sql="u.id" datatype='integer' />
+    <column name='plot_group_ids_for_user' display='Plot Group IDs for User' sql="string_agg(plot_groups_for_project_user.id::text,',')" datatype='text' aggregate="true" />
+    <column name='plot_group_names_for_user' display='Plot Group Names for User' sql="string_agg(plot_groups_for_project_user.term,',')" datatype='text' aggregate="true"  />
+  </columns>
+</report>
