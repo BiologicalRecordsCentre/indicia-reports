@@ -1,0 +1,34 @@
+<report
+    title="App - Get NPMS+ Plots For User"
+    description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse."
+>
+  <query>
+    SELECT #columns#
+    FROM groups g
+    JOIN groups_users gu on gu.group_id=g.id AND gu.user_id=#warehouse_user_id# AND gu.deleted=false
+    JOIN groups_locations gl on gl.group_id=g.id and gl.deleted=false
+    JOIN locations square on square.id = gl.location_id AND square.location_type_id = 18071 AND square.deleted=false
+    JOIN locations plot on plot.parent_id = square.id AND plot.location_type_id in (18678,18679,18680) AND plot.deleted=false
+    #joins#
+    WHERE 
+      g.website_id=106
+      AND (g.id=#project_id# OR #project_id#=0)
+      AND g.deleted=false
+  </query>
+  <order_bys>
+    <order_by>plot.id</order_by>
+  </order_bys>
+  <params>
+    <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
+    <param name="project_id" display="Project ID (optional)" datatype="integer" empty_value="0" default="0"/>
+  </params>
+  <columns>
+    <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='plot_name' display='Plot Name' sql="plot.name" datatype='text'/>
+    <column name='square_id' display='Square ID' sql="square.id" datatype='integer' />
+    <column name='square_name' display='Square Name' sql="square.name" datatype='text'/> 
+    <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
+    <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
+    <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.id" datatype='integer' />
+  </columns>
+</report>
