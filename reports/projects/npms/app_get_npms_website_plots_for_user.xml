@@ -3,7 +3,7 @@
     description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse."
 >
   <query>
-    SELECT #columns#
+    SELECT distinct #columns#
     FROM locations square
       LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
       JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
