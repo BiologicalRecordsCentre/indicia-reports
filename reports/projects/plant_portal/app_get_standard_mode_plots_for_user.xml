@@ -19,7 +19,7 @@
         plot_groups_for_user_project_attr_val.person_attribute_id = 26 AND 
         plot_groups_for_user_project_attr_val.deleted=false
     LEFT JOIN cache_termlists_terms plot_groups_for_project_user on plot_groups_for_project_user.id = plot_groups_for_user_project_attr_val.int_value AND 
-        plot_groups_for_plot.termlist_id=912
+        plot_groups_for_project_user.termlist_id=912
     #joins#
     WHERE 
       g.website_id=106
