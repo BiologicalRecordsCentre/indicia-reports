@@ -29,6 +29,6 @@
     <column name='square_name' display='Square Name' sql="square.name" datatype='text'/> 
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
     <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
-    <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.id" datatype='integer' />
+    <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.user_id" datatype='integer' />
   </columns>
 </report>
