@@ -12,6 +12,7 @@
     #joins#
     WHERE 
       g.website_id=106
+      AND g.group_type_id=18067
       AND (g.id=#project_id# OR #project_id#=0)
       AND g.deleted=false
   </query>
