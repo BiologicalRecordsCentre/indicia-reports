@@ -33,10 +33,8 @@
       AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
-<order_bys>
     <order_by>COALESCE(common.taxonomic_sort_order, 1000000+preferred.taxonomic_sort_order, 9999999)</order_by>
     <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
-  </order_bys>
   </order_bys>
   <params>
     <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >

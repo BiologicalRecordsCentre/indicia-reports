@@ -10,12 +10,14 @@
       JOIN occurrences o ON o.sample_id=ss.id AND o.zero_abundance='f'
       JOIN cache_taxa_taxon_lists cttl ON o.taxa_taxon_list_id = cttl.id
       LEFT JOIN (
-        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
-          FROM cache_taxa_taxon_lists
-          WHERE language_iso = '#language_iso#'
-            AND preferred = false
-            AND taxon_list_id in (#taxon_list_id#)
-          GROUP BY taxon_meaning_id) common
+      	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
+        SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, min(ttl_common.taxonomic_sort_order) as taxonomic_sort_order, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
+          FROM cache_taxa_taxon_lists cttl_common
+          JOIN taxa_taxon_lists ttl_common on ttl_common.id = cttl_common.id  
+          WHERE cttl_common.language_iso = '#language_iso#'
+            AND cttl_common.preferred = false
+            AND cttl_common.taxon_list_id = (#taxon_list_id#)
+          GROUP BY cttl_common.taxon_meaning_id, ttl_common.taxonomic_sort_order) common
         ON common.taxon_meaning_id = cttl.taxon_meaning_id
       #agreements_join#
       #joins#
@@ -24,6 +26,10 @@
       AND #website_filter#
       AND transect.location_type_id = #location_type_id#
       </query>
+	  <order_bys>
+        <order_by>COALESCE(common.taxonomic_sort_order, 1000000+cttl.taxonomic_sort_order, 9999999)</order_by>
+        <order_by>COALESCE(common.combined, cttl.preferred_taxon)</order_by>
+      </order_bys>
       <params>
         <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
             population_call='report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=' />
@@ -45,7 +51,7 @@
       <columns>
             <column name="location_id" display="ID" sql="transect.id" in_count="true" datatype="integer" />
             <column name="section_id" display="Section ID" sql="section.id" in_count="true" datatype="integer" />
-            <column name="parent_sample_id" display="Parent Sample ID" sql="section.id" in_count="true" datatype="integer" />
+            <column name="parent_sample_id" display="Parent Sample ID" sql="ps.id" in_count="true" datatype="integer" />
             <column name="name" display="Site Name" style="background-color: #e7e7e7;" sql="transect.name" datatype="text" />
             <column name="taxon" display="Taxon" sql="coalesce(cttl.default_common_name, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
             <column name="preferred_taxon" display="Preferred Taxon" sql="cttl.taxon" datatype="text" />
