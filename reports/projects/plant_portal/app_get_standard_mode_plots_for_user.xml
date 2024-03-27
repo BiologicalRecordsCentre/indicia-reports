@@ -24,7 +24,7 @@
     WHERE 
       g.website_id=106
       AND g.group_type_id=18068
-      AND (g.id=#project_id# OR #project_id#=0)
+      AND (g.id::text='#project_id#' OR '#project_id#'='')
       AND g.deleted=false
   </query>
   <order_bys>
@@ -32,7 +32,7 @@
   </order_bys>
   <params>
     <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
-    <param name="project_id" display="Project ID (optional)" datatype="integer" empty_value="0" />
+    <param name="project_id" display="Project ID" datatype="integer" />
   </params>
   <columns>
     <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
