@@ -33,7 +33,10 @@
       AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
+<order_bys>
     <order_by>COALESCE(common.taxonomic_sort_order, 1000000+preferred.taxonomic_sort_order, 9999999)</order_by>
+    <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
+  </order_bys>
   </order_bys>
   <params>
     <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >
@@ -75,9 +78,9 @@
   <columns>
     <column name='taxon_meaning_id' visible="false" sql="o.taxon_meaning_id" in_count="true"/>
     <column name='taxon' display='Latin Name' sql="preferred.taxon"/>
-    <column name='latin_taxonomic_sort_order' display='Latin Sort Order' sql="preferred.taxonomic_sort_order" /> 
+    <column name='latin_taxonomic_sort_order' display='Latin Sort' sql="preferred.taxonomic_sort_order" /> 
     <column name='common' display='Common Name' sql="common.combined"/> 
-    <column name='common_taxonomic_sort_order' display='Common Sort Order' sql="common.taxonomic_sort_order" /> 
+    <column name='common_taxonomic_sort_order' display='Common Sort' sql="common.taxonomic_sort_order" /> 
     <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
     <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
   </columns> 
