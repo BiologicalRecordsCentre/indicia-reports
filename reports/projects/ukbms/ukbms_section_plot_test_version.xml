@@ -54,8 +54,10 @@
             <column name="parent_sample_id" display="Parent Sample ID" sql="ps.id" in_count="true" datatype="integer" />
             <column name="name" display="Site Name" style="background-color: #e7e7e7;" sql="transect.name" datatype="text" />
             <column name="taxon" display="Taxon" sql="coalesce(cttl.default_common_name, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
+            <column name='latin_taxonomic_sort_order' display='Latin Sort' sql="cttl.taxonomic_sort_order" /> 
             <column name="preferred_taxon" display="Preferred Taxon" sql="cttl.taxon" datatype="text" />
-            <column name='common' display='Common Name' sql="coalesce(common.combined, cttl.preferred_taxon, cttl.taxon)" datatype="text" /> 
+            <column name='common' display='Common Name' sql="coalesce(common.combined, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
+            <column name='common_taxonomic_sort_order' display='Common Sort' sql="common.taxonomic_sort_order" /> 
             <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="cttl.taxon_meaning_id" datatype="integer" />
             <column name="date" display="Count" sql="ps.date_start" datatype="text" />
       </columns>
