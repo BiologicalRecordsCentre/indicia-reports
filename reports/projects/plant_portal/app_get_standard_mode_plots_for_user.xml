@@ -3,9 +3,9 @@
     description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse."
 >
   <query>
-    SELECT #columns#
+    SELECT distinct #columns#
     FROM groups g
-    JOIN groups_users gu on gu.group_id=g.id AND gu.user_id=#warehouse_user_id# AND gu.deleted=false
+    JOIN groups_users gu on gu.group_id=g.id AND gu.deleted=false
     JOIN groups_locations gl on gl.group_id=g.id and gl.deleted=false
     JOIN locations plot on plot.id = gl.location_id AND plot.location_type_id = 17677 AND plot.deleted=false
     LEFT JOIN location_attribute_values plot_groups_for_plot_attr_val on 
@@ -25,6 +25,7 @@
       g.website_id=106
       AND g.group_type_id=18068
       AND (g.id::text='#project_id#' OR '#project_id#'='')
+      AND (gu.user_id::text='#warehouse_user_id#' OR '#warehouse_user_id#'='')
       AND g.deleted=false
   </query>
   <order_bys>
