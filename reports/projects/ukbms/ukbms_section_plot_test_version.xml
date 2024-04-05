@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Section Plot Japan Test Version" description="UKBMS specific: Lists occurrences at a section level - Test Version">
+<report title="UKBMS Section Plot Japan test version" description="UKBMS specific: Lists occurrences at a section level - Test Version">
       <query website_filter_field="o.website_id" training_filter_field="o.training">
       SELECT #columns#
       FROM locations transect
@@ -45,7 +45,7 @@
         <param name='taxon_list_id' display='Taxon List ID' datatype='int' >
           <where>cttl.taxon_list_id = #taxon_list_id#</where>
         </param>
-        <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+        <param name='language_iso' display='Country ID' description='Three letter ISO code for language.' datatype='int' />
         <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
       </params>
       <columns>

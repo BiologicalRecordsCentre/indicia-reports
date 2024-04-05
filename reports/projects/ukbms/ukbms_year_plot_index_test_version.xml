@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Year Plot Index Report Japan Test Version" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
+<report title="UKBMS Year Plot Index Report Japan test version" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
   <query>
       SELECT #columns#
       FROM ukbms_year_index_values yiv
       JOIN cache_taxa_taxon_lists cttl ON yiv.taxa_taxon_list_id = cttl.id
       LEFT JOIN (
-        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
-          FROM cache_taxa_taxon_lists
-          WHERE language_iso = '#language_iso#'
-            AND preferred = false
-            AND taxon_list_id in (#taxon_list_id#)
-          GROUP BY taxon_meaning_id) common
+      	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
+        SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, min(ttl_common.taxonomic_sort_order) as taxonomic_sort_order, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
+          FROM cache_taxa_taxon_lists cttl_common
+          JOIN taxa_taxon_lists ttl_common on ttl_common.id = cttl_common.id  
+          WHERE cttl_common.language_iso = '#language_iso#'
+            AND cttl_common.preferred = false
+            AND cttl_common.taxon_list_id = (#taxon_list_id#)
+          GROUP BY cttl_common.taxon_meaning_id, ttl_common.taxonomic_sort_order) common
         ON common.taxon_meaning_id = cttl.taxon_meaning_id
       #joins#
       WHERE yiv.location_id = #location_id#
@@ -21,14 +23,14 @@
     <param name='taxon_list_id' display='Taxon List ID' datatype='int' >
       <where>cttl.taxon_list_id = #taxon_list_id#</where>
     </param>
-    <param name='language_iso' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name='language_iso' display='Country ID' description='Three letter ISO code for language.' datatype='int' />
     <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
   </params>
   <columns>
     <column name="location_id" display="ID" sql="yiv.location_id" in_count="true" datatype="integer" />
     <column name="taxon" display="Taxon" sql="coalesce(cttl.default_common_name, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
     <column name="preferred_taxon" display="Preferred Taxon" sql="cttl.taxon" datatype="text" />
-    <column name='common' display='Common Name' sql="common.combined" /> 
+    <column name='common' display='Common Name' sql="coalesce(common.combined, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
     <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="cttl.taxon_meaning_id" datatype="integer" />
     <column name="year" display="Year" sql="yiv.year" datatype="integer" />
     <column name="index" display="Index" sql="yiv.index" datatype="integer" />
