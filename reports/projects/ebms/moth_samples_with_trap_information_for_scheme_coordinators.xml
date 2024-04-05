@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="Moth Trap Samples list for scheme coordinators with trap information - BETA"
+    description="Lists samples for scheme coordinators with location attributes.">
+  <query website_filter_field='o.website_id'>
+    SELECT #columns#
+    FROM samples s
+    JOIN cache_samples_nonfunctional snf on snf.id = s.id
+    LEFT JOIN cache_occurrences_functional o on o.sample_id = s.id
+  	LEFT JOIN cache_occurrences_nonfunctional onf on onf.id = o.id
+    LEFT JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id
+    LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
+    LEFT JOIN locations pl on pl.id = l.parent_id AND pl.deleted = false
+    
+    LEFT JOIN location_attribute_values lav_trap_type ON
+      lav_trap_type.location_id = l.id AND 
+      lav_trap_type.location_attribute_id = #trap_type_attr_id# AND
+      lav_trap_type.deleted = false
+    LEFT JOIN cache_termlists_terms ctt_trap_type ON
+      ctt_trap_type.id = lav_trap_type.int_value
+    LEFT JOIN location_attribute_values lav_other_trap ON
+      lav_other_trap.location_id = l.id AND 
+      lav_other_trap.location_attribute_id = #other_trap_type_attr_id# AND
+      lav_other_trap.deleted = false
+    LEFT JOIN location_attribute_values lav_lamp_type ON
+      lav_lamp_type.location_id = l.id AND 
+      lav_lamp_type.location_attribute_id = #lamp_type_attr_id# AND
+      lav_lamp_type.deleted = false
+    
+    LEFT JOIN location_attribute_values lav ON l.id = lav.location_id
+      AND lav.location_attribute_id = #country_location_attribute_id#
+      AND lav.int_value = #country_id#
+      AND lav.deleted = false
+      
+    #joins#
+    WHERE s.survey_id = #survey_id#
+    AND s.training = #training#
+    AND s.deleted = false
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='survey_id' 
+      display='Survey ID' 
+      description='ID of moth trap survey.' 
+      datatype='int' />
+    <param name='locattrs' 
+      display='Location attribute list' 
+      description='Comma separated list of location attribute IDs to include' 
+      default="" datatype='locattrs' />
+    <param name="country_location_attribute_id"
+      display="Country attribute"
+      description="The ID of the location_attribute that assigns a location to a country"
+      datatype="lookup"
+      population_call="direct:location_attribute:id:caption" />
+    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name='location_type_id' display='Location type ID' 
+      description='The ID of the Moth Trap location type.' datatype='int' />
+    <param name='trap_type_attr_id' display='Trap type attribute ID' 
+      description='The ID of the attribute holding the moth trap type.' datatype='int' />
+    <param name='other_trap_type_attr_id' display='Other trap type attribute ID' 
+      description='The ID of the attribute holding the description of other moth trap types.' 
+      datatype='int' />
+    <param name='lamp_type_attr_id' display='Lamp type attribute ID' 
+      description='The ID of the attribute holding the moth lamp type.' datatype='int' />
+  </params>
+  <columns>
+    <column name="id" display="Sample ID" sql="s.id" in_count="true" datatype="integer" />
+    <column name="name" display="Location" sql="l.name" datatype="text" />
+    <column name="country" display="Country" sql="pl.name" datatype="text" />
+    <column name="date_start" sql="s.date_start" visible="false"/>
+    <column name="date_end" sql="s.date_end" visible="false"/>
+    <column name="date_type" sql="s.date_type" visible="false"/>
+    <column name="date" display="Date" datatype="date" />
+    <column name="recorder" display="Recorder name" sql="snf.recorders" datatype="text" />
+    <column name="trap_type" display="Trap type" sql="ctt_trap_type.term" datatype="text" />
+    <column name="other_trap" display="Other trap type" sql="lav_other_trap.text_value" datatype="text" />
+    <column name="lamp_types" display="Lamp types" sql="
+    string_agg(
+      concat(
+        lav_lamp_type.text_value::json->>'quantity',
+        ' x ',
+        CASE WHEN position('Please describe' in lav_lamp_type.text_value::json->>'type_term') = 0 THEN
+          lav_lamp_type.text_value::json->>'type_term'
+        ELSE
+          concat(
+            substring(lav_lamp_type.text_value::json->>'type_term' for
+                (position('Please describe' in lav_lamp_type.text_value::json->>'type_term') - 1)),
+            lav_lamp_type.text_value::json->>'description'
+          )
+        END
+      )
+    , E',&lt;br/&gt;\n')
+    " datatype="text" aggregate="true"/>
+  </columns>
+</report>
