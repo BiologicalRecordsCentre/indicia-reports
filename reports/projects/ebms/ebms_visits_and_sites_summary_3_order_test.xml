@@ -33,7 +33,7 @@
   </query>
   <order_bys>
     <order_by>COALESCE(preferred.taxonomic_sort_order, 9999999)</order_by>
-    <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
+    <order_by>COALESCE(preferred.taxon, common.combined)</order_by>
   </order_bys>
   <params>
     <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >

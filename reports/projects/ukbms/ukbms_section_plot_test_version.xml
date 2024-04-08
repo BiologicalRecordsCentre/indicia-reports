@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Section Plot Japan test version" description="UKBMS specific: Lists occurrences at a section level - Test Version">
+<report title="UKBMS Section Plot Japan - New Test" description="UKBMS specific: Lists occurrences at a section level - Test Version">
       <query website_filter_field="o.website_id" training_filter_field="o.training">
       SELECT #columns#
       FROM locations transect
       JOIN locations section ON section.parent_id=transect.id
       JOIN samples ps ON ps.location_id = transect.id
       JOIN samples ss ON ss.parent_id=ps.id AND ss.location_id = section.id
-      JOIN occurrences o ON o.sample_id=ss.id AND o.zero_abundance='f'
+      JOIN occurrences o ON o.sample_id=ss.id AND o.zero_abundance='f'        
       JOIN cache_taxa_taxon_lists cttl ON o.taxa_taxon_list_id = cttl.id
+      JOIN cache_taxa_taxon_lists preferred
+        ON preferred.id = cttl.preferred_taxa_taxon_list_id
       LEFT JOIN (
       	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
         SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, min(ttl_common.taxonomic_sort_order) as taxonomic_sort_order, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
@@ -27,8 +29,8 @@
       AND transect.location_type_id = #location_type_id#
       </query>
 	  <order_bys>
-        <order_by>COALESCE(common.taxonomic_sort_order, 1000000+cttl.taxonomic_sort_order, 9999999)</order_by>
-        <order_by>COALESCE(common.combined, cttl.preferred_taxon)</order_by>
+        <order_by>COALESCE(preferred.taxonomic_sort_order, 9999999)</order_by>
+        <order_by>COALESCE(cttl.preferred_taxon, common.combined)</order_by>
       </order_bys>
       <params>
         <param name='location_type_id' display='Location Type' description='Select the location type, or leave blank to not filter by location type.' datatype='lookup'
