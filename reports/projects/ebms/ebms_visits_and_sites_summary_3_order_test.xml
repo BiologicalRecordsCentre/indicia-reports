@@ -1,9 +1,8 @@
 <report
-    title='EBMS Visit Summary list 3 - TEST ORDERING VERSION'
+    title='EBMS Visit Summary list 3'
     description='A list of the number of sites and visits recorded for each species, 
         with filters for user or scheme, this and previous year.
-        Additionally provides the common names in the currently selected language.
-        Uses taxonomic_sort_order of the actual name for sorting (synonyms, common names have own sort order).'
+        Additionally provides the common names in the currently selected language.'
 >
   <query website_filter_field='o.website_id' training_filter_field="o.training">
     SELECT #columns#
@@ -33,7 +32,7 @@
       AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
-    <order_by>COALESCE(common.taxonomic_sort_order, 1000000+preferred.taxonomic_sort_order, 9999999)</order_by>
+    <order_by>COALESCE(preferred.taxonomic_sort_order, 9999999)</order_by>
     <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
   </order_bys>
   <params>
@@ -76,9 +75,7 @@
   <columns>
     <column name='taxon_meaning_id' visible="false" sql="o.taxon_meaning_id" in_count="true"/>
     <column name='taxon' display='Latin Name' sql="preferred.taxon"/>
-    <column name='latin_taxonomic_sort_order' display='Latin Sort' sql="preferred.taxonomic_sort_order" /> 
     <column name='common' display='Common Name' sql="common.combined"/> 
-    <column name='common_taxonomic_sort_order' display='Common Sort' sql="common.taxonomic_sort_order" /> 
     <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
     <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
   </columns> 
