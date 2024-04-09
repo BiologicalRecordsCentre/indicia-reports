@@ -37,13 +37,15 @@
   <columns>
     <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
     <column name='plot_name' display='Plot Name' sql="plot.name" datatype='text'/>
-    <column name='plot_group_ids_for_plot' display='Plot Group IDs for Plot' sql="string_agg(distinct plot_groups_for_plot.id::text,',')" datatype='integer' aggregate="true" />
-    <column name='plot_group_names_for_plot' display='Plot Group Names for Plot' sql="string_agg(distinct plot_groups_for_plot.term,',')" 
-        datatype='text' aggregate="true" />
+    <column name='plot_group_ids_and_names_for_plot' display='Plot Group IDs and Names for Plot' 
+      sql="string_agg(distinct plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term,','
+      ORDER BY plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term ASC)" datatype='text' aggregate="true" />
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
     <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
     <column name='warehouse_user_id' display='Warehouse User ID' sql="u.id" datatype='integer' />
-    <column name='plot_group_ids_for_user' display='Plot Group IDs for User' sql="string_agg(distinct plot_groups_for_project_user.id::text,',')" datatype='text' aggregate="true" />
-    <column name='plot_group_names_for_user' display='Plot Group Names for User' sql="string_agg(distinct plot_groups_for_project_user.term,',')" datatype='text' aggregate="true"  />
+    <column name='plot_group_ids_and_names_for_user' display='Plot Group IDs and Names for User' 
+      sql="string_agg(distinct plot_groups_for_project_user.id::text || '|||' || plot_groups_for_project_user.term,','
+      ORDER BY plot_groups_for_project_user.id::text || '|||' || plot_groups_for_project_user.term ASC)" 
+      datatype='text' aggregate="true" />
   </columns>
 </report>
