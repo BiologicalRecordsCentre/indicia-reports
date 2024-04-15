@@ -17,7 +17,7 @@
           AND p.survey_id IN (#survey_ids#)
       LEFT JOIN (
       	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
-        SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, min(ttl_common.taxonomic_sort_order) as taxonomic_sort_order, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
+        SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
           FROM cache_taxa_taxon_lists cttl_common
           JOIN taxa_taxon_lists ttl_common on ttl_common.id = cttl_common.id  
           WHERE cttl_common.language_iso = '#language_iso#'
@@ -78,5 +78,6 @@
     <column name='common' display='Common Name' sql="common.combined"/> 
     <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
     <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
+    <column name='taxonomic_sort_order' display='Taxonomic sort order' visible="false" sql="preferred.taxonomic_sort_order" />
   </columns> 
 </report>
