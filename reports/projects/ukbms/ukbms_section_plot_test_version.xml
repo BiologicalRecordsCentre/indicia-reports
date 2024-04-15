@@ -60,5 +60,6 @@
             <column name='common' display='Common Name' sql="coalesce(common.combined, cttl.preferred_taxon, cttl.taxon)" datatype="text" />
             <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="cttl.taxon_meaning_id" datatype="integer" />
             <column name="date" display="Count" sql="ps.date_start" datatype="text" />
+            <column name='taxonomic_sort_order' display='Taxonomic sort order' visible="false" sql="preferred.taxonomic_sort_order" />
       </columns>
 </report>
