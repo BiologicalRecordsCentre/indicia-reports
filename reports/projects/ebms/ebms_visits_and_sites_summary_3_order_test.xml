@@ -23,7 +23,7 @@
           WHERE cttl_common.language_iso = '#language_iso#'
             AND cttl_common.preferred = false
             AND cttl_common.taxon_list_id in (#taxon_list_ids#)
-          GROUP BY cttl_common.taxon_meaning_id, ttl_common.taxonomic_sort_order) common
+          GROUP BY cttl_common.taxon_meaning_id) common
         ON common.taxon_meaning_id = o.taxon_meaning_id
       #agreements_join#  
       #joins#
