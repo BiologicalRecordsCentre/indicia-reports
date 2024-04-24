@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Year Plot Index Report Japan Test Version" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
+<report title="UKBMS Year Plot Index Report Japan Test" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
   <query>
       SELECT #columns#
       FROM ukbms_year_index_values yiv
@@ -13,7 +13,7 @@
           WHERE cttl_common.language_iso = '#language_iso#'
             AND cttl_common.preferred = false
             AND cttl_common.taxon_list_id = (#taxon_list_id#)
-          GROUP BY cttl_common.taxon_meaning_id, ttl_common.taxonomic_sort_order) common
+          GROUP BY cttl_common.taxon_meaning_id) common
         ON common.taxon_meaning_id = cttl.taxon_meaning_id
       #joins#
       WHERE yiv.location_id = #location_id#
