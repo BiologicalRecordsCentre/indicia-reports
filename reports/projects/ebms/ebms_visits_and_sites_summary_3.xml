@@ -2,7 +2,7 @@
     title='EBMS Visit Summary list 3'
     description='A list of the number of sites and visits recorded for each species, 
         with filters for user or scheme, this and previous year.
-        Additionally provides the common names in the currently selected language.'
+        Additionally shows common names in the currently selected language.'
 >
   <query website_filter_field='o.website_id' training_filter_field="o.training">
     SELECT #columns#
@@ -16,12 +16,12 @@
           AND p.parent_id IS NULL
           AND p.survey_id IN (#survey_ids#)
       LEFT JOIN (
-        SELECT taxon_meaning_id, string_agg(taxon, ',' ORDER BY id) combined
-          FROM cache_taxa_taxon_lists
-          WHERE language_iso = '#language_iso#'
-            AND preferred = false
-            AND taxon_list_id in (#taxon_list_ids#)
-          GROUP BY taxon_meaning_id) common
+        SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
+          FROM cache_taxa_taxon_lists cttl_common
+          WHERE cttl_common.language_iso = '#language_iso#'
+            AND cttl_common.preferred = false
+            AND cttl_common.taxon_list_id in (#taxon_list_ids#)
+          GROUP BY cttl_common.taxon_meaning_id) common
         ON common.taxon_meaning_id = o.taxon_meaning_id
       #agreements_join#  
       #joins#
@@ -30,7 +30,8 @@
       AND p.survey_id IN (#survey_ids#)
   </query>
   <order_bys>
-    <order_by>COALESCE(common.combined, preferred.taxon)</order_by>
+    <order_by>COALESCE(preferred.taxonomic_sort_order, 9999999)</order_by>
+    <order_by>COALESCE(preferred.taxon, common.combined)</order_by>
   </order_bys>
   <params>
     <param name='year' display='Year' datatype='lookup' lookup_values='this:This year,last:Last year' >
@@ -75,5 +76,6 @@
     <column name='common' display='Common Name' sql="common.combined"/> 
     <column name='num_visits' display='Visits' sql="count(distinct o.parent_sample_id)" aggregate="true"/>
     <column name='num_sites' display='Sites' sql="count(distinct p.location_id)" aggregate="true"/>
+    <column name='taxonomic_sort_order' display='Taxonomic sort order' visible="false" sql="preferred.taxonomic_sort_order" />
   </columns> 
 </report>
