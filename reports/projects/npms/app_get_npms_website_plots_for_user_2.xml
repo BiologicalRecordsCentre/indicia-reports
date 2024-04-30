@@ -1,0 +1,90 @@
+<report
+    title="App - Get NPMS Website Plots For User 2"
+    description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse.
+    This version of the report contains extra attribute data not in the original report."
+>
+  <query>
+    SELECT distinct #columns#
+    FROM locations square
+      LEFT JOIN locations_websites lw on lw.location_id=square.id AND lw.deleted=false
+      JOIN locations plot on plot.parent_id=square.id AND plot.deleted=false
+      LEFT JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
+      LEFT JOIN location_attribute_values lav on lav.location_attribute_id=118 AND lav.location_id=plot.id
+      JOIN users u on u.id=#warehouse_user_id#
+      JOIN person_attribute_values pavOthers on pavOthers.int_value=square.id AND pavOthers.person_attribute_id=2 AND pavOthers.deleted=false
+      LEFT JOIN person_attribute_values pav on pav.int_value=square.id AND pav.person_id=u.person_id AND pav.person_attribute_id=2 AND pav.deleted=false
+      LEFT JOIN location_attribute_values plot_expert_mode_attr_val on
+          plot_expert_mode_attr_val.location_id = plot.id AND
+          plot_expert_mode_attr_val.location_attribute_id = 122 AND
+          plot_expert_mode_attr_val.deleted = false
+      LEFT JOIN location_attribute_values plot_end_grid_ref_1_attr_val on
+          plot_end_grid_ref_1_attr_val.location_id = plot.id AND
+          plot_end_grid_ref_1_attr_val.location_attribute_id = 143 AND
+          plot_end_grid_ref_1_attr_val.deleted = false
+      LEFT JOIN location_attribute_values plot_end_grid_ref_2_attr_val on
+          plot_end_grid_ref_2_attr_val.location_id = plot.id AND
+          plot_end_grid_ref_2_attr_val.location_attribute_id = 144 AND
+          plot_end_grid_ref_2_attr_val.deleted = false
+      LEFT JOIN location_attribute_values plot_south_west_corner_attr_val on
+          plot_elevation_attr_val.location_id = plot.id AND
+          plot_elevation_attr_val.location_attribute_id = 146 AND
+          plot_elevation_attr_val.deleted = false
+      LEFT JOIN location_attribute_values plot_slope_attr_val on
+          plot_slope_attr_val.location_id = plot.id AND
+          plot_slope_attr_val.location_attribute_id = 31 AND
+          plot_slope_attr_val.deleted = false
+      LEFT JOIN cache_termlists_terms plot_slope_ctt on plot_slope_ctt.id = plot_slope_attr_val.int_value AND
+          plot_slope_ctt.termlist_id = 112
+      LEFT JOIN location_attribute_values plot_direction_attr_val on
+          plot_direction_attr_val.location_id = plot.id AND
+          plot_direction_attr_val.location_attribute_id = 30 AND
+          plot_direction_attr_val.deleted = false
+      LEFT JOIN cache_termlists_terms plot_direction_ctt on plot_direction_ctt.id = plot_direction_attr_val.int_value AND
+          plot_direction_ctt.termlist_id = 113
+    WHERE square.location_type_id=4009
+      AND lw.website_id = 32 AND square.deleted=false
+      AND pav.updated_by_id != u.id
+    #filters#
+    GROUP BY square.id,lav.text_value,plot.id,plot.created_by_id,pav.updated_by_id,u.id,cache_ttPlotType.term
+    HAVING (plot.created_by_id=#warehouse_user_id# OR count(distinct pavOthers.id) &lt; 2)
+  </query>
+  <order_bys>
+    <order_by>square.id</order_by>
+  </order_bys>
+  <params>
+    <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
+  </params>
+  <columns>
+    <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='plot_name' display='Plot Name' sql="
+      case 
+        when lav.text_value IS null
+      then
+        'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') '
+      else 
+        'Plot ' || lav.text_value || ' at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') '
+      end
+    " datatype='text'/>
+    <column name='plot_type' display='Plot Type' sql="cache_ttPlotType.term" datatype='text'/>
+    <column name='plot_expert_mode' display='Expert Mode Selected' sql="
+    CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
+    <column name='my_plot_label' display='My Plot Label' sql="lav.text_value" datatype='text'/>
+    <column name='plot_end_grid_ref_1' display='Plot End Grid Ref 1' sql="plot_end_grid_ref_1_attr_val.text_value" datatype='text'/>
+    <column name='plot_end_grid_ref_2' display='Plot End Grid Ref 2' sql="plot_end_grid_ref_2_attr_val.text_value" datatype='text'/>
+    <column name='plot_south_west_corner' display='Plot South-West Corner' sql="plot_south_west_corner_attr_val.text_value" datatype='text'/>
+    <column name='plot_slope' display='Plot Slope' sql="plot_slope_ctt.term" datatype='text'/>
+    <column name='plot_direction' display='Plot Direction' sql="plot_direction_ctt.term" datatype='text'/>
+    <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
+    <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
+    <column name='plot_description' display='Plot Description' sql="plot.comment" datatype='text'/>
+    <column name='square_id' display='Square ID' sql="square.id" datatype='integer' />
+    <column name='square_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
+    <column name='private_plot' display='Private Plot' sql="CASE WHEN plot.id in (
+      134212,143314,143313,143315,143445,144487,144493,144486,144655,144658,144656,144668,
+      144870,144874,144913,145209,145214,145446,145448,145700,145732,145733,145734,145735,
+      145731,145738,145748,145752,145957,145955,145956,145958,145959,146040,146041,146362,
+      145563,146724,146742,146824,146865,143536,143532,144912
+    ) THEN 1 ELSE 0 END" datatype='integer' />
+    <column name='warehouse_user_id' display='Warehouse User ID' sql="u.id" datatype='integer' />
+  </columns>
+</report>
