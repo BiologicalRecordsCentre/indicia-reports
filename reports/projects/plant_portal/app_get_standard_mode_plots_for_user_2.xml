@@ -54,6 +54,7 @@
         plot_elevation_attr_val.location_id = plot.id AND
         plot_elevation_attr_val.location_attribute_id = 283 AND
         plot_elevation_attr_val.deleted = false
+    LEFT location_media lm on lm.location_id = plot.id AND lm.deleted = false
     #joins#
     WHERE 
       g.website_id=106
@@ -90,5 +91,9 @@
     <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>  
     <column name='plot_comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
+    <column name='plot_images' display='Images' sql="
+        string_agg(distinct lm .id::text || '|||' || lm.caption || '|||' || lm.path, ','
+        ORDER BY lm.id::text || '|||' || lm.caption || '|||' || lm.path ASC)"
+    datatype='text' aggregate="true" />
   </columns>
 </report>
