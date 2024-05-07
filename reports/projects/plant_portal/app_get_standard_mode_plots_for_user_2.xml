@@ -82,7 +82,7 @@
       ORDER BY plot_group_terms_for_project_and_user.id::text || '|||' || plot_group_terms_for_project_and_user.term ASC)" 
       datatype='text' aggregate="true" />
     <column name='plot_shape' display='Plot shape' sql="plot_shape_ctt.term" datatype='text'/> 
-    <column name='plot_compass_direction' display='Plot Compass Direction' sql="plot_compass_drection_ctt.term" datatype='text'/>  
+    <column name='plot_compass_direction' display='Plot Compass Direction' sql="plot_compass_direction_ctt.term" datatype='text'/>  
     <column name='plot_slope' display='Plot Slope' sql="plot_slope_attr_val.int_value" datatype='text'/>  
     <column name='plot_length' display='Plot Length' sql="plot_length_attr_val.float_value" datatype='text'/>  
     <column name='plot_width' display='Plot Width' sql="plot_width_attr_val.float_value" datatype='text'/>  
