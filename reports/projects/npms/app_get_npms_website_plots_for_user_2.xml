@@ -26,9 +26,9 @@
           plot_end_grid_ref_2_attr_val.location_attribute_id = 144 AND
           plot_end_grid_ref_2_attr_val.deleted = false
       LEFT JOIN location_attribute_values plot_south_west_corner_attr_val on
-          plot_elevation_attr_val.location_id = plot.id AND
-          plot_elevation_attr_val.location_attribute_id = 146 AND
-          plot_elevation_attr_val.deleted = false
+          plot_south_west_corner_attr_val.location_id = plot.id AND
+          plot_south_west_corner_attr_val.location_attribute_id = 146 AND
+          plot_south_west_corner_attr_val.deleted = false
       LEFT JOIN location_attribute_values plot_slope_attr_val on
           plot_slope_attr_val.location_id = plot.id AND
           plot_slope_attr_val.location_attribute_id = 31 AND
