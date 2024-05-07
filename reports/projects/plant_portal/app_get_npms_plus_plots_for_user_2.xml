@@ -39,7 +39,7 @@
         plot_direction_attr_val.deleted = false
     LEFT JOIN cache_termlists_terms plot_direction_ctt on plot_direction_ctt.id = plot_direction_attr_val.int_value AND
         plot_direction_ctt.termlist_id = 113
-    LEFT location_media lm on lm.location_id = plot.id AND lm.deleted = false
+    LEFT JOIN location_media lm on lm.location_id = plot.id AND lm.deleted = false
     #joins#
     WHERE 
       g.website_id=106

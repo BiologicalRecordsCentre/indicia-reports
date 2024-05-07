@@ -54,7 +54,7 @@
         plot_elevation_attr_val.location_id = plot.id AND
         plot_elevation_attr_val.location_attribute_id = 283 AND
         plot_elevation_attr_val.deleted = false
-    LEFT location_media lm on lm.location_id = plot.id AND lm.deleted = false
+    LEFT JOIN location_media lm on lm.location_id = plot.id AND lm.deleted = false
     #joins#
     WHERE 
       g.website_id=106
