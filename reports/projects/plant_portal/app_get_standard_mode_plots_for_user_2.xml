@@ -89,7 +89,8 @@
     <column name='plot_elevation' display='Plot Elevation' sql="plot_elevation_attr_val.int_value" datatype='text'/>  
     <column name='centroid_sref' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>  
-    <column name='plot_comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
+    <column name='comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
+    <column name='public' display='Public' sql="plot.public" datatype='text' />
     <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
     <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
     <column name='updated_by_id' display='Updated By ID' sql="plot.updated_by_id" datatype='integer' />

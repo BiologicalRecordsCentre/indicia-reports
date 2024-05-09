@@ -76,7 +76,7 @@
     <column name='plot_direction' display='Plot Direction' sql="plot_direction_ctt.term" datatype='text'/>
     <column name='centroid_sref' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
-    <column name='plot_description' display='Plot Description' sql="plot.comment" datatype='text'/>
+    <column name='comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
     <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
     <column name='parent_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
     <column name='private_plot' display='Private Plot' sql="CASE WHEN plot.id in (
@@ -85,6 +85,7 @@
       145731,145738,145748,145752,145957,145955,145956,145958,145959,146040,146041,146362,
       145563,146724,146742,146824,146865,143536,143532,144912
     ) THEN 1 ELSE 0 END" datatype='integer' />
+    <column name='public' display='Public' sql="plot.public" datatype='text' />
     <column name='warehouse_user_id' display='Warehouse User ID' sql="u.id" datatype='integer' />
     <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
     <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
