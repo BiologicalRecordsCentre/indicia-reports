@@ -74,8 +74,8 @@
     <column name='plot_south_west_corner' display='Plot South-West Corner' sql="plot_south_west_corner_attr_val.text_value" datatype='text'/>
     <column name='plot_slope' display='Plot Slope' sql="plot_slope_ctt.term" datatype='text'/>
     <column name='plot_direction' display='Plot Direction' sql="plot_direction_ctt.term" datatype='text'/>
-    <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
-    <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
+    <column name='centroid_sref' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
+    <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
     <column name='plot_description' display='Plot Description' sql="plot.comment" datatype='text'/>
     <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
     <column name='parent_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
