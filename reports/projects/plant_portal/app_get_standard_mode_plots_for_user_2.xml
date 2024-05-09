@@ -90,5 +90,9 @@
     <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>  
     <column name='plot_comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
+    <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
+    <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
+    <column name='updated_by_id' display='Updated By ID' sql="plot.updated_by_id" datatype='integer' />
+    <column name='updated_on' display='Updated On' sql="plot.updated_on" datatype='text' />
   </columns>
 </report>

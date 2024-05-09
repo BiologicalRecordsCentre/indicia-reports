@@ -72,7 +72,11 @@
     <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
     <column name='parent_name' display='Square Name' sql="square.name" datatype='text'/> 
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
-    <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
+    <column name='project_name' display='Project Name' sql="g.title" datatype='text' />
     <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.user_id" datatype='integer' />
+    <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
+    <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
+    <column name='updated_by_id' display='Updated By ID' sql="plot.updated_by_id" datatype='integer' />
+    <column name='updated_on' display='Updated On' sql="plot.updated_on" datatype='text' />
   </columns>
 </report>
