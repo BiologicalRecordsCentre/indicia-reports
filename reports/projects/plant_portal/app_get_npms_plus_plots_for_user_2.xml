@@ -60,20 +60,20 @@
     <column name='code' display='Code' sql="plot.code" datatype='text'/>
     <column name='location_type_term' display='Location Type Term' sql="cache_ttPlotType.term" datatype='text'/>
     <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='integer'/>
-    <column name='plot_expert_mode' display='Expert Mode Selected' sql="
+    <column name='expert_mode' display='Expert Mode Selected' sql="
     CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
     <column name='my_plot_label' display='My Plot Label' sql="lav.text_value" datatype='text'/>
     <column name='plot_end_grid_ref_1' display='Plot End Grid Ref 1' sql="plot_end_grid_ref_1_attr_val.text_value" datatype='text'/>
     <column name='plot_end_grid_ref_2' display='Plot End Grid Ref 2' sql="plot_end_grid_ref_2_attr_val.text_value" datatype='text'/>
-    <column name='plot_south_west_corner' display='Plot South-West Corner' sql="plot_south_west_corner_attr_val.text_value" datatype='text'/>
-    <column name='plot_slope' display='Plot Slope' sql="plot_slope_ctt.term" datatype='text'/>
-    <column name='plot_direction' display='Plot Direction' sql="plot_direction_ctt.term" datatype='text'/>
-    <column name='centroid_sref' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
-    <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
+    <column name='south_west_corner' display='South-West Corner' sql="plot_south_west_corner_attr_val.text_value" datatype='text'/>
+    <column name='slope' display='Slope' sql="plot_slope_ctt.term" datatype='text'/>
+    <column name='direction' display='Direction' sql="plot_direction_ctt.term" datatype='text'/>
+    <column name='centroid_sref' display='Centroid Reference' sql="plot.centroid_sref" datatype='text'/>  
+    <column name='centroid_sref_system' display='Centroid Reference System' sql="plot.centroid_sref_system" datatype='text'/>
     <column name='centroid_geom' display='Centroid Geom' sql="plot.centroid_geom" datatype='text'/>
     <column name='boundary_geom' display='Boundary Geom' sql="plot.boundary_geom" datatype='text'/>
-    <column name='external_key' display='Plot External Key' sql="plot.external_key" datatype='text'/>
-    <column name='comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
+    <column name='external_key' display='External Key' sql="plot.external_key" datatype='text'/>
+    <column name='comment' display='Comment' sql="plot.comment" datatype='text'/>
     <column name='public' display='Public' sql="plot.public" datatype='text' />
     <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
     <column name='parent_name' display='Square Name' sql="square.name" datatype='text'/> 
