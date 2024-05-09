@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="NPMS core square plots summary" description="Todo description">
+  <query>
+    SELECT 
+      l.name as name,
+      t.term as plot_type,
+      count(distinct(csf.id)) as visits,
+      min(csf.date_start) as earliest,
+      max(csf.date_end) as latest,
+      count(distinct(cof.id)) as records,
+      count(distinct(cof.taxon_meaning_id)) as taxa,
+      l.comment as comment,
+      l.centroid_geom as centroid_geom,
+      l.boundary_geom as boundary_geom
+      FROM locations l
+      JOIN locations lp on lp.id = l.parent_id
+      JOIN cache_samples_functional csf on csf.location_id = l.id
+      JOIN termlists_terms tt on tt.id = l.location_type_id
+      JOIN terms t on t.id = tt.term_id
+      JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+      WHERE lp.name = '#gr#'
+      AND lp.location_type_id = 4009
+      GROUP BY l.name, l.comment, t.term, l.boundary_geom, l.centroid_geom
+  </query>
+  <params>
+    <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
+  </params>
+  <columns>
+    <column name="name" display="Plot name" />
+    <column name="plot_type" display="Plot type" />
+    <column name="visits" display="Number of visits" />
+    <column name="earliest" display="Earliest visit date" />
+    <column name="latest" display="Latest visit date" />
+    <column name="records" display="Number of records" />
+    <column name="taxa" display="Number of taxa" />
+    <column name="comment" display="Comment when plot defined" />
+    <column name="centroid_geom" display="Centroid geometry" />
+    <column name="boundary_geom" display="Boundary geometry" />
+  </columns>
+</report>
