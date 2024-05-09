@@ -56,7 +56,8 @@
   </params>
   <columns>
     <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
-    <column name='name' display='Plot Name' sql="
+    <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
+    <column name='npms_formatted_name' display='Plot Name (Website formatted)' sql="
       case 
         when lav.text_value IS null
       then
@@ -65,8 +66,9 @@
         'Plot ' || lav.text_value || ' at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') '
       end
     " datatype='text'/>
+    <column name='code' display='Plot Code' sql="plot.code" datatype='text'/>
     <column name='plot_type' display='Plot Type' sql="cache_ttPlotType.term" datatype='text'/>
-    <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='text'/>
+    <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='integer'/>
     <column name='plot_expert_mode' display='Expert Mode Selected' sql="
     CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
     <column name='my_plot_label' display='My Plot Label' sql="lav.text_value" datatype='text'/>
@@ -79,6 +81,7 @@
     <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
     <column name='centroid_geom' display='Centroid Geom' sql="plot.centroid_geom" datatype='text'/>
     <column name='boundary_geom' display='Boundary Geom' sql="plot.boundary_geom" datatype='text'/>
+    <column name='external_key' display='Plot External Key' sql="plot.external_key" datatype='text'/>
     <column name='comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
     <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
     <column name='parent_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
