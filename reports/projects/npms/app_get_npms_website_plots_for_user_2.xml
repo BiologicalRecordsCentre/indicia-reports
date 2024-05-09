@@ -55,8 +55,8 @@
     <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
   </params>
   <columns>
-    <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
-    <column name='plot_name' display='Plot Name' sql="
+    <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='name' display='Plot Name' sql="
       case 
         when lav.text_value IS null
       then
@@ -77,8 +77,8 @@
     <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
     <column name='plot_description' display='Plot Description' sql="plot.comment" datatype='text'/>
-    <column name='square_id' display='Square ID' sql="square.id" datatype='integer' />
-    <column name='square_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
+    <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
+    <column name='parent_name' display='Square Name' sql="square.centroid_sref" datatype='text'/>
     <column name='private_plot' display='Private Plot' sql="CASE WHEN plot.id in (
       134212,143314,143313,143315,143445,144487,144493,144486,144655,144658,144656,144668,
       144870,144874,144913,145209,145214,145446,145448,145700,145732,145733,145734,145735,

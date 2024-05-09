@@ -55,8 +55,8 @@
     <param name="project_id" display="Project ID" datatype="integer" />
   </params>
   <columns>
-    <column name='plot_id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
-    <column name='plot_name' display='Plot Name' sql="plot.name" datatype='text'/>
+    <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
     <column name='plot_type' display='Plot Type' sql="cache_ttPlotType.term" datatype='text'/>
     <column name='plot_expert_mode' display='Expert Mode Selected' sql="
     CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
@@ -69,8 +69,8 @@
     <column name='plot_spatial_reference' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
     <column name='plot_spatial_reference_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>
     <column name='plot_description' display='Plot Description' sql="plot.comment" datatype='text'/>
-    <column name='square_id' display='Square ID' sql="square.id" datatype='integer' />
-    <column name='square_name' display='Square Name' sql="square.name" datatype='text'/> 
+    <column name='parent_id' display='Square ID' sql="square.id" datatype='integer' />
+    <column name='parent_name' display='Square Name' sql="square.name" datatype='text'/> 
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
     <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
     <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.user_id" datatype='integer' />
