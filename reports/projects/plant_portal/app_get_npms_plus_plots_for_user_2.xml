@@ -39,7 +39,6 @@
         plot_direction_attr_val.deleted = false
     LEFT JOIN cache_termlists_terms plot_direction_ctt on plot_direction_ctt.id = plot_direction_attr_val.int_value AND
         plot_direction_ctt.termlist_id = 113
-    LEFT JOIN location_media lm on lm.location_id = plot.id AND lm.deleted = false
     #joins#
     WHERE 
       g.website_id=106
@@ -75,9 +74,5 @@
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
     <column name='project_name' display='Project Name' sql="g.title" datatype='integer' />
     <column name='warehouse_user_id' display='Warehouse User ID' sql="gu.user_id" datatype='integer' />
-    <column name='plot_images' display='Images' sql="
-        string_agg(distinct lm .id::text || '|||' || lm.caption || '|||' || lm.path, ','
-        ORDER BY lm.id::text || '|||' || lm.caption || '|||' || lm.path ASC)"
-    datatype='text' aggregate="true" />
   </columns>
 </report>
