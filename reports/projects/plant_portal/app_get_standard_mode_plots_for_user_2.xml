@@ -9,6 +9,7 @@
     JOIN groups_users gu on gu.group_id=g.id AND (gu.user_id::text='#warehouse_user_id#' OR '#warehouse_user_id#'='') AND gu.deleted=false
     JOIN groups_locations gl on gl.group_id=g.id and gl.deleted=false
     JOIN locations plot on plot.id = gl.location_id AND plot.location_type_id = 17677 AND plot.deleted=false
+    LEFT JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
     LEFT JOIN location_attribute_values plot_groups_for_plot_attr_val on 
         plot_groups_for_plot_attr_val.location_id = plot.id AND
         plot_groups_for_plot_attr_val.location_attribute_id = 280 AND 
@@ -69,9 +70,10 @@
     <param name="project_id" display="Project ID" datatype="integer" />
   </params>
   <columns>
-    <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
-    <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
-    <column name='code' display='Plot Code' sql="plot.code" datatype='text'/>
+    <column name='id' display='ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='name' display='Name' sql="plot.name" datatype='text'/>
+    <column name='code' display='Code' sql="plot.code" datatype='text'/>
+    <column name='location_type_term' display='Location Type Term' sql="cache_ttPlotType.term" datatype='text'/>
     <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='integer'/>
     <column name='plot_group_ids_and_names_for_plot' display='Plot Group IDs and Names For Plot ' 
       sql="string_agg(distinct plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term,','

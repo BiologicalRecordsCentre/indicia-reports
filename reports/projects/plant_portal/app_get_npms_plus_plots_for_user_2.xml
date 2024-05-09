@@ -55,10 +55,10 @@
     <param name="project_id" display="Project ID" datatype="integer" />
   </params>
   <columns>
-    <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
-    <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
-    <column name='code' display='Plot Code' sql="plot.code" datatype='text'/>
-    <column name='plot_type' display='Plot Type' sql="cache_ttPlotType.term" datatype='text'/>
+    <column name='id' display='ID' sql="plot.id" datatype='integer' in_count="true" />
+    <column name='name' display='Name' sql="plot.name" datatype='text'/>
+    <column name='code' display='Code' sql="plot.code" datatype='text'/>
+    <column name='location_type_term' display='Location Type Term' sql="cache_ttPlotType.term" datatype='text'/>
     <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='integer'/>
     <column name='plot_expert_mode' display='Expert Mode Selected' sql="
     CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
