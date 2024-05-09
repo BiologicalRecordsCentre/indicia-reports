@@ -71,6 +71,7 @@
   <columns>
     <column name='id' display='Plot ID' sql="plot.id" datatype='integer' in_count="true" />
     <column name='name' display='Plot Name' sql="plot.name" datatype='text'/>
+    <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='text'/>
     <column name='plot_group_ids_and_names_for_plot' display='Plot Group IDs and Names For Plot ' 
       sql="string_agg(distinct plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term,','
       ORDER BY plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term ASC)" datatype='text' aggregate="true" />
@@ -88,7 +89,9 @@
     <column name='plot_width' display='Plot Width' sql="plot_width_attr_val.float_value" datatype='text'/>  
     <column name='plot_elevation' display='Plot Elevation' sql="plot_elevation_attr_val.int_value" datatype='text'/>  
     <column name='centroid_sref' display='Plot Spatial Reference' sql="plot.centroid_sref" datatype='text'/>  
-    <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/>  
+    <column name='centroid_sref_system' display='Plot Spatial Reference System' sql="plot.centroid_sref_system" datatype='text'/> 
+    <column name='centroid_geom' display='Centroid Geom' sql="plot.centroid_geom" datatype='text'/>
+    <column name='boundary_geom' display='Boundary Geom' sql="plot.boundary_geom" datatype='text'/> 
     <column name='comment' display='Plot Comment' sql="plot.comment" datatype='text'/>
     <column name='public' display='Public' sql="plot.public" datatype='text' />
     <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
