@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="Moth Trap Samples list for scheme coordinators with trap information - BETA"
+<report title="Moth Trap Samples list for scheme coordinators with trap information"
     description="Lists samples for scheme coordinators with location attributes.">
   <query website_filter_field='o.website_id'>
     SELECT #columns#
     FROM samples s
     JOIN cache_samples_nonfunctional snf on snf.id = s.id
-    LEFT JOIN cache_occurrences_functional o on o.sample_id = s.id
-  	LEFT JOIN cache_occurrences_nonfunctional onf on onf.id = o.id
-    LEFT JOIN cache_taxa_taxon_lists cttl on cttl.id = o.taxa_taxon_list_id
     LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
     LEFT JOIN locations pl on pl.id = l.parent_id AND pl.deleted = false
     
@@ -77,7 +74,7 @@
     <column name="trap_type" display="Trap type" sql="ctt_trap_type.term" datatype="text" />
     <column name="other_trap" display="Other trap type" sql="lav_other_trap.text_value" datatype="text" />
     <column name="lamp_types" display="Lamp types" sql="
-    string_agg(
+    string_agg(distinct
       concat(
         lav_lamp_type.text_value::json->>'quantity',
         ' x ',
