@@ -35,7 +35,7 @@
     AND s.deleted = false
   </query>
   <order_bys>
-    <order_by>s.id DESC</order_by>
+    <order_by>s.id ASC</order_by>
   </order_bys>
   <params>
     <param name='survey_id' 
