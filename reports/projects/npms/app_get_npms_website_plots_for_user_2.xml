@@ -45,11 +45,14 @@
       AND lw.website_id = 32 AND square.deleted=false
       AND pav.updated_by_id != u.id
     #filters#
-    GROUP BY square.id,lav.text_value,plot.id,plot.created_by_id,pav.updated_by_id,u.id,cache_ttPlotType.term
+    GROUP BY square.id,lav.text_value,plot.id,plot.created_by_id,pav.updated_by_id,u.id,
+    cache_ttPlotType.term,plot_expert_mode_attr_val.int_value, plot_end_grid_ref_1_attr_val.text_value,
+    plot_end_grid_ref_2_attr_val.text_value, plot_south_west_corner_attr_val.text_value,
+    plot_slope_ctt.term, plot_direction_ctt.term
     HAVING (plot.created_by_id=#warehouse_user_id# OR count(distinct pavOthers.id) &lt; 2)
   </query>
   <order_bys>
-    <order_by>square.id</order_by>
+    <order_by>square.id, plot.id</order_by>
   </order_bys>
   <params>
     <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
