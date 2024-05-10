@@ -74,7 +74,7 @@
     <column name='name' display='Name' sql="plot.name" datatype='text'/>
     <column name='code' display='Code' sql="plot.code" datatype='text'/>
     <column name='location_type_term' display='Location Type Term' sql="cache_ttPlotType.term" datatype='text'/>
-    <column name='location_type_id' display='Location Type ID' sql="plot.location_plot_id" datatype='integer'/>
+    <column name='location_type_id' display='Location Type ID' sql="plot.location_type_id" datatype='integer'/>
     <column name='plot_group_ids_and_names_for_plot' display='Plot Group IDs and Names For Plot ' 
       sql="string_agg(distinct plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term,','
       ORDER BY plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term ASC)" datatype='text' aggregate="true" />
