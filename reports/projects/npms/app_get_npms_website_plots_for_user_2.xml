@@ -52,7 +52,7 @@
     HAVING (plot.created_by_id=#warehouse_user_id# OR count(distinct pavOthers.id) &lt; 2)
   </query>
   <order_bys>
-    <order_by>square.id, plot.id</order_by>
+    <order_by>square.id, plot.id desc</order_by>
   </order_bys>
   <params>
     <param name="warehouse_user_id" display="Warehouse User ID" datatype="integer"/>
