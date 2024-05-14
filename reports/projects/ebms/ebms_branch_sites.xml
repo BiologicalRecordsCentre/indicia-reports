@@ -35,11 +35,13 @@
     </param>
   </params>
   <columns>
-    <column name="id" visible="false" sql="l.id" unique="true" in_count="true" />
-    <column name="name" display="Site Name" sql="l.name" />
-    <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true" />
-    <column name="samples_this_year" display="Samples this year" sql="COUNT(DISTINCT CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN sp.id ELSE null END)" aggregate="true" />
-    <column name="taxa" display="Taxa recorded" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true" />
-    <column name="ids" display="ids" sql="'#location_ids#'" aggregate="true" />
+    <column name="id" visible="false" sql="l.id" unique="true" in_count="true"/>
+    <column name="name" display="Site Name" sql="l.name"/>
+    <column name="code" display="Site Code" sql="l.code"/>
+    <column name="centroid_sref" display="Site Coords" sql="l.centroid_sref"/>
+    <column name="samples" display="Samples" sql="COUNT(DISTINCT sp.id)" aggregate="true"/>
+    <column name="samples_this_year" display="Samples this year" sql="COUNT(DISTINCT CASE WHEN extract(year from sp.date_start)=extract(year from now()) THEN sp.id ELSE null END)" aggregate="true"/>
+    <column name="taxa" display="Taxa recorded" sql="COUNT(DISTINCT o.taxon_meaning_id)" aggregate="true"/>
+    <column name="ids" display="ids" sql="'#location_ids#'" aggregate="true"/>
   </columns>
 </report>
