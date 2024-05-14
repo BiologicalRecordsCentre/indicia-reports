@@ -10,8 +10,8 @@
       count(distinct(cof.id)) as records,
       count(distinct(cof.taxon_meaning_id)) as taxa,
       l.comment as comment,
-      l.centroid_geom as centroid_geom,
-      l.boundary_geom as boundary_geom
+      ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)) as centroid_geom,
+      ST_AsGeoJSON(st_transform(l.boundary_geom, 4326)) as boundary_geom
       FROM locations l
       JOIN locations lp on lp.id = l.parent_id
       JOIN cache_samples_functional csf on csf.location_id = l.id
@@ -20,7 +20,9 @@
       JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
       WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-      GROUP BY l.name, l.comment, t.term, l.boundary_geom, l.centroid_geom
+      GROUP BY l.name, l.comment, t.term, 
+      ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)), 
+      ST_AsGeoJSON(st_transform(l.boundary_geom, 4326))
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
