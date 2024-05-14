@@ -30,9 +30,13 @@
       <where value="V" operator="equal">o.record_status='V'</where>
       <where value="C" operator="equal">o.record_status='C' and o.record_substatus is null</where>
     </param>
-    <param name='site' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8'>
+    <param name='site' display='Wild place' datatype='lookup' population_call='direct:location:id:name:website_id=8,location_type_id=14'>
       <join>JOIN locations lfilt on st_intersects(lfilt.boundary_geom, o.public_geom) and lfilt.location_type_id=14 and lfilt.deleted=false and lfilt.id=#site#
       JOIN locations_websites lw on lw.location_id=lfilt.id and lw.deleted=false and lw.website_id=8</join>
+    </param>
+    <param name='parish' display='Site' datatype='lookup' population_call='direct:location:id:name:website_id=8,location_type_id=702'>
+      <join>JOIN locations lfiltp on st_intersects(lfiltp.boundary_geom, o.public_geom) and lfiltp.location_type_id=702 and lfiltp.deleted=false and lfiltp.id=#parish#
+      JOIN locations_websites lwp on lwp.location_id=lfiltp.id and lwp.deleted=false and lwp.website_id=8</join>
     </param>
   </params>
   <columns>
