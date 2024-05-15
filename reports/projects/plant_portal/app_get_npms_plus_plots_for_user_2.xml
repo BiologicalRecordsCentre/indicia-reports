@@ -10,7 +10,6 @@
     JOIN locations square on square.id = gl.location_id AND square.location_type_id = 18071 AND square.deleted=false
     JOIN locations plot on plot.parent_id = square.id AND plot.location_type_id in (18678,18679,18680) AND plot.deleted=false
     LEFT JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
-    LEFT JOIN location_attribute_values lav on lav.location_attribute_id=118 AND lav.location_id=plot.id
     LEFT JOIN location_attribute_values plot_expert_mode_attr_val on
         plot_expert_mode_attr_val.location_id = plot.id AND
         plot_expert_mode_attr_val.location_attribute_id = 122 AND
@@ -62,7 +61,6 @@
     <column name='location_type_id' display='Location Type ID' sql="plot.location_type_id" datatype='integer'/>
     <column name='expert_mode' display='Expert Mode Selected' sql="
     CASE WHEN plot_expert_mode_attr_val.int_value = 1 THEN 'TRUE' ELSE 'FALSE' END" datatype='text'/>
-    <column name='my_plot_label' display='My Plot Label' sql="lav.text_value" datatype='text'/>
     <column name='plot_end_grid_ref_1' display='Plot End Grid Ref 1' sql="plot_end_grid_ref_1_attr_val.text_value" datatype='text'/>
     <column name='plot_end_grid_ref_2' display='Plot End Grid Ref 2' sql="plot_end_grid_ref_2_attr_val.text_value" datatype='text'/>
     <column name='south_west_corner' display='South-West Corner' sql="plot_south_west_corner_attr_val.text_value" datatype='text'/>
