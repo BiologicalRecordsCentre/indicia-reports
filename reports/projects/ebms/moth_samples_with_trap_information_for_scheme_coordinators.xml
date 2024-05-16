@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="Moth Trap Samples list for scheme coordinators with trap information"
+<report title="Moth Trap Samples list for scheme coordinators with trap attributes"
     description="Lists samples for scheme coordinators with location attributes.">
   <query website_filter_field='o.website_id'>
     SELECT #columns#
@@ -26,11 +26,11 @@
     
     LEFT JOIN location_attribute_values lav ON l.id = lav.location_id
       AND lav.location_attribute_id = #country_location_attribute_id#
-      AND lav.int_value = #country_id#
       AND lav.deleted = false
       
     #joins#
     WHERE s.survey_id = #survey_id#
+    AND lav.int_value in (#country_id#)
     AND s.training = #training#
     AND s.deleted = false
   </query>
