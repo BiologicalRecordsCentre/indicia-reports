@@ -40,9 +40,9 @@
     LEFT JOIN cache_termlists_terms plot_compass_direction_ctt on plot_compass_direction_ctt.id = plot_compass_direction_attr_val.int_value AND
         plot_compass_direction_ctt.termlist_id = 113
     LEFT JOIN location_attribute_values plot_slope_attr_val on
-        plot_compass_direction_attr_val.location_id = plot.id AND
-        plot_compass_direction_attr_val.location_attribute_id = 284 AND
-        plot_compass_direction_attr_val.deleted = false
+        plot_slope_attr_val.location_id = plot.id AND
+        plot_slope_attr_val.location_attribute_id = 284 AND
+        plot_slope_attr_val.deleted = false
     LEFT JOIN location_attribute_values plot_length_attr_val on
         plot_length_attr_val.location_id = plot.id AND
         plot_length_attr_val.location_attribute_id = 60 AND
