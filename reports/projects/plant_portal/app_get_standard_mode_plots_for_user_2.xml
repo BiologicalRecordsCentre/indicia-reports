@@ -99,7 +99,6 @@
     <column name='external_key' display='External Key' sql="plot.external_key" datatype='text'/>
     <column name='comment' display='Comment' sql="plot.comment" datatype='text'/>
     <column name='public' display='Public' sql="plot.public" datatype='text' />
-    <column name='parent_id' display='Parent ID' sql="plot.parent_id" datatype='integer' />
     <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
     <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
     <column name='updated_by_id' display='Updated By ID' sql="plot.updated_by_id" datatype='integer' />
