@@ -97,7 +97,6 @@
       145563,146724,146742,146824,146865,143536,143532,144912
     ) THEN 1 ELSE 0 END" datatype='integer' />
     <column name='public' display='Public' sql="plot.public" datatype='text' />
-    <column name='warehouse_user_id' display='Warehouse User ID' sql="u.id" datatype='integer' />
     <column name='created_by_id' display='Created By ID' sql="plot.created_by_id" datatype='integer' />
     <column name='created_on' display='Created On' sql="plot.created_on" datatype='text' />
     <column name='updated_by_id' display='Updated By ID' sql="plot.updated_by_id" datatype='integer' />
