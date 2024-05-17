@@ -4,18 +4,20 @@
     >
   <query website_filter_field="lw.website_id">
     SELECT #columns#
-    FROM cache_termlists_terms ctt
+    FROM termlists_terms tt
+    JOIN terms t on t.id = tt.term_id AND t.deleted = false
     JOIN termlists_term_attribute_values ttav  
-      on ttav.termlists_term_id = ctt.id
+      on ttav.termlists_term_id = tt.id
       AND ttav.int_value = #recording_group_id#
       AND ttav.termlists_term_attribute_id = #plot_group_project_termlists_term_attr_id#
       AND ttav.deleted=false
     JOIN location_attribute_values lav on lav.location_id = #plot_id#
-      AND lav.int_value = ctt.id
+      AND lav.int_value = tt.id
       AND lav.location_attribute_id = #plot_group_location_attr_id# 
       AND lav.deleted=false
     WHERE 
-      ctt.termlist_id = #plot_groups_termlist_id#
+      tt.termlist_id = #plot_groups_termlist_id#
+      AND tt.deleted = false
   </query>
   <params>
     <param name="project_id" display="Project id" 
@@ -30,7 +32,7 @@
   </params>
   <columns>
     <column name="group_and_plot_attr_val_id" sql="lav.id" display="ID" visible="false"/>
-    <column name="plot_group_id" sql="ctt.id" display="ID"/>
-    <column name="plot_group_name" sql="ctt.term" display="Plot Group Name"/>
+    <column name="plot_group_id" sql="tt.id" display="ID"/>
+    <column name="plot_group_name" sql="t.term" display="Plot Group Name"/>
   </columns>
 </report>
