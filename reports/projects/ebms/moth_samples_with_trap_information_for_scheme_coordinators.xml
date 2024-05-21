@@ -8,7 +8,6 @@
     JOIN cache_samples_nonfunctional snf on snf.id = s.id
     LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
     LEFT JOIN locations pl on pl.id = l.parent_id AND pl.deleted = false
-    
     LEFT JOIN location_attribute_values lav_trap_type ON
       lav_trap_type.location_id = l.id AND 
       lav_trap_type.location_attribute_id = #trap_type_attr_id# AND
@@ -23,15 +22,10 @@
       lav_lamp_type.location_id = l.id AND 
       lav_lamp_type.location_attribute_id = #lamp_type_attr_id# AND
       lav_lamp_type.deleted = false
-    
-    LEFT JOIN location_attribute_values lav ON l.id = lav.location_id
-      AND lav.location_attribute_id = #country_location_attribute_id#
-      AND lav.deleted = false
-      
     #joins#
     WHERE s.survey_id = #survey_id#
-    AND lav.int_value in (#country_id#)
     AND s.training = #training#
+    AND (#indexed_location_list_context# = 0 OR pl.id in (#indexed_location_list_context#))
     AND s.deleted = false
   </query>
   <order_bys>
@@ -46,12 +40,9 @@
       display='Location attribute list' 
       description='Comma separated list of location attribute IDs to include' 
       default="" datatype='locattrs' />
-    <param name="country_location_attribute_id"
-      display="Country attribute"
-      description="The ID of the location_attribute that assigns a location to a country"
-      datatype="lookup"
-      population_call="direct:location_attribute:id:caption" />
-    <param name='country_id' display='Country ID' description='Enter the Indicia ID of the country' datatype='int' />
+    <param name="indexed_location_list_context" 
+      description="Location to filter to" 
+      default="0" datatype="integer[]">
     <param name='location_type_id' display='Location type ID' 
       description='The ID of the Moth Trap location type.' datatype='int' />
     <param name='trap_type_attr_id' display='Trap type attribute ID' 
