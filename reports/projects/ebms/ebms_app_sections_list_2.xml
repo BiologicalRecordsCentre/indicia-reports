@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="EBMS App sections list report v2" description="Lists sections to be used in the App, with updated field list.">
-  <query website_filter_field="l.website_id">
+  <query website_filter_field="lw.website_id">
   SELECT #columns#
-  FROM detail_locations l
+  FROM locations l
+  JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
   #joins#
   WHERE #website_filter#
   AND l.parent_id IN (#location_list#)
