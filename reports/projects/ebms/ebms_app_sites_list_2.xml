@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS App sites list report v2" description="Lists sites to be used in the App, with updated field list.">
+  <query website_filter_field="l.website_id">
+  SELECT #columns#
+  FROM locations l
+  JOIN location_attribute_values lav
+      ON lav.location_id = l.id
+      AND lav.int_value = #userID#
+      AND lav.deleted=false
+  JOIN location_attributes la
+      ON la.caption = 'CMS User ID'
+      AND la.id = lav.location_attribute_id
+      AND la.deleted=false
+  JOIN location_attribute_values lav2
+      ON lav2.location_id = l.id
+      AND lav2.deleted=false
+  JOIN location_attributes la2
+      ON la2.caption = 'No. of sections'
+      AND la2.id = lav2.location_attribute_id
+      AND la2.deleted=false
+  #joins#
+  WHERE #website_filter#
+  AND EXISTS (SELECT id FROM location_attributes_websites law
+      WHERE law.website_id = #website_id#
+      AND law.location_attribute_id = la.id
+      AND law.deleted = FALSE)
+  AND EXISTS (SELECT id FROM location_attributes_websites law2
+      WHERE law2.website_id = #website_id#
+      AND law2.location_attribute_id = la2.id
+      AND law2.deleted = FALSE)
+  #filters#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name</order_by>
+  </order_bys>
+  <params>
+    <!-- Legacy: EBMS and UKBMS assign locations via an attribute holding the CMS user ID, not the Indicia ID -->
+    <param name="website_id" display="Website Id for the occurrence record" datatype="integer"/>
+    <param name="userID" display="CMS User ID" description="CMS User ID" datatype="integer" />
+    <param name="locattrs" display="Location attribute list" description="Comma separated list of location attribute IDs to include" datatype="locattrs" />
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+  </params>
+  <columns>
+    <column name="id" display="Site ID" sql="l.id" />
+    <column name="name" display="Site Name" sql="l.name" />
+    <column name="code" display="Code" sql="l.code" />
+    <column name="parent_id" display="Parent ID" sql="l.parent_id" />
+    <column name="centroid_sref" display="Centroid SRef" sql="l.centroid_sref" />
+    <column name="sref_system" display="SRef system" sql="l.centroid_sref_system" />
+    <column name="sections" display="Section count" sql="lav2.int_value" />
+    <column name="created_on" display="Created on" sql="l.created_on" />
+    <column name="created_by_id" display="Created by ID" sql="l.created_by_id" />
+    <column name="updated_on" display="Updated on" sql="l.updated_on" />
+    <column name="updated_by_id" display="Update by ID" sql="l.updated_by_id" />
+    <column name="comment" display="Comment" sql="l.comment" />
+    <column name="external_key" display="External key" sql="l.external_key" />
+    <column name="centroid_geom" display="Centroid geom" sql="st_astext(l.centroid_geom)" />
+    <column name="boundary_geom" display="Boundary geom" sql="st_astext(l.boundary_geom)" />
+    <column name="location_type_id" display="Location type ID" sql="l.location_type_id" />
+    <column name="public" display="Public" sql="l.public" />
+    <column name="lat" display="Lat" sql="st_y(st_transform(st_centroid(l.centroid_geom), 4326))" />
+    <column name="lon" display="Lon" sql="st_x(st_transform(st_centroid(l.centroid_geom), 4326))" />
+    <column name="public" display="Public" sql="l.public" />
+  </columns>
+</report>
