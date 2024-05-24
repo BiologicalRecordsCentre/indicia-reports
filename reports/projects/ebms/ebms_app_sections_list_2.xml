@@ -6,6 +6,7 @@
   JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
   #joins#
   WHERE #website_filter#
+  AND l.deleted=false
   AND l.parent_id IN (#location_list#)
   #filters#
   #order_by#

@@ -21,6 +21,7 @@
   JOIN locations_websites lw ON lw.location_id=l.id AND lw.deleted=false
   #joins#
   WHERE #website_filter#
+  AND l.deleted=false
   AND EXISTS (SELECT id FROM location_attributes_websites law
       WHERE law.website_id = #website_id#
       AND law.location_attribute_id = la.id
