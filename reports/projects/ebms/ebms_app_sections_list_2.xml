@@ -24,8 +24,8 @@
     <column name="id" display="Site ID" sql="l.id" />
     <column name="name" display="Site Name" sql="l.name" />
     <column name="code" display="Code" sql="l.code" />
-    <column name="sref_system" display="SRef system" sql="l.centroid_sref_system" />
     <column name="centroid_sref" display="Centroid SRef" sql="l.centroid_sref" />
+    <column name="centroid_sref_system" display="SRef system" sql="l.centroid_sref_system" />
     <column name="geom" display="Geometry" datatype="text" sql="CASE WHEN boundary_geom IS NULL THEN st_asgeojson(centroid_geom) ELSE st_asgeojson(boundary_geom) END" />
     <column name="created_on" display="Created on" sql="l.created_on" />
     <column name="created_by_id" display="Created by ID" sql="l.created_by_id" />

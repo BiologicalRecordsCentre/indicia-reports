@@ -51,7 +51,7 @@
     <column name="code" display="Code" sql="l.code" />
     <column name="parent_id" display="Parent ID" sql="l.parent_id" />
     <column name="centroid_sref" display="Centroid SRef" sql="l.centroid_sref" />
-    <column name="sref_system" display="SRef system" sql="l.centroid_sref_system" />
+    <column name="centroid_sref_system" display="SRef system" sql="l.centroid_sref_system" />
     <column name="sections" display="Section count" sql="lav2.int_value" />
     <column name="created_on" display="Created on" sql="l.created_on" />
     <column name="created_by_id" display="Created by ID" sql="l.created_by_id" />
