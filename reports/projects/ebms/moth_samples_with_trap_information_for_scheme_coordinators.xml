@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <report title="Moth Trap Samples list for scheme coordinators with trap attributes"
-    description="Lists samples for scheme coordinators with location attributes.">
+    description="Lists samples for scheme coordinators with location attributecsf.">
   <query website_filter_field='o.website_id'>
     SELECT #columns#
-    FROM samples s
-    JOIN cache_samples_nonfunctional snf on snf.id = s.id
-    LEFT JOIN locations l on l.id = s.location_id AND l.deleted = false
+    FROM cache_samples_functional csf
+    JOIN cache_samples_nonfunctional snf on snf.id = csf.id
+    LEFT JOIN locations l on l.id = csf.location_id AND l.deleted = false
     LEFT JOIN locations pl on pl.id = l.parent_id AND pl.deleted = false
     LEFT JOIN location_attribute_values lav_trap_type ON
       lav_trap_type.location_id = l.id AND 
@@ -23,13 +23,14 @@
       lav_lamp_type.location_attribute_id = #lamp_type_attr_id# AND
       lav_lamp_type.deleted = false
     #joins#
-    WHERE s.survey_id = #survey_id#
-    AND s.training = #training#
-    AND (#indexed_location_list_context# = 0 OR pl.id in (#indexed_location_list_context#))
-    AND s.deleted = false
+    WHERE csf.survey_id = #survey_id#
+    AND csf.training = #training#
+    AND (#indexed_location_list_context# = 0 OR pl.id in (#indexed_location_list_context#) OR
+    /* Some records do not seem to have a location with a parent that is a country, so the above line doesn't work */
+        csf.location_ids @> ARRAY[#indexed_location_list_context#])
   </query>
   <order_bys>
-    <order_by>s.id ASC</order_by>
+    <order_by>csf.id ASC</order_by>
   </order_bys>
   <params>
     <param name='survey_id' 
@@ -48,18 +49,18 @@
     <param name='trap_type_attr_id' display='Trap type attribute ID' 
       description='The ID of the attribute holding the moth trap type.' datatype='int' />
     <param name='other_trap_type_attr_id' display='Other trap type attribute ID' 
-      description='The ID of the attribute holding the description of other moth trap types.' 
+      description='The ID of the attribute holding the description of other moth trap typecsf.' 
       datatype='int' />
     <param name='lamp_type_attr_id' display='Lamp type attribute ID' 
       description='The ID of the attribute holding the moth lamp type.' datatype='int' />
   </params>
   <columns>
-    <column name="id" display="Sample ID" sql="s.id" in_count="true" datatype="integer" />
+    <column name="id" display="Sample ID" sql="csf.id" in_count="true" datatype="integer" />
     <column name="name" display="Location" sql="l.name" datatype="text" />
     <column name="country" display="Country" sql="pl.name" datatype="text" />
-    <column name="date_start" sql="s.date_start" visible="false"/>
-    <column name="date_end" sql="s.date_end" visible="false"/>
-    <column name="date_type" sql="s.date_type" visible="false"/>
+    <column name="date_start" sql="csf.date_start" visible="false"/>
+    <column name="date_end" sql="csf.date_end" visible="false"/>
+    <column name="date_type" sql="csf.date_type" visible="false"/>
     <column name="date" display="Date" datatype="date" />
     <column name="recorder" display="Recorder name" sql="snf.recorders" datatype="text" />
     <column name="trap_type" display="Trap type" sql="ctt_trap_type.term" datatype="text" />
