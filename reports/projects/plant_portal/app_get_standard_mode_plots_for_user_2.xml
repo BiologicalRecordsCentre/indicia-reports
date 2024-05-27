@@ -94,8 +94,8 @@
     <column name='centroid_sref_system' display='Centroid Reference System' sql="plot.centroid_sref_system" datatype='text'/> 
     <column name='lat' display='Lat' sql="st_y(st_transform(st_centroid(plot.centroid_geom), 4326))" datatype='float'/>
     <column name='lon' display='Lon' sql="st_x(st_transform(st_centroid(plot.centroid_geom), 4326))" datatype='float'/>
-    <column name='centroid_geom' display='Centroid Geom' sql="plot.centroid_geom" datatype='text'/>
-    <column name='boundary_geom' display='Boundary Geom' sql="plot.boundary_geom" datatype='text'/> 
+    <column name='centroid_geom' display='Centroid Geom' sql="st_astext(plot.centroid_geom)" datatype='text'/>
+    <column name='boundary_geom' display='Boundary Geom' sql="st_astext(plot.boundary_geom)" datatype='text'/> 
     <column name='external_key' display='External Key' sql="plot.external_key" datatype='text'/>
     <column name='comment' display='Comment' sql="plot.comment" datatype='text'/>
     <column name='public' display='Public' sql="plot.public" datatype='text' />
