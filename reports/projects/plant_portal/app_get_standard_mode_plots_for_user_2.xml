@@ -1,7 +1,7 @@
 <report
     title="App - Get Standard Mode Plots For User 2"
     description="List of plots of a given user ID. Used by Karolis to setup app. Report contains IDs hard-coded to live Warehouse.
-    This version of report includes extra attribute data not in original report."
+    This version of report uses JSON for plot group data encoding."
 >
   <query>
     SELECT distinct #columns#
@@ -76,14 +76,16 @@
     <column name='location_type_term' display='Location Type Term' sql="cache_ttPlotType.term" datatype='text'/>
     <column name='location_type_id' display='Location Type ID' sql="plot.location_type_id" datatype='integer'/>
     <column name='plot_group_ids_and_names_for_plot' display='Plot Group IDs and Names For Plot ' 
-      sql="string_agg(distinct plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term,','
-      ORDER BY plot_groups_for_plot.id::text || '|||' || plot_groups_for_plot.term ASC)" datatype='text' aggregate="true" />
+      sql="jsonb_object_agg(distinct plot_groups_for_plot.id, plot_groups_for_plot.term
+      ORDER BY plot_groups_for_plot.id, plot_groups_for_plot.term ASC)
+      filter (where plot_groups_for_plot.id is not null)" aggregate="true" datatype='jsonb' />
     <column name='project_id' display='Project ID' sql="g.id" datatype='integer' />
     <column name='project_name' display='Project Name' sql="g.title" datatype='text' />
     <column name='plot_group_ids_and_names_for_user' display='Plot Group IDs and Names For User' 
-      sql="string_agg(distinct plot_group_terms_for_project_and_user.id::text || '|||' || plot_group_terms_for_project_and_user.term,','
-      ORDER BY plot_group_terms_for_project_and_user.id::text || '|||' || plot_group_terms_for_project_and_user.term ASC)" 
-      datatype='text' aggregate="true" />
+      sql="jsonb_object_agg(distinct plot_group_terms_for_project_and_user.id, plot_group_terms_for_project_and_user.term
+      ORDER BY plot_group_terms_for_project_and_user.id, plot_group_terms_for_project_and_user.term ASC)
+      filter (where plot_group_terms_for_project_and_user.id is not null)"
+      aggregate="true" datatype='jsonb' />
     <column name='shape' display='Shape' sql="plot_shape_ctt.term" datatype='text'/> 
     <column name='compass_direction' display='Compass Direction' sql="plot_compass_direction_ctt.term" datatype='text'/>  
     <column name='slope' display='Slope' sql="plot_slope_attr_val.int_value" datatype='text'/>  
