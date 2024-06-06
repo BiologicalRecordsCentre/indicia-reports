@@ -25,7 +25,7 @@
     #joins#
     WHERE csf.survey_id = #survey_id#
     AND csf.training = #training#
-    AND (#indexed_location_list_context# = 0 OR pl.id in (#indexed_location_list_context#) OR
+    AND (#drupal_user_id# in (#drupal_user_id_manager_overrides#) OR pl.id in (#indexed_location_list_context#) OR
     /* Some records do not seem to have a location with a parent that is a country, so the above line doesn't work */
         csf.location_ids @> ARRAY[#indexed_location_list_context#])
   </query>
@@ -53,6 +53,10 @@
       datatype='int' />
     <param name='lamp_type_attr_id' display='Lamp type attribute ID' 
       description='The ID of the attribute holding the moth lamp type.' datatype='int' />
+    <param name='drupal_user_id_manager_overrides' display='Drupal user ID manager overrides' 
+      description='Comma separated list of Drupal user IDs of managers who are allowed see data for all schemes.' datatype='text' />
+    <param name='drupal_user_id' display='Drupal user ID' 
+      description='Drupal user ID of current logged-in user.' datatype='int' />  
   </params>
   <columns>
     <column name="id" display="Sample ID" sql="csf.id" in_count="true" datatype="integer" />
