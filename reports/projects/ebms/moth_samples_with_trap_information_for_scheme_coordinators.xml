@@ -43,7 +43,7 @@
       default="" datatype='locattrs' />
     <param name="indexed_location_list_context" 
       description="Location to filter to" 
-      default="0" datatype="integer[]" />
+      emptyvalue="0" default="0" datatype="integer[]" />
     <param name='location_type_id' display='Location type ID' 
       description='The ID of the Moth Trap location type.' datatype='int' />
     <param name='trap_type_attr_id' display='Trap type attribute ID' 
