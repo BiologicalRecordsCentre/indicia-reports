@@ -5,7 +5,7 @@
   <query>
     SELECT distinct #columns#
     FROM cache_taxa_taxon_lists cttl_preferred
-    JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxa_taxon_meaning = cttl_synonym.taxa_taxon_meaning
+    JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_synonym.taxon_meaning_id
       AND cttl_synonym.taxon_list_id = 15
       AND cttl_synonym.preferred = false
       AND cttl_synonym.language_iso = 'lat'
@@ -247,9 +247,9 @@
     <column name='taxon' display='taxon' sql="cttl_preferred.taxon" datatype='text' />
     <column name='common_name' display='common_name' sql="cttl_preferred.default_common_name" datatype='text' />
     <column name='synonym' display='synonym' sql="
-        CASE WHEN lower('#taxon_list#') = 'indicator' THEN string_agg(cttl_synonym.taxon, ',') ELSE '' END" datatype='text' aggregate="true" />
+        CASE WHEN lower('#species_list#') = 'indicator' THEN string_agg(cttl_synonym.taxon, ',') ELSE '' END" datatype='text' aggregate="true" />
     <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
     <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
-    <column name='frequency' display='frequency' sql="count(cof.id)" datatype='integer' />
+    <column name='frequency' display='frequency' sql="count(cof.id)" datatype='integer' aggregate="true" />
   </columns>
 </report>
