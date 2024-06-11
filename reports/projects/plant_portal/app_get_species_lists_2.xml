@@ -5,7 +5,7 @@
   <query>
     SELECT distinct #columns#
     FROM cache_taxa_taxon_lists cttl_preferred
-    JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_synonym.taxon_meaning_id
+    LEFT JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_synonym.taxon_meaning_id
       AND cttl_synonym.taxon_list_id = 15
       AND cttl_synonym.preferred = false
       AND cttl_synonym.language_iso = 'lat'
