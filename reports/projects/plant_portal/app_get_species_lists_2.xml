@@ -252,6 +252,6 @@
         CASE WHEN lower('#species_list#') = 'indicator' THEN string_agg(cttl_synonym.taxon, ',') ELSE '' END" datatype='text' aggregate="true" />
     <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
     <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
-    <column name='frequency' display='frequency' sql="count(cof.id)" datatype='integer' aggregate="true" />
+    <column name='frequency' display='frequency' sql="count(distinct cof.id)" datatype='integer' aggregate="true" />
   </columns>
 </report>
