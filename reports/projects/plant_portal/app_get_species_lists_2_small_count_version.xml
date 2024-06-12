@@ -235,7 +235,9 @@
       )) 
       OR
       (
-        lower('#species_list#') = 'inventory' AND cttl_preferred.taxon_group_id in (78,81,87,99,89,94,137,148))
+        (
+          lower('#species_list#') = 'inventory' OR lower('#species_list#') = 'additional') AND cttl_preferred.taxon_group_id in (78,81,87,99,89,94,137,148)
+        )
       )
   </query>
   <order_bys>
