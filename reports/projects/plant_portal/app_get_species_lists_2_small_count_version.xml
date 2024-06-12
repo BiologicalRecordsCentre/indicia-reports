@@ -250,7 +250,7 @@
     <column name='taxon' display='taxon' sql="cttl_preferred.taxon" datatype='text' />
     <column name='common_name' display='common_name' sql="cttl_preferred.default_common_name" datatype='text' />
     <column name='synonym' display='synonym' sql="
-        CASE WHEN lower('#species_list#') = 'indicator' THEN string_agg(cttl_synonym.taxon, ',') ELSE '' END" datatype='text' aggregate="true" />
+        CASE WHEN (lower('#species_list#') = 'indicator' OR lower('#species_list#') = 'inventory') THEN string_agg(distinct cttl_synonym.taxon, ',') ELSE '' END" datatype='text' aggregate="true" />
     <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
     <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
     <column name='frequency' display='frequency' sql="count(distinct cof.id)" datatype='integer' aggregate="true" />
