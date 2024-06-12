@@ -9,7 +9,7 @@
       AND cttl_synonym.taxon_list_id = 15
       AND cttl_synonym.preferred = false
       AND cttl_synonym.language_iso = 'lat'
-    JOIN cache_taxon_searchterms cts on cts.taxa_taxon_list_id = cttl_preferred.id
+    JOIN cache_taxon_searchterms cts on cts.taxa_taxon_list_id = cttl_preferred.id and cts.simplified=true
     LEFT JOIN cache_occurrences_functional cof on 
       (cof.taxa_taxon_list_id = cttl_preferred.id OR
        cof.taxa_taxon_list_id = cttl_synonym.id)
@@ -238,7 +238,7 @@
       )
   </query>
   <order_bys>
-    <order_by>frequency</order_by>
+    <order_by>frequency desc</order_by>
   </order_bys>
   <params>
     <param name="species_list" display="species_list" datatype="text" />
