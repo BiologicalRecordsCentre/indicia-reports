@@ -3,7 +3,7 @@
     description="Get a species list depending on input parameter."
 >
   <query>
-    SELECT distinct #columns#
+    SELECT #columns#
     FROM cache_taxa_taxon_lists cttl_preferred
     LEFT JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_preferred.taxon_meaning_id
       AND cttl_synonym.taxon_list_id = 15
