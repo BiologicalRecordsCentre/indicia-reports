@@ -19,7 +19,7 @@
       pav.int_value = tt.id
       AND pav.person_attribute_id = #plot_group_person_attr_id# 
       AND pav.deleted=false
-    JOIN users u on u.person_id = pav.person_id AND u.id = #user_id# AND u.deleted = false
+    JOIN users u on u.person_id = pav.person_id AND u.id = #current_user_id# AND u.deleted = false
     WHERE 
       tt.termlist_id = #plot_groups_termlist_id#
       AND tt.deleted = false
@@ -36,6 +36,7 @@
     <param name="plot_groups_termlist_id" display="Plot groups termlist ID" description="Plot groups termlist ID." datatype="integer"/>
     <param name="plot_group_person_attr_id" display="Plot group person attribute id" 
         description="The id of the person attribute that holds the plot groups for a person." datatype="integer"/>
+    <param name="current_user_id" display="Id of the currently logged in user" datatype="integer" default="0" emptyvalue="0"/>
   </params>
   <columns>
     <column name="group_and_plot_attr_val_id" sql="lav.id" display="ID" visible="false"/>
