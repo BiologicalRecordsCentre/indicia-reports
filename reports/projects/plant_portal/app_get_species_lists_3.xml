@@ -6,10 +6,10 @@
     SELECT #columns#
     FROM cache_taxa_taxon_lists cttl_preferred
     LEFT JOIN cache_taxa_taxon_lists cttl_common on cttl_common.taxon_meaning_id = cttl_preferred.taxon_meaning_id
-      AND cttl_synonym.taxon_list_id = 15
-      AND cttl_synonym.preferred = false
-      AND cttl_synonym.language_iso in ('eng','cym','gla','gle') 
-      AND cttl_synonym.taxon != cttl_preferred.taxon
+      AND cttl_common.taxon_list_id = 15
+      AND cttl_common.preferred = false
+      AND cttl_common.language_iso in ('eng','cym','gla','gle') 
+      AND cttl_common.taxon != cttl_preferred.taxon
     LEFT JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_preferred.taxon_meaning_id
       AND cttl_synonym.taxon_list_id = 15
       AND cttl_synonym.preferred = false
@@ -259,7 +259,7 @@
     <column name='common_name' display='common_name' sql="
       jsonb_object_agg(distinct cttl_common.id, cttl_common.taxon
       ORDER BY cttl_common.taxon ASC)
-      filter (where cttl_common.id is not null)" datatype='text' />
+      filter (where cttl_common.id is not null)" datatype='text' aggregate="true"/>
     <column name='synonym' display='synonym' sql="
       jsonb_object_agg(distinct cttl_synonym.id, cttl_synonym.taxon
       ORDER BY cttl_synonym.taxon ASC)
