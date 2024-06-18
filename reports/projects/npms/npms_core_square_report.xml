@@ -41,9 +41,9 @@
       null as comment,
       ST_AsGeoJSON(st_transform(lp.centroid_geom, 4326)) as centroid_geom,
       ST_AsGeoJSON(st_transform(lp.boundary_geom, 4326)) as boundary_geom
-    FROM locations l
-      LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
-      LEFT JOIN locations lp on lp.id = l.parent_id
+    FROM locations lp
+      LEFT JOIN locations_websites lw on lw.location_id = lp.id AND lw.deleted = false AND lw.id = 32
+      LEFT JOIN locations l on l.parent_id = lp.id
       LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
       LEFT JOIN surveys s on s.id = csf.survey_id
