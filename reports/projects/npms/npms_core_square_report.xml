@@ -2,6 +2,7 @@
 <report title="NPMS core square plots summary" description="Todo description">
   <query>
     SELECT 
+      l.id as id,
       l.name as name,
       t.term as plot_type,
       count(distinct(csf.id)) as visits,
@@ -23,11 +24,12 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY l.name, l.comment, t.term, 
+    GROUP BY l.id, l.name, l.comment, t.term, 
       ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)), 
       ST_AsGeoJSON(st_transform(l.boundary_geom, 4326))
     UNION
     SELECT 
+      lp.id as id,
       lp.name as name,
       null as plot_type,
       count(distinct(csf.id)) as visits,
@@ -47,7 +49,7 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       and lp.location_type_id = 4009
-    GROUP BY lp.name,
+    GROUP BY lp.id, lp.name,
       ST_AsGeoJSON(st_transform(lp.centroid_geom, 4326)),
       ST_AsGeoJSON(st_transform(lp.boundary_geom, 4326))
   </query>
