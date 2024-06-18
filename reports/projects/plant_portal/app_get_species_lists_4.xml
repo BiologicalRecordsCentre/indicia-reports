@@ -1,0 +1,144 @@
+<report
+    title="App - Get Species Lists 4"
+    description="Get a species list for PP/NPMS app depending on input parameter."
+>
+  <query>
+  WITH cttl_preferred AS (
+    SELECT
+        id,
+        taxon_group_id,
+        taxon,
+        default_common_name,
+        organism_key,
+        taxon_meaning_id
+    FROM cache_taxa_taxon_lists
+    WHERE taxon_list_id = 15
+      AND preferred = TRUE
+),
+cttl_common AS (
+    select
+    	id,
+        taxon_meaning_id,
+        taxon
+    FROM cache_taxa_taxon_lists
+    WHERE taxon_list_id = 15
+      AND preferred = false
+      AND language_iso in ('eng','cym','gla','gle') 
+),
+cttl_synonym AS (
+    select
+    	id,
+        taxon_meaning_id,
+        taxon
+    FROM cache_taxa_taxon_lists
+    WHERE taxon_list_id = 15
+      AND preferred = false
+      AND language_iso = 'lat'
+),
+cof_filtered AS (
+    SELECT
+        id,
+        taxa_taxon_list_id
+    FROM cache_occurrences_functional
+    WHERE website_id IN (#count_website_list#)
+),
+wildflower_organism_keys AS (
+    SELECT unnest(array[
+        'NBNORG0000008568', 'NBNORG0000008427', 'NBNORG0000007889', 'NBNORG0000007115',
+        'NBNORG0000007180', 'NBNORG0000053047', 'NBNORG0000008215', 'NBNORG0000008214',
+        'NBNORG0000007431', 'NBNORG0000008065', 'NBNORG0000053122', 'NBNORG0000008018',
+        'NBNORG0000007805', 'NBNORG0000008037', 'NBNORG0000053162', 'NBNORG0000053186',
+        'NBNORG0000007254', 'NBNORG0000007087', 'NBNORG0000008547', 'NBNORG0000053255',
+        'NBNORG0000008562', 'NBNORG0000007698', 'NBNORG0000116335', 'NBNORG0000053355',
+        'NBNORG0000007079', 'NBNORG0000007361', 'NBNORG0000053434', 'NBNORG0000008185',
+        'NBNORG0000007424', 'NBNORG0000053279', 'NBNORG0000008441', 'NBNORG0000008442',
+        'NBNORG0000053464', 'NBNORG0000007547', 'NBNORG0000007316', 'NBNORG0000053501',
+        'NBNORG0000053516', 'NBNORG0000008605', 'NBNORG0000008489', 'NBNORG0000007646',
+        'NBNORG0000053590', 'NBNORG0000107933', 'NBNORG0000053643', 'NBNORG0000007959',
+        'NBNORG0000007991', 'NBNORG0000008599', 'NBNORG0000008597', 'NBNORG0000008596',
+        'NBNORG0000008595', 'NBNORG0000007434', 'NBNORG0000053719', 'NBNORG0000007170',
+        'NBNORG0000116336', 'NBNORG0000008144', 'NBNORG0000007511', 'NBNORG0000007919',
+        'NBNORG0000008054', 'NBNORG0000008457', 'NBNORG0000053904', 'NBNORG0000008263',
+        'NBNORG0000007359', 'NBNORG0000054034', 'NBNORG0000008307', 'NBNORG0000105189',
+        'NBNORG0000107960', 'NBNORG0000007967', 'NBNORG0000116337', 'NBNORG0000008665',
+        'NBNORG0000007976', 'NBNORG0000008189', 'NBNORG0000008186', 'NBNORG0000008096',
+        'NBNORG0000008089', 'NBNORG0000007855', 'NBNORG0000007854', 'NBNORG0000007881',
+        'NBNORG0000054424', 'NBNORG0000008468', 'NBNORG0000008460', 'NBNORG0000008458',
+        'NBNORG0000008462', 'NBNORG0000008461', 'NBNORG0000007740', 'NBNORG0000007882',
+        'NBNORG0000007484', 'NBNORG0000008418', 'NBNORG0000008008', 'NBNORG0000054578',
+        'NBNORG0000008070', 'NBNORG0000007824', 'NBNORG0000007996', 'NBNORG0000007168',
+        'NBNORG0000007122', 'NBNORG0000008011', 'NBNORG0000007758', 'NBNORG0000007754',
+        'NBNORG0000007225', 'NBNORG0000116338', 'NBNORG0000008676', 'NBNORG0000008292',
+        'NBNORG0000055006', 'NBNORG0000007844', 'NBNORG0000007255', 'NBNORG0000008577',
+        'NBNORG0000055121', 'NBNORG0000007725', 'NBNORG0000008436', 'NBNORG0000008480',
+        'NBNORG0000007807', 'NBNORG0000007808', 'NBNORG0000008379', 'NBNORG0000055222',
+        'NBNORG0000008207', 'NBNORG0000008209', 'NBNORG0000007970', 'NBNORG0000007364',
+        'NBNORG0000008376', 'NBNORG0000008231', 'NBNORG0000008079', 'NBNORG0000007666',
+        'NBNORG0000055395', 'NBNORG0000055473', 'NBNORG0000007473', 'NBNORG0000007111',
+        'NBNORG0000007250', 'NBNORG0000008380', 'NBNORG0000007072', 'NBNORG0000007741',
+        'NBNORG0000008107', 'NBNORG0000055702', 'NBNORG0000008100', 'NBNORG0000007080',
+        'NBNORG0000055584', 'NBNORG0000008368', 'NBNORG0000008434', 'NBNORG0000008432',
+        'NBNORG0000008433', 'NBNORG0000008431', 'NBNORG0000116339', 'NBNORG0000007142',
+        'NBNORG0000055851', 'NBNORG0000007871', 'NBNORG0000007877', 'NBNORG0000007868',
+        'NBNORG0000007878', 'NBNORG0000007869', 'NBNORG0000008763', 'NBNORG0000008203',
+        'NBNORG0000055871', 'NBNORG0000008395', 'NBNORG0000007909', 'NBNORG0000007075',
+        'NBNORG0000007438', 'NBNORG0000007440', 'NBNORG0000007439', 'NBNORG0000007449',
+        'NBNORG0000107166', 'NBNORG0000007583', 'NBNORG0000007582', 'NBNORG0000008333',
+        'NBNORG0000008176', 'NBNORG0000056025', 'NBNORG0000007865', 'NBNORG0000008109',
+        'NBNORG0000008108', 'NBNORG0000008118', 'NBNORG0000116340', 'NBNORG0000007118',
+        'NBNORG0000008166', 'NBNORG0000008763', 'NBNORG0000007900', 'NBNORG0000008012',
+        'NBNORG0000007951', 'NBNORG0000007958', 'NBNORG0000007950', 'NBNORG0000056411',
+        'NBNORG0000007931', 'NBNORG0000008503', 'NBNORG0000008454', 'NBNORG0000007628',
+        'NBNORG0000007631', 'NBNORG0000056485', 'NBNORG0000008268', 'NBNORG0000007923',
+        'NBNORG0000056615', 'NBNORG0000007657', 'NBNORG0000007656', 'NBNORG0000056621',
+        'NBNORG0000008493', 'NBNORG0000056650', 'NBNORG0000008426', 'NBNORG0000116341',
+        'NBNORG0000007784', 'NBNORG0000007798', 'NBNORG0000007425', 'NBNORG0000007261',
+        'NBNORG0000007770', 'NBNORG0000116342', 'NBNORG0000008131', 'NBNORG0000008194',
+        'NBNORG0000008196', 'NBNORG0000008193', 'NBNORG0000008488', 'NBNORG0000008486',
+        'NBNORG0000008323', 'NBNORG0000008313', 'NBNORG0000007828', 'NBNORG0000007826',
+        'NBNORG0000007593', 'NBNORG0000007590', 'NBNORG0000091471'
+    ]) AS organism_key
+    )
+    SELECT #columns#
+    FROM cttl_preferred
+    LEFT JOIN cache_taxa_taxon_lists cttl_common on cttl_common.taxon_meaning_id = cttl_preferred.taxon_meaning_id
+      AND cttl_common.taxon != cttl_preferred.taxon
+    LEFT JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_preferred.taxon_meaning_id
+      AND cttl_synonym.taxon != cttl_preferred.taxon
+    JOIN cache_taxon_searchterms cts on cts.taxa_taxon_list_id = cttl_preferred.id and cts.simplified=false
+    LEFT JOIN cof_filtered cof ON (cof.taxa_taxon_list_id = cttl_preferred.id OR cof.taxa_taxon_list_id = cttl_common.id OR cof.taxa_taxon_list_id = cttl_synonym.id)
+    WHERE
+    (
+      (lower('wildflower') = 'wildflower' OR lower('wildflower') = 'indicator')
+      AND cttl_preferred.organism_key IN (SELECT organism_key FROM wildflower_organism_keys)
+    )
+    OR
+    (
+      (lower('wildflower') = 'inventory' OR lower('wildflower') = 'additional')
+      AND cttl_preferred.taxon_group_id IN (78, 81, 87, 99, 89, 94, 137, 148)
+    )
+  </query>
+  <order_bys>
+    <order_by>frequency desc</order_by>
+  </order_bys>
+  <params>
+    <param name="species_list" display="species_list" datatype="text" />
+    <param name="count_website_list" display="Count Website List" description="Website IDs to include in count" datatype="text" default='32' emptyvalue='32'/>
+  </params>
+  <columns>
+    <column name='id' display='id' sql="cttl_preferred.id" datatype='integer' in_count="true" />
+    <column name='taxon_group' display='taxon_group' sql="cttl_preferred.taxon_group_id" datatype='integer'  />
+    <column name='taxon' display='taxon' sql="cttl_preferred.taxon" datatype='text' />
+    <column name='common_name' display='common_name' sql="
+      jsonb_object_agg(distinct cttl_common.id, cttl_common.taxon
+      ORDER BY cttl_common.taxon ASC)
+      filter (where cttl_common.id is not null)" datatype='text' aggregate="true"/>
+    <column name='synonym' display='synonym' sql="
+      jsonb_object_agg(distinct cttl_synonym.id, cttl_synonym.taxon
+      ORDER BY cttl_synonym.taxon ASC)
+      filter (where cttl_synonym.id is not null)" datatype='text' aggregate="true" />
+    <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
+    <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
+    <column name='frequency' display='frequency' sql="count(distinct cof.id)" datatype='integer' aggregate="true" />
+  </columns>
+</report>
