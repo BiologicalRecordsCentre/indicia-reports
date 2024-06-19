@@ -8,6 +8,7 @@
       count(distinct(csf.id)) as visits,
       min(csf.date_start) as earliest,
       max(csf.date_end) as latest,
+      cof.record_status as record_status,
       count(distinct(cof.id)) as records,
       count(distinct(cof.taxon_meaning_id)) as taxa,
       string_agg(distinct(s.title), ', ') as surveys,
@@ -24,7 +25,7 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY l.id, l.name, l.comment, t.term, 
+    GROUP BY l.id, l.name, l.comment, t.term, record_status,
       ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)), 
       ST_AsGeoJSON(st_transform(l.boundary_geom, 4326))
     UNION
@@ -35,6 +36,7 @@
       count(distinct(csf.id)) as visits,
       min(csf.date_start) as earliest,
       max(csf.date_end) as latest,
+      cof.record_status as record_status,
       count(distinct(cof.id)) as records,
       count(distinct(cof.taxon_meaning_id)) as taxa,
       string_agg(distinct(s.title), ', ') as surveys,
@@ -49,7 +51,7 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       and lp.location_type_id = 4009
-    GROUP BY lp.id, lp.name,
+    GROUP BY lp.id, lp.name, record_status,
       ST_AsGeoJSON(st_transform(lp.centroid_geom, 4326)),
       ST_AsGeoJSON(st_transform(lp.boundary_geom, 4326))
   </query>
