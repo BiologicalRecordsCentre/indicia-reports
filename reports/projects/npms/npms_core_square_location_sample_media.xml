@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report title="NPMS core square sample and location media" description="Todo description">
   <query>
-    select l.name as plot, lm.id as media_id, lm.path, lm.caption, lm.created_on, lm.media_type_id, lm.licence_id, lm.exif, 'location' as image_type
-    from locations l
-      join locations lp on lp.id = l.parent_id
-      join location_media lm on lm.location_id = l.id
-    where lp.name = '#gr#'
-    and lp.location_type_id = 4009
-    union
-    select csf.location_name as plot, sm.id as media_id, sm.path, sm.caption, sm.created_on, sm.media_type_id, sm.licence_id, sm.exif, 'sample' as image_type
-    from cache_samples_functional csf
-      join locations l on l.id = csf.location_id
-      join locations lp on lp.id = l.parent_id
-      join sample_media sm on sm.sample_id = csf.id
-    where lp.name = '#gr#'
-    and lp.location_type_id = 4009
+    SELECT l.name as plot, lm.id as media_id, lm.path, lm.caption, lm.created_on, lm.media_type_id, lm.licence_id, lm.exif, 'location' as image_type
+    FROM locations l
+      JOIN locations lp on lp.id = l.parent_id
+      JOIN location_media lm on lm.location_id = l.id
+    WHERE lp.name = '#gr#'
+    AND lp.location_type_id = 4009
+    UNION
+    SELECT csf.location_name as plot, sm.id as media_id, sm.path, sm.caption, sm.created_on, sm.media_type_id, sm.licence_id, sm.exif, 'sample' as image_type
+    FROM cache_samples_functional csf
+      JOIN locations l on l.id = csf.location_id
+      JOIN locations lp on lp.id = l.parent_id
+      JOIN sample_media sm on sm.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+    AND lp.location_type_id = 4009
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
   </params>
   <columns>
     <column name="plot" display="Plot name" />
-    <column name="media_id" display="Year" />
-    <column name="path" display="Number of taxa" />
-    <column name="caption" display="Number of taxa" />
-    <column name="created_on" display="Number of taxa" />
-    <column name="media_type_id" display="Number of taxa" />
-    <column name="licence_id" display="Number of taxa" />
-    <column name="exif" display="Number of taxa" />
-    <column name="image_type" display="Number of taxa" />
+    <column name="media_id" display="Media ID" />
+    <column name="path" display="Image path" />
+    <column name="caption" display="Image caption" />
+    <column name="created_on" display="Image created date" />
+    <column name="media_type_id" display="Media type ID" />
+    <column name="licence_id" display="Licence ID" />
+    <column name="exif" display="EXIF data" />
+    <column name="image_type" display="Image type" />
   </columns>
 </report>
