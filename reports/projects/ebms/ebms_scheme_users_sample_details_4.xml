@@ -8,14 +8,14 @@
   FROM users_websites uw
   JOIN users u on u.id = uw.user_id AND u.deleted = false
   JOIN people p on p.id = u.person_id AND p.deleted = false
-  JOIN cache_samples_functional csf on csf.created_by_id = u.id
-    AND csf.survey_id=#survey_id#
-  JOIN locations l on l.id = csf.location_id 
-    AND l.parent_id IS NULL AND l.deleted=false
-  JOIN location_attribute_values lav on lav.location_id = l.id
-      AND lav.location_attribute_id = #country_loc_attr_id#
-      AND lav.int_value = #coordinator_country_id#
-      AND lav.deleted=false
+  JOIN samples s on s.created_by_id = u.id
+    AND s.survey_id=#survey_id#
+    AND s.parent_id IS NULL
+  JOIN cache_samples_functional csf on csf.id = s.id
+  JOIN locations l on csf.location_ids @> ARRAY[l.id]
+    AND l.location_type_id = #country_location_type_id#
+    AND l.id = #coordinator_country_id#
+    AND l.deleted=false
   LEFT JOIN users_websites accesscheck on accesscheck.website_id=uw.website_id
     AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   where #website_filter#
@@ -25,7 +25,7 @@
     <order_by>sample_numbers_total DESC</order_by>
   </order_bys>
   <params>
-    <param name='location_type_ids' display='Location type IDs' description="List of location types to include" datatype='text' />
+    <param name='country_location_type_id' display='Country location type ID' description="Country location type ID" datatype='integer' />
     <param name='country_loc_attr_id' display='Country location attribute ID' description="ID of the location attribute that hold's a transects country" datatype='integer' />
     <param name='coordinator_country_id' display='Coordinator country ID' description="ID of the country the coordinator is associated with" datatype='integer' default="0" emptyvalue="0" />
     <param name='survey_id' display='Survey' description='Select the survey' datatype='integer' />
