@@ -13,6 +13,7 @@
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = TRUE
+    LIMIT #occ_row_limit#
 ),
 cttl_common AS (
     select
@@ -123,6 +124,7 @@ wildflower_organism_keys AS (
   <params>
     <param name="species_list" display="species_list" datatype="text" />
     <param name="count_website_list" display="Count Website List" description="Website IDs to include in count" datatype="text" default='32' emptyvalue='32'/>
+    <param name="occ_row_limit" display="Occurrence Row Limiter" description="Limit the number of occurrence rows to count" datatype="text" default='50000' emptyvalue='50000'/>
   </params>
   <columns>
     <column name='id' display='id' sql="cttl_preferred.id" datatype='integer' in_count="true" />
