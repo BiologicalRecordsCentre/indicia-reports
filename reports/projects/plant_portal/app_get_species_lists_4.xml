@@ -13,7 +13,6 @@
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = TRUE
-    LIMIT #occ_row_limit#
 ),
 cttl_common AS (
     select
@@ -41,6 +40,7 @@ cof_filtered AS (
       taxa_taxon_list_id
     FROM cache_occurrences_functional
     WHERE website_id IN (#count_website_list#)
+    LIMIT #occ_row_limit#
 ),
 wildflower_organism_keys AS (
     SELECT unnest(array[
