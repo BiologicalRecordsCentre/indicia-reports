@@ -5,12 +5,11 @@
   <query>
   WITH cttl_preferred AS (
     SELECT
-        id,
-        taxon_group_id,
-        taxon,
-        default_common_name,
-        organism_key,
-        taxon_meaning_id
+      id,
+      taxon_group_id,
+      taxon,
+      organism_key,
+      taxon_meaning_id
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = TRUE
@@ -18,18 +17,18 @@
 cttl_common AS (
     select
     	id,
-        taxon_meaning_id,
-        taxon
+      taxon_meaning_id,
+      taxon
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = false
-      AND language_iso in ('eng','cym','gla','gle') 
+      AND language_iso in ('eng','cym','gla','gle')
 ),
 cttl_synonym AS (
     select
     	id,
-        taxon_meaning_id,
-        taxon
+      taxon_meaning_id,
+      taxon
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = false
@@ -37,8 +36,8 @@ cttl_synonym AS (
 ),
 cof_filtered AS (
     SELECT
-        id,
-        taxa_taxon_list_id
+      id,
+      taxa_taxon_list_id
     FROM cache_occurrences_functional
     WHERE website_id IN (#count_website_list#)
 ),
@@ -101,14 +100,10 @@ wildflower_organism_keys AS (
     )
     SELECT #columns#
     FROM cttl_preferred
-    LEFT JOIN cache_taxa_taxon_lists cttl_common on cttl_common.taxon_meaning_id = cttl_preferred.taxon_meaning_id
+    LEFT JOIN cttl_common on cttl_common.taxon_meaning_id = cttl_preferred.taxon_meaning_id
       AND cttl_common.taxon != cttl_preferred.taxon
-      AND cttl_common.preferred = false
-      AND cttl_common.language_iso in ('eng','cym','gla','gle') 
-    LEFT JOIN cache_taxa_taxon_lists cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_preferred.taxon_meaning_id
+    LEFT JOIN cttl_synonym on cttl_synonym.taxon_meaning_id = cttl_preferred.taxon_meaning_id
       AND cttl_synonym.taxon != cttl_preferred.taxon
-      AND cttl_synonym.preferred = false
-      AND cttl_synonym.language_iso = 'lat'
     JOIN cache_taxon_searchterms cts on cts.taxa_taxon_list_id = cttl_preferred.id and cts.simplified=false
     LEFT JOIN cof_filtered cof ON (cof.taxa_taxon_list_id = cttl_preferred.id OR cof.taxa_taxon_list_id = cttl_common.id OR cof.taxa_taxon_list_id = cttl_synonym.id)
     WHERE
