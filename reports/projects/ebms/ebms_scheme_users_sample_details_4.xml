@@ -38,6 +38,7 @@
     display='Name' datatype='text' />
     <!-- need NPMS access check-->
     <column name='email_address' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' display='Email address' visible='true' datatype='text' />
+    <column name='first_sample_year' sql='MIN(EXTRACT(year from csf.created_on))' display='Year of first sample' datatype='integer' aggregate="true"/>
     <column name='transect_number' sql='count(distinct csf.location_id)' display='Sites (number of transect sites)' visible='true' aggregate="true" datatype='integer' />
     <column name='samples_this_year' sql="
     count(csf.id) 
