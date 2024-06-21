@@ -117,6 +117,11 @@ wildflower_organism_keys AS (
       (lower('#species_list#') = 'inventory' OR lower('#species_list#') = 'additional')
       AND cttl_preferred.taxon_group_id IN (78, 81, 87, 99, 89, 94, 137, 148)
     )
+    OR
+    (
+      (lower('#species_list#') = 'standard')
+      AND cttl_preferred.taxon_group_id IN (78,81,87,99,89,94,137,148,155,133,129,97,227,128)
+    )
   </query>
   <order_bys>
     <order_by>frequency desc</order_by>
