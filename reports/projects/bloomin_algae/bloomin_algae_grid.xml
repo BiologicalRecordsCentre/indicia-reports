@@ -1,0 +1,86 @@
+<report
+    title="Bloomin' Algae Popup Map"
+    description="Report to show Bloomin' Algae records on a map with record details that pop up when the record is clicked."
+>
+  <query website_filter_field="o.website_id" samples_id_field="o.sample_id">
+  SELECT #columns#
+  FROM cache_occurrences_functional o
+  JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
+  JOIN cache_samples_nonfunctional snf on snf.id=o.sample_id
+  #joins#
+  WHERE survey_id = 445
+  AND website_id = 23
+  AND o.training = #training#
+  #idlist#
+  </query>
+
+  <order_bys>
+    <order_by>o.date_start DESC, o.id DESC</order_by>
+  </order_bys>
+
+  <params>
+    <param name="area" display="Map area" datatype="lookup" lookup_values="U:United Kingdom,E:England,S:Scotland,W:Wales,I:Northern Ireland">
+      <where>CASE WHEN '#area#' = 'U' THEN o.location_ids &amp;&amp; ARRAY[1605,1606,1612,1614]
+                  WHEN '#area#' = 'E' THEN o.location_ids &amp;&amp; ARRAY[1605]
+                  WHEN '#area#' = 'S' THEN o.location_ids &amp;&amp; ARRAY[1614]
+                  WHEN '#area#' = 'W' THEN o.location_ids &amp;&amp; ARRAY[1606]
+                  WHEN '#area#' = 'I' THEN o.location_ids &amp;&amp; ARRAY[1612]
+             END
+        </where>
+    </param>
+    <param name="period" display="Period to show records for" datatype="lookup" lookup_values="P:Previous year,Y:This year,M:Last 4 weeks,W:Last 7 days">
+      <where>CASE WHEN '#period#' = 'P' THEN o.date_start BETWEEN '2019-01-01 00:00:00' AND '2020-01-01 00:00:00'
+				  WHEN '#period#' = 'Y' THEN date_part('year', o.date_start) = date_part('year', now())
+                  WHEN '#period#' = 'M' THEN o.date_start > now() - interval '28 days'
+                  WHEN '#period#' = 'W' THEN o.date_start > now() - interval '7 days'
+             END
+      </where>
+    </param>      
+    <param name="status" display="Quality of record to show" datatype="lookup" 
+    lookup_values="12:Accepted,123:Accepted or plausible,123-:Accepted or plausible or unchecked,45:Not accepted">
+      <where>CASE WHEN '#status#' = '12' THEN o.record_status = 'V'
+                  WHEN '#status#' = '123' THEN o.record_status = 'V' OR o.record_substatus = 3
+                  WHEN '#status#' = '123-' THEN o.record_status in ('V', 'C')
+                  WHEN '#status#' = '45' THEN o.record_status = 'R'
+             END
+      </where>
+    </param>      
+    <param name="idlist" datatype="idlist" fieldname="o.id" alias="occurrence_id" />
+  </params>
+
+  <columns>
+    <column name="occurrence_id" sql="o.id" datatype="integer" visible="false" />
+    <column name="location_name" sql="o.location_name" datatype="text" visible="false" />
+    <column name="date_start" sql="o.date_start" visible="false" />
+    <column name="date_end" sql="o.date_end" visible="false" />
+    <column name="date_type" sql="o.date_type" visible="false" />
+    <column name="date" visible="false" />
+    <column name="recorder" 
+            visible="false" 
+            sql="CASE WHEN (TRIM(snf.recorders) !~ ' ' AND LENGTH(snf.recorders)>30) THEN 'Recorder' ELSE snf.recorders END" 
+            datatype="text"
+    />
+    <column name="record_status" 
+            visible="false" 
+            sql="CASE o.record_substatus WHEN '1' THEN 'Accepted: correct' 
+                                         WHEN '2' THEN 'Accepted: considered correct' 
+										 WHEN '3' THEN 'Plausible' 
+										 WHEN '4' THEN 'Not accepted: unable to verify' 
+										 WHEN '5' THEN 'Not accepted: incorrect' 
+										 ELSE 'Waiting for verification' 
+										 END" 
+            datatype="text"
+    />
+    <column name="summary"
+            display="Details"
+            sql="1"
+            datatype="integer"
+            template="&lt;strong&gt;ID: &lt;/strong&gt;{occurrence_id}&lt;/br&gt;
+&lt;strong&gt;Date: &lt;/strong&gt;{date}&lt;/br&gt;
+&lt;strong&gt;Location: &lt;/strong&gt;{location_name}&lt;/br&gt;
+&lt;strong&gt;Recorder: &lt;/strong&gt;{recorder}&lt;/br&gt;
+&lt;strong&gt;Status: &lt;/strong&gt;{record_status}&lt;/br&gt;" 
+    />
+    <column name="images" display="Images" sql="onf.media" img="true" />
+  </columns>
+</report>
