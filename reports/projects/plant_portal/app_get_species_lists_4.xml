@@ -135,10 +135,7 @@ wildflower_organism_keys AS (
     <column name='id' display='id' sql="cttl_preferred.id" datatype='integer' in_count="true" />
     <column name='taxon_group' display='taxon_group' sql="cttl_preferred.taxon_group_id" datatype='integer'  />
     <column name='taxon' display='taxon' sql="cttl_preferred.taxon" datatype='text' />
-    <column name='common_name' display='common_name' sql="
-      jsonb_object_agg(distinct cttl_common.id, cttl_common.taxon
-      ORDER BY cttl_common.taxon ASC)
-      filter (where cttl_common.id is not null)" datatype='text' aggregate="true"/>
+    <column name='common_name' display='common_name' sql="cttl_preferred.default_common_name" datatype='text' />
     <column name='synonym' display='synonym' sql="
       jsonb_object_agg(distinct cttl_synonym.id, cttl_synonym.taxon
       ORDER BY cttl_synonym.taxon ASC)
