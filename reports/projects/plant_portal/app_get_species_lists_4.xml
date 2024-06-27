@@ -19,7 +19,8 @@
     SELECT
       id,
       taxon,
-      taxon_meaning_id
+      taxon_meaning_id,
+      language_iso
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id = 15
       AND preferred = FALSE
