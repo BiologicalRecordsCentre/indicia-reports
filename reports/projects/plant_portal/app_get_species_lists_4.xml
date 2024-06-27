@@ -259,7 +259,7 @@
       jsonb_object_agg(distinct cttl_same_meaning.id, cttl_same_meaning.taxon
       ORDER BY cttl_same_meaning.taxon ASC)
       filter (where cttl_same_meaning.id is not null
-        AND language_iso = 'lat'
+        AND cttl_same_meaning.language_iso = 'lat'
         AND cttl_same_meaning.taxon != cttl_preferred.taxon)" datatype='text' aggregate="true" />
     <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
     <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
