@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Section Plot Test" description="UKBMS specific: Lists occurrences at a section level - Test Version">
+<report title="EBMS Section Plot" description="Lists occurrences at a section level">
       <query website_filter_field="o.website_id" training_filter_field="o.training">
       SELECT #columns#
       FROM locations transect
