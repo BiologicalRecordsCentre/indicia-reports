@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="UKBMS Year Plot Index Report Japan Test" description="UKBMS specific, for use with the Year by Year plot form: gives year index values using ukbms_year_index_values data - Test Version">
+<report title="EBMS Year Plot Index Report" description="For use with the Year by Year plot form: gives year index values using ukbms_year_index_values data">
   <query>
       SELECT #columns#
       FROM ukbms_year_index_values yiv
@@ -9,7 +9,6 @@
       	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
         SELECT cttl_common.taxon_meaning_id as taxon_meaning_id, string_agg(cttl_common.taxon, ',' ORDER BY cttl_common.id) as combined
           FROM cache_taxa_taxon_lists cttl_common
-          JOIN taxa_taxon_lists ttl_common on ttl_common.id = cttl_common.id  
           WHERE cttl_common.language_iso = '#language_iso#'
             AND cttl_common.preferred = false
             AND cttl_common.taxon_list_id = (#taxon_list_id#)
@@ -27,7 +26,7 @@
     <param name='taxon_list_id' display='Taxon List ID' datatype='int' >
       <where>cttl.taxon_list_id = #taxon_list_id#</where>
     </param>
-    <param name='language_iso' display='Country ID' description='Three letter ISO code for language.' datatype='int' />
+    <param name='language_iso' display='Country ID' description='Three letter ISO code for language.' datatype='text' />
     <!-- the scheme module to provide {language_iso} replacement - use iform_lang_iso_639_2 to convert 2 to 3 letters -->
   </params>
   <columns>
