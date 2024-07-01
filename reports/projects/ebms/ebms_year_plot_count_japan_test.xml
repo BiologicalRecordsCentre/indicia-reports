@@ -33,7 +33,7 @@ This version of report also returns common names in supplied language.">
     <column name="location_id" display="ID" sql="so.location_id" in_count="true" datatype="integer" />
     <column name="taxon" display="Taxon" sql="coalesce(so.default_common_name, so.preferred_taxon, so.taxon)" datatype="text" />
     <column name="preferred_taxon" display="Preferred Taxon" sql="so.preferred_taxon" datatype="text" />
-    <column name='common' display='Common Name' sql="coalesce(common.combined, so.default_common_name, so.preferred_taxon, so.taxon)" datatype="text" />
+    <column name='common' display='Common Name' sql="coalesce(common.combined, so.preferred_taxon, so.taxon)" datatype="text" />
     <column name="taxon_meaning_id" display="Taxon Meaning ID" sql="so.taxon_meaning_id" datatype="text" />
     <column name="year" display="Year" sql="so.year" datatype="text" />
     <column name="summarised_data" display="Data" sql="so.summarised_data" datatype="text" />
