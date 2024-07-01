@@ -80,6 +80,7 @@
     <column name='cache_updated_on' sql='o.updated_on' on_demand="true" />
     <column name='recorder' on_demand="true" sql="CASE WHEN (TRIM(snf.recorders) !~ ' ' AND LENGTH(snf.recorders)>30) THEN 'Recorder' ELSE snf.recorders END" datatype="text" />
     <column name='created_by_id' visible='false' sql='o.created_by_id' on_demand="true" datatype="integer" />
+    <column name="comment" sql="onf.comment" on_demand="true" />
     <column name='input_form' visible="false" on_demand="true" sql="case
     when canEdit.id is null then null
     when o.input_form is null or o.website_id not in (#website_ids#) or #force_default_input_form#=1 then '#default_input_form#'
