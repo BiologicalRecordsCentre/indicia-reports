@@ -61,7 +61,9 @@
       </joins>
       <where value="no" operator="equal">n.id IS NULL</where>
     </param>
-    <param name="comments_search" display="Search comments" sql="websearch_to_tsquery('english', '#comments_search#') @@ to_tsvector('english', coalesce(o.comment, '') || ' ' || coalesce(s.comment, ''))" type="text" default="" />
+    <param name="comments_search" display="Search comments" type="text" default="">
+      <where>websearch_to_tsquery('english', '#comments_search#') @@ to_tsvector('english', coalesce(o.comment, '') || ' ' || coalesce(s.comment, ''))</where>
+    </param>
   </params>
   <columns>
     <column name='occurrence_id' sql='o.id' on_demand="true" datatype="integer" />
