@@ -92,7 +92,7 @@
     <column name="certainty" display="Certainty" sql="o.certainty" visible="false" />
     <column name="belongs_to_user" display="Belongs to user" sql="CASE WHEN CAST(o.created_by_id AS character varying) = '#user_id#' AND o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
     <column name="belongs_to_site" display="Belongs to site" sql="CASE WHEN o.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
-    <column name="comment" display="Comment" sql="onf.comment" />
+    <column name="comment" display="Comment" sql="coalesce(onf.comment || '&lt;br/&gt;', '') || coalesce(snf.comment, '')" />
     <column name="images" display="Images" sql="onf.media" img="true" />
     <column name="input_form" visible="false" sql="case
     when canEdit.id is null then null
