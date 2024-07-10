@@ -13,7 +13,7 @@
 	join users u on u.id=co.created_by_id
 	join people p on p.id=u.person_id
 	where (co.record_status='V' or co.record_substatus=3)
-	and co.location_ids @> ARRAY[690]
+	and co.location_ids @> ARRAY[328967]
 	and snf.recorders&lt;&gt;'' and snf.recorders is not null
 	and co.website_id=8
 	and co.media_count>0
