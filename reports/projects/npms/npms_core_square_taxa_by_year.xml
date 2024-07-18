@@ -5,7 +5,21 @@
       l.name as name,
       date_part('year', csf.date_start) as year,
       count(distinct(cof.taxon_meaning_id)) as taxa,
-      string_agg(distinct(s.title), ', ') as surveys
+      'all' as survey
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
+      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+      AND lp.location_type_id = 4009
+    GROUP BY l.name, date_part('year', csf.date_start)
+  UNION
+    SELECT 
+      l.name as name,
+      date_part('year', csf.date_start) as year,
+      count(distinct(cof.taxon_meaning_id)) as taxa,
+      s.title as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
       LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
@@ -14,13 +28,27 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY l.name, date_part('year', csf.date_start)
-    UNION
+    GROUP BY l.name, date_part('year', csf.date_start), s.title
+UNION
     SELECT 
       lp.name as name,
       date_part('year', csf.date_start) as year,
       count(distinct(cof.taxon_meaning_id)) as taxa,
-      string_agg(distinct(s.title), ', ') as surveys
+      'all' as survey
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
+      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+      AND lp.location_type_id = 4009
+    GROUP BY lp.name, date_part('year', csf.date_start)
+  UNION
+    SELECT 
+      lp.name as name,
+      date_part('year', csf.date_start) as year,
+      count(distinct(cof.taxon_meaning_id)) as taxa,
+      s.title as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
       LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
@@ -29,7 +57,7 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY lp.name, date_part('year', csf.date_start)
+    GROUP BY lp.name, date_part('year', csf.date_start), s.titlegit
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
