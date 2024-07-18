@@ -57,7 +57,7 @@ UNION
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY lp.name, date_part('year', csf.date_start), s.titlegit
+    GROUP BY lp.name, date_part('year', csf.date_start), s.title
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
