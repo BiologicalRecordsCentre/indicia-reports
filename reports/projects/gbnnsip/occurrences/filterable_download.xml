@@ -32,6 +32,8 @@
     <column name='date' display='Date' datatype="date" />
     <column name="created_on" display="Date record added" datatype="date" sql="o.created_on" />
     <column name="entered_sref" display="Grid ref" datatype="text" sql="smp.entered_sref" />
+    <column name="x" sql="round(st_x(st_transform(st_centroid(smp.geom), 27700)))" display="X coord." datatype="integer" />
+    <column name="y" sql="round(st_y(st_transform(st_centroid(smp.geom), 27700)))" display="Y coord." datatype="integer" />
     <column name="vice_county" display="Vice county" datatype="text" sql="(select string_agg(vc.name, ', ') as vcnames from locations vc where o.location_ids @> ARRAY[vc.id] and vc.location_type_id=15)" />
     <column name="title" display="Title" datatype="text" sql="snf.attrs_json->>'5'" />
     <column name="first_name" display="First name" datatype="text" sql="snf.attrs_json->>'6'" />
