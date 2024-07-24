@@ -5,10 +5,11 @@
       l.id as id,
       l.name as name,
       t.term as plot_type,
-      count(distinct(csf.id)) as visits,
+      count(distinct(csf.id)) as samples,
+	    count(distinct(csf.date_start)) as dates,
       min(csf.date_start) as earliest,
       max(csf.date_end) as latest,
-      cof.record_status as record_status,
+      null as record_status,
       count(distinct(cof.id)) as records,
       count(distinct(cof.taxon_meaning_id)) as taxa,
       string_agg(distinct(s.title), ', ') as surveys,
@@ -25,18 +26,43 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
-    GROUP BY l.id, l.name, l.comment, t.term, cof.record_status,
+    GROUP BY l.id, l.name, l.comment, t.term,
       ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)), 
       ST_AsGeoJSON(st_transform(l.boundary_geom, 4326))
+	UNION
+	SELECT 
+      null as id,
+      l.name as name,
+      null as plot_type,
+      null as samples,
+	  null as dates,
+      null as earliest,
+      null as latest,
+      cof.record_status as record_status,
+      count(distinct(cof.id)) as records, 
+      null as taxa,
+      null as surveys,
+      null as comment,
+      null as centroid_geom,
+      null as boundary_geom
+    FROM locations l
+      LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
+      LEFT JOIN locations lp on lp.id = l.parent_id
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+      AND lp.location_type_id = 4009
+    GROUP BY l.name, cof.record_status
     UNION
     SELECT 
       lp.id as id,
       lp.name as name,
       null as plot_type,
-      count(distinct(csf.id)) as visits,
+      count(distinct(csf.id)) as samples,
+	  count(distinct(csf.date_start)) as dates,
       min(csf.date_start) as earliest,
       max(csf.date_end) as latest,
-      cof.record_status as record_status,
+      null as record_status,
       count(distinct(cof.id)) as records,
       count(distinct(cof.taxon_meaning_id)) as taxa,
       string_agg(distinct(s.title), ', ') as surveys,
@@ -51,9 +77,33 @@
       LEFT JOIN surveys s on s.id = csf.survey_id
     WHERE lp.name = '#gr#'
       and lp.location_type_id = 4009
-    GROUP BY lp.id, lp.name, cof.record_status,
+    GROUP BY lp.id, lp.name,
       ST_AsGeoJSON(st_transform(lp.centroid_geom, 4326)),
       ST_AsGeoJSON(st_transform(lp.boundary_geom, 4326))
+	  UNION
+    SELECT 
+      null as id,
+      lp.name as name,
+      null as plot_type,
+      null as samples,
+	    null as dates,
+      null as earliest,
+      null as latest,
+      cof.record_status as record_status,
+      count(distinct(cof.id)) as records,
+      null as taxa,
+      null as surveys,
+      null as comment,
+      null as centroid_geom,
+      null as boundary_geom
+    FROM locations lp
+      LEFT JOIN locations_websites lw on lw.location_id = lp.id AND lw.deleted = false AND lw.id = 32
+      LEFT JOIN locations l on l.parent_id = lp.id
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+      and lp.location_type_id = 4009
+    GROUP BY lp.name, cof.record_status
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
@@ -61,7 +111,8 @@
   <columns>
     <column name="name" display="Plot name" />
     <column name="plot_type" display="Plot type" />
-    <column name="visits" display="Number of visits" />
+    <column name="samples" display="Number of samples" />
+    <column name="dates" display="Number of dates" />
     <column name="earliest" display="Earliest visit date" />
     <column name="latest" display="Latest visit date" />
     <column name="records" display="Number of records" />
