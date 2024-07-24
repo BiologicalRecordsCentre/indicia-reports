@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="NPMS core square sample and location media" description="Todo description">
+<report title="NPMS core square occurrence, sample and location media" description="Todo description">
   <query>
     SELECT l.name as plot, lm.id as media_id, lm.path, lm.caption, lm.created_on, lm.media_type_id, lm.licence_id, lm.exif, 'location' as image_type
     FROM locations l
@@ -13,6 +13,15 @@
       JOIN locations l on l.id = csf.location_id
       JOIN locations lp on lp.id = l.parent_id
       JOIN sample_media sm on sm.sample_id = csf.id
+    WHERE lp.name = '#gr#'
+    AND lp.location_type_id = 4009
+    UNION
+    SELECT csf.location_name as plot, om.id as media_id, om.path, om.caption, om.created_on, om.media_type_id, om.licence_id, om.exif, 'occurrence' as image_type
+    from cache_occurrences_functional cof
+      JOIN cache_samples_functional csf on cof.sample_id = csf.id
+      JOIN locations l on l.id = csf.location_id
+      JOIN locations lp on lp.id = l.parent_id
+      JOIN occurrence_media om on om.occurrence_id = cof.id
     WHERE lp.name = '#gr#'
     AND lp.location_type_id = 4009
   </query>
