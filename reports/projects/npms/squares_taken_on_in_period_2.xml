@@ -52,14 +52,17 @@
       '&lt;b style=&quot;color:red&quot;&gt;' || p.first_name || '&lt;/b&gt;' 
     ELSE
       p.first_name
-    END" display='Released by (first name)' datatype='text'/>
+    END" display='Taken on by (first name)' datatype='text'/>
     <column name='surname' sql="
     CASE WHEN u.id IS NULL OR p.id IS NULL THEN
       '&lt;b style=&quot;color:red&quot;&gt;' || p.surname || '&lt;/b&gt;'
     ELSE 
       p.surname
-    END" display='Released by (surname)' datatype='text'/>
+    END" display='Taken on by (surname)' datatype='text'/>
     <column name='email' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' display='Taken on by (email address)' datatype='text'/>
+    <column name='application_date' sql="
+    to_char(cast (pavAlloc.created_on as date), 'DD/MM/YYYY')
+    " display='Application date' datatype='date'/>
     <column name='approval_date' sql="
     CASE WHEN pavAlloc.deleted = false THEN
       to_char(cast (pavAlloc.updated_on as date), 'DD/MM/YYYY')
