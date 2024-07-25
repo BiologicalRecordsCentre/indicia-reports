@@ -8,13 +8,14 @@
       'all' as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
-      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
-      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false AND lp.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.training = false
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.training = false
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
+	  AND l.deleted = false
     GROUP BY l.name, date_part('year', csf.date_start)
-  UNION
+    UNION
     SELECT 
       l.name as name,
       date_part('year', csf.date_start) as year,
@@ -22,14 +23,15 @@
       s.title as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
-      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
-      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
-      LEFT JOIN surveys s on s.id = csf.survey_id
+      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false AND lp.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.training = false
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.training = false
+      LEFT JOIN surveys s on s.id = csf.survey_id AND s.deleted = false
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
+	  AND l.deleted = false
     GROUP BY l.name, date_part('year', csf.date_start), s.title
-UNION
+    UNION
     SELECT 
       lp.name as name,
       date_part('year', csf.date_start) as year,
@@ -37,13 +39,14 @@ UNION
       'all' as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
-      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
-      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+      LEFT JOIN locations lp on lp.id = l.parent_id AND l.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.training = false
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.training = false
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
+	  AND l.deleted = false
     GROUP BY lp.name, date_part('year', csf.date_start)
-  UNION
+    UNION
     SELECT 
       lp.name as name,
       date_part('year', csf.date_start) as year,
@@ -51,12 +54,13 @@ UNION
       s.title as survey
     FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
-      LEFT JOIN locations lp on lp.id = l.parent_id and l.deleted = false
-      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
-      LEFT JOIN surveys s on s.id = csf.survey_id
+      LEFT JOIN locations lp on lp.id = l.parent_id AND l.deleted = false
+      LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.training = false
+      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csf.id AND cof.training = false
+      LEFT JOIN surveys s on s.id = csf.survey_id AND s.deleted = false
     WHERE lp.name = '#gr#'
       AND lp.location_type_id = 4009
+	  AND l.deleted = false
     GROUP BY lp.name, date_part('year', csf.date_start), s.title
   </query>
   <params>

@@ -3,28 +3,31 @@
   <query>
     SELECT l.name as plot, null as taxon, null as preferred_taxon, null as common_name, lm.id as media_id, lm.path, lm.caption, lm.created_on, lm.media_type_id, lm.licence_id, lm.exif, 'location' as image_type
     FROM locations l
-      JOIN locations lp on lp.id = l.parent_id
-      JOIN location_media lm on lm.location_id = l.id
+      JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
+      JOIN location_media lm on lm.location_id = l.id AND lm.deleted = false
     WHERE lp.name = '#gr#'
     AND lp.location_type_id = 4009
+	  AND l.deleted = false
     UNION
     SELECT csf.location_name as plot, null as taxon, null as preferred_taxon, null as common_name, sm.id as media_id, sm.path, sm.caption, sm.created_on, sm.media_type_id, sm.licence_id, sm.exif, 'sample' as image_type
     FROM cache_samples_functional csf
-      JOIN locations l on l.id = csf.location_id
-      JOIN locations lp on lp.id = l.parent_id
-      JOIN sample_media sm on sm.sample_id = csf.id
+      JOIN locations l on l.id = csf.location_id AND l.deleted = false
+      JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
+      JOIN sample_media sm on sm.sample_id = csf.id AND sm.deleted = false
     WHERE lp.name = '#gr#'
     AND lp.location_type_id = 4009
+	  AND csf.training = false
     UNION
     SELECT csf.location_name as plot, cttl.taxon as taxon, cttl.preferred_taxon as preferred_taxon, cttl.default_common_name as common_name, om.id as media_id, om.path, om.caption, om.created_on, om.media_type_id, om.licence_id, om.exif, 'occurrence' as image_type
     from cache_occurrences_functional cof
-      JOIN cache_samples_functional csf on cof.sample_id = csf.id
-      JOIN locations l on l.id = csf.location_id
-      JOIN locations lp on lp.id = l.parent_id
-      JOIN occurrence_media om on om.occurrence_id = cof.id
+      JOIN cache_samples_functional csf on cof.sample_id = csf.id AND csf.training = false
+      JOIN locations l on l.id = csf.location_id AND l.deleted = false
+      JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
+      JOIN occurrence_media om on om.occurrence_id = cof.id AND om.deleted = false
       JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
     WHERE lp.name = '#gr#'
     AND lp.location_type_id = 4009
+	  AND cof.training = false
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>

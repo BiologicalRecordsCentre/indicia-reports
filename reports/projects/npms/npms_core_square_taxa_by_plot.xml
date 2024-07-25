@@ -2,25 +2,27 @@
 <report title="NPMS core square plots taxa by plot" description="Todo description">
   <query>
     SELECT lp.name as plot, cttl.preferred_taxon as taxon, cttl.default_common_name as common, count(cof.id) as records
-    from cache_occurrences_functional cof
-      JOIN cache_samples_functional csf on cof.sample_id = csf.id
-      JOIN locations l on l.id = csf.location_id
-      JOIN locations lp on lp.id = l.parent_id
+    FROM cache_occurrences_functional cof
+      JOIN cache_samples_functional csf on cof.sample_id = csf.id AND csf.training = false
+      JOIN locations l on l.id = csf.location_id AND l.deleted = false
+      JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
       JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.preferred_taxa_taxon_list_id
     WHERE lp.location_type_id = 4009 
-    and lp.name = '#gr#'
-    group by lp.name, cttl.preferred_taxon, cttl.default_common_name
+    AND lp.name = '#gr#'
+	  AND cof.training = false
+    GROUP BY lp.name, cttl.preferred_taxon, cttl.default_common_name
     UNION
     SELECT l.name as plot, cttl.preferred_taxon as taxon, cttl.default_common_name as common, count(cof.id) as records
-    from cache_occurrences_functional cof
-      JOIN cache_samples_functional csf on cof.sample_id = csf.id
-      JOIN locations l on l.id = csf.location_id
-      JOIN locations lp on lp.id = l.parent_id
+    FROM cache_occurrences_functional cof
+      JOIN cache_samples_functional csf on cof.sample_id = csf.id AND csf.training = false
+      JOIN locations l on l.id = csf.location_id AND l.deleted = false
+      JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
       JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.preferred_taxa_taxon_list_id
     WHERE lp.location_type_id = 4009 
-    and lp.name = '#gr#'
-    group by l.name, cttl.preferred_taxon, cttl.default_common_name
-    order by plot, records desc
+    AND lp.name = '#gr#'
+	  AND cof.training = false
+    GROUP BY l.name, cttl.preferred_taxon, cttl.default_common_name
+    ORDER BY plot, records DESC
   </query>
   <params>
     <param name="gr" display="Core square grid ref" description="Monad grid ref of core square" datatype="text"></param>
