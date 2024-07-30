@@ -4,6 +4,7 @@
   SELECT 
     l.id as id,
     l.name as name,
+    lav.text_value as plotnumber,
     t.term as plot_type,
     count(distinct(csf.id)) as samples,
     count(distinct(csf.date_start)) as dates,
@@ -19,6 +20,7 @@
   FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id = l.id AND lw.deleted = false AND lw.id = 32
     LEFT JOIN locations lp on lp.id = l.parent_id AND lp.deleted = false
+    LEFT JOIN location_attribute_values lav on lav.location_id=l.id AND lav.location_attribute_id = 118 AND lav.deleted=false
     LEFT JOIN cache_samples_functional csf on csf.location_id = l.id AND csf.training = false
     LEFT JOIN termlists_terms tt on tt.id = l.location_type_id AND tt.deleted = false
     LEFT JOIN terms t on t.id = tt.term_id AND t.deleted = false
@@ -26,14 +28,15 @@
     LEFT JOIN surveys s on s.id = csf.survey_id
   WHERE lp.name = '#gr#'
     AND lp.location_type_id = 4009
-  AND l.deleted = false
-  GROUP BY l.id, l.name, l.comment, t.term,
+    AND l.deleted = false
+  GROUP BY l.id, l.name, lav.text_value, l.comment, t.term,
     ST_AsGeoJSON(st_transform(l.centroid_geom, 4326)), 
     ST_AsGeoJSON(st_transform(l.boundary_geom, 4326))
 	UNION
 	SELECT 
     null as id,
     l.name as name,
+    null as plotnumber,
     null as plot_type,
     null as samples,
     null as dates,
@@ -59,9 +62,10 @@
   SELECT 
     lp.id as id,
     lp.name as name,
+    null as plotnumber,
     null as plot_type,
     count(distinct(csf.id)) as samples,
-  count(distinct(csf.date_start)) as dates,
+    count(distinct(csf.date_start)) as dates,
     min(csf.date_start) as earliest,
     max(csf.date_end) as latest,
     null as record_status,
@@ -87,6 +91,7 @@
   SELECT 
     null as id,
     lp.name as name,
+    null as plotnumber,
     null as plot_type,
     null as samples,
     null as dates,
@@ -114,6 +119,7 @@
   </params>
   <columns>
     <column name="name" display="Plot name" />
+    <column name="plotnumber" display="Plot number" />
     <column name="plot_type" display="Plot type" />
     <column name="samples" display="Number of samples" />
     <column name="dates" display="Number of dates" />
