@@ -37,6 +37,7 @@ about the square e.g. number of samples recorded in 2015."
     <param name="2022_start_date" description="Start date of the 2022 season." datatype="date"/>
     <param name="2023_start_date" description="Start date of the 2023 season." datatype="date"/>
     <param name="2024_start_date" description="Start date of the 2024 season." datatype="date"/>
+    <param name="2025_start_date" description="Start date of the 2025 season." datatype="date"/>
     <param name="excluded_square_attr_id" display="Excluded squares attribute id" description="Id of attribute that holds whether a square is excluded or not. If it is excluded then don't display on the map." datatype="integer"/>
     <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
   </params>
@@ -71,6 +72,9 @@ about the square e.g. number of samples recorded in 2015."
     filter(where s.date_start &gt;= '#2022_start_date#' AND s.date_start &lt; '#2023_start_date#')" datatype='date' aggregate='true'/>
     <column name='number_samples_2023' display='No of 2023 samples' sql="
     count(distinct(s.id))
-    filter(where s.date_start &gt;= '#2023_start_date#' AND s.date_start &lt; '#2024_start_date#')" datatype='date' aggregate='true'/>                  
+    filter(where s.date_start &gt;= '#2023_start_date#' AND s.date_start &lt; '#2024_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2024' display='No of 2024 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2024_start_date#' AND s.date_start &lt; '#2025_start_date#')" datatype='date' aggregate='true'/>               
   </columns>
 </report>
