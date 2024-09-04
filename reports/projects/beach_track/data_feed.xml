@@ -1,0 +1,36 @@
+<report
+    title="Strandings data feed"
+    description="List of stranding occurrences for Beach Track, ordered by least recently updated first."
+>
+  <query>
+    select #columns#
+    from cache_occurrences_functional o
+    join cache_occurrences_nonfunctional onf on onf.id=o.id
+    join cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
+    join cache_samples_nonfunctional snf on snf.id=o.sample_id
+    join locations vc on vc.id = any(o.location_ids) and vc.location_type_id=15
+    where o.website_id=153
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>o.tracking DESC</order_by>
+  </order_bys>
+  <param name="min_tracking" display="Minimum tracking" datatype="integer" default="0">
+    <where>o.tracking &gt;= #min_tracking#</where>
+  </param>
+  <columns>
+    <column name="id" sql="o.id" display="Beach Track ID" datatype="integer" />
+    <column name="tracking" sql="o.tracking" display="Update tracking" datatype="integer" />
+    <column name="source" sql="o.website_id::text || ' (' || snf.website_title || ') | ' || o.survey_id::text || ' (' || snf.survey_title || ')'" display="Source" datatype="text" />
+    <column name="species" sql="cttl.preferred_taxon" display="Species" datatype="text" />
+    <column name="common_name" sql="cttl.default_common_name" display="Common name" datatype="text" />
+    <column name="date" sql="o.date_start" display="Date" datatype="date" />
+    <column name="location_name" sql="o.location_name" display="Location" datatype="text" />
+    <column name="grid_ref" sql="snf.output_sref" display="Grid ref" datatype="text" />
+    <column name="vice_county" sql="string_agg(vc.name, '; ')" display="Vice county" datatype="text" aggregate="true" />
+    <column name="sample_comment" sql="snf.comment" display="Sample comment" datatype="text" />
+    <column name="comment" sql="onf.comment" display="Comment" datatype="text" />
+    <column name="media" sql="onf.media" display="Images" datatype="text" />
+    <column name="reporter" sql="'https://beachtrack.uk/admin/people?indicia_user_id=' || o.created_by_id::text" display="Reporter" datatype="text" />
+  </columns>
+</report>
