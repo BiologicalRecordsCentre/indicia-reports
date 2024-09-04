@@ -37,6 +37,18 @@ about the square e.g. number of samples recorded in 2015."
     <param name="2022_start_date" description="Start date of the 2022 season." datatype="date"/>
     <param name="2023_start_date" description="Start date of the 2023 season." datatype="date"/>
     <param name="2024_start_date" description="Start date of the 2024 season." datatype="date"/>
+    <param name="2025_start_date" description="Start date of the 2025 season." datatype="date"/>
+    <param name="2026_start_date" description="Start date of the 2026 season." datatype="date"/>
+    <param name="2027_start_date" description="Start date of the 2027 season." datatype="date"/>
+    <param name="2028_start_date" description="Start date of the 2028 season." datatype="date"/>
+    <param name="2029_start_date" description="Start date of the 2029 season." datatype="date"/>
+    <param name="2030_start_date" description="Start date of the 2030 season." datatype="date"/>
+    <param name="2031_start_date" description="Start date of the 2031 season." datatype="date"/>
+    <param name="2032_start_date" description="Start date of the 2032 season." datatype="date"/>
+    <param name="2033_start_date" description="Start date of the 2033 season." datatype="date"/>
+    <param name="2034_start_date" description="Start date of the 2034 season." datatype="date"/>
+    <param name="2035_start_date" description="Start date of the 2035 season." datatype="date"/>
+    <param name="2036_start_date" description="Start date of the 2036 season." datatype="date"/>
     <param name="excluded_square_attr_id" display="Excluded squares attribute id" description="Id of attribute that holds whether a square is excluded or not. If it is excluded then don't display on the map." datatype="integer"/>
     <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
   </params>
@@ -71,6 +83,42 @@ about the square e.g. number of samples recorded in 2015."
     filter(where s.date_start &gt;= '#2022_start_date#' AND s.date_start &lt; '#2023_start_date#')" datatype='date' aggregate='true'/>
     <column name='number_samples_2023' display='No of 2023 samples' sql="
     count(distinct(s.id))
-    filter(where s.date_start &gt;= '#2023_start_date#' AND s.date_start &lt; '#2024_start_date#')" datatype='date' aggregate='true'/>                  
+    filter(where s.date_start &gt;= '#2023_start_date#' AND s.date_start &lt; '#2024_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2024' display='No of 2024 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2024_start_date#' AND s.date_start &lt; '#2025_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2025' display='No of 2025 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2025_start_date#' AND s.date_start &lt; '#2026_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2026' display='No of 2026 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2026_start_date#' AND s.date_start &lt; '#2027_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2027' display='No of 2027 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2027_start_date#' AND s.date_start &lt; '#2028_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2028' display='No of 2028 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2028_start_date#' AND s.date_start &lt; '#2029_start_date#')" datatype='date' aggregate='true'/> 
+    <column name='number_samples_2029' display='No of 2029 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2029_start_date#' AND s.date_start &lt; '#2030_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2030' display='No of 2030 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2030_start_date#' AND s.date_start &lt; '#2031_start_date#')" datatype='date' aggregate='true'/> 
+    <column name='number_samples_2031' display='No of 2031 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2031_start_date#' AND s.date_start &lt; '#2032_start_date#')" datatype='date' aggregate='true'/> 
+    <column name='number_samples_2032' display='No of 2032 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2032_start_date#' AND s.date_start &lt; '#2033_start_date#')" datatype='date' aggregate='true'/> 
+    <column name='number_samples_2033' display='No of 2033 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2033_start_date#' AND s.date_start &lt; '#2034_start_date#')" datatype='date' aggregate='true'/>
+    <column name='number_samples_2034' display='No of 2034 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2034_start_date#' AND s.date_start &lt; '#2035_start_date#')" datatype='date' aggregate='true'/> 
+    <column name='number_samples_2035' display='No of 2035 samples' sql="
+    count(distinct(s.id))
+    filter(where s.date_start &gt;= '#2035_start_date#' AND s.date_start &lt; '#2036_start_date#')" datatype='date' aggregate='true'/>                           
   </columns>
 </report>
