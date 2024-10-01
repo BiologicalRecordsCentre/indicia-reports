@@ -1,0 +1,39 @@
+<report
+    title="Asian Hornet photo missing email"
+    description="Warning email sent to Asian Hornet app submissions that have no photo.">
+  <query>
+    SELECT #columns#
+    FROM occurrences o
+    JOIN samples s ON s.id=o.sample_id AND s.deleted=false
+    JOIN sample_attribute_values vfirstname ON vfirstname.sample_id=s.id AND vfirstname.deleted=false AND vfirstname.sample_attribute_id=6
+    JOIN sample_attribute_values vsurname ON vsurname.sample_id=s.id AND vsurname.deleted=false AND vsurname.sample_attribute_id=7
+    JOIN sample_attribute_values vemail ON vemail.sample_id=s.id AND vemail.deleted=false AND vemail.sample_attribute_id=8
+    LEFT JOIN occurrence_media om ON om.occurrence_id=o.id AND om.deleted=false
+    WHERE o.updated_on&gt;'#date#'
+    AND o.created_on&gt;'#date#'
+    AND s.survey_id=423
+    AND om.id IS NULL
+    AND o.training=false
+  </query>
+  <order_bys>
+    <order_by>o.updated_on ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
+    <param name="website_id" display="Website ID" description="ID of website to load occurrences for" datatype="integer" />
+  </params>
+  <columns>
+    <column name="website_id" sql="o.website_id" datatype="integer" />
+    <column name="email_to" sql="vemail.text_value" datatype="text" />
+    <column name="email_name" sql="vfirstname.text_value || ' ' || vsurname.text_value" datatype="text" />
+    <column name="email_subject" sql="'Thank you for the record'" datatype="text" />
+    <column name="email_body" sql="'&lt;p&gt;Thank you so much for your report of a yellow-legged (Asian) hornet or nest.  Photos of
+      insects and a location must be included for the sighting to be investigated by Government officials.  Please keep samples
+      of insects if you have them, as it can be used for official confirmation. If you want help e.g. taking a photograph or to
+      talk through identifying a suspected insect please contact your
+      &lt;a href=&quot;https://www.bbka.org.uk/asian-hornet-action-team-map&quot;&gt;local Asian hornet Team&lt;/a&gt; who may be able to assist.&lt;/p&gt;
+      &lt;p&gt;For further information see
+      &lt;a href=&quot;https://www.nationalbeeunit.com/diseases-and-pests/asian-hornet/so-you-think-youve-seen-an-asian-hornet&quot;&gt;So you
+      think you''ve seen a yellow-legged hornet? » APHA - National Bee Unit - BeeBase&lt;/a&gt;.'" datatype="text" />
+  </columns>
+</report>
