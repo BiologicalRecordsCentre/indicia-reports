@@ -3,15 +3,15 @@
     description="Warning email sent to Asian Hornet app submissions that have no photo.">
   <query>
     SELECT #columns#
-    FROM occurrences o
-    JOIN samples s ON s.id=o.sample_id AND s.deleted=false
-    JOIN sample_attribute_values vfirstname ON vfirstname.sample_id=s.id AND vfirstname.deleted=false AND vfirstname.sample_attribute_id=6
-    JOIN sample_attribute_values vsurname ON vsurname.sample_id=s.id AND vsurname.deleted=false AND vsurname.sample_attribute_id=7
-    JOIN sample_attribute_values vemail ON vemail.sample_id=s.id AND vemail.deleted=false AND vemail.sample_attribute_id=8
+    FROM cache_occurrences_functional o
+    JOIN sample_attribute_values vfirstname ON vfirstname.sample_id=o.sample_id AND vfirstname.deleted=false AND vfirstname.sample_attribute_id=6
+    JOIN sample_attribute_values vsurname ON vsurname.sample_id=o.sample_id AND vsurname.deleted=false AND vsurname.sample_attribute_id=7
+    JOIN sample_attribute_values vemail ON vemail.sample_id=o.sample_id AND vemail.deleted=false AND vemail.sample_attribute_id=8
     LEFT JOIN occurrence_media om ON om.occurrence_id=o.id AND om.deleted=false
     WHERE o.updated_on&gt;'#date#'
     AND o.created_on&gt;'#date#'
-    AND s.survey_id=423
+    AND o.survey_id in (13, 423)
+    AND o.taxa_taxon_list_external_key='NHMSYS0020936646'
     AND om.id IS NULL
     AND o.training=false
   </query>
@@ -35,5 +35,6 @@
       &lt;p&gt;For further information see
       &lt;a href=&quot;https://www.nationalbeeunit.com/diseases-and-pests/asian-hornet/so-you-think-youve-seen-an-asian-hornet&quot;&gt;So you
       think you''ve seen a yellow-legged hornet? » APHA - National Bee Unit - BeeBase&lt;/a&gt;.'" datatype="text" />
+    <column name="log_comment" sql="'Query sent to the recorder via email as there was no photo supplied with the record.'" datatype="text" />
   </columns>
 </report>
