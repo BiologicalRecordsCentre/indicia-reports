@@ -9,9 +9,11 @@
     LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
     LEFT JOIN person_attribute_values pav on pav.int_value=l.id AND pav.person_attribute_id=#user_square_attr_id# AND pav.deleted=false
     LEFT JOIN location_attribute_values lavEx on lavEx.location_id=l.id AND lavEx.location_attribute_id=#excluded_square_attr_id# AND lavEx.deleted=false
-  WHERE (l.location_type_id=#core_square_type_id#)  
+  WHERE 
+    (l.location_type_id=#core_square_type_id#)  
     AND #website_filter# AND (lavEx.int_value != 1 OR lavEx.int_value IS NULL) AND l.deleted=false
     AND (#distance_from_post_code# != 0 OR '#return_all_squares#'='true')
+    #idlist#
   </query>
   <order_bys>
     <order_by>count ASC</order_by>
@@ -29,16 +31,13 @@
     <param name="distance_from_post_code" display="Distance from post code" description="The distance to return items from the specified post code." datatype="integer" default='0' emptyvalue='0'/>
     <param name="excluded_square_attr_id" display="Excluded squares attribute id" description="Id of attribute that holds whether a square is excluded or not. If it is excluded then don't display on the map." datatype="integer"/>
     <param name="return_all_squares" display="Return all squares" description="If true, return all squares else return nothing or return squares using the post code search."  default='' emptyvalue=''/>
-    <param name='site_details_page_path' display='Path to Site Details path, must include the param name and = at end.' description='' datatype='text'/>
+    <param name='idlist' display='List of IDs' description='Allow map click to filter grid.' datatype='idlist' fieldname='l.id' alias='id' />
   </params>
   <columns> 
     <column name='id' sql='l.id' datatype='integer' visible='false' in_count="true"/>  
     <column name='entered_sref' display='Grid Ref' sql="regexp_replace(l.centroid_sref, ',[^ ]', ', ', 'g')" datatype='text' visible="false"/>
-    <column name='entered_sref_with_link' display='Grid Ref' sql="
-    '&lt;a href=&quot;' || '#site_details_page_path#' || regexp_replace(l.centroid_sref, ',[^ ]', ', ', 'g') || '&quot;&gt;'
-    || regexp_replace(l.centroid_sref, ',[^ ]', ', ', 'g')
-    || '&lt;/a&quot;'
-    " datatype='text' />
+    <column name='entered_sref_with_link' display='Grid Ref' sql="regexp_replace(l.centroid_sref, ',[^ ]', ', ', 'g')" datatype='text' 
+      template="&lt;a href=&quot; site-details?gr={entered_sref_with_link} &quot;&gt;{entered_sref_with_link}&lt;/a&quot;" />
     <column name='count' sql='count(distinct(pav.id))' display='Number of allocated users' datatype='integer' aggregate="true"/>
     <column name='gn' visible='false' feature_style="graphicName" sql="'square'" aggregate="true"/>    
     <column name="sc" visible="false" feature_style="strokeColor" sql="case count(distinct(pav.id)) when 0 then 'blue' else '#FFA62F' end" aggregate="true"/>
