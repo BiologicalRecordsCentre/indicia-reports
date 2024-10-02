@@ -24,6 +24,7 @@
   </params>
   <columns>
     <column name="website_id" sql="o.website_id" datatype="integer" />
+    <column name="occurrence_id" sql="o.id" datatype="integer" />
     <column name="email_to" sql="vemail.text_value" datatype="text" />
     <column name="email_name" sql="vfirstname.text_value || ' ' || vsurname.text_value" datatype="text" />
     <column name="email_subject" sql="'Thank you for the record'" datatype="text" />
