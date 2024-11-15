@@ -37,8 +37,8 @@
 	    <where>o.survey_id=#survey_id#</where>
 	  </param>
     <param name="year" display="Year" datatype="integer" >
-      <where>parent.date_end &gt;= CAST('#year#-01-01' as date) AND
-        parent.date_start &lt;= CAST('#year#-12-31' as date)</where>
+      <where>o.date_end &gt;= CAST('#year#-01-01' as date) AND
+        o.date_start &lt;= CAST('#year#-12-31' as date)</where>
     </param>
     <param name="user_id" display="Indicia User ID" description="Enter the Indicia ID of the user" datatype="int">
       <where>parent.created_by_id=#user_id#</where>
