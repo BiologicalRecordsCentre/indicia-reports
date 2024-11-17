@@ -2,7 +2,8 @@
     title="Report for temporary report testing"
     description="Report that other reports can be copied into for testing before go live.
     This allows reports to be checked without risking breakage of the live report.
-    After testing, the report can be copied to the live version."
+    After testing, the report can be copied to the live version.
+    Current test report is for ukbms_occurrence_download_confidential.xml"
 >
   <query website_filter_field="o.website_id" samples_id_field="parent.id" samples2_id_field="o.sample_id" >
     SELECT #field_sql#
@@ -34,7 +35,7 @@
   <params>
     <param name="survey_id" display="Survey" description="Select the survey, or leave for all surveys" datatype="lookup"
         population_call="direct:survey:id:title">
-	    <where>o.survey_id=#survey_id#</where>
+	    <where>o.survey_id=#survey_id# AND parent.survey_id=#survey_id# AND child.survey_id=#survey_id#</where>
 	  </param>
     <param name="year" display="Year" datatype="integer" >
       <where>o.date_end &gt;= CAST('#year#-01-01' as date) AND
