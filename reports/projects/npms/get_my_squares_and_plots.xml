@@ -73,6 +73,6 @@ or any plot they are assigned to which they didn't create (as long as they are t
     <column name='plot_label' display='Plot Label' sql="lavPlotName.text_value" datatype='text' visible="false"/>
     <column name='allocation_updater' display='Person who updated allocation' sql="pav.updated_by_id" datatype='integer' visible="false"/>
     <column name='allocated_to' display='Person who allocation is for' sql="u.id" datatype='integer' visible="false"/>
-    <column name='my_plot' display='My Plot?' sql="case when l.parent_id IS NOT NULL AND (l.created_by_id=#current_user_id# or l.created_by_id=#user_id#) then 'YES' when l.parent_id IS NOT NULL AND (l.created_by_id!=#current_user_id# and l.created_by_id!=#user_id#) then 'NO' else '' end"/>
+    <column name='my_plot' display='Created by me?' sql="case when l.parent_id IS NOT NULL AND (l.created_by_id=#current_user_id# or l.created_by_id=#user_id#) then 'YES' when l.parent_id IS NOT NULL AND (l.created_by_id!=#current_user_id# and l.created_by_id!=#user_id#) then 'NO' else '' end"/>
   </columns> 
 </report>
