@@ -80,7 +80,7 @@
         AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
       #agreements_join#
       WHERE #sharing_filter# 
-        AND s.id in (
+        AND s.survey_id in (
           #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
         )
         AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
