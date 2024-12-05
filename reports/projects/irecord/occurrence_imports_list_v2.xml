@@ -11,18 +11,27 @@
     WHERE website_id in (#sharing_website_ids#)
   </query>
   <order_bys>
-    <order_by>i.created_on</order_by>
+    <order_by>i.created_on DESC</order_by>
   </order_bys>
   <params>
     <param name="currentUser" display="User ID" datatype="integer">
       <where>i.created_by_id=#currentUser#</where>
+    </param>
+    <param name="hide_zeros" display="Hide imports with zero records" datatype="checkbox" emptyvalue="0">
+      <where value="1">i.inserted + i.updated &gt; 0</where>
     </param>
   </params>
   <columns>
     <column name="id" sql="i.id" in_count="true" visible="false" datatype="integer" />
     <column name="website_id" sql="i.website_id" visible="false" datatype="integer"  />
     <column name="import_guid" sql="i.import_guid" visible="false" datatype="text" />
-    <column name="website_title" display="Imported into" sql="w.title" datatype="text" />
+    <column name="website_title" display="Imported into" datatype="text"
+      sql="case w.id
+        when 23 then 'Public data'
+        when 152 then 'Unshared data'
+        else w.title
+      end"
+    />
     <column name="date_time" display="Date/time started" sql="i.created_on" datatype="date" />
     <column name="imported_by" display="Imported by" sql="coalesce(p.first_name || ' ', '') || p.surname" datatype="text" />
     <column name="records" display="# Records" sql="i.inserted + i.updated" datatype="integer" />
