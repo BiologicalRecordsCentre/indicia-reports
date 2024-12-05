@@ -20,7 +20,7 @@
     <order_by>s.id DESC</order_by>
   </order_bys>
   <params>
-    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" emptyvalue="" default="">
+    <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" emptyvalue="0" default="0">
       <where>s.created_by_id = #current_user_id#</where>
     </param>
     <param name = 'year_sort_order' display='Year' description='Select a year, or leave blank for all years'
