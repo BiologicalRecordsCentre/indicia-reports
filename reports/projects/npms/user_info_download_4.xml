@@ -113,7 +113,8 @@ an event filter to return users associated with a particular event."
     <param name="auth_user_id" datatype="integer" default="-1" />
   </params>
   <columns>
-    <column name="id" sql="p.id" datatype="integer" visible="false"  in_count='true'/>
+    <column name="person_id" display='Person ID' sql="p.id" datatype="integer" />
+    <column name="indicia_warehouse_user_id" display='User ID' sql="u.id" datatype="integer" in_count='true'/>
     <column name='person_full_name_admin_link' display='User administration link' 
         sql="'&lt;a href=&quot;' || '#user_admin_page_link#' || '?dynamic-the_user_id=' || u.id || '&quot;&gt;' || p.first_name || ' ' || p.surname || '&lt;/a&gt;'" 
     datatype='text'/> 
