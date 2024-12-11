@@ -8,6 +8,7 @@
     AND deleted = false
   </query>
   <columns>
+    <column name="id"  display="VC code" sql="id" />
     <column name="code"  display="VC code" sql="code" />
     <column name="name" display="VC Name" sql="name" />
   </columns>
