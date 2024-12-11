@@ -3,7 +3,7 @@
 description='List of the submitted survey' row_class='biota'>
   <query>SELECT tc.taxon as commonname,'&lt;i&gt;' || tpref.taxon
   || '&lt;/i&gt;' as sciname , count(s.id) as total_rec, '&lt;a
-  href="/surveymap&amp;taxon=' || ttl.taxon_meaning_id || '"&gt;'
+  href="/surveymap?taxon=' || ttl.taxon_meaning_id || '"&gt;'
   || tc.taxon || '&lt;/a&gt;' as maplink 
   FROM samples s 
   JOIN occurrences o ON o.sample_id=s.id AND o.deleted = false 
@@ -20,6 +20,6 @@ description='List of the submitted survey' row_class='biota'>
     <column name="sciname" display="Scientific name" />
     <column name="total_rec" display="Total records" />
     <column name="maplink" display="On the map &lt;img
-  src='/sites/www.orthoptera.org.uk/modules/iform/media/images/map_pin.png' /&gt;" />
+  src='/sites/modules/contrib/iform/media/images/map_pin.png' /&gt;" />
   </columns>
 </report>
