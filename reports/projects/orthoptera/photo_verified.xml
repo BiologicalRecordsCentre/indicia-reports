@@ -5,7 +5,7 @@ description="Grid provided for verified record.">
   ' class="fancybox" title="'|| co.preferred_taxon || '-' || co.default_common_name ||
   '"&gt;&lt;img src="http://warehouse1.indicia.org.uk/upload/thumb-'
   || oi.path || '" &gt;&lt;/a&gt;&lt;br/&gt;&lt;div class="imagetext" &gt; &lt;a
-  href="/species/account.aspx?spname='|| co.preferred_taxon ||'"&gt;' ||
+  href="/species/'|| lower(replace(co.preferred_taxon,' ','-')) ||'"&gt;' ||
   co.preferred_taxon || '&lt;br/&gt;&lt;i&gt;' || co.default_common_name || 
   '&lt;/i&gt;&lt;/a&gt;&lt;/div&gt;&lt;div id ="infoText" &gt;&lt;br/&gt;Recorder: ' || 
   CASE WHEN co.recorders IS NOT NULL THEN co.recorders 
