@@ -1,0 +1,57 @@
+<report
+    title="Individual user's survey reports"
+    description="Lists of all surveys submitted by you."
+    row_class="biota"
+>
+  <query>
+  SELECT 
+co.id as occurrence_id,
+co.website_id,
+co.survey_id,
+co.sample_id,
+co.survey_title,
+co.date_start,
+co.date_end,
+coalesce(co.default_common_name,co.preferred_taxon) as species,
+co.taxa_taxon_list_external_key as external_key,
+co.taxon_group,
+co.public_entered_sref as entered_sref,
+co.location_name,
+co.recorders,
+co.images,
+  CASE co.record_status
+         WHEN 'V' THEN 'Verified'
+         WHEN 'R' THEN 'Rejected'
+         ELSE 'Not verified yet' 
+         END As status
+FROM cache_occurrences co
+  WHERE 
+  co.record_status NOT IN ('I','T')
+  AND co.taxon_group_id in (59,60,61,62,115,108,106,119)
+  AND co.created_by_id = #userid# 
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>date_start DESC</order_by>
+  </order_bys>
+  <params>
+	<param name='userid' />
+  </params>
+  <columns>
+	<column name='occurrence_id' display="ID" datatype='integer' />
+    <column name='website_id' visible='false' />
+    <column name='external_key' visible='false' />
+	<column name='sample_id' visible='false' />
+	<column name='survey_id' visible='false' />
+    <column name='species' display='Species' />
+    <column name='date_start' display='Date' orderby='date_start' />
+	<column name='date_end' visible='false' />
+	<column name='recorders' visible='false' />
+	<column name='survey_title' visible='false' />
+    <column name='taxon_group' display='Taxon Group' />
+    <column name='entered_sref' display='Grid Ref.' />
+	<column name='location_name' display='Location' />
+    <column name='status' display='Record Status' />	
+    <column name='images' display='Images' img='true' />	
+  </columns>
+</report>

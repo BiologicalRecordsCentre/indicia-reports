@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report title='Orthoptera Summary'
+description='List of the submitted survey' row_class='biota'>
+  <query>SELECT tc.taxon as commonname,'&lt;i&gt;' || tpref.taxon
+  || '&lt;/i&gt;' as sciname , count(s.id) as total_rec, '&lt;a
+  href="/surveymap&amp;taxon=' || ttl.taxon_meaning_id || '"&gt;'
+  || tc.taxon || '&lt;/a&gt;' as maplink 
+  FROM samples s 
+  JOIN occurrences o ON o.sample_id=s.id AND o.deleted = false 
+  JOIN taxa_taxon_lists ttl ON ttl.id=o.taxa_taxon_list_id 
+  JOIN taxa_taxon_lists ttlpref ON ttlpref.taxon_meaning_id=ttl.taxon_meaning_id AND ttlpref.preferred=true 
+  JOIN taxa tpref ON tpref.id=ttlpref.taxon_id 
+  LEFT JOIN taxa tc ON tc.id=ttlpref.common_taxon_id 
+  WHERE o.website_id = 10 
+  AND o.record_status = 'V' 
+  GROUP BY tc.taxon,tpref.taxon,ttl.taxon_meaning_id 
+  ORDER BY commonname</query>
+  <columns>
+    <column name="commonname" display="Common name" />
+    <column name="sciname" display="Scientific name" />
+    <column name="total_rec" display="Total records" />
+    <column name="maplink" display="On the map &lt;img
+  src='/sites/www.orthoptera.org.uk/modules/iform/media/images/map_pin.png' /&gt;" />
+  </columns>
+</report>

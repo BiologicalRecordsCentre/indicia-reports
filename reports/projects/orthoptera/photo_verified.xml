@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report title="Basic Photo Grid for Orthoptera recording"
+description="Grid provided for verified record.">
+  <query>SELECT '&lt;div class="image_border" &gt;&lt;a href=http://warehouse1.indicia.org.uk/upload/' || oi.path || 
+  ' class="fancybox" title="'|| co.preferred_taxon || '-' || co.default_common_name ||
+  '"&gt;&lt;img src="http://warehouse1.indicia.org.uk/upload/thumb-'
+  || oi.path || '" &gt;&lt;/a&gt;&lt;br/&gt;&lt;div class="imagetext" &gt; &lt;a
+  href="/species/account.aspx?spname='|| co.preferred_taxon ||'"&gt;' ||
+  co.preferred_taxon || '&lt;br/&gt;&lt;i&gt;' || co.default_common_name || 
+  '&lt;/i&gt;&lt;/a&gt;&lt;/div&gt;&lt;div id ="infoText" &gt;&lt;br/&gt;Recorder: ' || 
+  CASE WHEN co.recorders IS NOT NULL THEN co.recorders 
+       WHEN savuser.text_value IS NOT NULL THEN savuser.text_value ELSE 'No recorder name' END ||
+  '&lt;br/&gt;Date: ' ||  co.date_start ||
+  '&lt;br/&gt;Location: ' || co.location_name ||  
+  '&lt;/div&gt;&lt;br/&gt;&lt;/div&gt;' as path
+  FROM cache_occurrences co
+  LEFT JOIN sample_attribute_values savuser ON savuser.sample_id=co.sample_id
+  LEFT JOIN occurrence_images oi ON oi.occurrence_id=co.id AND oi.deleted=false 
+  WHERE co.taxon_group_id in (106,108,115,119,59,60,61,62) 
+  AND co.record_status = 'V' 
+  AND oi.path != '' 
+  AND savuser.sample_attribute_id =58
+  GROUP BY oi.path,co.preferred_taxon,co.default_common_name,co.recorders,savuser.text_value,co.date_start,co.location_name 
+  </query>
+  <order_bys>
+    <order_by>co.date_start DESC</order_by>
+  </order_bys>
+  <columns>
+    <column name='path' display='Photo' />
+   </columns>
+</report>
