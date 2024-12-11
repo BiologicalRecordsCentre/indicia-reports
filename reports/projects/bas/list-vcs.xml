@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report title="List of vice counties"
+    description="Lists all vice county names and codes">
+  <query>
+    SELECT #columns# FROM locations 
+    WHERE location_type_id = 15
+    AND deleted = false
+  </query>
+  <columns>
+    <column name="code"  display="VC code" sql="code" />
+    <column name="name" display="VC Name" sql="name" />
+  </columns>
+</report>
