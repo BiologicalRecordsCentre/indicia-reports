@@ -9,6 +9,7 @@
       id,
       taxon_group_id,
       taxon,
+      external_key,
       organism_key,
       taxon_meaning_id,
       default_common_name
@@ -265,6 +266,7 @@
       filter (where cttl_same_meaning.id is not null
         AND cttl_same_meaning.language_iso = 'lat'
         AND cttl_same_meaning.taxon != cttl_preferred.taxon)" datatype='text' aggregate="true" />
+    <column name='taxon_version_key' display='TVK' sql="cttl_preferred.external_key" datatype='text' />
     <column name='organism_key' display='organism_key' sql="cttl_preferred.organism_key" datatype='text' />
     <column name='difficulty' display='difficulty' sql="cts.identification_difficulty" datatype='integer' />
     <column name='frequency' display='frequency' sql="count(distinct cof.id)" datatype='integer' aggregate="true" />
