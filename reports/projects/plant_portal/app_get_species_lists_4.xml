@@ -1,6 +1,7 @@
 <report
     title="App - Get Species Lists 4"
-    description="Get a species list for PP/NPMS app depending on input parameter."
+    description="Get a species list for PP/NPMS app depending on input parameter.
+    Note this report is also used by the Indicator Species Checker page on NPMS."
 >
   <query>
   WITH cttl_preferred AS (
