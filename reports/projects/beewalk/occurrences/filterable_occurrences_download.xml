@@ -42,6 +42,8 @@
   left join occurrence_attribute_values oavm on oavm.occurrence_id=o.id and oavm.occurrence_attribute_id=146 and oavm.deleted=false
   left join occurrence_attribute_values oavu on oavu.occurrence_id=o.id and oavu.occurrence_attribute_id=262 and oavu.deleted=false
   left join occurrence_attribute_values oavfv on oavfv.occurrence_id=o.id and oavfv.occurrence_attribute_id=149 and oavfv.deleted=false
+  left join location_attribute_values lvvc on lvvc.location_id=sp.location_id and lvvc.location_attribute_id=377 and lvvc.deleted=false
+  left join cache_termlists_terms tvc on tvc.id=lvvc.int_value
   #agreements_join#
   #joins#
   WHERE #sharing_filter#
@@ -54,8 +56,9 @@
     <column name='occurrence_id' display='ID' sql='o.id' datatype='integer' distincton="true" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" />
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
     <column name='site_section' display='Site section' sql="o.location_name" datatype='text' />
-    <column name="vicecounty" display="ViceCounty" sql="array_to_string(array_agg(l.name), ', ')" datatype="text" aggregate="true" />
+    <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" aggregate="true" />
     <column name='sample_id' visible='false' sql='o.sample_id' datatype='integer' />
+    <column name='transect_id' visible='false' sql='sp.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
     <column name="transect_grid_ref" sql="sp.entered_sref" datatype="text" />
     <column name="transect_length" sql="lavtl.int_value" datatype="integer" />
