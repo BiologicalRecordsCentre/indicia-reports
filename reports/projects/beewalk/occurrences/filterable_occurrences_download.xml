@@ -56,7 +56,7 @@
     <column name='occurrence_id' display='ID' sql='o.id' datatype='integer' distincton="true" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" />
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
     <column name='site_section' display='Site section' sql="o.location_name" datatype='text' />
-    <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" aggregate="true" />
+    <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
     <column name='sample_id' visible='false' sql='o.sample_id' datatype='integer' />
     <column name='transect_id' visible='false' sql='sp.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
