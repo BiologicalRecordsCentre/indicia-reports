@@ -57,8 +57,8 @@
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
     <column name='site_section' display='Site section' sql="o.location_name" datatype='text' />
     <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
-    <column name='sample_id' visible='false' sql='o.sample_id' datatype='integer' />
-    <column name='transect_id' visible='false' sql='sp.location_id' datatype='integer' />
+    <column name='sample_id' sql='o.sample_id' datatype='integer' />
+    <column name='transect_id' sql='sp.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
     <column name="transect_grid_ref" sql="sp.entered_sref" datatype="text" />
     <column name="transect_length" sql="lavtl.int_value" datatype="integer" />
