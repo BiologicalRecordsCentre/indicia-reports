@@ -24,7 +24,7 @@
     <param name='occattrs' display='Occurrence attribute list' description='Comma separated list of occurrence attribute IDs to include' datatype='occattrs' />
     <param name="currentUser" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
     <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
-      lookup_values='626:E-Surveyor,627:E-Surveyor Transect;727:Farmland Carabids;763:E-Surveyor Moth Trap' />
+      lookup_values='626:E-Surveyor,627:E-Surveyor Transect,727:Farmland Carabids,763:E-Surveyor Moth Trap' />
     <param name='default_input_form' display='Default input form' description='Input form path to use when no other available' default='' />
   </params>
   <columns>
