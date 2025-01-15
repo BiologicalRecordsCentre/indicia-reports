@@ -3,7 +3,8 @@
 <report title="UKBMS all sites report"
     description="UKBMS specific: Lists locations and the number of species and occurrences within them. This report
     includes the location code, and relies on the record being input with a link to the site and will not pick up
-    records where the spatial reference is in the site boundary but without a direct reference to the site.">
+    records where the spatial reference is in the site boundary but without a direct reference to the site.
+    This version of the report no longer includes a samples count for performance reasons.">
   <query website_filter_field='' training_filter_field="sp.training">
     SELECT #columns#
     FROM locations l
@@ -15,7 +16,6 @@
       AND lw.website_id in (#website_ids#)
   </query>
   <order_bys>
-    <order_by>samples DESC</order_by>
     <order_by>name</order_by>
   </order_bys>
   <params>
@@ -31,14 +31,6 @@
     <column name="id" display="ID" sql="l.id" in_count="true" datatype="integer" />
     <column name="name" display="Site Name" style="background-color: #e7e7e7;" sql="l.name" datatype="text" />
     <column name="centroid_sref" display="Site Sref" sql="l.centroid_sref" datatype="text" />
-    <column name="samples" display="Samples"
-      sql="(SELECT count(*) from indicia.samples sp
-        #agreements_join#
-        WHERE #sharing_filter#
-          AND sp.location_id=l.id
-          AND sp.deleted=false
-          AND sample_method_id = #sample_method_id#)"
-      datatype="text" />
     <column name="code" display="Code" sql="l.code" datatype="text" />
     <column name="use_historic" visible="false" 
       sql="EXISTS (SELECT id FROM location_attributes_websites law
@@ -49,4 +41,3 @@
       datatype="text" />
   </columns>
 </report>
-
