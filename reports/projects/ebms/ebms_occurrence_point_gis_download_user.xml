@@ -31,5 +31,6 @@
       <column name="date" display="Date" datatype="date" />
       <column name="accepted_taxon_name" display="Accepted species name" sql="cttl.preferred_taxon" datatype="text" />
       <column name="common_name" display="Common name" sql="cttl.default_common_name" datatype="text" />
+      <column name="taxon_group" display="Taxon group" sql="cttl.taxon_group" datatype="text" />
     </columns>
 </report>
