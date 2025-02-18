@@ -186,7 +186,9 @@ This version of the report shows buddying information instead of data access pol
     <column name='allocated_squares' sql="string_agg(distinct(case when 
           ((sqrPavDated.created_on &gt;= CAST(COALESCE('#allocation_date_start#','1500-01-01') as date) OR '#allocation_date_start#'='')
           AND (sqrPavDated.created_on &lt;= CAST(COALESCE('#allocation_date_end#','1500-01-01') as date) OR '#allocation_date_end#'=''))
-          Then sqr.name else '&lt;b style=&quot;color:red&quot;&gt;' || sqr.name || '&lt;/b&gt;' END), ', ')" 
+          Then sqr.name || ' (' || sqrPav.created_on ||  ')' 
+          else 
+          '&lt;b style=&quot;color:red&quot;&gt;' || sqr.name || ' (' || sqrPav.created_on ||  ')' || '&lt;/b&gt;' END), ', ')" 
         display='Squares allocated' datatype='text' aggregate="true"/>
     <column name='allocated_events' sql="string_agg(distinct(event.name), ',')" display='Events' datatype='text' aggregate="true"/>
   </columns>
