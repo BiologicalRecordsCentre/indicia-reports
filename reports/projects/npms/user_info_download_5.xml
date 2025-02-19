@@ -39,6 +39,9 @@ This version of the report shows buddying information instead of data access pol
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE p.deleted=false
   AND #website_filter#
+  AND (('#buddying_opt_in#' = '') 
+      OR ('#buddying_opt_in#' = 'yes' AND pavBuddyingOptIn.id IS NOT NULL AND pavBuddyingOptIn.text_value = '1')
+      OR ('#buddying_opt_in#' = 'no' AND (pavBuddyingOptIn.id IS NULL OR pavBuddyingOptIn.text_value != '1'))) 
   AND (('#allocation_status#'='') 
       OR ('#allocation_status#'='allocated' AND sqrPavDated.id IS NOT NULL)
       OR ('#allocation_status#'='unallocated' AND p.id NOT in 
@@ -80,6 +83,8 @@ This version of the report shows buddying information instead of data access pol
     <param name="event_location_type_id" display="Event location type id" datatype="integer"/>
     <param name='allocation_status' display='Allocated?' description='Choose whether you only wish to return users with allocated squares, without allocated squares, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
         lookup_values='allocated:Allocated,unallocated:Unallocated' />
+    <param name='buddying_opt_in' display='Buddying opt in?' description='Choose whether to only include users willing to buddy, or exclude them, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
+        lookup_values='yes:Yes,no:No' />
     <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name='user_event_attr_id' display='Id of the person attribute that holds user events' description='' datatype='integer'/>
     <param name="registration_date_start" display="User registered on or after this date" description="Only return users who registered on or after this date." datatype="date" emptyvalue="">
