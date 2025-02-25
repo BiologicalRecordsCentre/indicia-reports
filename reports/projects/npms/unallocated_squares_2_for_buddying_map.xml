@@ -9,7 +9,11 @@
   FROM locations l
     LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
     LEFT JOIN person_attribute_values pavSquare on pavSquare.int_value=l.id AND pavSquare.person_attribute_id=#user_square_attr_id# AND pavSquare.deleted=false
-    LEFT JOIN person_attribute_values pavBuddy on pavBuddy.int_value=l.id AND pavBuddy.person_attribute_id=#buddying_attr_id# AND pavBuddy.deleted=false
+    LEFT JOIN person_attribute_values pavBuddy on
+      pavBuddy.person_id = pavSquare.person_id
+      AND pavBuddy.text_value = '1'
+      AND pavBuddy.person_attribute_id=#buddying_attr_id#
+      AND pavBuddy.deleted=false
     LEFT JOIN location_attribute_values lavEx on lavEx.location_id=l.id AND lavEx.location_attribute_id=#excluded_square_attr_id# AND lavEx.deleted=false
   WHERE 
     (l.location_type_id=#core_square_type_id#)  
@@ -45,7 +49,7 @@
     <column name='gn' visible='false' feature_style="graphicName" sql="'square'" aggregate="true"/>    
     <column name="sc" visible="false" feature_style="strokeColor" sql="
       CASE 
-      WHEN count(distinct(pavSquare.id)) = 0 THEN 'blue' 
+      WHEN count(distinct(pavSquare.id)) = 0 THEN 'blue'
       WHEN count(distinct(pavSquare.id)) > 0 AND count(distinct(pavBuddy.id)) > 0 THEN 'green'
       ELSE '#FFA62F' END" aggregate="true"/>
     <column name="fc" visible="false" feature_style="fillColor" sql="
