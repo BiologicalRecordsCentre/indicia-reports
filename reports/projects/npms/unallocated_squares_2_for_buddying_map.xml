@@ -1,7 +1,7 @@
 <report
     title="Unallocated Squares 2 For Buddying Map"
     description="Map showing monads (squares) where the ones that have a user allocation are shown in a different colour to the ones that don't.
-    Squares available for buddying are displayed in green.
+    Squares available for buddying are displayed in yellow.
     Additionally provides a column to link to Site Details page."
 >
   <query website_filter_field="lw.website_id">
@@ -50,12 +50,12 @@
     <column name="sc" visible="false" feature_style="strokeColor" sql="
       CASE 
       WHEN count(distinct(pavSquare.id)) = 0 THEN 'blue'
-      WHEN count(distinct(pavSquare.id)) > 0 AND count(distinct(pavBuddy.id)) > 0 THEN 'green'
+      WHEN count(distinct(pavSquare.id)) > 0 AND count(distinct(pavBuddy.id)) > 0 THEN 'yellow'
       ELSE '#FFA62F' END" aggregate="true"/>
     <column name="fc" visible="false" feature_style="fillColor" sql="
       CASE 
       WHEN count(distinct(pavSquare.id)) = 0 THEN 'blue' 
-      WHEN count(distinct(pavSquare.id)) > 0 AND count(distinct(pavBuddy.id)) > 0 THEN 'green'
+      WHEN count(distinct(pavSquare.id)) > 0 AND count(distinct(pavBuddy.id)) > 0 THEN 'yellow'
       ELSE '#FFA62F' END" aggregate="true"/>
     <column name="geom" visible="false" mappable="true" sql="st_astext(coalesce(l.boundary_geom,l.centroid_geom))" />
   </columns>
