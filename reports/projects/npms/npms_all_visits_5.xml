@@ -1,0 +1,78 @@
+<report
+    title="NPMS All Visits 5"
+    description="Display a list of visits suitable for adminstrators to view all data.
+    New version of report will display users even if there is a problem in users or 
+    people table, these users have name displayed in orange."
+>
+  <query website_filter_field="csf.website_id">
+    SELECT distinct #columns# 
+      FROM cache_samples_functional csf
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      LEFT JOIN users u on u.id=csf.created_by_id AND u.deleted=false
+      LEFT JOIN people p on p.id=u.person_id AND p.deleted=false
+      JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
+      JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
+      JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
+      LEFT JOIN users_websites accesscheck on accesscheck.website_id=csf.website_id
+          AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+      WHERE #website_filter# 
+        AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+        AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
+        AND csf.survey_id in (#survey_ids#)
+        AND csf.training = false
+      #order_by#
+  </query>
+  <order_bys>
+    <order_by>csf.id DESC</order_by>
+  </order_bys>
+    <params>
+    <param name = 'date_from' display = 'Date From' datatype = 'date' />
+    <param name = 'date_to' display = 'Date To' datatype = 'date' />
+    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>    
+    <param name= "ignore_square_dates_before" display = "Ignore Square Dates Before" description = "Ignore any squares created before this date.
+        Useful if old squares are left on the system but are not currently active." datatype = "date" emptyvalue = "" default = "">
+      <where>square.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)</where>
+    </param>
+    <param name= "location_id" display = "Location ID" description = "Filter results to a particular location id
+      Currently used by Plant Portal for limiting results when detecting if a plot has samples associated with it." datatype = "int" emptyvalue = "" default = "">
+      <where>csf.location_id = #location_id#</where>
+    </param>
+    <param name="auth_user_id" datatype="integer" default="-1" />
+  </params>
+  <columns>
+    <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
+    <column name='id' display='Sample ID' sql='csf.id' datatype='integer' in_count="true"/>
+    <column name='square_name' sql="square.centroid_sref" display='Square'/>
+    <column name='plot_name'
+    sql="
+    COALESCE(
+        '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;', csf.location_name, csnf.public_entered_sref)
+    " display='Plot' />
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <!-- Include in case of anonymous record -->
+    <column name='recorders' display='Recorder Names (on sample)' datatype='text' sql='csnf.recorders'/>
+    <column name='first_name' display='First Name' datatype='text' sql="
+    CASE WHEN p.id is NULL OR u.id IS NULL THEN
+      '&lt;em style=&quot;color:orange&quot;&gt;' || p.first_name || '&lt;/em&gt;'
+    ELSE 
+      p.first_name
+    END
+    "/>
+    <column name='surname' display='Surname' datatype='text' sql="
+    CASE WHEN p.id is NULL OR u.id IS NULL THEN
+      '&lt;em style=&quot;color:orange&quot;&gt;' || p.surname || '&lt;/em&gt;'
+    ELSE 
+      p.surname
+    END 
+    "/>
+    <column name='email_address' display='Email' datatype='text' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END'/>
+    <column name='survey_number' sql="
+    case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
+    when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
+    ELSE  '' END" display=' '/>
+    <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
+  </columns>
+</report>
