@@ -8,7 +8,7 @@ people table, these users have name displayed in orange"
   <query website_filter_field="uw.website_id">
   SELECT #columns#
   FROM people p
-  LEFT JOIN users u ON u.person_id=p.id AND u.deleted=false 
+  JOIN users u ON u.person_id=p.id
   LEFT JOIN users_websites uw on u.id=uw.user_id AND uw.site_role_id IS NOT NULL
     LEFT JOIN person_attribute_values pavAddr ON pavAddr.person_id=u.person_id AND pavAddr.person_attribute_id=#address_attr_id# AND pavAddr.deleted=false
     LEFT JOIN person_attribute_values pavAddr2 ON pavAddr2.person_id=u.person_id AND pavAddr2.person_attribute_id=#address_attr_line_2_id# AND pavAddr2.deleted=false 
