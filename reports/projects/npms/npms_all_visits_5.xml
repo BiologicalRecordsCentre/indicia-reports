@@ -8,8 +8,8 @@
     SELECT distinct #columns# 
       FROM cache_samples_functional csf
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
-      JOIN users u on u.id=csf.created_by_id
-      JOIN people p on p.id=u.person_id
+      LEFT JOIN users u on u.id=csf.created_by_id
+      LEFT JOIN people p on p.id=u.person_id
       JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
