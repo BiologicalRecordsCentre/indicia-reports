@@ -17,6 +17,7 @@
   LEFT JOIN location_attribute_values lavTime on lavTime.location_id=l.id AND lavTime.location_attribute_id=#time_attr_id# AND lavTime.deleted=false
   LEFT JOIN location_attribute_values lavFurtherInfo on lavFurtherInfo.location_id=l.id AND lavFurtherInfo.location_attribute_id=#further_info_attr_id# AND lavFurtherInfo.deleted=false
   LEFT JOIN location_attribute_values lavTrainer on lavTrainer.location_id=l.id AND lavTrainer.location_attribute_id=#trainer_attr_id# AND lavTrainer.deleted=false
+  LEFT JOIN location_attribute_values lavLocation on lavLocation.location_id=l.id AND lavLocation.location_attribute_id=#location_attr_id# AND lavLocation.deleted=false
   LEFT JOIN person_attribute_values pav on pav.int_value=l.id AND pav.person_attribute_id=#user_event_attr_id# AND pav.deleted=false  
   LEFT JOIN location_media lm on lm.location_id = l.id and lm.deleted=false
   #joins#
@@ -26,8 +27,8 @@
   AND ((#historic_mode# = false AND (lavHistoric.id IS NULL OR lavHistoric.int_value = 0))
       OR
       (#historic_mode# = true AND lavHistoric.int_value = 1))
-  GROUP BY lavEvent.date_start_value, lavEvent.date_end_value, lavEvent.date_type_value, l.id, l.name,
-      lavtime.text_value, lavFurtherInfo.text_value, lavTrainer.text_value, lm.caption, lm.path, l.comment,lav.int_value
+  GROUP BY lavEvent.date_start_value, lavEvent.date_end_value, lavEvent.date_type_value, l.id, l.name, lavLocation.text_value,
+      lavtime.text_value, lavFurtherInfo.text_value, lavTrainer.text_value, lm.caption, lm.path, l.comment, lav.int_value
   #order_by#
   </query>
   <order_bys>
@@ -46,20 +47,22 @@
     <param name='further_info_attr_id' display='Further Info Attribute Id' description='Attribute Id for the attribute that holds the 
         further information for an event.' datatype='integer'/>
     <param name='trainer_attr_id' display='Trainer Attribute Id' description='Attribute Id for the attribute that holds the trainer name for an event.' datatype='integer'/>
+    <param name='location_attr_id' display='Location Attribute Id' description='Attribute Id for the attribute that holds the location name for an event.' datatype='integer'/>
   </params>
   <columns>
     <column name='location_id' display='ID' sql='l.id' visible='false' in_count='true' />
-    <column name='name' display='Name' sql='l.name' datatype="text"/>
+    <column name='name' display='Title' sql='l.name' datatype="text"/>
+    <column name="images" display="Image path" sql="lm.path" img="true" />
+    <column name="caption" display="Caption" sql="lm.caption" datatype="text" visible="false"/>
     <column name="date" display="Date" datatype="date" />
     <column name="date_start" display="Date from" sql="lavEvent.date_start_value" visible="false" />
     <column name="date_end" display="Date to" sql="lavEvent.date_end_value" visible="false" />
     <column name="date_type" display="Date type" sql="lavEvent.date_type_value" visible="false" />
     <column name="time" display="Time" sql="lavTime.text_value" datatype="text"/>
+    <column name="location" display="Location" sql="lavLocation.text_value" datatype="text"/>
+    <column name="trainer" display="Trainer" sql="lavTrainer.text_value" datatype="text" />
     <column name='description' display='Description' sql='l.comment' datatype="text" />
     <column name="further_info" display="Further information" sql="lavFurtherInfo.text_value" datatype="text" />
-    <column name="trainer" display="Trainer" sql="lavTrainer.text_value" datatype="text" />
-    <column name="images" display="Image path" sql="lm.path" img="true" />
-    <column name="caption" display="Caption" sql="lm.caption" datatype="text" visible="false"/>
     <column name='signed_up' display='Signed up' sql="count(pav.id)" />
     <column name='max_people' display='Max people' sql="lav.int_value" />
     <column name='full' display='Spaces available?' sql="case when count(pav.id)>=lav.int_value then '&lt;b style=&quot;color:red&quot;&gt;FULL&lt;/b&gt;' else '&lt;i&gt;Spaces available&lt;/i&gt;' end" />
