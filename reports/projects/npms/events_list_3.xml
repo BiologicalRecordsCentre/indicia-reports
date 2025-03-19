@@ -52,7 +52,7 @@
   <columns>
     <column name='location_id' display='ID' sql='l.id' visible='false' in_count='true' />
     <column name='name' display='Title' sql='l.name' datatype="text"/>
-    <column name="images" display="Image path" sql="lm.path" img="true" />
+    <column name="images" display="Image" sql="lm.path" img="true" />
     <column name="caption" display="Caption" sql="lm.caption" datatype="text" visible="false"/>
     <column name="date" display="Date" datatype="date" />
     <column name="date_start" display="Date from" sql="lavEvent.date_start_value" visible="false" />
