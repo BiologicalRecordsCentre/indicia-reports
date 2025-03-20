@@ -9,7 +9,7 @@
       LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false
     WHERE 1=1
       AND #website_filter#
-      AND (l.location_type_id=#core_square_type_id#)    
+      AND (l.location_type_id=#event_location_type_id#)    
       AND l.deleted=false
       AND (#distance_from_post_code# != 0 OR '#return_all_squares#'='true')
       AND (lavHistoric.id IS NULL OR lavHistoric.int_value = 0)
@@ -19,10 +19,6 @@
     <order_by>l.id desc</order_by>
   </order_bys>
   <params>
-    <param name="event_location_type_id_chosen_by_user" display="Type of square" description="Square type to filter by." datatype="lookup"
-        population_call='report:projects/npms/core_and_additional_squares_for_population_call:id:location_type_name'>
-      <where>l.location_type_id=#square_type_id_chosen_by_user#</where>
-    </param>
     <param name="event_location_type_id" description="Event location type id. We need to inclde this because if the user elects to show all events we don't actually return all locations types" datatype="integer"/>
     --Not required, needed if you want the not_excluded and excluded columns to output correct data 
     <param name="post_code_geom" display="Post Code Geom" description="Post code geometry, so we only show locations closest to the user." emptyvalue='' default=''>
