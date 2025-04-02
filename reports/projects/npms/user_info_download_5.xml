@@ -1,7 +1,8 @@
 <report
-    title="User Information Download 4"
+    title="User Information Download 5"
     description="Report containing user and person information for download purposes. Includes filter to include only users with/without allocations and another to only show users who have an allocation made in a given date range. Also
-an event filter to return users associated with a particular event."
+an event filter to return users associated with a particular event.
+This version of the report shows buddying information instead of data access policy agreed information."
 >
   <query website_filter_field="uw.website_id">
   SELECT #columns#
@@ -18,7 +19,7 @@ an event filter to return users associated with a particular event."
     LEFT JOIN person_attribute_values pav18 ON pav18.person_id=u.person_id AND pav18.person_attribute_id=#over_18_attr_id# AND pav18.deleted=false 
     LEFT JOIN person_attribute_values pavMentor ON pavMentor.person_id=u.person_id AND pavMentor.person_attribute_id=#mentor_attr_id# AND pavMentor.deleted=false 
     LEFT JOIN person_attribute_values reqSurvForms ON reqSurvForms.person_id=u.person_id AND reqSurvForms.person_attribute_id=#request_survey_forms_attr_id# AND reqSurvForms.deleted=false 
-    LEFT JOIN person_attribute_values pavDataAccess ON pavDataAccess.person_id=u.person_id AND pavDataAccess.person_attribute_id=#data_access_attr_id# AND pavDataAccess.deleted=false 
+    LEFT JOIN person_attribute_values pavBuddyingOptIn ON pavBuddyingOptIn.person_id=u.person_id AND pavBuddyingOptIn.person_attribute_id=#buddying_opt_in_attr_id# AND pavBuddyingOptIn.deleted=false 
     LEFT JOIN person_attribute_values pavMTA ON pavMTA.person_id=u.person_id AND pavMTA.person_attribute_id=#mta_attr_id# AND pavMTA.deleted=false       
 
   -- Get squares associated with users provided the square creation date is later than the minimum date parameter
@@ -38,6 +39,9 @@ an event filter to return users associated with a particular event."
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
   WHERE p.deleted=false
   AND #website_filter#
+  AND (('#buddying_interest#' = '') 
+      OR ('#buddying_interest#' = 'yes' AND pavBuddyingOptIn.id IS NOT NULL AND pavBuddyingOptIn.text_value = '1')
+      OR ('#buddying_interest#' = 'no' AND (pavBuddyingOptIn.id IS NULL OR pavBuddyingOptIn.text_value != '1'))) 
   AND (('#allocation_status#'='') 
       OR ('#allocation_status#'='allocated' AND sqrPavDated.id IS NOT NULL)
       OR ('#allocation_status#'='unallocated' AND p.id NOT in 
@@ -79,6 +83,8 @@ an event filter to return users associated with a particular event."
     <param name="event_location_type_id" display="Event location type id" datatype="integer"/>
     <param name='allocation_status' display='Allocated?' description='Choose whether you only wish to return users with allocated squares, without allocated squares, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
         lookup_values='allocated:Allocated,unallocated:Unallocated' />
+    <param name='buddying_interest' display='Buddying interest?' description='Choose whether to only include users interested in buddying, or exclude them, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
+        lookup_values='yes:Yes,no:No' />
     <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
     <param name='user_event_attr_id' display='Id of the person attribute that holds user events' description='' datatype='integer'/>
     <param name="registration_date_start" display="User registered on or after this date" description="Only return users who registered on or after this date." datatype="date" emptyvalue="">
@@ -103,7 +109,7 @@ an event filter to return users associated with a particular event."
     <param name="over_18_attr_id" display="Over 18 attribute id" description="Person attribute id that holds whether a user is over 18." datatype="text"/>
     <param name="mentor_attr_id" display="Mentor attribute id" description="Person attribute id that holds whether a user is a mentor." datatype="text"/>
     <param name="request_survey_forms_attr_id" display="Requested survey forms attribute ID?" description="Person attribute id that holds whether a user requested the survey forms." datatype="text"/>
-    <param name="data_access_attr_id" display="Data Access Policy attribute id" description="Person attribute id that holds whether a user has agreed to the data access policy." datatype="text"/>
+    <param name="buddying_opt_in_attr_id" display="Buddying opt-in attribute id" description="Person attribute id that holds whether a user has opted-in to buddying." datatype="text"/>
     <param name="mta_attr_id" display="Mountain Training Association attribute id" description="Person attribute id that holds whether a user is a member of the MTA." datatype="text"/>
     <param name="allocation_date_start" display="User allocated square on or after this date" description="Only return users who were allocated a square on or after this date." datatype="date" emptyvalue=""/>
     <param name="allocation_date_end" display="User allocated square before this date" description="Only return users who were allocated a square before this date." datatype="date" emptyvalue=""/>
@@ -178,14 +184,16 @@ an event filter to return users associated with a particular event."
     <column name='over_18' display='18 or over?' sql="case pav18.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='mentor' display='Mentor?' sql="case pavMentor.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='request_survey_forms' display='Requested Survey Forms?' sql="case reqSurvForms.text_value  when '1' then 'Yes' else 'No' End" datatype='text' />
-    <column name='data_access' display='Data Access Policy Agreed?' sql="case pavDataAccess.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
+    <column name='buddying_interest' display='Buddying interest?' sql="case pavBuddyingOptIn.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
     <column name='mta_member' display='MTA member?' sql="case pavMTA.text_value when '1' then 'Yes' else 'No' End" datatype='text' />
-    <column name='registration_date' display='Registration date' sql='uw.created_on' datatype='text' />  
+    <column name='registration_date' display='Registration date' sql="to_char(uw.created_on, 'DD/MM/YYYY')::text" datatype='text' />  
     <column name='count' sql='count(distinct(sqr.id))' display='Number of allocated squares' datatype='integer' aggregate="true"/>
     <column name='allocated_squares' sql="string_agg(distinct(case when 
           ((sqrPavDated.created_on &gt;= CAST(COALESCE('#allocation_date_start#','1500-01-01') as date) OR '#allocation_date_start#'='')
           AND (sqrPavDated.created_on &lt;= CAST(COALESCE('#allocation_date_end#','1500-01-01') as date) OR '#allocation_date_end#'=''))
-          Then sqr.name else '&lt;b style=&quot;color:red&quot;&gt;' || sqr.name || '&lt;/b&gt;' END), ', ')" 
+          Then sqr.name || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' 
+          else 
+          '&lt;b style=&quot;color:red&quot;&gt;' || sqr.name || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' || '&lt;/b&gt;' END), ', ')" 
         display='Squares allocated' datatype='text' aggregate="true"/>
     <column name='allocated_events' sql="string_agg(distinct(event.name), ',')" display='Events' datatype='text' aggregate="true"/>
   </columns>

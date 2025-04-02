@@ -1,0 +1,73 @@
+<report
+    title="Events list 3"
+    description="A list of events."
+>
+  <query website_filter_field="lw.website_id">
+  SELECT #columns#
+  FROM locations l
+  LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+  LEFT JOIN (termlists_terms ttl1
+    JOIN terms tinput ON tinput.id=ttl1.term_id
+    JOIN termlists_terms ttl2 ON ttl2.meaning_id=ttl1.meaning_id
+    JOIN terms t ON t.id=ttl2.term_id
+  ) ON ttl1.id=l.location_type_id
+  LEFT JOIN location_attribute_values lav on lav.location_id=l.id AND lav.location_attribute_id=#max_people_attr_id# AND lav.deleted=false
+  LEFT JOIN location_attribute_values lavEvent on lavEvent.location_id=l.id AND lavEvent.location_attribute_id=#event_date_attr_id# AND lavEvent.deleted=false
+  LEFT JOIN location_attribute_values lavHistoric on lavHistoric.location_id=l.id AND lavHistoric.location_attribute_id=#historic_attr_id# AND lavHistoric.deleted=false
+  LEFT JOIN location_attribute_values lavTime on lavTime.location_id=l.id AND lavTime.location_attribute_id=#time_attr_id# AND lavTime.deleted=false
+  LEFT JOIN location_attribute_values lavFurtherInfo on lavFurtherInfo.location_id=l.id AND lavFurtherInfo.location_attribute_id=#further_info_attr_id# AND lavFurtherInfo.deleted=false
+  LEFT JOIN location_attribute_values lavTrainer on lavTrainer.location_id=l.id AND lavTrainer.location_attribute_id=#trainer_attr_id# AND lavTrainer.deleted=false
+  LEFT JOIN location_attribute_values lavLocation on lavLocation.location_id=l.id AND lavLocation.location_attribute_id=#location_attr_id# AND lavLocation.deleted=false
+  LEFT JOIN person_attribute_values pav on pav.int_value=l.id AND pav.person_attribute_id=#user_event_attr_id# AND pav.deleted=false  
+  LEFT JOIN location_media lm on lm.location_id = l.id and lm.deleted=false
+  #joins#
+  WHERE l.deleted=false
+  AND #website_filter#
+  AND (CAST(l.location_type_id AS character varying)='#location_type_id#')
+  AND ((#historic_mode# = false AND (lavHistoric.id IS NULL OR lavHistoric.int_value = 0))
+      OR
+      (#historic_mode# = true AND lavHistoric.int_value = 1))
+  GROUP BY lavEvent.date_start_value, lavEvent.date_end_value, lavEvent.date_type_value, l.id, l.name, lavLocation.text_value,
+      lavtime.text_value, lavFurtherInfo.text_value, lavTrainer.text_value, lm.caption, lm.path, l.comment, lav.int_value
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>lavEvent.date_start_value asc, l.created_on desc</order_by>
+  </order_bys>
+  <params>
+    <param name="currentUser" display="Id of the currently logged in user" datatype="integer" default="0" emptyvalue="0"/>
+    <param name='user_event_attr_id' display='Id of the person attribute that holds user events' description='' datatype='integer'/>
+    <param name='location_type_id' display='Location Type' description='Select the location type for events' datatype='integer'/>
+    <param name='locattrs' display='Location attribute list' description='Comma separated list of location attribute IDs to include' datatype='locattrs' />
+    <param name='max_people_attr_id' display='Max People Attr Id' description='Attribute Id that holds the maximum number of people allowed on the event.' datatype='integer'/>
+    <param name='event_date_attr_id' display='Event Date Attribute Id' description='Attribute Id that holds the event date.' datatype='integer'/>
+    <param name='historic_attr_id' display='Historic Attribute Id' description='Attribute Id that holds whether an event is historic.' datatype='integer'/>
+    <param name='historic_mode' display='Historic Mode' description='True if only historic events are to be shown. False excludes historic events' datatype='boolean'/>
+    <param name='time_attr_id' display='Time Attribute Id' description='Attribute Id for the attribute that holds the time for an event.' datatype='integer'/>
+    <param name='further_info_attr_id' display='Further Info Attribute Id' description='Attribute Id for the attribute that holds the 
+        further information for an event.' datatype='integer'/>
+    <param name='trainer_attr_id' display='Trainer Attribute Id' description='Attribute Id for the attribute that holds the trainer name for an event.' datatype='integer'/>
+    <param name='location_attr_id' display='Location Attribute Id' description='Attribute Id for the attribute that holds the location name for an event.' datatype='integer'/>
+  </params>
+  <columns>
+    <column name='location_id' display='ID' sql='l.id' visible='false' in_count='true' />
+    <column name='name' display='Title' sql='l.name' datatype="text"/>
+    <column name="images" display="Image" sql="lm.path" img="true" />
+    <column name="caption" display="Caption" sql="lm.caption" datatype="text" visible="false"/>
+    <column name="date" display="Date" datatype="date" />
+    <column name="date_start" display="Date from" sql="lavEvent.date_start_value" visible="false" />
+    <column name="date_end" display="Date to" sql="lavEvent.date_end_value" visible="false" />
+    <column name="date_type" display="Date type" sql="lavEvent.date_type_value" visible="false" />
+    <column name="time" display="Time" sql="lavTime.text_value" datatype="text"/>
+    <column name="location" display="Location" sql="lavLocation.text_value" datatype="text"/>
+    <column name="trainer" display="Trainer" sql="lavTrainer.text_value" datatype="text" />
+    <column name='description' display='Description' sql='l.comment' datatype="text" />
+    <column name="further_info" display="Further information" sql="lavFurtherInfo.text_value" datatype="text" />
+    <column name='signed_up' display='Signed up' sql="count(pav.id)" />
+    <column name='max_people' display='Max people' sql="lav.int_value" />
+    <column name='full' display='Spaces available?' sql="case when count(pav.id)>=lav.int_value then '&lt;b style=&quot;color:red&quot;&gt;FULL&lt;/b&gt;' else '&lt;i&gt;Spaces available&lt;/i&gt;' end" />
+    <column name='show_link' display='Should link be displayed?' 
+        sql="case when count(pav.id)>=lav.int_value OR '#currentUser#' = '0'
+            then false else true end" visible='false'/>
+  </columns>
+</report>
