@@ -57,13 +57,13 @@
            default="">
       <where>g.group_type_id in (#group_type_id#)</where>
     </param>
-    <param name="npms_mode_group_type_id" display="NPMS mode group type ID" 
+    <param name="npms_mode_group_type_id" display="NPMS mode group type ID"
         description="The ID of the NPMS mode group type ID in the Groups database table." datatype="integer"/>
     <param name="standard_mode_group_type_id" display="Standard mode group type ID"
         description="The ID of the Standard mode group type ID in the Groups database table." datatype="integer"/>
-    <param name="npms_mode_label_wording" display="NPMS mode label wording" 
+    <param name="npms_mode_label_wording" display="NPMS mode label wording"
         description="What do you want to call NPMS Mode on the projects grid?" datatype="text"/>
-    <param name="standard_mode_label_wording" display="Standard mode label wording" 
+    <param name="standard_mode_label_wording" display="Standard mode label wording"
         description="What do you want to call Standard Mode on the projects grid?" datatype="text"/>
     <param name="from_group_id" display="From parent group" description="Only include groups which are linked to from another group (e.g. find the children of a parent group)."
            datatype="text" default="">
@@ -86,7 +86,7 @@
     <column name="joining_method_raw" visible="false" sql="g.joining_method" datatype="text" />
     <column name="title" display="Name" sql="g.title" datatype="text" />
     <column name="description" display="Description" sql="g.description" datatype="text" />
-    <column name="group_type" display="Type" visible="true" 
+    <column name="group_type" display="Type" visible="true"
         sql="CASE WHEN group_type_id=#npms_mode_group_type_id# THEN '#npms_mode_label_wording#'
             WHEN group_type_id=#standard_mode_group_type_id# THEN '#standard_mode_label_wording#'
             ELSE '' END"
@@ -103,7 +103,7 @@
     <column name="private_records" display="Records released" sql="not g.private_records" datatype="boolean" />
     <column name="role" display="My role" sql="case when gu.administrator=true then 'Administrator' when gu.id is not null and gu.pending=false then 'Member' when gu.id is not null and gu.pending=true then 'Awaiting approval' else 'Non-member' end" datatype="text" />
     <column name="joining_method" display="Can anyone join?" sql="case g.joining_method when 'P' then 'Yes' when 'R' then 'By request only' when 'I' then 'By invite only' end" datatype="text" />
-    <column name="members" display="Members" aggregate="true"
+    <column name="members" display="Members" aggregate="true" template="{members}"
             sql="case when ('#CMSAdminPerm#' = '1' OR gu.administrator=true) and '#pending_path#'&lt;&gt;'' then '&lt;a href=&quot;#pending_path#' || g.id || '&quot;&gt;' else '' end
 || count(DISTINCT guc.user_id)::varchar
 || case when count(DISTINCT gucp.user_id)&gt;0 and ('#CMSAdminPerm#' = '1' OR gu.administrator=true) then ' (' || count(DISTINCT gucp.user_id)::varchar || ' pending)' else '' end
