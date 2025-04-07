@@ -1,0 +1,32 @@
+<report
+    title="Survey activity by user and input form"
+    description="Recording activity filtered by survey, grouped by user and recording
+form."
+>
+  <query website_filter_field="o.website_id">
+  SELECT #columns#
+  FROM cache_occurrences o
+  JOIN users u ON u.id = o.created_by_id AND u.deleted = FALSE
+  JOIN people p ON p.id = u.person_id AND p.deleted = FALSE
+  LEFT JOIN sample_attribute_values sav ON sav.sample_id = o.sample_id AND sample_attribute_id = 22
+  #joins#
+  WHERE o.survey_id = 101
+  AND o.training = FALSE
+  </query>
+  
+  <order_bys>
+    <order_by>o.input_form ASC</order_by>
+  </order_bys>
+  
+  <columns>
+    <column name="cmsusername" sql="sav.text_value" display="CMS Username" />
+    <column name="first_name" sql="p.first_name" display="First name" />
+    <column name="surname" sql="p.surname" display="Surname" />
+    <column name="email_address" sql="p.email_address" display="Email"/>
+    <column name="input_form" sql="o.input_form" display="Input form" />
+    <column name="firstuse" sql="MIN(o.cache_created_on)::date" display="First use" aggregate="true"/>
+    <column name="lastuse" sql="MAX(o.cache_created_on)::date" display="Latest use" aggregate="true"/>
+    <column name="numocc" sql="COUNT(o.id)" display="Count of occurrences" aggregate="true"/>
+  </columns>
+  
+</report>
