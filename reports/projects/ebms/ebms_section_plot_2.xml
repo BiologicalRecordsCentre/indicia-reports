@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<report title="EBMS Section Plot" description="Lists occurrences at a section level">
+<report title="EBMS Section Plot 2" description="Lists occurrences at a section level">
       <query website_filter_field="o.website_id" training_filter_field="o.training">
       SELECT #columns#
       FROM locations transect
