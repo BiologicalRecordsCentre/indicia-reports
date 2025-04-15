@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="UKBMS sampling locations (except BBS, confidential or historic) 2" 
+description="All UKBMS sampling locations except WCBS-BBS, confidential or historic locations.
+Experimental version of report that includes improvements to termlists_term and samples joins.">
+  <query>
+    SELECT * FROM
+      (SELECT
+      lav.int_value as confidential,
+      lav2.int_value as historic,
+      l.id as id,
+      l.name as name,
+      ctt.term as type,
+      l.location_type_id as ltype,
+      l.code as lcode,
+      l.centroid_sref as centroid_sref,
+      COUNT(DISTINCT sp.id) as samples,
+      COUNT(DISTINCT extract(YEAR from sp.date_start)) as n_year,
+      min(extract(YEAR from sp.date_start)) first_year,
+      max(extract(YEAR from sp.date_start)) last_year,
+      l.code as code,
+      st_x(st_centroid(st_transform(l.centroid_geom, 4326))) as lon,
+      st_y(st_centroid(st_transform(l.centroid_geom, 4326))) as lat
+      FROM locations l
+      JOIN locations_websites lw ON l.id=lw.location_id AND lw.deleted=false
+      left JOIN cache_samples_functional sp ON sp.location_id=l.id AND sp.website_id=27
+      join cache_termlists_terms ctt on l.location_type_id = ctt.id
+      left join location_attribute_values lav on l.id = lav.location_id AND lav.location_attribute_id = 245 AND lav.deleted=false
+      left join location_attribute_values lav2 on l.id = lav2.location_id AND lav2.location_attribute_id = 322 AND lav2.deleted=false
+      WHERE l.deleted=false
+        AND l.location_type_id in (777, 5196)
+        AND lw.website_id=27
+      group by l.id, ctt.term, lav.int_value, lav2.int_value
+      order by samples asc, name) as subsel
+    where (ltype=777 or samples>0) and (confidential is NULL or confidential = 0) and (historic is NULL or historic = 0)
+  </query>
+  <columns>
+    <column name="lat" display="Lat" visible="false"/>
+    <column name="lon" display="Lon" visible="false"/>
+    <column name="name" display="Site" />
+    <column name="lcode" display="UKBMS code" />
+    <column name="id" display="Site ID" />
+    <column name="type" display="Survey type" />
+    <column name="first_year" display="First year surveyed" />
+    <column name="last_year" display="Last year surveyed" />
+    <column name="n_year" display="Number of years surveyed" />
+    <column name="samples" display="Number of surveys" />
+    <column name="centroid_sref" display="Grid reference" />
+  </columns>
+</report>
