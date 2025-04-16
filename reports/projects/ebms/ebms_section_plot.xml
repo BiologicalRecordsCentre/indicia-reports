@@ -4,10 +4,10 @@
       <query website_filter_field="o.website_id" training_filter_field="o.training">
       SELECT #columns#
       FROM locations transect
-      JOIN locations section ON section.parent_id=transect.id
-      JOIN samples ps ON ps.location_id = transect.id
-      JOIN samples ss ON ss.parent_id=ps.id AND ss.location_id = section.id
-      JOIN occurrences o ON o.sample_id=ss.id AND o.zero_abundance='f'        
+      JOIN locations section ON section.parent_id=transect.id and section.deleted = false
+      JOIN samples ps ON ps.location_id = transect.id and ps.deleted = false
+      JOIN samples ss ON ss.parent_id=ps.id AND ss.location_id = section.id and ss.deleted = false
+      JOIN occurrences o ON o.sample_id=ss.id AND o.zero_abundance='f' and o.deleted = false        
       JOIN cache_taxa_taxon_lists cttl ON o.taxa_taxon_list_id = cttl.id
       LEFT JOIN (
       	/* Use non-cache table for ordering, as common name specific sort orders are not copied to cache table. Japan has specific sort orders. */
