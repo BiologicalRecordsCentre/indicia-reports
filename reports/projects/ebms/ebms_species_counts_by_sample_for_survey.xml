@@ -11,6 +11,7 @@
       WHERE #website_filter#
       AND (CAST(o.survey_id AS character varying)='#survey_id#' OR '#survey_id#'='')
       AND s.created_by_id=#user_id#
+      AND s.training = #training#
       </query>
       <params>
         <param name='user_id' display='Warehouse User ID' description='Enter the ID of the warehouse user' datatype='int' />
