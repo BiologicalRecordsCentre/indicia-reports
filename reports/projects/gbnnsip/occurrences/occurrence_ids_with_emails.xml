@@ -25,7 +25,7 @@
       <where>o.id &gt;= #min_id#</where>
     </param>
     <param name="min_updated_on" display="" datatype="date" default="">
-      <where>o.updated_on &gt;= #updated_on#</where>
+      <where>o.updated_on &gt;= '#min_updated_on#'</where>
     </param>
 
   </params>
