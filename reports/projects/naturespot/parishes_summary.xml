@@ -8,17 +8,19 @@
   join locations_websites lw on lw.location_id=l.id and lw.website_id=8 and lw.deleted=false
   left join (cache_occurrences_functional o
     join cache_samples_nonfunctional snf on snf.id=o.sample_id
-    and length(snf.public_entered_sref::text)>=8
+    and length(snf.public_entered_sref::text)&gt;=8
   ) on o.website_id=8
     and st_intersects(l.boundary_geom, o.public_geom)
     and o.record_status&lt;&gt;'R'
   where l.location_type_id=702
   and l.deleted=false
+  and exists(select id from users_websites where user_id=#auth_user_id# and website_id=8 and banned=false and site_role_id=1)
   </query>
   <order_bys>
     <order_by>l.name</order_by>
   </order_bys>
   <params>
+    <param name="auth_user_id" default="-1" datatype="integer" />
   </params>
   <columns>
     <column name="id" sql="l.id" visible="false" />
