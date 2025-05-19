@@ -1,37 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report title="UKBMS sampling locations (except BBS, confidential or historic)" 
+<report title="UKBMS sampling locations (except BBS, confidential or historic)"
 description="All UKBMS sampling locations except WCBS-BBS, confidential or historic locations.">
   <query>
-    SELECT * FROM
-      (SELECT
-      lav.int_value as confidential,
-      lav2.int_value as historic,
-      l.id as id,
-      l.name as name,
-      ctt.term as type,
-      l.location_type_id as ltype,
-      l.code as lcode,
-      l.centroid_sref as centroid_sref,
-      COUNT(DISTINCT sp.id) as samples,
-      COUNT(DISTINCT extract(YEAR from sp.date_start)) as n_year,
-      min(extract(YEAR from sp.date_start)) first_year,
-      max(extract(YEAR from sp.date_start)) last_year,
-      l.code as code,
-      st_x(st_centroid(st_transform(l.centroid_geom, 4326))) as lon,
-      st_y(st_centroid(st_transform(l.centroid_geom, 4326))) as lat
-      FROM locations l
-      JOIN locations_websites lw ON l.id=lw.location_id AND lw.deleted=false
-      LEFT JOIN samples sp ON sp.location_id=l.id AND sp.survey_id in (64,170,305,306)
-        AND sp.training=false and sp.deleted=false
-      JOIN cache_termlists_terms ctt on l.location_type_id = ctt.id AND ctt.termlist_id = 5
-      left join location_attribute_values lav on l.id = lav.location_id AND lav.location_attribute_id = 245 AND lav.deleted=false
-      left join location_attribute_values lav2 on l.id = lav2.location_id AND lav2.location_attribute_id = 322 AND lav2.deleted=false
-      WHERE l.deleted=false
-        AND l.location_type_id in (777, 5196)
-        AND lw.website_id in (#website_ids#)
-      group by l.id, ctt.term, lav.int_value, lav2.int_value
-      order by samples asc, name) as subsel
-    where (ltype=777 or samples>0) and (confidential is NULL or confidential = 0) and (historic is NULL or historic = 0)
+     SELECT * FROM custom_cache_tables.index_ukbms_sites_summary
   </query>
   <columns>
     <column name="lat" display="Lat" visible="false"/>
