@@ -21,7 +21,7 @@ description="All UKBMS sampling locations except WCBS-BBS, confidential or histo
       st_y(st_centroid(st_transform(l.centroid_geom, 4326))) as lat
       FROM locations l
       JOIN locations_websites lw ON l.id=lw.location_id AND lw.deleted=false
-      LEFT JOIN cache_samples_functional sp ON sp.location_id=l.id AND sp.website_id in (#website_ids#)
+      LEFT JOIN samples sp ON sp.location_id=l.id AND sp.survey_id in (64,170,305,306)
         AND sp.training=false
       JOIN cache_termlists_terms ctt on l.location_type_id = ctt.id AND ctt.termlist_id = 5
       left join location_attribute_values lav on l.id = lav.location_id AND lav.location_attribute_id = 245 AND lav.deleted=false
