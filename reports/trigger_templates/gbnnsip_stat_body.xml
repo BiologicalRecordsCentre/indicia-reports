@@ -109,7 +109,9 @@
     where g.group_type_id=#group_type_id#
     and g.deleted=false
     and ocdone.id is null
-    group by g.id, g.title, cttl.preferred_taxon, cttld.preferred_taxon, o.id, oc.record_status, oc.record_substatus, oc.comment, wm.id
+    group by g.id, g.title, cttl.preferred_taxon, cttld.preferred_taxon,
+    o.id, o.record_status, o.record_substatus, o.website_id,
+    oc.record_status, oc.record_substatus, oc.comment, wm.id
   </query>
   <params>
     <param name="date" display="Date" description="Date/time of last check" datatype="datetime" />
