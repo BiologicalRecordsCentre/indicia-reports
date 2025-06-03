@@ -7,9 +7,10 @@
   FROM samples s
   JOIN samples sp on sp.id=s.parent_id AND sp.deleted=false
   LEFT JOIN cache_occurrences o on o.sample_id=s.id
-    AND #sharing_filter#
     #agreements_join#
     #joins#
+    AND #sharing_filter#
+    #filters#
     #idlist#
   LEFT JOIN occurrences occ on occ.id=o.id AND occ.deleted=false
   LEFT JOIN (index_locations_samples ils
