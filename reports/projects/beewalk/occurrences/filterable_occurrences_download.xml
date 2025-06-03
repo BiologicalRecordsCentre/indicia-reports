@@ -6,10 +6,10 @@
   SELECT #columns#
   FROM samples s
   JOIN samples sp on sp.id=s.parent_id AND sp.deleted=false
-  LEFT JOIN cache_occurrences co on co.sample_id=s.id
+  LEFT JOIN cache_occurrences o on o.sample_id=s.id
     AND #sharing_filter#
     #idlist#
-  LEFT JOIN occurrences o on o.sample_id=s.id AND o.deleted=false
+  LEFT JOIN occurrences occ on occ.id=o.id AND occ.deleted=false
   LEFT JOIN (index_locations_samples ils
     JOIN locations l on l.id=ils.location_id
     JOIN cache_termlists_terms ctt on ctt.id=l.location_type_id AND ctt.term='Vice County'
