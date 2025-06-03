@@ -8,6 +8,8 @@
   JOIN samples sp on sp.id=s.parent_id AND sp.deleted=false
   LEFT JOIN cache_occurrences o on o.sample_id=s.id
     AND #sharing_filter#
+    #agreements_join#
+    #joins#
     #idlist#
   LEFT JOIN occurrences occ on occ.id=o.id AND occ.deleted=false
   LEFT JOIN (index_locations_samples ils
@@ -46,8 +48,6 @@
   left join occurrence_attribute_values oavfv on oavfv.occurrence_id=o.id and oavfv.occurrence_attribute_id=149 and oavfv.deleted=false
   left join location_attribute_values lvvc on lvvc.location_id=sp.location_id and lvvc.location_attribute_id=377 and lvvc.deleted=false
   left join cache_termlists_terms tvc on tvc.id=lvvc.int_value
-  #agreements_join#
-  #joins#
   WHERE s.survey_id=178
   </query>
   <order_bys>
