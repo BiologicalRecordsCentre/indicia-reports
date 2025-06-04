@@ -182,5 +182,4 @@
     <column name="property" template="{property}" />
     <column name="value" template="{value}" />
   </columns>
-  1 as sort, null::integer as subsort, 'Number of species' as property, count(distinct tl.preferred_taxa_taxon_list_id)::varchar as value
 </report>
