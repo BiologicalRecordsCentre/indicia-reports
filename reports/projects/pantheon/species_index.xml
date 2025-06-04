@@ -33,15 +33,15 @@ where 1=1
     <column name="order" sql="si.order" display="Order" datatype="text" />
     <column name="rarity_score" sql="si.rarity_score" display="SQS" datatype="integer" />
     <column name="designations" sql="si.designations" display="Conservation status" datatype="text" />
-    <column name="current_designations" sql="si.current_designations" display="Current conservation status" datatype="text" />
-    <column name="designation_summary" sql="si.designation_summary" display="Designation summary" datatype="text" />
+    <column name="current_designations" sql="si.current_designations" display="Current conservation status" datatype="text" template="current_designations" />
+    <column name="designation_summary" sql="si.designation_summary" display="Designation summary" datatype="text" template="designation_summary"  />
     <column name="larval_guild" sql="si.larval_guild" display="Larval feeding guild" datatype="text"
             template="&lt;span&gt;{larval_guild}&lt;/span&gt;" />
     <column name="adult_guild" sql="si.adult_guild" display="Adult feeding guild" datatype="text"
             template="&lt;span&gt;{adult_guild}&lt;/span&gt;" />
-    <column name="broad_biotope" display="Broad biotope" datatype="text" sql="si.lexicon_broad_biotope" />
-    <column name="specific_biotope" display="Habitat" datatype="text" sql="si.lexicon_specific_biotope" />
-    <column name="resource" display="Resources" datatype="text" sql="si.lexicon_resource" />
+    <column name="broad_biotope" display="Broad biotope" datatype="text" sql="si.lexicon_broad_biotope" template="broad_biotope" />
+    <column name="specific_biotope" display="Habitat" datatype="text" sql="si.lexicon_specific_biotope" template="specific_biotope" />
+    <column name="resource" display="Resources" datatype="text" sql="si.lexicon_resource" template="resource" />
     <column name="isis_sat_code" sql="si.isis_sat_code" display="Specific assemblage type" datatype="text" />
     <column name="horus_indices" display="Habitat score" datatype="text" sql="si.horus_indices" />
     <column name="taxon_meaning_id" sql="si.taxon_meaning_id" visible="false"/>

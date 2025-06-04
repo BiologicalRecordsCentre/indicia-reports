@@ -170,4 +170,9 @@
     <param name='taxon_list_id' display='Taxon list ID'  datatype='integer'/>
     <param name='rarity_score_attr_id' display='Rarity score attribute ID' datatype='integer'/>
   </params>
+  <columns>
+    <column name="sort" />
+    <column name="property" template="{property}" />
+    <column name="value" template="{value}" />
+  </columns>
 </report>
