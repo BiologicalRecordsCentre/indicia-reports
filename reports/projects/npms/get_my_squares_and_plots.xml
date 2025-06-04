@@ -61,7 +61,7 @@ or any plot they are assigned to which they didn't create (as long as they are t
           then '&lt;i&gt;' || 'Plot at ' || l.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
         else 
           '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || l.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
-      end" datatype='text' />
+      end" template="{name}" datatype='text' />
     <column name='location_type' display='Square or plot type' sql="
       case 
         when l.parent_id is null then 'square' 
