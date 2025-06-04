@@ -176,4 +176,11 @@
     <param name='taxon_list_id' display='Taxon list ID'  datatype='integer'/>
     <param name='rarity_score_attr_id' display='Rarity score attribute ID' datatype='integer'/>
   </params>
+  <columns>
+    <column name="sort" />
+    <column name="subsort" />
+    <column name="property" template="{property}" />
+    <column name="value" template="{value}" />
+  </columns>
+  1 as sort, null::integer as subsort, 'Number of species' as property, count(distinct tl.preferred_taxa_taxon_list_id)::varchar as value
 </report>
