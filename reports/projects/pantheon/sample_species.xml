@@ -103,15 +103,15 @@ end</where>
     <column name="order_taxon" sql="cttlpref.order_taxon" display="Order" in_count="true" distincton="true" datatype="text" />
     <column name="rarity_score" sql="si.rarity_score" display="SQS" datatype="integer" />
     <column name="designations" sql="si.designations" display="Conservation status" datatype="text" />
-    <column name="current_designations" sql="si.current_designations" display="Current conservation status" datatype="text" />
-    <column name="designation_summary" sql="si.designation_summary" display="Designation summary" datatype="text" />
+    <column name="current_designations" sql="si.current_designations" display="Current conservation status" datatype="text" template="{current_designations}" />
+    <column name="designation_summary" sql="si.designation_summary" display="Designation summary" datatype="text" template="{designation_summary}" />
     <column name="larval_guild" sql="si.larval_guild" display="Larval feeding guild" datatype="text"
 	        template="&lt;span&gt;{larval_guild}&lt;/span&gt;" />
     <column name="adult_guild" sql="adult_guild" display="Adult feeding guild" datatype="text"
 	        template="&lt;span&gt;{adult_guild}&lt;/span&gt;" />
-    <column name="broad_biotope" sql="lexicon_broad_biotope" display="Broad biotope" datatype="text" />
-    <column name="specific_biotope" sql="lexicon_specific_biotope" display="Habitat" datatype="text" />
-    <column name="resource" sql="lexicon_resource" display="Resources" datatype="text" />
+    <column name="broad_biotope" sql="lexicon_broad_biotope" display="Broad biotope" datatype="text" template="{broad_biotope}" />
+    <column name="specific_biotope" sql="lexicon_specific_biotope" display="Habitat" datatype="text" template="{specific_biotope}" />
+    <column name="resource" sql="lexicon_resource" display="Resources" datatype="text" template="{resource}" />
     <column name="isis_sat_code" sql="si.isis_sat_code" display="Specific assemblage type" datatype="text" />
     <column name="horus_indices" sql="horus_indices" display="Habitat score" datatype="text" />
     <column name="taxon_meaning_id" sql="cttlpref.taxon_meaning_id" visible="false" />
