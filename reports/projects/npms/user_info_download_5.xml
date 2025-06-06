@@ -122,8 +122,8 @@ This version of the report shows buddying information instead of data access pol
     <column name="person_id" display='Person ID' sql="p.id" datatype="integer" visible="false" />
     <column name="indicia_warehouse_user_id" display='User ID' sql="u.id" datatype="integer" in_count='true'/>
     <column name='person_full_name_admin_link' display='User administration link' 
-        sql="'&lt;a href=&quot;' || '#user_admin_page_link#' || '?dynamic-the_user_id=' || u.id || '&quot;&gt;' || p.first_name || ' ' || p.surname || '&lt;/a&gt;'" 
-    datatype='text'/> 
+        sql="'&lt;a href=&quot;' || '#user_admin_page_link#' || '?dynamic-the_user_id=' || u.id || '&quot;&gt;' || regexp_replace(p.first_name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' ' || regexp_replace(p.surname, E'&lt;[^&gt;]+&gt;', '', 'gi') || '&lt;/a&gt;'" 
+    datatype='text' html_safe='true' /> 
     <column name='person_surname' display='Surname' sql="p.surname" datatype='text'/>       
     <column name='person_full_name' display='Full name' 
         sql="p.first_name || ' ' || p.surname" 
@@ -191,10 +191,10 @@ This version of the report shows buddying information instead of data access pol
     <column name='allocated_squares' sql="string_agg(distinct(case when 
           ((sqrPavDated.created_on &gt;= CAST(COALESCE('#allocation_date_start#','1500-01-01') as date) OR '#allocation_date_start#'='')
           AND (sqrPavDated.created_on &lt;= CAST(COALESCE('#allocation_date_end#','1500-01-01') as date) OR '#allocation_date_end#'=''))
-          Then sqr.name || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' 
+          Then regexp_replace(sqr.name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' 
           else 
-          '&lt;b style=&quot;color:red&quot;&gt;' || sqr.name || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' || '&lt;/b&gt;' END), ', ')" 
-        display='Squares allocated' datatype='text' aggregate="true"/>
+          '&lt;b style=&quot;color:red&quot;&gt;' || regexp_replace(sqr.name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' || to_char(sqrPav.created_on, 'DD/MM/YYYY')::text ||  ')' || '&lt;/b&gt;' END), ', ')" 
+        display='Squares allocated' datatype='text' aggregate="true" html_safe='true' />
     <column name='allocated_events' sql="string_agg(distinct(event.name), ',')" display='Events' datatype='text' aggregate="true"/>
   </columns>
 </report>
