@@ -27,6 +27,6 @@ Useful if old squares are left on the system but are not currently active." data
     <column name='id' sql='distinct(square.id)' datatype='integer' visible='false' in_count="true"/>
     <column name='centroid_sref' display='Square' sql="
       '&lt;a href=&quot;' || '#square_admin_page_link#' || '?location_id=' || square.id || '&quot;&gt;' || regexp_replace(square.centroid_sref, ',[^ ]', ', ', 'g') || '&lt;/a&gt;'
-    " datatype='text' in_count="true"/>
+    " datatype='text' in_count="true" html_safe='true' />
   </columns>
 </report>
