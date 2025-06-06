@@ -45,7 +45,7 @@
     <column name="date_start" display="Date from" sql="lavEvent.date_start_value" visible="false" />
     <column name="date_end" display="Date to" sql="lavEvent.date_end_value" visible="false" />
     <column name="date_type" display="Date type" sql="lavEvent.date_type_value" visible="false" />
-    <column name='description' display='Description' sql='l.comment'/>
+    <column name='description' display='Description' sql='l.comment' html_safe='true' />
     <column name='signed_up' display='Signed up' sql="count(pav.id)"/>
     <column name='max_people' display='Max people' sql="lav.int_value"/>
     <column name='full' display='Spaces available?' sql="case when count(pav.id)>=lav.int_value then '&lt;b style=&quot;color:red&quot;&gt;FULL&lt;/b&gt;' else '&lt;i&gt;Spaces available&lt;/i&gt;' end" html_safe='true' />

@@ -61,8 +61,8 @@
     <column name="time" display="Time" sql="lavTime.text_value" datatype="text"/>
     <column name="location" display="Location" sql="lavLocation.text_value" datatype="text"/>
     <column name="trainer" display="Trainer" sql="lavTrainer.text_value" datatype="text" />
-    <column name='description' display='Description' sql='l.comment' datatype="text" />
-    <column name="further_info" display="Further information" sql="lavFurtherInfo.text_value" datatype="text" />
+    <column name='description' display='Description' sql='l.comment' datatype="text" html_safe='true' />
+    <column name="further_info" display="Further information" sql="lavFurtherInfo.text_value" datatype="text" html_safe='true' />
     <column name='signed_up' display='Signed up' sql="count(pav.id)" />
     <column name='max_people' display='Max people' sql="lav.int_value" />
     <column name='full' display='Spaces available?' sql="case when count(pav.id)>=lav.int_value then '&lt;b style=&quot;color:red&quot;&gt;FULL&lt;/b&gt;' else '&lt;i&gt;Spaces available&lt;/i&gt;' end" html_safe='true' />
