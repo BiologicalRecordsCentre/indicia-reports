@@ -58,16 +58,16 @@
     <column name='square' display='Square' sql="regexp_replace(square.centroid_sref, ',[^ ]', ', ', 'g')" datatype='text'/>
     <column name='first_name' sql="
     CASE WHEN u.id IS NULL OR p.id IS NULL THEN 
-      '&lt;b style=&quot;color:red&quot;&gt;' || p.first_name || '&lt;/b&gt;' 
+      '&lt;b style=&quot;color:red&quot;&gt;' || regexp_replace(p.first_name, E'&lt;[^&gt;]+&gt;', '', 'gi') || '&lt;/b&gt;' 
     ELSE
-      p.first_name
-    END" display='Released by (first name)' datatype='text'/>
+      regexp_replace(p.first_name, E'&lt;[^&gt;]+&gt;', '', 'gi')
+    END" display='Released by (first name)' datatype='text' html_safe='true' />
     <column name='surname' sql="
     CASE WHEN u.id IS NULL OR p.id IS NULL THEN
-      '&lt;b style=&quot;color:red&quot;&gt;' || p.surname || '&lt;/b&gt;'
+      '&lt;b style=&quot;color:red&quot;&gt;' || regexp_replace(p.surname, E'&lt;[^&gt;]+&gt;', '', 'gi') || '&lt;/b&gt;'
     ELSE 
-      p.surname
-    END" display='Released by (surname)' datatype='text'/>
+      regexp_replace(p.surname, E'&lt;[^&gt;]+&gt;', '', 'gi')
+    END" display='Released by (surname)' datatype='text' html_safe='true' />
     <column name='email' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END' display='Released by (email address)' datatype='text'/>
     <column name='release_date' sql="to_char(cast (pavRemovedAlloc.updated_on as date), 'DD/MM/YYYY')" display='Release date' datatype='date'/>
   </columns>
