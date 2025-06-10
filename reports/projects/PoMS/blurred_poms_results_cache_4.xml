@@ -9,17 +9,18 @@
       JOIN cache_samples_nonfunctional csnf on csnf.id = s.id
       LEFT JOIN cache_occurrences_functional cof on cof.sample_id = s.id
 
+      -- We can't get this from cache as logic is involved with the IDs when showing Other Habitat
       LEFT JOIN sample_attribute_values sav_hab on sav_hab.sample_id = csnf.id 
           AND sav_hab.sample_attribute_id = #habitat_smp_id#
           AND sav_hab.deleted = false
       LEFT JOIN cache_termlists_terms ctt_hab on ctt_hab.id = sav_hab.int_value
-      LEFT JOIN cache_termlists_terms ctt_hab_lang on ctt_hab_lang.meaning_id = ctt_hab.meaning_id AND ctt_hab_lang.language_iso = '#language#'
+      LEFT JOIN cache_termlists_terms ctt_hab_lang on ctt_hab_lang.meaning_id = ctt_hab.meaning_id AND ctt_hab_lang.language_iso = 'eng'
 
       LEFT JOIN sample_attribute_values sav_other_hab on sav_other_hab.sample_id = csnf.id 
           AND sav_other_hab.sample_attribute_id = #other_habitat_smp_id#
           AND sav_other_hab.deleted = false
 
-      -- We can't get this from cache as logic is involved with the IDs and detecting the Other Flower to show
+      -- Same as above, cannot use cache tables
       LEFT JOIN sample_attribute_values sav_target on sav_target.sample_id = csnf.id 
           AND sav_target.sample_attribute_id = #target_smp_id#
           AND sav_target.deleted = false
