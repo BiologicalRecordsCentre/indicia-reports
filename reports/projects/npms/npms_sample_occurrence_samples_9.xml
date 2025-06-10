@@ -97,14 +97,14 @@
           '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
         when savSurv1.int_value IS NULL AND csf_others_earlier_in_year_2.id IS NOT NULL AND lavPlotName.text_value IS NOT NULL
           then '&lt;div style=&quot;color:red&quot; &gt;' || 'Please check this record, as you have already entered two surveys for this plot for the year' ||
-          '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
+          '&lt;br&gt; &lt;br&gt; &lt;i&gt;' || 'Plot ' || regexp_replace(lavPlotName.text_value, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt; &lt;/div&gt;'
         when lavPlotName.text_value IS null
           then '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
         else
-          '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
+          '&lt;i&gt;' || 'Plot ' || regexp_replace(lavPlotName.text_value, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' at ' || plot.centroid_sref || ' ('||  termPlotType.term || ') ' || '&lt;/i&gt;'
         end
-        , csf.location_name, csnf.public_entered_sref)
-    " display='Plot'/>
+        , regexp_replace(csf.location_name, E'&lt;[^&gt;]+&gt;', '', 'gi'), csnf.public_entered_sref)
+    " display='Plot' html_safe='true'/>
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
