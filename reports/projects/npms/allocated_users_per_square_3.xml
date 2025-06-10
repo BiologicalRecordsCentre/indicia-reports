@@ -41,10 +41,10 @@
       sql="array_to_string(array_agg(
         case 
           when pav.updated_by_id!=u.id AND u.id IS NOT NULL 
-            then p.first_name || ' ' || p.surname || ' (' || CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END || ')' 
+            then regexp_replace(p.first_name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' ' || regexp_replace(p.surname, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' || CASE WHEN accesscheck.id IS NULL THEN NULL ELSE regexp_replace(p.email_address, E'&lt;[^&gt;]+&gt;', '', 'gi') END || ')' 
           when pav.updated_by_id=u.id AND u.id IS NOT NULL 
-            then '&lt;b style=&quot;color:red&quot;&gt;' || p.first_name || ' ' || p.surname || ' (' ||  CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END || ')' || '&lt;/b&gt;' else '' 
-        end) , ', ')"    datatype='text' aggregate='true'/>  
+            then '&lt;b style=&quot;color:red&quot;&gt;' || regexp_replace(p.first_name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' ' || regexp_replace(p.surname, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' ||  CASE WHEN accesscheck.id IS NULL THEN NULL ELSE regexp_replace(p.email_address, E'&lt;[^&gt;]+&gt;', '', 'gi') END || ')' || '&lt;/b&gt;' else '' 
+        end) , ', ')"    datatype='text' aggregate='true' html_safe='true' />  
     <column name='allocation_dates' display='Allocated dates' 
       sql="array_to_string(array_agg(
         case 
@@ -53,6 +53,6 @@
           when pav.updated_by_id=u.id AND u.id IS NOT NULL 
             then '&lt;b style=&quot;color:red&quot;&gt;' || to_char(pav.created_on, 'DD/MM/YYYY') || '&lt;/b&gt;' else '' 
         end), ', ')"
-    datatype='text' aggregate='true'/>  
+    datatype='text' aggregate='true' html_safe='true' />  
   </columns>
 </report>
