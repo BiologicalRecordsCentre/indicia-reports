@@ -29,9 +29,9 @@
     <column name='name' display='Square Name' sql="
       case 
         when l.parent_id is null AND #pss_mode#=0
-          then '&lt;b&gt;' || l.centroid_sref || ' - ' || coalesce(lav.text_value,'#no_vice_county_found_message#') || '&lt;/b&gt;' 
+          then '&lt;b&gt;' || l.centroid_sref || ' - ' || coalesce(regexp_replace(lav.text_value, E'&lt;[^&gt;]+&gt;', '', 'gi'),'#no_vice_county_found_message#') || '&lt;/b&gt;' 
         when l.parent_id is null AND #pss_mode#=1  
           then '&lt;b&gt;' || l.centroid_sref || '&lt;/b&gt;' 
-      end" datatype='text' />
+      end" datatype='text' html_safe='true' />
   </columns> 
 </report>

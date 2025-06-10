@@ -60,8 +60,8 @@ or any plot they are assigned to which they didn't create (as long as they are t
         when l.parent_id is not null AND lavPlotName.text_value IS null 
           then '&lt;i&gt;' || 'Plot at ' || l.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
         else 
-          '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || l.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
-      end" template="{name}" datatype='text' />
+          '&lt;i&gt;' || 'Plot ' || regexp_replace(lavPlotName.text_value, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' at ' || l.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
+      end" html_safe='true' datatype='text' />
     <column name='location_type' display='Square or plot type' sql="
       case 
         when l.parent_id is null then 'square' 
