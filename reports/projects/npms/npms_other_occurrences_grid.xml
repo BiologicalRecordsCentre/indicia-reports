@@ -74,10 +74,10 @@ Version of reports to be used for download link on grid."
           when lavPlotName.text_value IS null 
             then '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
           else 
-            '&lt;i&gt;' || 'Plot ' || lavPlotName.text_value || ' at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
+            '&lt;i&gt;' || 'Plot ' || regexp_replace(lavPlotName.text_value, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' 
           end
-          , csf.location_name, csnf.public_entered_sref)
-      " display='Plot' />
+          , regexp_replace(csf.location_name, E'&lt;[^&gt;]+&gt;', '', 'gi'), csnf.public_entered_sref)
+      " display='Plot' html_safe='true' />
     <column name="date" display="Date" datatype="date" />
     <column name="date_start" display="Date from" sql="cof.date_start" visible="false" />
     <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
