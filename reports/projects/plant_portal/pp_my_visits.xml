@@ -30,7 +30,8 @@
     <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
     <column name='square_name' sql="square.centroid_sref" display='Square' datatype="text"/>
     <column name='plot_name'
-    sql="'&lt;i&gt;' || 'Plot at ' || plot.name || ' (' ||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' || ')'" display='Plot' />
+    sql="'&lt;i&gt;' || 'Plot at ' || regexp_replace(plot.name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' ||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' || ')'" display='Plot' 
+    html_safe='true' />
     <column name='plot_centroid_sref' sql="plot.centroid_sref" display='Plot grid ref'/>
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
