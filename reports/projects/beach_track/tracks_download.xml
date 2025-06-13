@@ -1,0 +1,35 @@
+<report
+    title="Tracks download"
+    description="Report for downloading tracks."
+>
+  <query>
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    WHERE s.survey_id=721
+    AND s.parent_sample_id IS NULL
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>s.id ASC</order_by>
+  </order_bys>
+  <columns>
+    <column name="id" sql="s.id" display="Track ID" datatype="integer" />
+    <column name="date" sql="s.date_start" display="Date" datatype="date" />
+    <column name="location_name" sql="s.location_name" display="Location" datatype="text" />
+    <column name="grid_ref" sql="snf.output_sref" display="Map ref." datatype="text" />
+    <column name="recorded_by" sql="snf.recorders" display="Recorded by" datatype="text" />
+    <column name="start_time" sql="snf.attrs_json->>'1715'" display="Start time" datatype="text" />
+    <column name="end_time" sql="snf.attrs_json->>'1716'" display="End time" datatype="text" />
+    <column name="duration" sql="snf.attrs_json->>'1717'" display="Duration" datatype="text" />
+    <column name="distance" sql="snf.attrs_json->>'1718'" display="Distance" datatype="float" />
+    <column name="visibility" sql="snf.attrs_json->>'1719'" display="Visibility" datatype="text" />
+    <column name="weather" sql="snf.attrs_json->>'1720'" display="Weather" datatype="text" />
+    <column name="cleanliness" sql="snf.attrs_json->>'1722'" display="Cleanliness" datatype="text" />
+    <column name="familiarity" sql="snf.attrs_json->>'1723'" display="Familiarity" datatype="text" />
+    <column name="substrate" sql="snf.attrs_json->>'1724'" display="Substrate" datatype="text" />
+    <column name="boundary" sql="snf.attrs_json->>'1713'" display="Boundary" datatype="text" />
+    <column name="marketing_consent" sql="snf.attrs_json->>'1714'" display="Marketing consent" datatype="boolean" />
+    <column name="track" sql="st_astext(st_transform(public_geom, 4326))" display="Track" datatype="text" />
+  </columns>
+</report>
