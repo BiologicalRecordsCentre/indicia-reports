@@ -17,10 +17,10 @@
     <order_by>count(distinct s.id) desc</order_by>
   </order_bys>
   <params>
-    <param name="date_from" datatype="date">
+    <param name="date_from" datatype="date" default="">
       <where>s.date_start&gt;='#date_from#'</where>
     </param>
-    <param name="date_to" datatype="date">
+    <param name="date_to" datatype="date" default="">
       <where>s.date_start&lt;='#date_to#'</where>
     </param>
   </params>
