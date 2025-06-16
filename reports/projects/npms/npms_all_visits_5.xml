@@ -1,15 +1,13 @@
 <report
     title="NPMS All Visits 5"
-    description="Display a list of visits suitable for adminstrators to view all data.
-    New version of report will display users even if there is a problem in users or 
-    people table, these users have name displayed in orange."
+    description="Display a list of visits suitable for adminstrators to view all data."
 >
   <query website_filter_field="csf.website_id">
     SELECT distinct #columns# 
       FROM cache_samples_functional csf
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
-      LEFT JOIN users u on u.id=csf.created_by_id
-      LEFT JOIN people p on p.id=u.person_id
+      JOIN users u on u.id=csf.created_by_id AND u.deleted=false
+      JOIN people p on p.id=u.person_id AND p.deleted=false
       JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
@@ -18,7 +16,7 @@
       WHERE #website_filter# 
         AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
         AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
-        AND csf.survey_id in (#survey_ids#)
+        AND (csf.survey_id = #wildflower_survey_id# OR csf.survey_id = #indicator_survey_id# OR csf.survey_id = #inventory_survey_id#)
         AND csf.training = false
       #order_by#
   </query>
@@ -38,6 +36,14 @@
       <where>csf.location_id = #location_id#</where>
     </param>
     <param name="auth_user_id" datatype="integer" default="-1" />
+    <param name="wildflower_survey_id" display="Wildflower survey ID" description="ID of Wildflower Survey." datatype="int"/>
+    <param name="indicator_survey_id" display="Indicator survey ID" description="ID of Indicator Survey." datatype="int"/>
+    <param name="inventory_survey_id" display="Inventory survey ID" description="ID of Inventory Survey." datatype="int"/>
+    <param name="wildflower_data_entry_path" display="Wildflower data entry form path" description="Relative path of Wildflower form." datatype="text"/>
+    <param name="indicator_data_entry_path" display="Indicator data entry form path" description="Relative path of Indicator form." datatype="text"/>
+    <param name="inventory_data_entry_path" display="Inventory data entry form path" description="Relative path of Inventory form." datatype="text"/>  
+    <param name="survey_not_found_page_path" display="Survey not found page path" 
+        description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />
   </params>
   <columns>
     <column name='survey' display='Survey' sql='csnf.survey_title' datatype='text'/>
@@ -46,33 +52,29 @@
     <column name='plot_name'
     sql="
     COALESCE(
-        '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;', csf.location_name, csnf.public_entered_sref)
-    " display='Plot' />
+        '&lt;i&gt;' || 'Plot at ' || plot.centroid_sref || ' ('||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;', regexp_replace(csf.location_name, E'&lt;[^&gt;]+&gt;', '', 'gi'), csnf.public_entered_sref)
+    " display='Plot' html_safe='true' />
     <column name='date_start' sql='csf.date_start' visible="false"/>
     <column name='date_end' sql='csf.date_end' visible="false"/>
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <!-- Include in case of anonymous record -->
     <column name='recorders' display='Recorder Names (on sample)' datatype='text' sql='csnf.recorders'/>
-    <column name='first_name' display='First Name' datatype='text' sql="
-    CASE WHEN p.id is NULL OR u.id IS NULL THEN
-      '&lt;em style=&quot;color:orange&quot;&gt;' || p.first_name || '&lt;/em&gt;'
-    ELSE 
-      p.first_name
-    END
-    "/>
-    <column name='surname' display='Surname' datatype='text' sql="
-    CASE WHEN p.id is NULL OR u.id IS NULL THEN
-      '&lt;em style=&quot;color:orange&quot;&gt;' || p.surname || '&lt;/em&gt;'
-    ELSE 
-      p.surname
-    END 
-    "/>
+    <column name='first_name' display='First Name' datatype='text' sql='p.first_name'/>
+    <column name='surname' display='Surname' datatype='text' sql='p.surname'/>
     <column name='email_address' display='Email' datatype='text' sql='CASE WHEN accesscheck.id IS NULL THEN NULL ELSE p.email_address END'/>
     <column name='survey_number' sql="
     case when ((csnf.attrs_json->>'227')::integer IS NOT NULL AND (csnf.attrs_json->>'227')::integer != 0) THEN 'Survey 2' 
     when ((csnf.attrs_json->>'227')::integer IS NULL OR (csnf.attrs_json->>'227')::integer = 0) THEN 'Survey 1'
     ELSE  '' END" display=' '/>
-    <column name='input_form' visible="false" sql="case when csf.input_form is null then '#default_input_form#' else csf.input_form end" />
+    <column name='input_form' visible="false" sql="
+    CASE 
+      WHEN csf.input_form IS NOT NULL THEN csf.input_form
+      WHEN csf.input_form IS NULL AND csf.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
+      WHEN csf.input_form IS NULL AND csf.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
+      WHEN csf.input_form IS NULL AND csf.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
+    ELSE 
+      '#survey_not_found_page_path#'
+    END" />
   </columns>
 </report>
