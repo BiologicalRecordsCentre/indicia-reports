@@ -48,8 +48,8 @@
     <column name='input_form' 
     sql="
     CASE 
-    WHEN csf.input_form IS NOT NULL
-    THEN csf.input_form
+    WHEN o.input_form IS NOT NULL
+    THEN o.input_form
     ELSE '#default_data_entry_page_path#'
     END" visible="false"/>
   </columns>
