@@ -39,7 +39,7 @@
     from groups g
     join filters f on f.id=g.filter_id and f.deleted=false
     join groups_users gu on gu.group_id=g.id and gu.deleted=false
-    join cache_taxa_taxon_lists cttl on string_to_array(trim(both '"' from (f.definition::json-&gt;'taxa_taxon_list_list')::text), ',') @&gt; ARRAY[cttl.id::text]
+    join cache_taxa_taxon_lists cttl on cttl.id = ANY(string_to_array(trim(both '"' from (f.definition::json-&gt;'taxa_taxon_list_list')::text), ',')::integer[])
     join cache_occurrences_functional o on o.taxa_taxon_list_external_key=cttl.external_key
       and (f.definition::json-&gt;&gt;'indexed_location_list' is null or o.location_ids &amp;&amp; string_to_array(trim(both '"' from (f.definition::json-&gt;'indexed_location_list')::text), ',')::integer[])
       and o.updated_on&gt;'#date#'::date - '2 days'::interval
