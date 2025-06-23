@@ -1,0 +1,30 @@
+<report
+    title="Badges"
+    description="List of user badges awarded"
+>
+  <query>
+    select #columns#
+    from custom_cache_tables.beachtrack_badges b
+    #filters#
+  </query>
+  <order_bys>
+    <order_by>b.updated_on DESC</order_by>
+  </order_bys>
+  <params>
+    <param name="user_id" display="User ID" datatype="integer" default="">
+      <where>b.user_id=#user_id#</where>
+    </param>
+    <param name="updated_since" display="Updated since" datatype="date" default="">
+      <where>b.updated_on&gt;='#updated_since#'</where>
+    </param>
+  </params>
+  <columns>
+    <column name="user_id" sql="b.user_id" display="User ID" datatype="integer" />
+    <column name="badge" sql="b.badge" display="Badge" datatype="text" />
+    <column name="description" sql="b.description" display="Description" datatype="text" />
+    <column name="metric" sql="b.metric" display="Metric" datatype="float" />
+    <column name="metric_meaning" sql="b.metric_meaning" display="Metric meaning" datatype="text" />
+    <column name="awarded_on" sql="b.awarded_on" display="Awarded on" datatype="date" />
+    <column name="updated_on" sql="b.updated_on" display="Updated on" datatype="date" />
+  </columns>
+</report>
