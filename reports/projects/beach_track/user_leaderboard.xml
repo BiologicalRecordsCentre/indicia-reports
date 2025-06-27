@@ -6,10 +6,9 @@
   <query>
     select #columns#
     from samples s
+    join cache_samples_nonfunctional snf on snf.id=s.id
     join users u on u.id=s.created_by_id and u.deleted=false
     join people p on p.id=u.person_id and p.deleted=false
-    join sample_attribute_values vd on vd.sample_id=s.id and vd.sample_attribute_id=1717 and vd.deleted=false
-    join sample_attribute_values vdist on vdist.sample_id=s.id and vdist.sample_attribute_id=1718 and vdist.deleted=false
     where survey_id=721
     and sample_method_id=2424
   </query>
@@ -30,7 +29,7 @@
     <column name="surname" sql="p.surname" />
     <column name="username" sql="u.username" />
     <column name="total_tracks_count" sql="count(distinct s.id)" aggregate="true" />
-    <column name="total_distance_walked" sql="round(sum(vdist.float_value))" aggregate="true" />
-    <column name="total_time_spent" sql="sum(substring(vd.text_value, 1, 2)::integer*60 + substring(vd.text_value, 4, 2)::integer + substring(vd.text_value, 7, 2)::float/60)" aggregate="true" />
+    <column name="total_distance_walked" sql="round(sum((snf.attrs_json->>'1718')::float))" aggregate="true" />
+    <column name="total_time_spent" sql="sum(substring((snf.attrs_json->>'1717')::text, 1, 2)::integer*60 + substring((snf.attrs_json->>'1717')::text, 4, 2)::integer + substring((snf.attrs_json->>'1717')::text, 7, 2)::float/60)" aggregate="true" />
   </columns>
 </report>
