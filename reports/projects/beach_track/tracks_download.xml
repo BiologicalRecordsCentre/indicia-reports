@@ -6,6 +6,7 @@
     SELECT #columns#
     FROM cache_samples_functional s
     JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    LEFT JOIN cache_occurrences_functional o on o.parent_sample_id=s.id
     WHERE s.survey_id=721
     AND s.parent_sample_id IS NULL
     #filters#
@@ -31,5 +32,6 @@
     <column name="boundary" sql="snf.attrs_json->>'1713'" display="Boundary" datatype="text" />
     <column name="marketing_consent" sql="snf.attrs_json->>'1714'" display="Marketing consent" datatype="boolean" />
     <column name="track" sql="st_astext(st_transform(public_geom, 4326))" display="Track" datatype="text" />
+    <column name="strandings" sql="count(o.*)" display="Strandings" datatype="integer" aggregate="true" />
   </columns>
 </report>
