@@ -31,7 +31,7 @@
     <column name="substrate" sql="snf.attrs_json->>'1724'" display="Substrate" datatype="text" />
     <column name="boundary" sql="snf.attrs_json->>'1713'" display="Boundary" datatype="text" />
     <column name="marketing_consent" sql="snf.attrs_json->>'1714'" display="Marketing consent" datatype="boolean" />
-    <column name="track" sql="st_astext(st_transform(public_geom, 4326))" display="Track" datatype="text" />
+    <column name="track" sql="st_astext(st_transform(s.public_geom, 4326))" display="Track" datatype="text" />
     <column name="strandings" sql="count(o.*)" display="Strandings" datatype="integer" aggregate="true" />
   </columns>
 </report>
