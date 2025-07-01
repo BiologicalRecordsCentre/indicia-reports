@@ -4,37 +4,37 @@
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id" standard_params="samples">
   SELECT #columns#
-  FROM cache_samples_functional sp
-  JOIN cache_samples_nonfunctional spnf ON spnf.id=sp.id
-  LEFT JOIN cache_samples_functional s ON s.parent_sample_id=sp.id
-  LEFT JOIN cache_samples_nonfunctional snf on snf.id=s.id
-  LEFT JOIN cache_occurrences_functional o on o.sample_id=s.id OR o.sample_id=sp.id
+  FROM cache_samples_functional s
+  JOIN cache_samples_nonfunctional spnf ON spnf.id=s.id
+  LEFT JOIN cache_samples_functional sc ON sc.parent_sample_id=s.id
+  LEFT JOIN cache_samples_nonfunctional snf on snf.id=sc.id
+  LEFT JOIN cache_occurrences_functional o on o.sample_id=sc.id OR o.sample_id=s.id
   LEFT JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
   LEFT JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
-  left join location_attribute_values lavest on lavest.location_id=sp.location_id and lavest.location_attribute_id=40 and lavest.deleted=false
-  left join location_attribute_values lavtl on lavtl.location_id=sp.location_id and lavtl.location_attribute_id=39 and lavtl.deleted=false
-  left join location_attribute_values lavsl on lavsl.location_id=s.location_id and lavsl.location_attribute_id=49 and lavsl.deleted=false
-  left join location_attribute_values lavh1 on lavh1.location_id=s.location_id and lavh1.location_attribute_id=44 and lavh1.deleted=false
+  left join location_attribute_values lavest on lavest.location_id=s.location_id and lavest.location_attribute_id=40 and lavest.deleted=false
+  left join location_attribute_values lavtl on lavtl.location_id=s.location_id and lavtl.location_attribute_id=39 and lavtl.deleted=false
+  left join location_attribute_values lavsl on lavsl.location_id=sc.location_id and lavsl.location_attribute_id=49 and lavsl.deleted=false
+  left join location_attribute_values lavh1 on lavh1.location_id=sc.location_id and lavh1.location_attribute_id=44 and lavh1.deleted=false
   left join cache_termlists_terms th1 on th1.id=lavh1.int_value
-  left join location_attribute_values lavh2 on lavh2.location_id=s.location_id and lavh2.location_attribute_id=45 and lavh2.deleted=false
+  left join location_attribute_values lavh2 on lavh2.location_id=sc.location_id and lavh2.location_attribute_id=45 and lavh2.deleted=false
   left join cache_termlists_terms th2 on th2.id=lavh2.int_value
-  left join location_attribute_values lavh3 on lavh3.location_id=s.location_id and lavh3.location_attribute_id=46 and lavh3.deleted=false
+  left join location_attribute_values lavh3 on lavh3.location_id=sc.location_id and lavh3.location_attribute_id=46 and lavh3.deleted=false
   left join cache_termlists_terms th3 on th3.id=lavh3.int_value
-  left join location_attribute_values lavh4 on lavh4.location_id=s.location_id and lavh4.location_attribute_id=47 and lavh4.deleted=false
+  left join location_attribute_values lavh4 on lavh4.location_id=sc.location_id and lavh4.location_attribute_id=47 and lavh4.deleted=false
   left join cache_termlists_terms th4 on th4.id=lavh4.int_value
-  left join location_attribute_values lavhd on lavhd.location_id=s.location_id and lavhd.location_attribute_id=48 and lavhd.deleted=false
-  left join location_attribute_values lavlu1 on lavlu1.location_id=s.location_id and lavlu1.location_attribute_id=82 and lavlu1.deleted=false
+  left join location_attribute_values lavhd on lavhd.location_id=sc.location_id and lavhd.location_attribute_id=48 and lavhd.deleted=false
+  left join location_attribute_values lavlu1 on lavlu1.location_id=sc.location_id and lavlu1.location_attribute_id=82 and lavlu1.deleted=false
   left join cache_termlists_terms tlu1 on tlu1.id=lavlu1.int_value
-  left join location_attribute_values lavlu2 on lavlu2.location_id=s.location_id and lavlu2.location_attribute_id=83 and lavlu2.deleted=false
+  left join location_attribute_values lavlu2 on lavlu2.location_id=sc.location_id and lavlu2.location_attribute_id=83 and lavlu2.deleted=false
   left join cache_termlists_terms tlu2 on tlu2.id=lavlu2.int_value
-  left join location_attribute_values lavlud on lavlud.location_id=s.location_id and lavlud.location_attribute_id=84 and lavlud.deleted=false
-  left join sample_attribute_values savs on savs.sample_id=sp.id and savs.sample_attribute_id=375 and savs.deleted=false
+  left join location_attribute_values lavlud on lavlud.location_id=sc.location_id and lavlud.location_attribute_id=84 and lavlud.deleted=false
+  left join sample_attribute_values savs on savs.sample_id=s.id and savs.sample_attribute_id=375 and savs.deleted=false
   left join cache_termlists_terms ts on ts.id=savs.int_value
-  left join sample_attribute_values savws on savws.sample_id=sp.id and savws.sample_attribute_id=290 and savws.deleted=false
+  left join sample_attribute_values savws on savws.sample_id=s.id and savws.sample_attribute_id=290 and savws.deleted=false
   left join cache_termlists_terms tws on tws.id=savws.int_value
-  left join sample_attribute_values savt on savt.sample_id=sp.id and savt.sample_attribute_id=376 and savt.deleted=false
+  left join sample_attribute_values savt on savt.sample_id=s.id and savt.sample_attribute_id=376 and savt.deleted=false
   left join cache_termlists_terms tt on tt.id=savt.int_value
-  left join location_attribute_values lvvc on lvvc.location_id=sp.location_id and lvvc.location_attribute_id=377 and lvvc.deleted=false
+  left join location_attribute_values lvvc on lvvc.location_id=s.location_id and lvvc.location_attribute_id=377 and lvvc.deleted=false
   left join cache_termlists_terms tvc on tvc.id=lvvc.int_value
   #joins#
   WHERE s.survey_id=178
@@ -48,10 +48,10 @@
   <columns>
     <column name='occurrence_id' display='ID' sql='o.id' datatype='integer' distincton="true" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" />
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
-    <column name='site_section' display='Site section' sql="s.location_name" datatype='text' />
+    <column name='site_section' display='Site section' sql="sc.location_name" datatype='text' />
     <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
     <column name='sample_id' sql='o.sample_id' datatype='integer' />
-    <column name='transect_id' sql='sp.location_id' datatype='integer' />
+    <column name='transect_id' sql='s.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
     <column name="transect_grid_ref" sql="spnf.public_entered_sref" datatype="text" />
     <column name="transect_length" sql="lavtl.int_value" datatype="integer" />
