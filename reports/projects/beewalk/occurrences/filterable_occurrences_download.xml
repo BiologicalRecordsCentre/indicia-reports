@@ -8,15 +8,9 @@
   JOIN cache_samples_nonfunctional spnf ON spnf.id=s.id
   LEFT JOIN cache_samples_functional sc ON sc.parent_sample_id=s.id
   LEFT JOIN cache_samples_nonfunctional snf on snf.id=sc.id
-  LEFT JOIN cache_occurrences_functional o on o.sample_id=sc.id OR o.sample_id=s.id
+  LEFT JOIN cache_occurrences_functional o on o.sample_id=sc.id
   LEFT JOIN cache_occurrences_nonfunctional onf on onf.id=o.id
   LEFT JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
-  left join location_attribute_values lavlu1 on lavlu1.location_id=sc.location_id and lavlu1.location_attribute_id=82 and lavlu1.deleted=false
-  left join cache_termlists_terms tlu1 on tlu1.id=lavlu1.int_value
-  left join location_attribute_values lavlu2 on lavlu2.location_id=sc.location_id and lavlu2.location_attribute_id=83 and lavlu2.deleted=false
-  left join cache_termlists_terms tlu2 on tlu2.id=lavlu2.int_value
-  left join location_attribute_values lvvc on lvvc.location_id=s.location_id and lvvc.location_attribute_id=377 and lvvc.deleted=false
-  left join cache_termlists_terms tvc on tvc.id=lvvc.int_value
   #joins#
   WHERE s.survey_id=178
   AND #sharing_filter#
@@ -30,55 +24,100 @@
     <column name="occurrence_id" display="ID" sql="o.id" datatype="integer" template="&lt;div class='status-{record_status} certainty-{certainty}'&gt;{occurrence_id}&lt;/div&gt;" />
     <column name="recordkey" display="RecordKey" sql="'iBRC' || o.id" datatype="text" />
     <column name="site_section" display="Site section" sql="sc.location_name" datatype="text" />
-    <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
+    <column name="vicecounty" display="ViceCounty" sql="(SELECT tvc.term
+        FROM location_attribute_values lvvc
+        JOIN cache_termlists_terms tvc ON tvc.id=lvvc.int_value
+        WHERE lvvc.location_id=s.location_id
+        AND lvvc.location_attribute_id=377
+        AND lvvc.deleted=false
+        ORDER BY lvvc.id DESC LIMIT 1
+      )" datatype="text" />
     <column name="walk_sample_id" sql="s.id" datatype="integer" />
     <column name="sample_id" sql="sc.id" datatype="integer" />
     <column name="transect_id" sql="s.location_id" datatype="integer" />
-    <column name="established" sql="(SELECT int_value FROM location_attribute_values WHERE location_id=s.location_id AND location_attribute_id=40 AND deleted=false ORDER BY id DESC LIMIT 1)" datatype="integer" />
+    <column name="established" sql="(SELECT int_value
+        FROM location_attribute_values
+        WHERE location_id=s.location_id
+        AND location_attribute_id=40
+        AND deleted=false
+        ORDER BY id DESC LIMIT 1
+      )" datatype="integer" />
     <column name="transect_grid_ref" sql="spnf.public_entered_sref" datatype="text" />
-    <column name="transect_length" sql="(SELECT int_value FROM location_attribute_values WHERE location_id=s.location_id AND location_attribute_id=39 AND deleted=false ORDER BY id DESC LIMIT 1)" datatype="integer" />
-    <column name="section_length" sql="(SELECT int_value FROM location_attribute_values WHERE location_id=sc.location_id AND location_attribute_id=49 AND deleted=false ORDER BY id DESC LIMIT 1)" datatype="integer" />
+    <column name="transect_length" sql="(SELECT int_value
+        FROM location_attribute_values
+        WHERE location_id=s.location_id
+        AND location_attribute_id=39
+        AND deleted=false
+        ORDER BY id DESC LIMIT 1
+      )" datatype="integer" />
+    <column name="section_length" sql="(SELECT int_value
+        FROM location_attribute_values
+        WHERE location_id=sc.location_id
+        AND location_attribute_id=49
+        AND deleted=false
+        ORDER BY id DESC LIMIT 1
+      )" datatype="integer" />
     <column name="section_grid_ref" sql="snf.public_entered_sref" datatype="text" />
-    <column name="h1" sql="(SELECT term
+    <column name="h1" sql="(SELECT cth1.term
         FROM location_attribute_values lvh1
         JOIN cache_termlists_terms cth1 ON cth1.id=lvh1.int_value
-        WHERE lvh1.location_id=s.location_id
+        WHERE lvh1.location_id=sc.location_id
         AND lvh1.location_attribute_id=44
         AND lvh1.deleted=false
         ORDER BY lvh1.id DESC LIMIT 1
       )" datatype="text" />
-    <column name="h2" sql="(SELECT term
-        FROM location_attribute_values lvh1
-        JOIN cache_termlists_terms cth1 ON cth1.id=lvh1.int_value
-        WHERE lvh1.location_id=s.location_id
-        AND lvh1.location_attribute_id=45
-        AND lvh1.deleted=false
-        ORDER BY lvh1.id DESC LIMIT 1
+    <column name="h2" sql="(SELECT cth2.term
+        FROM location_attribute_values lvh2
+        JOIN cache_termlists_terms cth2 ON cth2.id=lvh2.int_value
+        WHERE lvh2.location_id=sc.location_id
+        AND lvh2.location_attribute_id=45
+        AND lvh2.deleted=false
+        ORDER BY lvh2.id DESC LIMIT 1
       )" datatype="text" />
-    <column name="h3" sql="(SELECT term
-        FROM location_attribute_values lvh1
-        JOIN cache_termlists_terms cth1 ON cth1.id=lvh1.int_value
-        WHERE lvh1.location_id=s.location_id
-        AND lvh1.location_attribute_id=46
-        AND lvh1.deleted=false
-        ORDER BY lvh1.id DESC LIMIT 1
+    <column name="h3" sql="(SELECT cth3.term
+        FROM location_attribute_values lvh3
+        JOIN cache_termlists_terms cth3 ON cth3.id=lvh3.int_value
+        WHERE lvh3.location_id=sc.location_id
+        AND lvh3.location_attribute_id=46
+        AND lvh3.deleted=false
+        ORDER BY lvh3.id DESC LIMIT 1
       )" datatype="text" />
-    <column name="h4" sql="(SELECT term
-        FROM location_attribute_values lvh1
-        JOIN cache_termlists_terms cth1 ON cth1.id=lvh1.int_value
-        WHERE lvh1.location_id=s.location_id
-        AND lvh1.location_attribute_id=47
-        AND lvh1.deleted=false
-        ORDER BY lvh1.id DESC LIMIT 1
+    <column name="h4" sql="(SELECT cth4.term
+        FROM location_attribute_values lvh4
+        JOIN cache_termlists_terms cth4 ON cth4.id=lvh4.int_value
+        WHERE lvh4.location_id=sc.location_id
+        AND lvh4.location_attribute_id=47
+        AND lvh4.deleted=false
+        ORDER BY lvh4.id DESC LIMIT 1
       )" datatype="text" />
-    <column name="habitat_description" sql="(SELECT text_value FROM location_attribute_values WHERE location_id=sc.location_id AND location_attribute_id=48 AND deleted=false ORDER BY id DESC LIMIT 1)" datatype="text" />
-    <column name="l1" sql="tlu1.term" datatype="text" />
-    <column name="l2" sql="tlu2.term" datatype="text" />
+    <column name="habitat_description" sql="(SELECT text_value
+        FROM location_attribute_values
+        WHERE location_id=sc.location_id
+        AND location_attribute_id=48
+        AND deleted=false
+        ORDER BY id DESC LIMIT 1
+      )" datatype="text" />
+    <column name="l1" sql="(SELECT ctl1.term
+        FROM location_attribute_values lvl1
+        JOIN cache_termlists_terms ctl1 ON ctl1.id=lvl1.int_value
+        WHERE lvl1.location_id=sc.location_id
+        AND lvl1.location_attribute_id=82
+        AND lvl1.deleted=false
+        ORDER BY lvl1.id DESC LIMIT 1
+      )" datatype="text" />
+    <column name="l2" sql="(SELECT ctl2.term
+        FROM location_attribute_values lvl2
+        JOIN cache_termlists_terms ctl2 ON ctl2.id=lvl2.int_value
+        WHERE lvl2.location_id=sc.location_id
+        AND lvl2.location_attribute_id=83
+        AND lvl2.deleted=false
+        ORDER BY lvl2.id DESC LIMIT 1
+      )" datatype="text" />
     <column name="land_use_description" sql="(SELECT text_value FROM location_attribute_values WHERE location_id=sc.location_id AND location_attribute_id=84 AND deleted=false ORDER BY id DESC LIMIT 1)" datatype="text" />
-    <column name="recorder" sql="snf.recorders" datatype="text" />
-    <column name="date_start" sql="o.date_start" visible="false" />
-    <column name="date_end" sql="o.date_end" visible="false" />
-    <column name="date_type" sql="o.date_type" visible="false" />
+    <column name="recorder" sql="spnf.recorders" datatype="text" />
+    <column name="date_start" sql="s.date_start" visible="false" />
+    <column name="date_end" sql="s.date_end" visible="false" />
+    <column name="date_type" sql="s.date_type" visible="false" />
     <column name="date" display="Date" datatype="date" />
     <column name="start_time" sql="spnf.attrs_json->>'287'" datatype="text" />
     <column name="end_time" sql="spnf.attrs_json->>'288'" datatype="text" />
