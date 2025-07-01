@@ -50,7 +50,7 @@
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
     <column name='site_section' display='Site section' sql="sc.location_name" datatype='text' />
     <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
-    <column name='walk_sample_id' sql='sp.sample_id' datatype='integer' />
+    <column name='walk_sample_id' sql='s.sample_id' datatype='integer' />
     <column name='sample_id' sql='sc.sample_id' datatype='integer' />
     <column name='transect_id' sql='s.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
