@@ -83,6 +83,6 @@
     <column name="unknown" sql="(onf.attrs_json->>'262')::integer" datatype="integer" />
     <column name="comment" sql="onf.comment" datatype="text" />
     <column name="transect_comment" sql="spnf.comment" datatype="text" />
-    <column name="flower_visited" sql="(onf.attrs_json->>'149')::integer" datatype="integer" />
+    <column name="flower_visited" sql="onf.attrs_json->>'149'" datatype="text" />
   </columns>
 </report>
