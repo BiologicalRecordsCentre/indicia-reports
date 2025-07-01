@@ -2,7 +2,7 @@
     title="Occurrences Download using standard filters for BeeWalk"
     description="Report suitable for downloading data, compatible with the standard report filter parameters."
 >
-  <query website_filter_field="o.website_id" samples_id_field="o.sample_id" standard_params="samples">
+  <query website_filter_field="s.website_id" samples_id_field="s.id" standard_params="samples">
   SELECT #columns#
   FROM cache_samples_functional s
   JOIN cache_samples_nonfunctional spnf ON spnf.id=s.id
@@ -50,7 +50,8 @@
     <column name='recordkey' display='RecordKey' sql="'iBRC' || o.id" datatype="text" />
     <column name='site_section' display='Site section' sql="sc.location_name" datatype='text' />
     <column name="vicecounty" display="ViceCounty" sql="tvc.term" datatype="text" />
-    <column name='sample_id' sql='o.sample_id' datatype='integer' />
+    <column name='walk_sample_id' sql='sp.sample_id' datatype='integer' />
+    <column name='sample_id' sql='sc.sample_id' datatype='integer' />
     <column name='transect_id' sql='s.location_id' datatype='integer' />
     <column name="established" sql="lavest.int_value" datatype="integer" />
     <column name="transect_grid_ref" sql="spnf.public_entered_sref" datatype="text" />
