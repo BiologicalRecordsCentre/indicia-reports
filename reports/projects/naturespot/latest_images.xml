@@ -3,21 +3,25 @@
     description="Images for the latest images block."
 >
   <query>
-  SELECT #columns#
-   FROM cache_occurrences_functional o
-     JOIN cache_taxa_taxon_lists cttl ON cttl.id = o.taxa_taxon_list_id
-     JOIN cache_samples_nonfunctional snf ON snf.id = o.sample_id
-     JOIN occurrence_media oi ON oi.occurrence_id = o.id and oi.deleted=false
-WHERE o.website_id=8
-AND o.record_status='V'
-AND 328967=ANY(o.location_ids)
+    WITH filtered_occurrences AS (
+      SELECT id, location_name, date_start, date_end, date_type, sample_id, taxa_taxon_list_id, updated_on
+      FROM cache_occurrences_functional
+      WHERE website_id=8
+      AND record_status='V'
+      AND 328967=ANY(location_ids)
+    )
+    SELECT #columns#
+    FROM filtered_occurrences o
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id = o.taxa_taxon_list_id
+    JOIN cache_samples_nonfunctional snf ON snf.id = o.sample_id
+    JOIN occurrence_media oi ON oi.occurrence_id = o.id and oi.deleted=false
   </query>
   <count_query>
-  SELECT #columns#
-   FROM cache_occurrences_functional o
-WHERE o.website_id=8
-AND o.record_status='V'
-AND 328967=ANY(o.location_ids)
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+    WHERE o.website_id=8
+    AND o.record_status='V'
+    AND 328967=ANY(o.location_ids)
   </count_query>
   <order_bys>
     <order_by>o.updated_on DESC</order_by>
