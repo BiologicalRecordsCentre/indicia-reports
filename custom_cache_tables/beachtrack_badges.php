@@ -37,7 +37,7 @@ function get_beachtrack_badges_query() {
       metric float,
       metric_meaning text,
       awarded boolean DEFAULT false,
-      awarded_on timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      awarded_on timestamp DEFAULT CURRENT_TIMESTAMP,
       updated_on timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
     CREATE INDEX IF NOT EXISTS ix_beachtrack_badges_user_id_date ON custom_cache_tables.beachtrack_badges(user_id, updated_on);
@@ -388,7 +388,9 @@ function get_beachtrack_badges_query() {
     -- Insert new badges that do not already exist, giving them an award date
     -- of today.
     INSERT INTO custom_cache_tables.beachtrack_badges
-    SELECT bld.user_id, bld.badge, bld.description, bld.metric, bld.metric_meaning, bld.awarded, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    SELECT bld.user_id, bld.badge, bld.description, bld.metric, bld.metric_meaning, bld.awarded,
+      CASE WHEN bld.awarded THEN CURRENT_TIMESTAMP ELSE NULL END as awarded_on,
+      CURRENT_TIMESTAMP
     FROM beachtrack_badges_build bld
     LEFT JOIN custom_cache_tables.beachtrack_badges b ON b.user_id = bld.user_id
     AND b.badge = bld.badge
