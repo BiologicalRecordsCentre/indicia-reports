@@ -30,16 +30,22 @@ function get_beachtrack_badges_metadata() {
 
 function get_beachtrack_badges_query() {
   return <<<'QRY'
-    CREATE TABLE IF NOT EXISTS custom_cache_tables.beachtrack_badges (
+    CREATE TABLE IF NOT EXISTS custom_cache_tables.beachtrack_badges(
       user_id integer NOT NULL,
       badge text NOT NULL,
       description text NOT NULL,
       metric float,
       metric_meaning text,
+      awarded boolean DEFAULT false,
       awarded_on timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_on timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
     CREATE INDEX IF NOT EXISTS ix_beachtrack_badges_user_id_date ON custom_cache_tables.beachtrack_badges(user_id, updated_on);
+
+    -- Delete ephemeral badges from previous years
+    DELETE FROM custom_cache_tables.beachtrack_badges
+    WHERE badge LIKE 'Quarterly Track%'
+    AND badge NOT LIKE '%(' || EXTRACT('year' FROM now())::text || ')';
 
     DROP TABLE IF EXISTS track_data;
 
@@ -64,36 +70,36 @@ function get_beachtrack_badges_query() {
     SELECT created_by_id as user_id,
       'Early Bird' as badge,
       '5 walks started before 08:00' as description,
-      COUNT(DISTINCT id) as metric,
-      'Total number of walks started before 08:00' as metric_meaning
+      COUNT(DISTINCT CASE WHEN SUBSTRING(attrs_json->>'1715' FROM 12 FOR 5) <= '08:00' THEN id ELSE NULL END) as metric,
+      'Total number of walks started before 08:00' as metric_meaning,
+    COUNT(DISTINCT CASE WHEN SUBSTRING(attrs_json->>'1715' FROM 12 FOR 5) <= '08:00' THEN id ELSE NULL END) >= 5 as awarded
     INTO TEMPORARY beachtrack_badges_build
     FROM track_data
-    WHERE SUBSTRING(attrs_json->>'1715' FROM 12 FOR 5) <= '08:00'
     GROUP BY created_by_id
-    HAVING COUNT(DISTINCT id) > 5
     UNION ALL
     /********/
     SELECT created_by_id,
       'Sperm Whale migration',
       'Walked as far as a Sperm Whale migrates',
       SUM((attrs_json->>'1718')::float),
-      'Total distance walked in km'
+      'Total distance walked in km',
+    SUM((attrs_json->>'1718')::float)>4000 as awarded
     FROM track_Data
     GROUP BY created_by_id
-    HAVING SUM((attrs_json->>'1718')::float)>4000
     UNION ALL
     /********/
     SELECT created_by_id,
       'Porpoise' as badge,
       'Walked the same beach at least 5 times',
       MAX(value),
-      'Maximum number of walks on the same beach'
+      'Maximum number of walks on the same beach',
+    MAX(awarded::integer)=1 as awarded
     FROM (
       SELECT created_by_id,
-        COUNT(DISTINCT id) AS value
+        COUNT(DISTINCT id) AS value,
+    COUNT(DISTINCT id)>=5 as awarded
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING COUNT(DISTINCT id)>5
       ORDER BY created_by_id, count(id) DESC
     ) AS subquery
     GROUP BY created_by_id
@@ -103,29 +109,31 @@ function get_beachtrack_badges_query() {
       'Pilot Whale',
       'Walked the same beach at least 25 times',
       MAX(value),
-      'Maximum number of walks on the same beach'
+      'Maximum number of walks on the same beach',
+    MAX(awarded::integer)=1 as awarded
     FROM (
       SELECT created_by_id,
-        COUNT(DISTINCT id) AS value
+        COUNT(DISTINCT id) AS value,
+    COUNT(DISTINCT id)>=25 as awarded
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING COUNT(DISTINCT id)>25
       ORDER BY created_by_id, count(id) DESC
     ) AS subquery
     GROUP BY created_by_id
     UNION ALL
     /********/
-    SELECT DISTINCT ON (created_by_id) created_by_id,
+    SELECT created_by_id,
       'Minke Whale',
       'Walked the same beach at least 50 times',
       MAX(value),
-      'Maximum number of walks on the same beach'
+      'Maximum number of walks on the same beach',
+    MAX(awarded::integer)=1 as awarded
     FROM (
       SELECT created_by_id,
-        COUNT(id) as value
+        COUNT(id) as value,
+    COUNT(DISTINCT id)>=50 as awarded
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING COUNT(DISTINCT id)>50
       ORDER BY created_by_id, count(id) DESC
     ) AS subquery
     GROUP BY created_by_id
@@ -135,82 +143,90 @@ function get_beachtrack_badges_query() {
       'Going the distance',
       'A single track of at least 5km',
       MAX((attrs_json->>'1718')::float),
-      'Maximum distance of a single track for this user'
+      'Maximum distance of a single track for this user',
+    MAX((attrs_json->>'1718')::float)>=5 as awarded
     FROM track_data
     GROUP BY created_by_id
-    HAVING MAX((attrs_json->>'1718')::float)>=5
     UNION ALL
     /********/
     SELECT created_by_id,
       'Time to Track',
-      'At least one month with over 10 hours tracked',
-      COUNT(*),
-      'Number of months with over 10 hours tracked'
+      'At least one month with at least 10 hours tracked',
+      EXTRACT('hours' FROM MAX(hours_in_month)),
+      'Maximum number of hours tracked in a month',
+    MAX(hours_in_month) >= '10:00:00'::interval as awarded
     FROM (
-      SELECT created_by_id
+      SELECT created_by_id, date_trunc('month', date_start), SUM((attrs_json->>'1717')::interval) as hours_in_month
       FROM track_data
-      GROUP BY created_by_id, date_trunc('month', date_start)
-      HAVING SUM((attrs_json->>'1717')::interval)>='10:00:00'
+    GROUP BY created_by_id, date_trunc('month', date_start)
     ) AS subtable
     GROUP BY 1, 2, 3
     UNION ALL
     /********/
     SELECT created_by_id,
-      'Quarterly Track 1',
-      'At least 91 miles walked January to March in any year',
-      COUNT(*),
-      'Number of times this user has achieved 91 miles in January to March for any year'
+      'Quarterly Track 1 (' || EXTRACT('year' FROM now())::text || ')',
+      'At least 91 miles walked January to March in the current year',
+      MAX(miles_walked),
+      'Maximum number of miles January to March for the current year',
+    MAX(miles_walked) > 91 as awarded
     FROM (
-      SELECT created_by_id, EXTRACT('year' FROM date_start)
+      SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
+      CASE WHEN EXTRACT('month' FROM date_start) BETWEEN 1 AND 3 THEN (attrs_json->>'1718')::float ELSE 0 END
+    )*1.604 as miles_walked
       FROM track_data
-      WHERE EXTRACT('month' FROM date_start) BETWEEN 1 AND 3
+    WHERE EXTRACT('year' FROM date_start) = EXTRACT('year' FROM now())
       GROUP BY created_by_id, EXTRACT('year' FROM date_start)
-      HAVING SUM((attrs_json->>'1718')::float)>91*1.604
     ) AS subtable
     GROUP BY 1, 2, 3
     UNION ALL
     /********/
     SELECT created_by_id,
-      'Quarterly Track 2',
-      'At least 91 miles walked April to June in any year',
-      COUNT(*),
-      'Number of times this user has achieved 91 miles in April to June for any year'
+      'Quarterly Track 2 (' || EXTRACT('year' FROM now())::text || ')',
+      'At least 91 miles walked April to June in the current year',
+      MAX(miles_walked),
+      'Maximum number of miles April to June for the current year',
+    MAX(miles_walked) > 91 as awarded
     FROM (
-      SELECT created_by_id, EXTRACT('year' FROM date_start)
+      SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
+      CASE WHEN EXTRACT('month' FROM date_start) BETWEEN 4 AND 6 THEN (attrs_json->>'1718')::float ELSE 0 END
+    )*1.604 as miles_walked
       FROM track_data
-      WHERE EXTRACT('month' FROM date_start) BETWEEN 4 AND 6
+    WHERE EXTRACT('year' FROM date_start) = EXTRACT('year' FROM now())
       GROUP BY created_by_id, EXTRACT('year' FROM date_start)
-      HAVING SUM((attrs_json->>'1718')::float)>91*1.604
     ) AS subtable
     GROUP BY 1, 2, 3
     UNION ALL
     /********/
     SELECT created_by_id,
-      'Quarterly Track 3',
-      'At least 91 miles walked July to September in any year',
-      COUNT(*),
-      'Number of times this user has achieved 91 miles in July to September for any year'
+      'Quarterly Track 3 (' || EXTRACT('year' FROM now())::text || ')',
+      'At least 91 miles walked July to September in the current year',
+      MAX(miles_walked),
+      'Maximum number of miles July to September for the current year',
+    MAX(miles_walked) > 91 as awarded
     FROM (
-      SELECT created_by_id, EXTRACT('year' FROM date_start)
+      SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
+      CASE WHEN EXTRACT('month' FROM date_start) BETWEEN 7 AND 9 THEN (attrs_json->>'1718')::float ELSE 0 END
+    )*1.604 as miles_walked
       FROM track_data
-      WHERE EXTRACT('month' FROM date_start) BETWEEN 7 AND 9
+    WHERE EXTRACT('year' FROM date_start) = EXTRACT('year' FROM now())
       GROUP BY created_by_id, EXTRACT('year' FROM date_start)
-      HAVING SUM((attrs_json->>'1718')::float)>91*1.604
     ) AS subtable
     GROUP BY 1, 2, 3
     UNION ALL
     /********/
     SELECT created_by_id,
-      'Quarterly Track 4',
-      'At least 91 miles walked October to December in any year',
-      COUNT(*),
-      'Number of times this user has achieved 91 miles in October to December for any year'
+      'Quarterly Track 4 (' || EXTRACT('year' FROM now())::text || ')',
+      'At least 91 miles walked October to December in the current year',
+      MAX(miles_walked),
+      'Maximum number of miles walked October to December for the current year',
+    MAX(miles_walked) > 91 as awarded
     FROM (
-      SELECT created_by_id, EXTRACT('year' FROM date_start)
+      SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
+      CASE WHEN EXTRACT('month' FROM date_start) BETWEEN 10 AND 12 THEN (attrs_json->>'1718')::float ELSE 0 END
+    )*1.604 as miles_walked
       FROM track_data
-      WHERE EXTRACT('month' FROM date_start) BETWEEN 10 AND 12
+    WHERE EXTRACT('year' FROM date_start) = EXTRACT('year' FROM now())
       GROUP BY created_by_id, EXTRACT('year' FROM date_start)
-      HAVING SUM((attrs_json->>'1718')::float)>91*1.604
     ) AS subtable
     GROUP BY 1, 2, 3
     UNION ALL
@@ -218,30 +234,29 @@ function get_beachtrack_badges_query() {
     SELECT created_by_id,
       'Ultimate Tracker (' || year::text || ')',
       'All Quarterly Track badges completed in a given year',
-      year::float,
-      'Year the Ultimate Tracker was completed for'
+      SUM(CASE WHEN miles_walked > 91 THEN 1 ELSE 0 END),
+      'Number of Quarterly Track badges completed in the year',
+    SUM(CASE WHEN miles_walked > 91 THEN 1 ELSE 0 END) >= 4 AS awarded
     FROM (
-      SELECT created_by_id, EXTRACT('year' FROM date_start) as year, FLOOR(EXTRACT('month' FROM date_start)/3)
+      SELECT created_by_id, EXTRACT('year' FROM date_start) as year, FLOOR(EXTRACT('month' FROM date_start)/3) as quarter, SUM((attrs_json->>'1718')::float)*1.604 as miles_walked
       FROM track_data
       GROUP BY created_by_id, EXTRACT('year' FROM date_start), FLOOR(EXTRACT('month' FROM date_start)/3)
-      HAVING SUM((attrs_json->>'1718')::float)>91*1.604
     ) AS subtable
     GROUP BY created_by_id, year
-    HAVING count(*)>=4
     UNION ALL
     /********/
     SELECT created_by_id,
       'Beachmaster',
       'At least 10 records on a single beach',
       MAX(value),
-      'Maximum number of records on a single beach'
+      'Maximum number of records on a single beach',
+    MAX(value)>=10 as awarded
     FROM (
       SELECT s.created_by_id,
         COUNT(o.id) as value
       FROM track_data s
-      JOIN cache_occurrences_functional o ON o.parent_sample_id=s.id
+      LEFT JOIN cache_occurrences_functional o ON o.parent_sample_id=s.id
       GROUP BY s.created_by_id, s.location_name
-      HAVING count(o.id)>10
       ORDER BY s.created_by_id, count(o.id) DESC
     ) as subquery
     GROUP BY created_by_id
@@ -250,12 +265,11 @@ function get_beachtrack_badges_query() {
     SELECT s.created_by_id,
       'Clean Consience',
       'Recorded at least 15 clean beach conditions',
-      COUNT(s.*),
-      'Number of times a clean beach has been recorded'
+      SUM(CASE WHEN s.attrs_json->>'1722' IN ('Spotless', 'Mostly Clean') THEN 1 ELSE 0 END),
+      'Number of times a clean beach has been recorded',
+    SUM(CASE WHEN s.attrs_json->>'1722' IN ('Spotless', 'Mostly Clean') THEN 1 ELSE 0 END) >= 15 as awarded
     FROM track_data s
-    WHERE s.attrs_json->>'1722' IN ('Spotless', 'Mostly Clean')
     GROUP BY s.created_by_id
-    HAVING COUNT(s.*) >= 15
     UNION ALL
     /********/
     SELECT * FROM (
@@ -287,13 +301,13 @@ function get_beachtrack_badges_query() {
         COUNT(*) as weeks_in_a_row
         FROM grouped_weeks
         GROUP BY created_by_id, grp
-        HAVING COUNT(*) > 10
       )
       SELECT created_by_id,
         '10 week streak',
         'Recorded a track for 10 weeks in a row.',
         MAX(weeks_in_a_row),
-        'Maximum weeks in a row this user has recorded a track'
+        'Maximum weeks in a row this user has recorded a track',
+    MAX(weeks_in_a_row) >= 10 as awarded
       FROM consecutive_weeks
       GROUP BY created_by_id
     ) AS streak_data
@@ -311,7 +325,8 @@ function get_beachtrack_badges_query() {
       WHEN 414 THEN 'Walk a beach on 14th April in any year'
       END,
       NULL::float,
-      NULL::text
+      NULL::text,
+    true as awarded
     FROM track_data
     WHERE mmdd IN (227, 322)
     UNION ALL
@@ -319,13 +334,13 @@ function get_beachtrack_badges_query() {
     SELECT created_by_id,
       'Shag 60m',
       'Distance tracked on a single beach equivalent to the dive depth record of a Shag multiplied by 10',
-      COUNT(*),
-      'Number of beaches 600m has been tracked on for this user'
+      MAX(kms_walked),
+      'Max kms walked on a single beach',
+    MAX(kms_walked) >= 0.6 as awarded
     FROM (
-      SELECT created_by_id, location_name
+      SELECT created_by_id, location_name, SUM((attrs_json->>'1718')::float) as kms_walked
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING SUM((attrs_json->>'1718')::float)>0.6
     ) AS subtable
     GROUP BY created_by_id
     UNION ALL
@@ -333,27 +348,27 @@ function get_beachtrack_badges_query() {
     SELECT created_by_id,
       'Harbour Seal 400m',
       'Distance tracked on a single beach equivalent to the dive depth record of a Harbour Seal multiplied by 10',
-      COUNT(*),
-      'Number of beaches 4km has been tracked on for this user'
+      MAX(kms_walked),
+      'Max kms walked on a single beach',
+    MAX(kms_walked) >= 4 as awarded
     FROM (
-      SELECT created_by_id, location_name
+      SELECT created_by_id, location_name, SUM((attrs_json->>'1718')::float) as kms_walked
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING SUM((attrs_json->>'1718')::float)>4
     ) AS subtable
     GROUP BY created_by_id
     UNION ALL
     /********/
     SELECT created_by_id,
       'Northern Bottlenose Whale 2340m',
-      'Distance tracked on a single beach equivalent to the dive depth of a orthern Bottlenose Whale multiplied by 10',
-      COUNT(*),
-      'Number of beaches 23.4km has been tracked on for this user'
+      'Distance tracked on a single beach equivalent to the dive depth of a Northern Bottlenose Whale multiplied by 10',
+      MAX(kms_walked),
+      'Max kms walked on a single beach',
+    MAX(kms_walked) >= 23.4 as awarded
     FROM (
-      SELECT created_by_id, location_name
+      SELECT created_by_id, location_name, SUM((attrs_json->>'1718')::float) as kms_walked
       FROM track_data
       GROUP BY created_by_id, location_name
-      HAVING SUM((attrs_json->>'1718')::float)>23.4
     ) AS subtable
     GROUP BY created_by_id;
 
@@ -362,7 +377,9 @@ function get_beachtrack_badges_query() {
     SET metric = bld.metric,
       metric_meaning = bld.metric_meaning,
       description = bld.description,
-      updated_on = CURRENT_TIMESTAMP
+    awarded = b.awarded OR bld.awarded,
+    awarded_on = CASE WHEN b.awarded_on IS NULL AND (b.awarded OR bld.awarded) THEN CURRENT_TIMESTAMP ELSE b.awarded_on END,
+    updated_on = CURRENT_TIMESTAMP
     FROM beachtrack_badges_build bld
     WHERE b.user_id = bld.user_id
       AND b.badge = bld.badge
@@ -371,10 +388,10 @@ function get_beachtrack_badges_query() {
     -- Insert new badges that do not already exist, giving them an award date
     -- of today.
     INSERT INTO custom_cache_tables.beachtrack_badges
-    SELECT bld.user_id, bld.badge, bld.description, bld.metric, bld.metric_meaning, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    SELECT bld.user_id, bld.badge, bld.description, bld.metric, bld.metric_meaning, bld.awarded, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     FROM beachtrack_badges_build bld
     LEFT JOIN custom_cache_tables.beachtrack_badges b ON b.user_id = bld.user_id
     AND b.badge = bld.badge
     WHERE b.user_id IS NULL;
-  QRY;
+    QRY;
 }
