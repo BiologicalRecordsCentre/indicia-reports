@@ -1,0 +1,94 @@
+<report
+    title="NPMS User Account Corruption Detector"
+    description="Allow NPMS admin to see accounts which may have an issue (such as thir Drupal account is pointing at a deleted Warehouse account)"
+>
+  <query website_filter_field="uw.website_id">
+  SELECT #columns#
+  FROM person_attribute_values pav
+  JOIN locations sq ON pav.int_value=sq.id AND sq.deleted=false 
+    AND sq.created_on &gt;= CAST(COALESCE('#ignore_square_dates_before#','1500-01-01') as date)
+    AND sq.location_type_id = #core_square_location_type_id#
+  LEFT JOIN people p on p.id = pav.person_id
+  LEFT JOIN users u_not_deleted on u_not_deleted.person_id = p.id AND u_not_deleted.deleted = false
+  LEFT JOIN people p_not_deleted on p_not_deleted.id = p.id AND p_not_deleted.deleted = false
+  LEFT JOIN users u_deleted on u_deleted.person_id = p.id AND u_deleted.deleted = true
+  LEFT JOIN people p_deleted on p_deleted.id = p.id AND p_deleted.deleted = true
+  WHERE pav.person_attribute_id = #user_square_attr_id#
+    AND (u_not_deleted.id IS NULL OR p_not_deleted.id IS NULL)
+    AND (('#allocation_status#'='allocated' AND pav.deleted=false) OR
+         ('#allocation_status#'='unallocated' AND pav.deleted=true) OR
+         ('#allocation_status#'=''))
+  </query>
+  <params>
+    <param name='core_square_location_type_id' display='NPMS Square Location Type ID' description='ID of the person attribute that holds user squares' datatype='integer'/>
+    <param name='user_square_attr_id' display='Id of the person attribute that holds user squares' description='' datatype='integer'/>
+    <param name="ignore_registration_dates_before" display="Ignore Registration Dates Before" description="Ignore anyone who registered earlier than this date.
+Useful if old users are left on the system but are not currently active." datatype="date" />
+    <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any sqaures created before this date.
+Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
+  <param name='allocation_status' display='Currently allocated?' description='Choose whether you only wish to return users with allocated squares, without allocated squares, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
+      lookup_values='allocated:Allocated,unallocated:Unallocated' />
+  </params>
+  <columns> 
+    <column name="surname" display="Surname" 
+    sql="
+      CASE
+      WHEN p.surname IS NOT NULL
+      THEN p.surname
+      ELSE 'Person surname not found' 
+      END
+    " datatype="text"/>
+    <column name="first_name" display="First name" 
+    sql="
+      CASE
+      WHEN p.first_name IS NOT NULL
+      THEN p.first_name
+      ELSE 'Person first name not found' 
+      END
+    " datatype="text"/>
+    <column name="name" display="Name" 
+    sql="
+    CASE
+    WHEN p.first_name IS NOT NULL AND p.surname IS NOT NULL
+    THEN p.first_name || ' ' || p.surname
+    WHEN p.first_name IS NULL AND p.surname IS NOT NULL
+    THEN p.surname
+    ELSE 'Person name not found' 
+    END
+    " datatype="text"/>
+    <column name='warehouse_user_id' display='Warehouse User ID'
+      sql="u_not_deleted.id" datatype='integer' />
+    <column name='warehouse_user_account_status' display='Warehouse User Account Status'
+    sql="
+    CASE
+    WHEN u_not_deleted.id IS NOT NULL 
+    THEN 'OK'
+    WHEN u_not_deleted.id IS NULL AND u_deleted.id IS NULL
+    THEN 'Warehouse User Account Missing'
+    WHEN u_not_deleted.id IS NULL AND u_deleted.id IS NOT NULL
+    THEN 'Warehouse User Account Present But Deleted'
+    ELSE 'Unspecified User Account State Detected'
+    END" datatype='text' />
+    <column name='warehouse_person_id' display='Warehouse Person ID'
+    sql="p_not_deleted.id" datatype='integer' />
+    <column name='warehouse_person_account_status' display='Warehouse Person Account Status'
+    sql="
+    CASE
+    WHEN p_not_deleted.id IS NOT NULL 
+    THEN 'OK'
+    WHEN p_not_deleted.id IS NULL AND p_deleted.id IS NULL
+    THEN 'Warehouse Person Account Missing'
+    WHEN p_not_deleted.id IS NULL AND p_deleted.id IS NOT NULL
+    THEN 'Warehouse Person Account Present But Deleted'
+    ELSE 'Unspecified Warehouse Person State Detected'
+    END" datatype='text' />
+    <column name='allocation_active' display='Currently allocated?'
+    sql="
+    CASE
+    WHEN pav.deleted = false
+    THEN 'YES'
+    ELSE 'NO'
+    END
+    " datatype='text' />
+  </columns>
+</report>
