@@ -1,28 +1,22 @@
 <report
-    title="NPMS User Account Corruption Detector (B)"
+    title="NPMS User Account Corruption Detector (C)"
     description="Allow NPMS admin to see accounts which may have an issue (such as thir Drupal account is pointing at a deleted Warehouse account).
-    This version of the report uses whether a user has the town field filled in on their address as a basis for deciding which users are associated with the NPMS.
-    (note that using the Town field is deliberate, as that is the most stable adress field over time, the other address fields have changed over time)."
+    This version of the report uses whether a user has created any samples as a basis for deciding which users are associated with the NPMS."
 >
-  <query>
+  <query website_filter_field="csf.website_id">
   SELECT distinct #columns#
-  FROM person_attribute_values pav
-  LEFT JOIN people p on p.id = pav.person_id
+  FROM cache_samples_functional csf
+  LEFT JOIN users u on u.id = csf.created_by_id
+  LEFT JOIN people p on p.id = u.person_id
   LEFT JOIN users u_not_deleted on u_not_deleted.person_id = p.id AND u_not_deleted.deleted = false
   LEFT JOIN people p_not_deleted on p_not_deleted.id = p.id AND p_not_deleted.deleted = false
   LEFT JOIN users u_deleted on u_deleted.person_id = p.id AND u_deleted.deleted = true
   LEFT JOIN people p_deleted on p_deleted.id = p.id AND p_deleted.deleted = true
-  WHERE pav.person_attribute_id = #person_town_attr_id#
-    AND pav.deleted=false
+  WHERE #website_filter#
     AND (u_not_deleted.id IS NULL OR p_not_deleted.id IS NULL)
   </query>
-  <params>
-    <param name='person_town_attr_id' display='Id of the person attribute that holds a the town part of the user address' description='' datatype='integer'/>
-    <param name="ignore_square_dates_before" display="Ignore Square Dates Before" description="Ignore any sqaures created before this date.
-Useful if old squares are left on the system but are not currently active." datatype="date" emptyvalue="" default=""/>
-  </params>
   <columns> 
-    <column name="address_person_id" display="Person ID from active user address" sql="pav.person_id" datatype="text"/>
+    <column name="sample_person_id" display="User ID from sample" sql="csf.created_by_id" datatype="text"/>
     <column name="surname" display="Surname" 
     sql="
       CASE
