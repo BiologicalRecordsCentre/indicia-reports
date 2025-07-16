@@ -102,7 +102,6 @@
 	  JOIN SAMPLES s ON s.id=o.sample_id AND (g.definition::json-&gt;&gt;'indexed_location_list' IS NULL OR st_intersects(s.geom, l.boundary_geom))
     JOIN occurrence_comments oc ON oc.occurrence_id=o.id AND oc.deleted=false
       AND (oc.record_status='V' or oc.record_substatus=3)
-      AND oc.created_on&gt;'#date#'::date - '1 day'::interval
     LEFT JOIN occurrence_comments ocdone ON ocdone.occurrence_id=o.id AND ocdone.deleted=false
       AND ocdone.comment like '%You are being notified because you are a member of ' || g.title || '.'
       AND ocdone.created_on&gt;oc.created_on
