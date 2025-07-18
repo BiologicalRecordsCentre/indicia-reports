@@ -9,8 +9,8 @@
       JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
       JOIN sample_attribute_values savSurvLevel on savSurvLevel.sample_id = csf.id
         AND savSurvLevel.sample_attribute_id = #survey_level_smp_attr_id#
-      JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
-      JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
+      JOIN locations plot ON plot.id = csf.location_id
+      JOIN locations square ON square.id = plot.parent_id
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
       JOIN cache_occurrences_nonfunctional conf on conf.id=cof.id
