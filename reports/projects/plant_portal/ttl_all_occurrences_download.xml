@@ -1,0 +1,131 @@
+<report
+    title="Tracking The Impact - All Occurrences Download"
+    description="Display a list of occurrences suitable for users to view their own data.
+    Has more columns than grid version."
+>
+  <query website_filter_field="" training_filter_field="cof.training" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN sample_attribute_values savSurvLevel on savSurvLevel.sample_id = csf.id
+        AND savSurvLevel.sample_attribute_id = #survey_level_smp_attr_id#
+      JOIN locations plot ON plot.id = csf.location_id
+      JOIN locations square ON square.id = plot.parent_id
+      JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
+      JOIN cache_occurrences_functional cof on cof.sample_id = csf.id
+      JOIN cache_occurrences_nonfunctional conf on conf.id=cof.id
+      JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
+      #agreements_join#
+      WHERE #sharing_filter# 
+        AND (trim('#date_from#')='' OR '#date_from#'='Click here' OR csf.date_end &gt;= CAST(COALESCE('#date_from#','1500-01-01') as date))
+        AND (trim('#date_to#')='' OR '#date_to#'='Click here' OR csf.date_start &lt;= CAST(COALESCE('#date_to#','1500-01-01') as date)) 
+        AND csf.survey_id in (#survey_ids#)
+        AND csf.website_id in (#website_ids#)
+        AND ('#survey_level_selector#'='' OR
+        ('#survey_level_selector#'='wildflower' AND savSurvLevel.int_value=#wildflower_tt_id#) OR
+        ('#survey_level_selector#'='indicator' AND savSurvLevel.int_value=#indicator_tt_id#) OR
+        ('#survey_level_selector#'='inventory' AND savSurvLevel.int_value=#inventory_tt_id#))
+        #order_by#
+  </query>
+  <order_bys>
+    <order_by>csf.survey_id, rtrim(csnf.recorders, ', '), square.id, plot.id, csf.date_start, cof.id desc</order_by>
+  </order_bys>
+  <params>
+    <param name='date_from' display='Date From' datatype='date' />
+    <param name='date_to' display='Date To' datatype='date' />
+    <param name="survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
+    <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
+      description="Image upload folder on the warehouse including the trailing slash" />
+    <param name="survey_level_smp_attr_id" display="Survey level sample attribute ID" description = "ID of the sample attribute that holds the survey level." datatype="integer"/>
+    <param name='survey_level_selector' display='Survey level?' description='Select the survey level you wish to return data for, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
+        lookup_values='wildflower:Wildflower,indicator:Indicator,inventory:Inventory' />
+    <param name="wildflower_tt_id" display="Wildflower termlists term ID" description="ID of the termlist term for Wildflower." datatype="int"/>
+    <param name="indicator_tt_id" display="Indicator termlists term ID" description="ID of the termlist term for Indicator." datatype="int"/>
+    <param name="inventory_tt_id" display="Inventory termlists term ID" description="ID of the termlist term for Inventory." datatype="int"/>
+    <param name="abundance_occ_attr_id" display="Abundance occurrence attribute ID" description = "ID of the occurrence attribute that holds abundance." datatype="integer"/>
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description = "ID of the sample attribute that holds the habitat value." datatype="integer"/>
+    <param name="management_smp_attr_id" display="Management sample attribute ID" description = "ID of the sample attribute that holds the Management value." datatype="integer"/>
+    <param name="other_management_smp_attr_id" display="Other Management sample attribute ID" description = "ID of the sample attribute that holds the Other Management value." datatype="integer"/>
+    <param name="grazing_smp_attr_id" display="Grazing sample attribute ID" description = "ID of the sample attribute that holds the grazing value." datatype="integer"/>
+    <param name="woodland_smp_attr_id" display="Woodland sample attribute ID" description = "ID of the sample attribute that holds the woodland level value." datatype="integer"/>
+    <param name="vegetation_height_10_smp_attr_id" display="Vegetation height &lt;=10cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height &lt;= 10 value." datatype="integer"/>
+    <param name="vegetation_height_11_30_smp_attr_id" display="Vegetation height 11-30cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height 11-30cm value." datatype="integer"/>
+    <param name="vegetation_height_31_100_smp_attr_id" display="Vegetation height 31-100cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height 31-100cm value." datatype="integer"/>
+    <param name="vegetation_height_101_300_smp_attr_id" display="Vegetation height 101-300cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height 101-300cm value." datatype="integer"/>
+    <param name="vegetation_height_300_smp_attr_id" display="Vegetation height &gt;300cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height &gt;300cm value." datatype="integer"/>
+    <param name="bare_soil_smp_attr_id" display="Bare soil sample attribute ID" description = "ID of the sample attribute that holds the bare soil value." datatype="integer"/>
+    <param name="bare_rock_gravel_smp_attr_id" display="Bare rock gravel sample attribute ID" description = "ID of the sample attribute that holds the bare rock gravel value." datatype="integer"/>
+    <param name="litter_smp_attr_id" display="Litter sample attribute ID" description = "ID of the sample attribute that holds the litter value." datatype="integer"/>
+    <param name="mosses_and_lichens_smp_attr_id" display="Mosses and lichens sample attribute ID" description = "ID of the sample attribute that holds the mosses and lichens value." datatype="integer"/>
+  </params>
+  <columns>
+    <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
+    <column name="survey_level" display='Survey level' sql="(csnf.attrs_json->>('#survey_level_smp_attr_id#'))::text" datatype="text" />
+    <column name='taxon' sql='cttl.taxon' display='Taxon' datatype='text'/>
+    <column name='common' display='Common name'
+      template="&lt;div class='zero-{zero_abundance}'&gt;{common}&lt;/div&gt;"
+      sql="cttl.default_common_name" datatype='text' />
+    <column name="abundance" display='Abundance' sql="(conf.attrs_json->>('#abundance_occ_attr_id#'))::text" datatype="text" />
+    <column name="date" display="Date" datatype="date" />
+    <column name="date_start" display="Date from" sql="cof.date_start" visible="false" />
+    <column name="date_end" display="Date to" sql="cof.date_end" visible="false" />
+    <column name='date_type' sql='cof.date_type' visible='false' />
+    <column name='surveyor' display='Surveyor' sql="rtrim(csnf.recorders, ', ')" datatype="text" />
+    <column name='square' display='Square' sql="square.name" datatype="text" />
+    <column name='plot' display='Plot' sql="plot.name" datatype="text" />
+    <column name="habitat" display='Habitat' sql="(csnf.attrs_json->>('#habitat_smp_attr_id#'))::text" datatype="text" />
+    <column name="management" display='Management' sql="(csnf.attrs_json->>('#management_smp_attr_id#'))::text" datatype="text" />
+    <column name="other_management" display='Other management' sql="(csnf.attrs_json->>('#other_management_smp_attr_id#'))::text" datatype="text" />
+    <column name="grazing" display='Grazing' sql="(csnf.attrs_json->>('#grazing_smp_attr_id#'))::text" datatype="text" />
+    <column name="wooded" display='Wooded' sql="(csnf.attrs_json->>('#woodland_smp_attr_id#'))::text" datatype="text" />
+    <column name="vegetation_height_10" display='Vegetation height &lt;=10cm' sql="(csnf.attrs_json->>('#vegetation_height_10_smp_attr_id#'))::text" datatype="text" />
+    <column name="vegetation_height_11_30" display='Vegetation height 11-30cm' sql="(csnf.attrs_json->>('#vegetation_height_11_30_smp_attr_id#'))::text" datatype="text" />
+    <column name="vegetation_height_31_100" display='Vegetation height 31-100cm' sql="(csnf.attrs_json->>('#vegetation_height_31_100_smp_attr_id#'))::text" datatype="text" />
+    <column name="vegetation_height_101_300" display='Vegetation height 101-300cm' sql="(csnf.attrs_json->>('#vegetation_height_101_300_smp_attr_id#'))::text" datatype="text" />
+    <column name="vegetation_height_300" display='Vegetation height &gt;300cm' sql="(csnf.attrs_json->>('#vegetation_height_300_smp_attr_id#'))::text" datatype="text" />
+    <column name="bare_soil" display='Bare soil' sql="(csnf.attrs_json->>('#bare_soil_smp_attr_id#'))::text" datatype="text" />
+    <column name="bare_rock_gravel" display='Bare rock gravel' sql="(csnf.attrs_json->>('#bare_rock_gravel_smp_attr_id#'))::text" datatype="text" />
+    <column name="litter" display='Litter' sql="(csnf.attrs_json->>('#litter_smp_attr_id#'))::text" datatype="text" />
+    <column name="mosses_and_lichens" display='Mosses and lichens' sql="(csnf.attrs_json->>('#mosses_and_lichens_smp_attr_id#'))::text" datatype="text" />
+    <column name="output_sref" sql="conf.output_sref" display="Output map ref" datatype="text" />
+    <column name='output_sref_projection' display='Output map ref projection' datatype='text'
+      sql="case conf.output_sref_system when '4326' then 'WGS84' when '27700' then 'OSGB36' else upper(conf.output_sref_system) end" />
+    <column name='lat' display='Latitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\(.+ (.+)\\)')" datatype="text" />
+    <column name='long' display='Longitude' sql="substring(st_astext(st_transform(st_centroid(cof.public_geom), 4326)) from E'POINT\\((.+) ')" datatype="text" />
+    <column name='determiner' display='Determiner' datatype="text"
+      sql="CASE WHEN conf.attr_det_full_name IS NULL THEN
+        CASE WHEN conf.attr_det_last_name IS NULL THEN NULL ELSE conf.attr_det_last_name || COALESCE(', ' || conf.attr_det_first_name, '') END
+      ELSE conf.attr_det_full_name END" />
+    <column name='certainty' display="Recorder certainty" sql="CASE cof.certainty WHEN 'C' THEN 'Certain' WHEN 'L' THEN 'Likely' WHEN 'U' THEN 'Uncertain' END" />
+    <column name='record_comment' display='Comment' sql="conf.comment" datatype="text" />
+    <column name='sample_comment' display='Sample comment' sql="csnf.comment" datatype="text" />
+    <column name='images' display='Images' sql="case when conf.media is null then null else '#uploadFolder#' || replace(conf.media, ',', ', #uploadFolder#') end"/>
+    <column name='input_date' sql='cof.created_on' display='Input on date' datatype='date' />
+    <column name='last_edit_date' sql='cof.updated_on' display='Last edited on date' datatype='date' />
+    <column name='record_status' display='Verification status 1'
+        sql="CASE cof.record_status
+        WHEN 'V' THEN 'Accepted'
+        WHEN 'C' THEN 'Unconfirmed'
+        WHEN 'R' THEN 'Rejected'
+        WHEN 'I' THEN 'Input still in progress'
+        WHEN 'D' THEN 'Queried'
+        WHEN 'S' THEN 'Awaiting check'
+        ELSE cof.record_status
+        END" />
+    <column name="record_substatus" display="Verification status 2"
+        sql="CASE cof.record_status
+        WHEN 'V' THEN
+          CASE cof.record_substatus WHEN 1 THEN 'correct' WHEN 2 THEN 'Considered correct' ELSE NULL END
+        WHEN 'C' THEN
+          CASE cof.record_substatus WHEN 3 THEN 'Plausible' ELSE 'Not reviewed' END
+        WHEN 'R' THEN
+          CASE cof.record_substatus WHEN 4 THEN 'Unable to verify' WHEN 5 THEN 'Incorrect' ELSE NULL END
+        ELSE NULL
+        END" />
+    <column name="query" display="Query" sql="case cof.query when 'A' then 'Answered' when 'Q' then 'Queried' end" />
+    <column name='verifier' display='Verifier' sql='conf.verifier' datatype="text" />
+    <column name='verified_on' display='Verified on' sql='cof.verified_on' datatype="text" />
+    <column name="autochecks" display="Automated checks"
+      sql="CASE WHEN cof.data_cleaner_result='t' THEN 'pass' WHEN not cof.verification_checks_enabled THEN 'checks disabled' WHEN cof.data_cleaner_result IS NULL THEN 'pending' ELSE conf.data_cleaner_info END" />
+  </columns>
+</report>
