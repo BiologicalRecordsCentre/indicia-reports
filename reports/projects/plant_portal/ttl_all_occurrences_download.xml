@@ -59,7 +59,7 @@
     <param name="mosses_and_lichens_smp_attr_id" display="Mosses and lichens sample attribute ID" description = "ID of the sample attribute that holds the mosses and lichens value." datatype="integer"/>
   </params>
   <columns>
-    <column name='id' sql='cof.id' display='ID' in_count="true" visible="false"/>
+    <column name='id' sql='cof.id' display='ID' in_count="true" />
     <column name="survey_level" display='Survey level' sql="(csnf.attrs_json->>('#survey_level_smp_attr_id#'))::text" datatype="text" />
     <column name='taxon' sql='cttl.taxon' display='Taxon' datatype='text'/>
     <column name='common' display='Common name'
