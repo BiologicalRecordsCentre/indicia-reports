@@ -69,7 +69,7 @@
     <column name="other_management" display='Other management' sql="(csnf.attrs_json->>('#other_management_smp_attr_id#'))::text" datatype="text" />
     <column name="grazing" display='Grazing' sql="(csnf.attrs_json->>('#grazing_smp_attr_id#'))::text" datatype="text" />
     <column name="wooded" display='Wooded' sql="(csnf.attrs_json->>('#woodland_smp_attr_id#'))::text" datatype="text" />
-    <column name='images' display='Images' sql='conf.media' img='true' />
+    <column name='images' display='Images' sql='csnf.media' img='true' />
     <column name='input_form' visible="false" sql="case when csf.input_form IS NOT NULL THEN csf.input_form ELSE '#survey_not_found_page_path#' END" />
     <column name='geom' visible='false' mappable="true" sql='st_astext(cof.public_geom)' />
   </columns>
