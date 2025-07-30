@@ -1,6 +1,6 @@
 <report
-    title="Tracking The Impact - All Occurrences Grid"
-    description="All occurrences displayed in a grid for Tracking The Impact project.
+    title="Tracking The Impact - All Occurrences Grid and Map"
+    description="All occurrences displayed on a grid/map for Tracking The Impact project.
     Has fewer columns than download version."
 >
   <query website_filter_field="" training_filter_field="cof.training" >
@@ -71,5 +71,6 @@
     <column name="wooded" display='Wooded' sql="(csnf.attrs_json->>('#woodland_smp_attr_id#'))::text" datatype="text" />
     <column name='images' display='Images' sql='conf.media' img='true' />
     <column name='input_form' visible="false" sql="case when csf.input_form IS NOT NULL THEN csf.input_form ELSE '#survey_not_found_page_path#' END" />
+    <column name='geom' visible='false' mappable="true" sql='st_astext(csf.public_geom)' />
   </columns>
 </report>
