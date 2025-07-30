@@ -102,26 +102,18 @@
     <column name='images' display='Images' sql="case when csnf.media is null then null else '#uploadFolder#' || replace(csnf.media, ',', ', #uploadFolder#') end"/>
     <column name='input_date' sql='cof.created_on' display='Input on date' datatype='date' />
     <column name='last_edit_date' sql='cof.updated_on' display='Last edited on date' datatype='date' />
-    <column name='record_status' display='Verification status 1'
-        sql="CASE cof.record_status
-        WHEN 'V' THEN 'Accepted'
-        WHEN 'C' THEN 'Unconfirmed'
-        WHEN 'R' THEN 'Rejected'
-        WHEN 'I' THEN 'Input still in progress'
-        WHEN 'D' THEN 'Queried'
-        WHEN 'S' THEN 'Awaiting check'
-        ELSE cof.record_status
-        END" />
-    <column name="record_substatus" display="Verification status 2"
-        sql="CASE cof.record_status
+    <column name='record_status' display='State'
+      sql="CASE cof.record_status
         WHEN 'V' THEN
-          CASE cof.record_substatus WHEN 1 THEN 'correct' WHEN 2 THEN 'Considered correct' ELSE NULL END
+          CASE cof.record_substatus WHEN 1 THEN 'Accepted as correct' WHEN 2 THEN 'Accepted as considered correct' ELSE 'Accepted' END
         WHEN 'C' THEN
-          CASE cof.record_substatus WHEN 3 THEN 'Plausible' ELSE 'Not reviewed' END
+          CASE cof.record_substatus WHEN 3 THEN 'Plausible' ELSE 'Record Submitted' END
+        WHEN 'D' THEN 'Queried'
         WHEN 'R' THEN
-          CASE cof.record_substatus WHEN 4 THEN 'Unable to verify' WHEN 5 THEN 'Incorrect' ELSE NULL END
-        ELSE NULL
-        END" />
+          CASE cof.record_substatus WHEN 4 THEN 'Rejected as considered incorrect' WHEN 5 THEN 'Rejected as incorrect' ELSE 'Rejected' END
+        WHEN 'I' THEN 'Input still in progress'
+        WHEN 'S' THEN 'Awaiting check'
+        ELSE cof.record_status END" />
     <column name="query" display="Query" sql="case cof.query when 'A' then 'Answered' when 'Q' then 'Queried' end" />
     <column name='verifier' display='Verifier' sql='conf.verifier' datatype="text" />
     <column name='verified_on' display='Verified on' sql='cof.verified_on' datatype="text" />
