@@ -47,6 +47,7 @@
     <param name="management_smp_attr_id" display="Management sample attribute ID" description = "ID of the sample attribute that holds the Management value." datatype="integer"/>
     <param name="other_management_smp_attr_id" display="Other Management sample attribute ID" description = "ID of the sample attribute that holds the Other Management value." datatype="integer"/>
     <param name="grazing_smp_attr_id" display="Grazing sample attribute ID" description = "ID of the sample attribute that holds the grazing value." datatype="integer"/>
+    <param name="grazers_smp_attr_id" display="Grazers sample attribute ID" description = "ID of the sample attribute that holds the grazers value." datatype="integer"/>
     <param name="woodland_smp_attr_id" display="Woodland sample attribute ID" description = "ID of the sample attribute that holds the woodland level value." datatype="integer"/>
     <param name="vegetation_height_10_smp_attr_id" display="Vegetation height &lt;=10cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height &lt;= 10 value." datatype="integer"/>
     <param name="vegetation_height_11_30_smp_attr_id" display="Vegetation height 11-30cm sample attribute ID" description = "ID of the sample attribute that holds the vegetation height 11-30cm value." datatype="integer"/>
@@ -77,6 +78,7 @@
     <column name="management" display='Management' sql="(csnf.attrs_json->>('#management_smp_attr_id#'))::text" datatype="text" />
     <column name="other_management" display='Other management' sql="(csnf.attrs_json->>('#other_management_smp_attr_id#'))::text" datatype="text" />
     <column name="grazing" display='Grazing' sql="(csnf.attrs_json->>('#grazing_smp_attr_id#'))::text" datatype="text" />
+    <column name="grazers" display='Grazers' sql="(csnf.attrs_json->>('#grazers_smp_attr_id#'))::text" datatype="text" />
     <column name="wooded" display='Wooded' sql="(csnf.attrs_json->>('#woodland_smp_attr_id#'))::text" datatype="text" />
     <column name="vegetation_height_10" display='Vegetation height &lt;=10cm' sql="(csnf.attrs_json->>('#vegetation_height_10_smp_attr_id#'))::text" datatype="text" />
     <column name="vegetation_height_11_30" display='Vegetation height 11-30cm' sql="(csnf.attrs_json->>('#vegetation_height_11_30_smp_attr_id#'))::text" datatype="text" />
