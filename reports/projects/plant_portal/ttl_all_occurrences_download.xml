@@ -97,8 +97,7 @@
         CASE WHEN conf.attr_det_last_name IS NULL THEN NULL ELSE conf.attr_det_last_name || COALESCE(', ' || conf.attr_det_first_name, '') END
       ELSE conf.attr_det_full_name END" />
     <column name='certainty' display="Recorder certainty" sql="CASE cof.certainty WHEN 'C' THEN 'Certain' WHEN 'L' THEN 'Likely' WHEN 'U' THEN 'Uncertain' END" />
-    <column name='record_comment' display='Comment' sql="conf.comment" datatype="text" />
-    <column name='sample_comment' display='Sample comment' sql="csnf.comment" datatype="text" />
+    <column name='sample_comment' display='Additional comments' sql="csnf.comment" datatype="text" />
     <column name='images' display='Images' sql="case when csnf.media is null then null else '#uploadFolder#' || replace(csnf.media, ',', ', #uploadFolder#') end"/>
     <column name='input_date' sql='cof.created_on' display='Input on date' datatype='date' />
     <column name='last_edit_date' sql='cof.updated_on' display='Last edited on date' datatype='date' />
