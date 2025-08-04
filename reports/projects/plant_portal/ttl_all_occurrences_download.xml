@@ -38,7 +38,7 @@
     <param name="uploadFolder" display="Image upload folder" datatype="string" default=""
       description="Image upload folder on the warehouse including the trailing slash" />
     <param name="survey_level_smp_attr_id" display="Survey level sample attribute ID" description = "ID of the sample attribute that holds the survey level." datatype="integer"/>
-    <param name='survey_level_selector' display='Survey level?' description='Select the survey level you wish to return data for, or leave as Please Select for both.' emptyvalue='' datatype='lookup'
+    <param name='survey_level_selector' display='Survey level?' description='Select the survey level you wish to return data for, or leave as Please Select for all.' emptyvalue='' datatype='lookup'
         lookup_values='wildflower:Wildflower,indicator:Indicator,inventory:Inventory' />
     <param name="wildflower_tt_id" display="Wildflower termlists term ID" description="ID of the termlist term for Wildflower." datatype="int"/>
     <param name="indicator_tt_id" display="Indicator termlists term ID" description="ID of the termlist term for Indicator." datatype="int"/>
