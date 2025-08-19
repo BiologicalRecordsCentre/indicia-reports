@@ -83,12 +83,7 @@
         emptyvalue='0'/>
     <param name='year_sort_order' display='Year' description='Select a year, or leave blank for all years'
         population_call='report:projects/npms/get_years_for_population_call:year_sort_order:year:orderby=year_sort_order' datatype="lookup"/></params>
-    <param name="wildflower_survey_id" display="Wildflower survey ID" description="ID of Wildflower Survey." datatype="int"/>
-    <param name="indicator_survey_id" display="Indicator survey ID" description="ID of Indicator Survey." datatype="int"/>
-    <param name="inventory_survey_id" display="Inventory survey ID" description="ID of Inventory Survey." datatype="int"/>
-    <param name="wildflower_data_entry_path" display="Wildflower data entry form path" description="Relative path of Wildflower form." datatype="text"/>
-    <param name="indicator_data_entry_path" display="Indicator data entry form path" description="Relative path of Indicator form." datatype="text"/>
-    <param name="inventory_data_entry_path" display="Inventory data entry form path" description="Relative path of Inventory form." datatype="text"/>  
+    <param name="current_data_entry_form_path" display="Current data entry form path" description="Relative path of the latest version of the data entry form." datatype="text"/>
     <param name="survey_not_found_page_path" display="Survey not found page path" 
       description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />
   <columns>
@@ -124,9 +119,7 @@
     <column name='input_form' visible="false" sql="
     CASE 
       WHEN csf.input_form IS NOT NULL THEN csf.input_form
-      WHEN csf.input_form IS NULL AND csf.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
-      WHEN csf.input_form IS NULL AND csf.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
-      WHEN csf.input_form IS NULL AND csf.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
+      WHEN csf.input_form IS NULL AND csf.survey_id = #survey_id# THEN '#current_data_entry_form_path#'
     ELSE 
       '#survey_not_found_page_path#'
     END" />
