@@ -1,0 +1,61 @@
+<report
+    title="Plant Portal My Visits 2"
+    description="Display a list of visits suitable for users to view their own data."
+>
+  <query website_filter_field="" training_filter_field="csf.training" >
+    SELECT #columns# 
+      FROM cache_samples_functional csf
+      JOIN cache_samples_nonfunctional csnf on csnf.id = csf.id
+      JOIN locations plot ON plot.id = csf.location_id AND plot.deleted=false
+      JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
+      JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
+      #agreements_join#
+      WHERE #sharing_filter# 
+      AND csf.created_by_id=#current_user#
+      AND csf.survey_id in (#survey_ids#)
+      AND csf.website_id in (#website_ids#)
+      #order_by#
+  </query>
+  <order_bys>
+    <order_by>csf.id desc</order_by>
+  </order_bys>
+  <params>
+    <param name="group_id" display="Group ID" description="Optionally limit samples to particular group." datatype="integer" emptyvalue="" default=""> 
+        <where>csf.group_id=#group_id#</where>
+    </param>
+    <param name="current_user" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "survey_ids" display="Survey IDS" description="Comma separated list of survey ids to limit the results to." datatype="text"/>
+    <param name="wildflower_survey_id" display="Wildflower survey ID" description="ID of Wildflower Survey." datatype="int"/>
+    <param name="indicator_survey_id" display="Indicator survey ID" description="ID of Indicator Survey." datatype="int"/>
+    <param name="inventory_survey_id" display="Inventory survey ID" description="ID of Inventory Survey." datatype="int"/>
+    <param name="wildflower_data_entry_path" display="Wildflower data entry form path" description="Relative path of Wildflower form." datatype="text"/>
+    <param name="indicator_data_entry_path" display="Indicator data entry form path" description="Relative path of Indicator form." datatype="text"/>
+    <param name="inventory_data_entry_path" display="Inventory data entry form path" description="Relative path of Inventory form." datatype="text"/>  
+    <param name="survey_not_found_page_path" display="Survey not found page path" 
+      description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />  
+  </params>
+  <columns>
+    <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
+    <column name='square_name' sql="square.centroid_sref" display='Square' datatype="text"/>
+    <column name='plot_name'
+    sql="'&lt;i&gt;' || 'Plot at ' || regexp_replace(plot.name, E'&lt;[^&gt;]+&gt;', '', 'gi') || ' (' ||  cache_ttPlotType.term || ') ' || '&lt;/i&gt;' || ')'" display='Plot' 
+    html_safe='true' />
+    <column name='plot_centroid_sref' sql="plot.centroid_sref" display='Plot grid ref'/>
+    <column name='date_start' sql='csf.date_start' visible="false"/>
+    <column name='date_end' sql='csf.date_end' visible="false"/>
+    <column name='date_type' sql='csf.date_type' visible="false"/>
+    <column name='date' display='Date' datatype="date"/>
+    <column name='recorder' display='Recorder' sql="csnf.recorders" datatype="text" />
+    <column name='geom' visible='false' mappable="true" sql='st_astext(csf.public_geom)' />
+    <column name='input_form' visible="false" sql="
+      CASE 
+        WHEN csf.input_form IS NOT NULL THEN csf.input_form
+        WHEN csf.input_form IS NULL AND csf.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
+        WHEN csf.input_form IS NULL AND csf.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
+        WHEN csf.input_form IS NULL AND csf.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
+      ELSE 
+        '#survey_not_found_page_path#'
+      END"
+    />
+  </columns>
+</report>
