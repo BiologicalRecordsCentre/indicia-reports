@@ -1,6 +1,7 @@
 <report
-    title="Explore samples using standard filters 2"
-    description="Explore samples with standardised filtering parameters. Adds location code and sref to original."
+    title="Explore samples using standard filters"
+    description="Based on library/samples/filterable_explore_list_2 but includes enhancements
+    such as being able to direc tthe user to different data entry forms even when input_form is null."
 >
   <query website_filter_field="s.website_id" standard_params="samples"
          created_by_field="s.created_by_id">
