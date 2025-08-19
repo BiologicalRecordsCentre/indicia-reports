@@ -1,6 +1,7 @@
 <report
-    title="Plant Portal My Visits 2"
-    description="Display a list of visits suitable for users to view their own data."
+    title="Plant Portal NPMS Mode My Visits"
+    description="Display a list of visits suitable for users to view their own data.
+    This version of the report support use of the different data entry forms, even when input_form is null."
 >
   <query website_filter_field="" training_filter_field="csf.training" >
     SELECT #columns# 
