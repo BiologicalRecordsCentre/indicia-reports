@@ -1,7 +1,7 @@
 <report
     title="Explore occurrences (standard filters)"
     description="Based on report /library/occurrences/filterable_explore_list'.
-    Used in both Standard Mode and NPMS+ Mode."
+    Currently used in NPMS+ Mode, but could be used for standard mode My Samples/Samples admin pages too."
     featured="true"
 >
   <query website_filter_field="o.website_id" samples_id_field="o.sample_id"
