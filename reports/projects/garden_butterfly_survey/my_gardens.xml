@@ -21,6 +21,7 @@
   <columns>
     <column name="id" visible="false" sql="l.id" unique="true" in_count="true" datatype="integer" />
     <column name="name" display="Garden name" sql="COALESCE(v.text_value, l.name)" datatype="string" />
+    <column name="centroid_sref" display="Centroid sref" sql="l.centroid_sref" datatype="string" />
     <column name="geom" visible="false" mappable="true" sql="st_astext(coalesce(l.boundary_geom, l.centroid_geom))" />
   </columns>
 </report>
