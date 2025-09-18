@@ -28,5 +28,6 @@
     <column name="awarded" sql="b.awarded" display="Awarded" datatype="boolean" />
     <column name="awarded_on" sql="b.awarded_on" display="Awarded on" datatype="date" />
     <column name="updated_on" sql="b.updated_on" display="Updated on" datatype="date" />
+    <column name="icon" sql="b.icon" display="Icon" datatype="text" />
   </columns>
 </report>
