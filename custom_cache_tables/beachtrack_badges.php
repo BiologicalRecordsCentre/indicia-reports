@@ -191,10 +191,10 @@ function get_beachtrack_badges_query() {
     /********/
     SELECT created_by_id,
       'Quarterly Track 2 (' || EXTRACT('year' FROM now())::text || ')',
-      'At least 91 miles walked April to June in the current year',
+      'At least 50 miles walked April to June in the current year',
       MAX(miles_walked),
       'Maximum number of miles April to June for the current year',
-      MAX(miles_walked) > 91 as awarded,
+      MAX(miles_walked) >= 50 as awarded,
       'road-sign' as icon
     FROM (
       SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
@@ -209,10 +209,10 @@ function get_beachtrack_badges_query() {
     /********/
     SELECT created_by_id,
       'Quarterly Track 3 (' || EXTRACT('year' FROM now())::text || ')',
-      'At least 91 miles walked July to September in the current year',
+      'At least 50 miles walked July to September in the current year',
       MAX(miles_walked),
       'Maximum number of miles July to September for the current year',
-      MAX(miles_walked) > 91 as awarded,
+      MAX(miles_walked) >= 50 as awarded,
       'road-sign' as icon
     FROM (
       SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
@@ -227,10 +227,10 @@ function get_beachtrack_badges_query() {
     /********/
     SELECT created_by_id,
       'Quarterly Track 4 (' || EXTRACT('year' FROM now())::text || ')',
-      'At least 91 miles walked October to December in the current year',
+      'At least 50 miles walked October to December in the current year',
       MAX(miles_walked),
       'Maximum number of miles walked October to December for the current year',
-      MAX(miles_walked) > 91 as awarded,
+      MAX(miles_walked) >= 50 as awarded,
       'road-sign' as icon
     FROM (
       SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
@@ -246,9 +246,9 @@ function get_beachtrack_badges_query() {
     SELECT created_by_id,
       'Ultimate Tracker (' || year::text || ')',
       'All Quarterly Track badges completed in a given year',
-      SUM(CASE WHEN miles_walked > 91 THEN 1 ELSE 0 END),
+      SUM(CASE WHEN miles_walked >= 50 THEN 1 ELSE 0 END),
       'Number of Quarterly Track badges completed in the year',
-      SUM(CASE WHEN miles_walked > 91 THEN 1 ELSE 0 END) >= 4 as awarded,
+      SUM(CASE WHEN miles_walked >= 50 THEN 1 ELSE 0 END) >= 4 as awarded,
       'medal-gold-winner' as icon
     FROM (
       SELECT created_by_id, EXTRACT('year' FROM date_start) as year, FLOOR(EXTRACT('month' FROM date_start)/3) as quarter, SUM((attrs_json->>'1718')::float)*1.604 as miles_walked
