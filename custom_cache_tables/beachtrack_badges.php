@@ -173,10 +173,10 @@ function get_beachtrack_badges_query() {
     /********/
     SELECT created_by_id,
       'Quarterly Track 1 (' || EXTRACT('year' FROM now())::text || ')',
-      'At least 91 miles walked January to March in the current year',
+      'At least 50 miles walked January to March in the current year',
       MAX(miles_walked),
       'Maximum number of miles January to March for the current year',
-      MAX(miles_walked) > 91 as awarded,
+      MAX(miles_walked) >= 50 as awarded,
       'road-sign' as icon
     FROM (
       SELECT created_by_id, EXTRACT('year' FROM date_start), SUM(
