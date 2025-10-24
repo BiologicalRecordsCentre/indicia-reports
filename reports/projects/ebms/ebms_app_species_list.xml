@@ -22,6 +22,7 @@
     <column name="external_key" sql="ttl.external_key" />
     <column name="taxon" sql="ttl.taxon" />
     <column name="preferred_taxon" sql="ttl.preferred_taxon" />
+    <column name="taxon_group_id" sql="ttl.taxon_group_id" />
     <column name="attributes" sql="
     (select json_object_agg(ttla.caption, t.term order by ttla.caption)
    from taxa_taxon_list_attributes ttla
