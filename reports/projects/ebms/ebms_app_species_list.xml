@@ -15,16 +15,19 @@
   </params>
   <columns>
     <column name="taxa_taxon_list_id" sql="ttl.id" />
+    <column name="parent_id" sql="ttl.parent_id" />
     <column name="preferred_taxa_taxon_list_id" sql="ttl.preferred_taxa_taxon_list_id" />
     <column name="taxon_meaning_id" sql="ttl.taxon_meaning_id" />
     <column name="taxon_id" sql="ttl.taxon_id" />
     <column name="external_key" sql="ttl.external_key" />
     <column name="taxon" sql="ttl.taxon" />
     <column name="preferred_taxon" sql="ttl.preferred_taxon" />
-    <column name="attributes" sql="(select string_agg(ttla.caption || '=' || t.term, ' | ' order by ttla.caption)
+    <column name="attributes" sql="
+    (select json_object_agg(ttla.caption, t.term order by ttla.caption)
    from taxa_taxon_list_attributes ttla
    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=ttl.preferred_taxa_taxon_list_id and ttlav.taxa_taxon_list_attribute_id=ttla.id
-   join cache_termlists_terms t on t.id=ttlav.int_value)" />
+   join cache_termlists_terms t on t.id=ttlav.int_value)
+   " />
     <column name="language_iso" sql="ttl.language_iso" />
   </columns>
 </report>
