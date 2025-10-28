@@ -9,6 +9,7 @@
     JOIN people p ON p.id=u.person_id
     JOIN websites w ON w.id=i.website_id
     WHERE website_id in (#sharing_website_ids#)
+    AND i.deleted=false
   </query>
   <order_bys>
     <order_by>i.created_on DESC</order_by>
@@ -38,5 +39,6 @@
     <column name="description" display="Description" sql="i.description" datatype="text" />
     <column name="is_shared" visible="false" sql="i.website_id&lt;&gt;152" datatype="boolean" />
     <column name="is_unshared" visible="false" sql="i.website_id=152" datatype="boolean" />
+    <column name="reversible" visible="false" sql="i.reversible" datatype="boolean" />
   </columns>
 </report>
