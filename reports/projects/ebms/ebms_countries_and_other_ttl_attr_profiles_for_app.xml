@@ -1,0 +1,73 @@
+<report
+    title="EBMS Countries And Other TTL Attribute Profiles For App"
+    description="EBMS countries and other taxa taxon list attribute profiles 
+      with details For App"
+>
+  <query>
+    SELECT #columns#
+    FROM taxa_taxon_list_attributes ttla
+    JOIN taxon_lists_taxa_taxon_list_attributes tlttla 
+      ON tlttla.taxa_taxon_list_attribute_id = ttla.id
+      AND tlttla.taxon_list_id in (251,260,261,265)
+      AND tlttla.deleted=false
+    LEFT JOIN taxa_taxon_list_attribute_values ttlav on
+      ttlav.taxa_taxon_list_attribute_id = ttla.id
+      AND ttlav.deleted = false
+    LEFT JOIN taxa_taxon_lists ttl on ttl.id = ttlav.taxa_taxon_list_id
+      AND ttl.deleted = false
+      AND ttl.allow_data_entry = true
+    LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
+    LEFT JOIN locations l on l.code = ttla.caption
+      AND l.deleted = false and l.location_type_id in (16516, 16517)
+    WHERE termlist_id = 816
+      AND ttla.deleted = false
+      AND (ttla.caption ILIKE '%#attr_name_filter#%' OR '#attr_name_filter#' = '')
+      AND (l.name ILIKE '%#location_name_filter#%' OR '#location_name_filter#' = '')
+      AND (ttla.description ILIKE '%#description_filter#%' OR '#description_filter#' = '')
+      AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
+      AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
+  </query>
+  <params>
+    <param name='attr_name_filter' display='Attribute name filter' description='Case insensitive "contains" attribute name filter.' datatype='string' />
+    <param name='location_name_filter' display='Location name filter' description='Case insensitive "contains" location Name filter.' datatype='string' />
+    <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string' />
+    <param name='lon' display='Longitude' description='Longitude coodinate.' emptyvalue='1000' datatype='string'/>
+    <param name='lat' display='Latitude' description='Latitude coodinate.' emptyvalue='1000' datatype='string'/>
+    <param name='species_groups_filter' display='Species groups filter' description='Taxon groups filter. Accept a comma separated list.' datatype='string' emptyvalue="0" />
+    <param name='updated_on_filter' display='Updated on filter' description='Case insensitive "contains" updated on filter.' datatype='string' emptyvalue='2000-01-01' />
+  </params>
+  <order_bys>
+    <order_by>dist, ttla.caption</order_by>
+  </order_bys>
+  <columns>
+    <column name='taxa_taxon_list_attribute_id' display='Attribute ID'
+      sql='ttla.id' datatype="int" />
+    <column name='attr_name' display='Attribute name'
+      sql='ttla.caption' datatype="text" />
+    <column name='location_name' display='Location name'
+      sql='l.name' datatype="text" />
+    <column name='description' display='Description'
+      sql='ttla.description' datatype="text" />
+    <column name='coordinates' display='Coordinates'
+      sql='l.centroid_sref' datatype="text" />
+    <column name='taxa_count' display='Taxon count'
+      sql='count(distinct ttl.taxon_meaning_id)' datatype="int" aggregate="true" />
+    <column name='species_groups' display='Species groups'
+      sql="'[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']'" datatype="json" aggregate="true" />
+    <column name='updated_on' display='Updated on'
+      sql='max(ttl.updated_on)' datatype="text" aggregate="true"
+      />
+    <column name='dist' display='Distance'
+      sql="
+      CASE WHEN '#lon#' = '1000' OR '#lat#' = '1000'
+      THEN
+        null
+      ELSE
+        ST_Distance(
+          ST_SetSRID(ST_MakePoint(#lon#, #lat#), 4326), 
+          st_transform(l.centroid_geom,4326)
+        )
+      END" datatype="text"
+    />
+  </columns>
+</report>
