@@ -33,8 +33,8 @@
     <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string' />
     <param name='lon' display='Longitude' description='Longitude coodinate.' emptyvalue='1000' datatype='string'/>
     <param name='lat' display='Latitude' description='Latitude coodinate.' emptyvalue='1000' datatype='string'/>
-    <param name='species_groups_filter' display='Species groups filter' description='Taxon groups filter. Accept a comma separated list.' datatype='string' emptyvalue="0" />
-    <param name='updated_on_filter' display='Updated on filter' description='Case insensitive "contains" updated on filter.' datatype='string' emptyvalue='2000-01-01' />
+    <param name='species_groups_filter' display='Species groups filter' description='Taxon groups filter. Accepts a comma separated list.' datatype='string' emptyvalue="0" />
+    <param name='updated_on_filter' display='Updated on filter' description='Return rows which are on or later than this date (format YYYY-MM-DD).' datatype='string' emptyvalue='2000-01-01' />
   </params>
   <order_bys>
     <order_by>dist, ttla.caption</order_by>
