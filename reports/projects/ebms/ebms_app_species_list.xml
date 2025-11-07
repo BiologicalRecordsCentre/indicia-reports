@@ -19,8 +19,8 @@
   WHERE 
   cttl.taxon_list_id in (251,260,261,265) AND
   (
-    ('#type#' = 'list' AND cttl.taxon_list_id = #list_id#) 
-    OR ('#type#' = 'location' AND ttla.id = #list_id#) 
+    (lower('#type#') = 'list' AND cttl.taxon_list_id = #list_id#) 
+    OR (lower('#type#') = 'location' AND ttla.id = #list_id#) 
     OR #list_id# = 0
     OR '#type#' = ''
   )
@@ -30,8 +30,8 @@
     <order_by>cttl.taxonomic_sort_order nulls first</order_by>
   </order_bys>
   <params>
-    <param name="list_id" display="List ID" datatype="integer" emptyvalue='0' />
-    <param name="type" display="ID Type" datatype="string" emptyvalue='' />
+    <param name="list_id" display="List ID" description="ID of the list (taxon attribute ID or taxon list ID)" datatype="integer" emptyvalue='0' />
+    <param name="type" display="ID Type" description="Enter 'location' or 'list'." datatype="string" emptyvalue='' />
   </params>
   <columns>
     <column name="taxa_taxon_list_id" sql="cttl.id" incount="true" />
