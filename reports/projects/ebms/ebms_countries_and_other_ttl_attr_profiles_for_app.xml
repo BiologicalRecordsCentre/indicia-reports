@@ -20,7 +20,6 @@
       AND ttl.allow_data_entry = true
     LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
     WHERE tl.id in (251,260,261,265)
-      AND (('#type#' = 'list' AND tl.id::text ILIKE '%' || '#id#' || '%') OR #id# = 0 OR '#type#' = '')
       AND ('#location_code_filter#' = '')
       AND (tl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (tl.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
@@ -77,7 +76,6 @@
       AND l.deleted = false and l.location_type_id in (16516, 16517)
     WHERE termlist_id = 816
       AND ttla.deleted = false
-      AND (('#type#' = 'location' AND ttla.id::text ILIKE '%' || '#id#' || '%') OR #id# = 0 OR '#type#' = '')
       AND (ttla.caption ILIKE '%' || '#location_code_filter#' || '%' OR '#location_code_filter#' = '')
       AND (l.name ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (ttla.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
@@ -87,8 +85,6 @@
       ORDER BY dist, name
   </query>
   <params>
-    <param name='id' display='ID' datatype="int" description='"contains" ID filter. Requires "type" parameter to be filled in' emptyvalue="0" />
-    <param name='type' display='Type' datatype="string" description="Enter 'list' or 'location. Requires the ID parameter to be filled in." />
     <param name='location_code_filter' display='Location code filter' description='Case insensitive "contains" location code filter.' datatype='string'/>
     <param name='name_filter' display='Name filter' description='Case insensitive "contains" name filter.' datatype='string'/>
     <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string'/>
