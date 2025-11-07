@@ -36,7 +36,19 @@
     ttla.caption as location_code,
     l.name as name,
     ttla.description as description,
-    l.centroid_sref as coordinates,
+    CASE WHEN centroid_sref LIKE '%N %' OR centroid_sref LIKE '%S %' THEN
+    ARRAY[
+      CASE
+        WHEN position('S' in centroid_sref) &gt; 0 THEN -CAST(split_part(centroid_sref, 'S', 1) AS double precision)
+      ELSE CAST(split_part(centroid_sref, 'N', 1) AS double precision)
+      END,
+      CASE
+        WHEN position('W' in centroid_sref) &gt; 0 THEN -CAST(split_part(split_part(centroid_sref, ' ', 2), 'W', 1) AS double precision)
+      ELSE CAST(split_part(split_part(centroid_sref, ' ', 2), 'E', 1) AS double precision)
+      END
+    ]
+    ELSE array[]::double precision[]
+    END AS coordinates,
     count(distinct ttl.taxon_meaning_id) as taxa_count,
     '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']' as species_groups,
     max(ttl.updated_on) as updated_on,
