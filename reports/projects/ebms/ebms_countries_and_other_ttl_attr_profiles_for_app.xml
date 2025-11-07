@@ -46,7 +46,7 @@
       ELSE CAST(split_part(split_part(centroid_sref, ' ', 2), 'E', 1) AS double precision)
       END
     ]
-    ELSE array[]::double precision[]
+    ELSE null
     END AS coordinates,
     count(distinct ttl.taxon_meaning_id) as taxa_count,
     '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']' as species_groups,
@@ -88,8 +88,8 @@
     <param name='location_code_filter' display='Location code filter' description='Case insensitive "contains" location code filter.' datatype='string'/>
     <param name='name_filter' display='Name filter' description='Case insensitive "contains" name filter.' datatype='string'/>
     <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string'/>
-    <param name='lon' display='Longitude' description='Longitude coodinate.' emptyvalue='1000' datatype='string'/>
-    <param name='lat' display='Latitude' description='Latitude coodinate.' emptyvalue='1000' datatype='string'/>
+    <param name='lon' display='Longitude' description='Longitude coordinate.' emptyvalue='1000' datatype='string'/>
+    <param name='lat' display='Latitude' description='Latitude coordinate.' emptyvalue='1000' datatype='string'/>
     <param name='species_groups_filter' display='Species groups filter' description='Taxon groups filter. Accepts a comma separated list.' datatype='string' emptyvalue="0" />
     <param name='updated_on_filter' display='Updated on filter' description='Return rows which are on or later than this date (format YYYY-MM-DD).' datatype='string' emptyvalue='2000-01-01' />
   </params>
