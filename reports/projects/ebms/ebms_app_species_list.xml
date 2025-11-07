@@ -8,7 +8,7 @@
     AND cttl_meaning.allow_data_entry = true
   LEFT JOIN taxa_taxon_list_attribute_values ttlav
     ON ttlav.taxa_taxon_list_id = cttl_meaning.id
-    AND ((ttlav.taxa_taxon_list_attribute_id = #list_id# and '#type#' = 'location')
+    AND ((ttlav.taxa_taxon_list_attribute_id = #id# and '#type#' = 'location')
       OR ttlav.taxa_taxon_list_attribute_id = 0)
     AND ttlav.deleted = false
   LEFT JOIN taxa_taxon_list_attributes ttla
@@ -19,18 +19,18 @@
   WHERE 
   cttl.taxon_list_id in (251,260,261,265) AND
   (
-    (lower('#type#') = 'list' AND cttl.taxon_list_id = #list_id#) 
-    OR (lower('#type#') = 'location' AND ttla.id = #list_id#) 
-    OR #list_id# = 0
+    (lower('#type#') = 'list' AND cttl.taxon_list_id = #id#) 
+    OR (lower('#type#') = 'location' AND ttla.id = #id#) 
+    OR #id# = 0
     OR '#type#' = ''
   )
   AND cttl.allow_data_entry = true
   </query>
   <order_bys>
-    <order_by>cttl.taxonomic_sort_order nulls first</order_by>
+    <order_by>cttl.taxon_list_id, cttl.taxonomic_sort_order nulls first</order_by>
   </order_bys>
   <params>
-    <param name="list_id" display="List ID" description="ID of the list (taxon attribute ID or taxon list ID)" datatype="integer" emptyvalue='0' />
+    <param name="id" display="List ID" description="ID of the list (taxon attribute ID or taxon list ID)" datatype="integer" emptyvalue='0' />
     <param name="type" display="ID Type" description="Enter 'location' or 'list'." datatype="string" emptyvalue='' />
   </params>
   <columns>
