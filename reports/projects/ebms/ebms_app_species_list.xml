@@ -17,6 +17,7 @@
   LEFT JOIN locations l on l.code = ttla.caption
     AND l.deleted = false and l.location_type_id in (16516, 16517)
   WHERE 
+  cttl.taxon_list_id in (251,260,261,265) AND
   (
     ('#type#' = 'list' AND cttl.taxon_list_id = #list_id#) 
     OR ('#type#' = 'location' AND ttla.id = #list_id#) 
