@@ -38,7 +38,7 @@
     <column name="date_time" display="Date/time started" sql="i.created_on" datatype="date" />
     <column name="imported_by" display="Imported by" sql="coalesce(p.first_name || ' ', '') || p.surname" datatype="text" />
     <column name="records" display="# Records" sql="i.inserted + i.updated" datatype="integer" />
-    <column name="description" display="Description" sql="i.description" datatype="text" />
+    <column name="description" display="Import metadata" sql="i.description" datatype="text" />
     <column name="is_shared" visible="false" sql="i.website_id&lt;&gt;152" datatype="boolean" />
     <column name="is_unshared" visible="false" sql="i.website_id=152" datatype="boolean" />
     <column name="reversible" visible="false" sql="i.reversible" datatype="boolean" />
