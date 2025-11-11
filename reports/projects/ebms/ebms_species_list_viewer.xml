@@ -1,0 +1,99 @@
+<report
+    title="EBMS species list viewer"
+    description="Based on /reports/library/taxa/taxon_list, with enhancements such as a country/region filter."
+>
+  <query website_filter_field="cttl.website_id">
+    SELECT #columns#
+    FROM cache_taxa_taxon_lists cttl
+    LEFT JOIN cache_taxa_taxon_lists cttl_syn on cttl_syn.taxon_meaning_id = cttl.taxon_meaning_id
+      AND cttl_syn.language_iso = 'lat' and cttl_syn.preferred = false
+      AND '#include_synonyms#' = 'true'
+    LEFT JOIN cache_taxa_taxon_lists cttl_com on cttl_com.taxon_meaning_id = cttl.taxon_meaning_id AND
+      cttl_com.language_iso != 'lat' and cttl_com.preferred = false AND
+      ((cttl_com.language_iso = '#common_names_language#') OR '#common_names_language#' = '') AND
+      '#include_common_names#' = 'true'
+    LEFT JOIN taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id = cttl.id
+      AND ttlav.taxa_taxon_list_id = cttl.id
+      AND ttlav.taxa_taxon_list_attribute_id in 
+        (#european_country_ttl_attr_ids#,
+        #south_american_country_ttl_attr_ids#,
+        #asian_country_ttl_attr_ids#)
+      AND ttlav.deleted
+    LEFT JOIN taxa_taxon_list_attributes ttla on ttla.id = ttlav.taxa_taxon_list_attribute_id
+      AND ttla.termlist_id = #species_presence_termlist_id#
+      AND ttla.deleted=false
+    WHERE cttl.taxon_list_id in 
+      (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
+      AND cttl.allow_data_entry = true
+      AND cttl.preferred = true
+      AND (ttlav.int_value = #species_presence_filter# OR #species_presence_filter# = 0)
+      AND (('#continent_short#' = 'eur' and ttlav.taxa_taxon_list_attribute_id in (#european_country_ttl_attr_ids#)) OR
+           ('#continent_short#' = 'sam' and ttlav.taxa_taxon_list_attribute_id in (#south_american_country_ttl_attr_ids#)) OR
+           ('#continent_short#' = 'asi' and ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
+           '#continent_short#' = 'all')
+  </query>
+  <order_bys>
+    <order_by>cttl.family_taxon, cttl.taxon</order_by>
+  </order_bys>
+  <params>
+    <param name="butterfly_taxon_list_id" display="ID of the butterfly species list" datatype="int" />
+    <param name="moth_taxon_list_id" display="ID of the moth species list" datatype="int" />
+    <param name="bumblebee_taxon_list_id" display="ID of the bumblebee species list" datatype="int" />
+    <param name="dragonfly_taxon_list_id" display="ID of the dragonfly species list" datatype="int" />
+    <param name="taxon_list_id" datatype="lookup" display="Taxon group" default=""
+        description="Butterflies, Moths, Bumblebees, or Dragonflies"
+        lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies">
+      <where>cttl.taxon_list_id = #taxon_list_id#</where>
+    </param>
+    <param name="include_syonyms" datatype="checkbox" display="Include synonyms?" 
+        description="Include synonyms" />
+    <param name="include_common_names" datatype="checkbox" display="Include common names?" 
+        description="Include common names" />
+    <param name="common_names_language" datatype="lookup" display="Common names language"
+        description="Limit common names language" 
+        population_call="direct:language:iso:language" />
+    <param name="european_country_ttl_attr_ids" datatype="string" display="European TTL Attribute IDs"
+        description="Comma separated European taxa taxon list attribute IDs" />
+    <param name="south_american_country_ttl_attr_ids" datatype="string" display="South American TTL Attribute IDs"
+        description="Comma separated South American taxa taxon list attribute IDs" />
+    <param name="asian_country_ttl_attr_ids" datatype="string" display="Asian TTL Attribute IDs"
+        description="Comma separated Asian taxa taxon list attribute IDs" />
+    <param name="species_presence_filter" display="Species presence filter" datatype="lookup" emptyvalue="0"
+        lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
+    <param name="species_presence_termlist_id" display="Species presence termlist_id" datatype="int" />
+    <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
+          population_call="
+          report:projects/ebms/ebms_countries_for_taxon_list_viewer_lookup:ttla_id:loc_name:species_presence_termlist_id=#species_presence_termlist_id#:countries_location_type_id=#countries_location_type_id#:taxon_list_ids=#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bimblebee_taxon_list_id#,#dragonfly_taxon_list_id#"
+        description="Limit to continent, country or region." default="" />
+    <param name="continent_short" display="Continent" datatype="lookup" 
+          lookup_values="eur:Europe,sam:South America,asi:Asia"
+        description="Limit to continent" emptyvalue="all" />
+    <param name="countries_location_type_id" display="Countries location type ID" datatype="int" />
+  </params>
+  <columns>
+    <column name='id' display='ID'
+            sql='cttl.id' in_count="true" datatype="integer" />
+    <column name='external_key' display='External key'
+            sql='cttl.external_key' visible="false" datatype="text" />
+    <column name='taxon' display='Taxon name'
+            sql="cttl.taxon" datatype="text" />
+    <column name='common' display='Common names'
+            sql="string_agg(cttl_com.taxon,', ')" datatype="text" aggregate="true" />
+    <column name='synonyms' display='Synonyms'
+            sql="string_agg(cttl_syn.taxon,', ')" datatype="text" aggregate="true" />
+    <column name='taxon_group' display='Taxon group'
+            sql="
+            CASE WHEN cttl.taxon_list_id = #butterfly_taxon_list_id#
+            THEN 'Butterfly'
+            WHEN cttl.taxon_list_id = #moth_taxon_list_id#
+            THEN 'Moth'
+            WHEN cttl.taxon_list_id = #bumblebee_taxon_list_id#
+            THEN 'Bumblebee'
+            WHEN cttl.taxon_list_id = #dragonfly_taxon_list_id#
+            THEN 'Dragonfly'
+            ELSE cttl.taxon_group END
+            " datatype="text" />
+    <column name='family' display="Family" datatype="text"
+            sql="cttl.family_taxon" />
+  </columns>
+</report>

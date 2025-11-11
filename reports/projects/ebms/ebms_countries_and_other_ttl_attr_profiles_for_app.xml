@@ -1,10 +1,65 @@
 <report
     title="EBMS Countries And Other TTL Attribute Profiles For App"
-    description="EBMS countries and other taxa taxon list attribute profiles 
-      with details For App"
+    description="Return EBMS country and taxon list profiles for app"
 >
   <query>
-    SELECT #columns#
+  SELECT 
+    tl.id as id,
+    'list' as type,
+    null as location_code,
+    tl.title as name,
+    tl.description as description,
+    null as coordinates,
+    count(distinct ttl.taxon_meaning_id) as taxa_count,
+    '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']' as species_groups,
+    max(ttl.updated_on) as updated_on,
+    null as dist
+    FROM taxon_lists tl
+    LEFT JOIN taxa_taxon_lists ttl on ttl.taxon_list_id = tl.id
+      AND ttl.deleted = false
+      AND ttl.allow_data_entry = true
+    LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
+    WHERE tl.id in (251,260,261,265)
+      AND ('#location_code_filter#' = '')
+      AND (tl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
+      AND (tl.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
+      AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
+      AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
+    GROUP BY tl.id, tl.title, tl.description
+
+    UNION
+
+    SELECT 
+    ttla.id as id,
+    'location' as type,
+    ttla.caption as location_code,
+    l.name as name,
+    ttla.description as description,
+    CASE WHEN centroid_sref LIKE '%N %' OR centroid_sref LIKE '%S %' THEN
+    ARRAY[
+      CASE
+        WHEN position('S' in centroid_sref) &gt; 0 THEN -CAST(split_part(centroid_sref, 'S', 1) AS double precision)
+      ELSE CAST(split_part(centroid_sref, 'N', 1) AS double precision)
+      END,
+      CASE
+        WHEN position('W' in centroid_sref) &gt; 0 THEN -CAST(split_part(split_part(centroid_sref, ' ', 2), 'W', 1) AS double precision)
+      ELSE CAST(split_part(split_part(centroid_sref, ' ', 2), 'E', 1) AS double precision)
+      END
+    ]
+    ELSE null
+    END AS coordinates,
+    count(distinct ttl.taxon_meaning_id) as taxa_count,
+    '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']' as species_groups,
+    max(ttl.updated_on) as updated_on,
+    CASE WHEN '#lon#' = '1000' OR '#lat#' = '1000'
+      THEN
+        null
+      ELSE
+        ST_Distance(
+          ST_SetSRID(ST_MakePoint(#lon#, #lat#), 4326), 
+          st_transform(l.centroid_geom,4326)
+        )
+      END as dist
     FROM taxa_taxon_list_attributes ttla
     JOIN taxon_lists_taxa_taxon_list_attributes tlttla 
       ON tlttla.taxa_taxon_list_attribute_id = ttla.id
@@ -21,53 +76,33 @@
       AND l.deleted = false and l.location_type_id in (16516, 16517)
     WHERE termlist_id = 816
       AND ttla.deleted = false
-      AND (ttla.caption ILIKE '%#location_code_filter#%' OR '#location_code_filter#' = '')
-      AND (l.name ILIKE '%#name_filter#%' OR '#name_filter#' = '')
-      AND (ttla.description ILIKE '%#description_filter#%' OR '#description_filter#' = '')
+      AND (ttla.caption ILIKE '%' || '#location_code_filter#' || '%' OR '#location_code_filter#' = '')
+      AND (l.name ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
+      AND (ttla.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
       AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
       AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
+      GROUP BY ttla.id, ttla.caption, l.name, ttla.description, l.centroid_sref,l.centroid_geom
+      ORDER BY dist, name
   </query>
   <params>
-    <param name='location_code_filter' display='Location code filter' description='Case insensitive "contains" location code filter.' datatype='string' />
-    <param name='name_filter' display='Name filter' description='Case insensitive "contains" name filter.' datatype='string' />
-    <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string' />
-    <param name='lon' display='Longitude' description='Longitude coodinate.' emptyvalue='1000' datatype='string'/>
-    <param name='lat' display='Latitude' description='Latitude coodinate.' emptyvalue='1000' datatype='string'/>
+    <param name='location_code_filter' display='Location code filter' description='Case insensitive "contains" location code filter.' datatype='string'/>
+    <param name='name_filter' display='Name filter' description='Case insensitive "contains" name filter.' datatype='string'/>
+    <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string'/>
+    <param name='lon' display='Longitude' description='Longitude coordinate.' emptyvalue='1000' datatype='string'/>
+    <param name='lat' display='Latitude' description='Latitude coordinate.' emptyvalue='1000' datatype='string'/>
     <param name='species_groups_filter' display='Species groups filter' description='Taxon groups filter. Accepts a comma separated list.' datatype='string' emptyvalue="0" />
     <param name='updated_on_filter' display='Updated on filter' description='Return rows which are on or later than this date (format YYYY-MM-DD).' datatype='string' emptyvalue='2000-01-01' />
   </params>
-  <order_bys>
-    <order_by>dist, ttla.caption</order_by>
-  </order_bys>
   <columns>
-    <column name='id' display='ID'
-      sql='ttla.id' datatype="int" />
-    <column name='location_code' display='Location code'
-      sql='ttla.caption' datatype="text" />
-    <column name='name' display='Name'
-      sql='l.name' datatype="text" />
-    <column name='description' display='Description'
-      sql='ttla.description' datatype="text" />
-    <column name='coordinates' display='Coordinates'
-      sql='l.centroid_sref' datatype="text" />
-    <column name='taxa_count' display='Taxon count'
-      sql='count(distinct ttl.taxon_meaning_id)' datatype="int" aggregate="true" />
-    <column name='species_groups' display='Species groups'
-      sql="'[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']'" datatype="json" aggregate="true" />
-    <column name='updated_on' display='Updated on'
-      sql='max(ttl.updated_on)' datatype="text" aggregate="true"
-      />
-    <column name='dist' display='Distance'
-      sql="
-      CASE WHEN '#lon#' = '1000' OR '#lat#' = '1000'
-      THEN
-        null
-      ELSE
-        ST_Distance(
-          ST_SetSRID(ST_MakePoint(#lon#, #lat#), 4326), 
-          st_transform(l.centroid_geom,4326)
-        )
-      END" datatype="text"
-    />
+    <column name='id' display='ID' datatype="int" />
+    <column name='type' display='Type' datatype="text" />
+    <column name='location_code' display='Location code' datatype="text" />
+    <column name='name' display='Name' datatype="text" />
+    <column name='description' display='Description' datatype="text" />
+    <column name='coordinates' display='Coordinates' datatype="text" />
+    <column name='taxa_count' display='Taxon count' datatype="int"  />
+    <column name='species_groups' display='Species groups' datatype="json"  />
+    <column name='updated_on' display='Updated on' datatype="text" />
+    <column name='dist' display='Distance' datatype="text" />
   </columns>
 </report>

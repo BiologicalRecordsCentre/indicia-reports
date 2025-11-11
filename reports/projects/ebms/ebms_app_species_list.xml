@@ -2,35 +2,39 @@
 <report title="EBMS App species list report"
         description="Lists species to be used in the App.">
   <query website_filter_field="">
-  select #columns#
-  from cache_taxa_taxon_lists cttl
+  SELECT #columns#
+  FROM cache_taxa_taxon_lists cttl
+  JOIN cache_taxa_taxon_lists cttl_meaning on cttl_meaning.taxon_meaning_id = cttl.taxon_meaning_id
+    AND cttl_meaning.allow_data_entry = true
   LEFT JOIN taxa_taxon_list_attribute_values ttlav
-    ON ttlav.taxa_taxon_list_id = cttl.id
-    AND ttlav.taxa_taxon_list_attribute_id = #taxa_taxon_list_attribute_id#
+    ON ttlav.taxa_taxon_list_id = cttl_meaning.id
+    AND ((ttlav.taxa_taxon_list_attribute_id = #id# and '#type#' = 'location')
+      OR ttlav.taxa_taxon_list_attribute_id = 0)
     AND ttlav.deleted = false
   LEFT JOIN taxa_taxon_list_attributes ttla
     ON ttla.id = ttlav.taxa_taxon_list_attribute_id
     AND ttla.deleted = false
-  LEFT JOIN taxon_lists_taxa_taxon_list_attributes tlttla
-    ON tlttla.taxa_taxon_list_attribute_id = ttlav.taxa_taxon_list_attribute_id
-    AND tlttla.taxon_list_id = cttl.taxon_list_id
-    AND tlttla.taxon_list_id in (#taxon_list_id#)
-    AND tlttla.deleted = false
   LEFT JOIN locations l on l.code = ttla.caption
     AND l.deleted = false and l.location_type_id in (16516, 16517)
-  where cttl.taxon_list_id in (#taxon_list_id#) 
-  AND (tlttla.taxa_taxon_list_attribute_id = #list_id# OR #list_id# = 0)
+  WHERE 
+  cttl.taxon_list_id in (251,260,261,265) AND
+  (
+    (lower('#type#') = 'list' AND cttl.taxon_list_id = #id#) 
+    OR (lower('#type#') = 'location' AND ttla.id = #id#) 
+    OR #id# = 0
+    OR '#type#' = ''
+  )
   AND cttl.allow_data_entry = true
   </query>
   <order_bys>
-    <order_by>cttl.taxonomic_sort_order nulls first</order_by>
+    <order_by>cttl.taxon_list_id, cttl.taxonomic_sort_order nulls first</order_by>
   </order_bys>
   <params>
-    <param name="taxon_list_id" display="Taxon List IDs" description="Comma separated list" datatype="string" emptyvalue='251,260,261,265' />
-    <param name="list_id" display="List ID" datatype="integer" emptyvalue='0' />
+    <param name="id" display="List ID" description="ID of the list (taxon attribute ID or taxon list ID)" datatype="integer" emptyvalue='0' />
+    <param name="type" display="ID Type" description="Enter 'location' or 'list'." datatype="string" emptyvalue='' />
   </params>
   <columns>
-    <column name="taxa_taxon_list_id" sql="cttl.id" />
+    <column name="taxa_taxon_list_id" sql="cttl.id" incount="true" />
     <column name="parent_id" sql="cttl.parent_id" />
     <column name="preferred_taxa_taxon_list_id" sql="cttl.preferred_taxa_taxon_list_id" />
     <column name="taxon_meaning_id" sql="cttl.taxon_meaning_id" />
@@ -44,7 +48,8 @@
    from taxa_taxon_list_attributes ttla
    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id and ttlav.taxa_taxon_list_attribute_id=ttla.id
    join cache_termlists_terms t on t.id=ttlav.int_value)
-   " />
+   " aggregate="true"/>
     <column name="language_iso" sql="cttl.language_iso" />
+    <column name="taxonomic_sort_order" sql="cttl.taxonomic_sort_order" />
   </columns>
 </report>
