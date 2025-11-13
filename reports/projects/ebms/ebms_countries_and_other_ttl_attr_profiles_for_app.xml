@@ -84,7 +84,7 @@
       AND l.deleted = false and l.location_type_id in (16516, 16517)
     WHERE termlist_id = 816
       AND ttla.deleted = false
-      AND (ttla.caption ILIKE '%' || '#location_code_filter#' || '%' OR '#location_code_filter#' = '')
+      AND (ttla.caption = '#location_code_filter#' OR '#location_code_filter#' = '')
       AND (l.name ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (ttla.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
       AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
@@ -93,7 +93,7 @@
       ORDER BY dist, name
   </query>
   <params>
-    <param name='location_code_filter' display='Location code filter' description='Case insensitive "contains" location code filter.' datatype='string'/>
+    <param name='location_code_filter' display='Location code filter' description='Location code filter.' datatype='string'/>
     <param name='name_filter' display='Name filter' description='Case insensitive "contains" name filter.' datatype='string'/>
     <param name='description_filter' display='Description filter' description='Case insensitive "contains" description filter.' datatype='string'/>
     <param name='lon' display='Longitude' description='Longitude coordinate.' emptyvalue='1000' datatype='string'/>
