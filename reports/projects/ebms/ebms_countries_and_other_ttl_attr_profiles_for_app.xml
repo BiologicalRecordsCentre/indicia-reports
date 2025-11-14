@@ -81,8 +81,10 @@
       AND ttl.deleted = false
       AND ttl.allow_data_entry = true
     LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
-    LEFT JOIN locations l on l.code = ttla.caption
+    LEFT JOIN locations l on 
+      (l.code = ttla.caption OR (l.code='UK' AND ttla.caption='GB'))
       AND l.deleted = false and l.location_type_id in (16516, 16517)
+
     WHERE termlist_id = 816
       AND ttla.deleted = false
       AND (ttla.caption = '#location_code_filter#' OR '#location_code_filter#' = '')
