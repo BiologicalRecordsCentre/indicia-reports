@@ -75,6 +75,7 @@
       AND tlttla.deleted=false
     LEFT JOIN taxa_taxon_list_attribute_values ttlav on
       ttlav.taxa_taxon_list_attribute_id = ttla.id
+      AND ttlav.int_value in (16407,16408,16409,16410)
       AND ttlav.deleted = false
     LEFT JOIN taxa_taxon_lists ttl on ttl.id = ttlav.taxa_taxon_list_id
       AND ttl.deleted = false
