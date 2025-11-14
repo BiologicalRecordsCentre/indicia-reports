@@ -82,7 +82,8 @@
       (l.code = ttla.caption OR 
       (l.code='UK' AND ttla.caption='GB') OR
       (l.code='SH' AND ttla.caption='SH: HL') OR
-      (l.code='EL' AND ttla.caption='GR'))
+      (l.code='EL' AND ttla.caption='GR') OR
+      (l.code='PT3' AND ttla.caption='PT: MA'))
       AND l.deleted = false and l.location_type_id in (16516, 16517)
 
     WHERE termlist_id = 816
