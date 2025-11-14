@@ -34,7 +34,6 @@
     'location' as type,
     ttla.caption as location_code,
     CASE WHEN l.name IS NOT NULL THEN l.name
-      WHEN ttla.caption = 'GR' THEN 'Greece'
       WHEN ttla.caption = 'Europe' THEN 'Europe'
       WHEN ttla.caption = 'PT: AZ' THEN 'Azores'
       WHEN ttla.caption = 'PT: MA' THEN 'Madeira Islands'
@@ -82,7 +81,8 @@
     LEFT JOIN locations l on 
       (l.code = ttla.caption OR 
       (l.code='UK' AND ttla.caption='GB') OR
-      (l.code='SH' AND ttla.caption='SH: HL'))
+      (l.code='SH' AND ttla.caption='SH: HL') OR
+      (l.code='EL' AND ttla.caption='GR'))
       AND l.deleted = false and l.location_type_id in (16516, 16517)
 
     WHERE termlist_id = 816
