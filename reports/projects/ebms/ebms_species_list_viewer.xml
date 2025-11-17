@@ -9,9 +9,8 @@
       AND cttl_syn.language_iso = 'lat' and cttl_syn.preferred = false
       AND '#include_synonyms#' = '1'
     LEFT JOIN cache_taxa_taxon_lists cttl_com on cttl_com.taxon_meaning_id = cttl.taxon_meaning_id AND
-      cttl_com.language_iso != 'lat' and cttl_com.preferred = false AND
-      ((cttl_com.language_iso = '#common_names_language#') OR '#common_names_language#' = '') AND
-      '#include_common_names#' = '1'
+      cttl_com.preferred = false AND
+      cttl_com.language_iso = '#common_names_language#'
     LEFT JOIN taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id = cttl.id
       AND ttlav.taxa_taxon_list_id = cttl.id
       AND ttlav.taxa_taxon_list_attribute_id in 
@@ -47,9 +46,7 @@
     </param>
     <param name="include_syonyms" datatype="checkbox" display="Include synonyms?" 
         description="Include synonyms" />
-    <param name="include_common_names" datatype="checkbox" display="Include common names?" 
-        description="Include common names" />
-    <param name="common_names_language" datatype="lookup" display="Common names language"
+    <param name="common_names_language" datatype="lookup" display="Include common names?"
         description="Limit common names language" 
         population_call="direct:language:iso:language" />
     <param name="european_country_ttl_attr_ids" datatype="string" display="European TTL Attribute IDs"
