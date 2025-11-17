@@ -10,7 +10,7 @@
       AND '#include_synonyms#' = '1'
     LEFT JOIN cache_taxa_taxon_lists cttl_com on cttl_com.taxon_meaning_id = cttl.taxon_meaning_id AND
       cttl_com.preferred = false AND
-      cttl_com.language_iso = '#common_names_language#'
+      (cttl_com.language_iso = '#common_names_language#' OR '#common_names_language#' = 'all')
     LEFT JOIN taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id = cttl.id
       AND ttlav.taxa_taxon_list_id = cttl.id
       AND ttlav.taxa_taxon_list_attribute_id in 
@@ -51,7 +51,7 @@
         description="Include synonyms" />
     <param name="common_names_language" datatype="lookup" display="Include common names?"
         description="Limit common names language" 
-        population_call="direct:language:iso:language" />
+        population_call="report:projects/ebms/ebms_languages_for_taxon_list_viewer_lookup:iso:name" />
     <param name="european_country_ttl_attr_ids" datatype="string" display="European TTL Attribute IDs"
         description="Comma separated European taxa taxon list attribute IDs" />
     <param name="north_american_country_ttl_attr_ids" datatype="string" display="North American TTL Attribute IDs"

@@ -1,0 +1,20 @@
+<report
+    title="Languages for species list viewer"
+    description="Get languages for species list viewer parameter."
+>
+  <query>
+    SELECT 0 as id, 'all' as iso, 'All' as language
+    UNION
+    SELECT distinct #columns#
+    FROM languages l
+    JOIN cache_taxa_taxon_lists cttl on cttl.language_iso = l.iso
+      AND cttl.taxon_list_id in (251,260,261,265)
+    WHERE l.deleted=false
+    ORDER BY id
+  </query>
+  <columns>
+    <column name='id' display='Language ID' sql='l.id' datatype="int" />
+    <column name='iso' display='ISO' sql='l.iso' datatype="text" />
+    <column name='name' display='Language' sql='l.language' datatype="text" />
+  </columns>
+</report>
