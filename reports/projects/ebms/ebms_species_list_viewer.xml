@@ -27,8 +27,11 @@
       AND cttl.preferred = true
       AND (ttlav.int_value = #species_presence_filter# OR #species_presence_filter# = 0)
       AND (('#continent_short#' = 'eur' and ttlav.taxa_taxon_list_attribute_id in (#european_country_ttl_attr_ids#)) OR
+           ('#continent_short#' = 'nam' and ttlav.taxa_taxon_list_attribute_id in (#north_american_country_ttl_attr_ids#)) OR
            ('#continent_short#' = 'sam' and ttlav.taxa_taxon_list_attribute_id in (#south_american_country_ttl_attr_ids#)) OR
+           ('#continent_short#' = 'afr' and ttlav.taxa_taxon_list_attribute_id in (#african_country_ttl_attr_ids#)) OR
            ('#continent_short#' = 'asi' and ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
+           ('#continent_short#' = 'oca' and ttlav.taxa_taxon_list_attribute_id in (#oceania_country_ttl_attr_ids#)) OR
            '#continent_short#' = 'all')
   </query>
   <order_bys>
@@ -51,10 +54,16 @@
         population_call="direct:language:iso:language" />
     <param name="european_country_ttl_attr_ids" datatype="string" display="European TTL Attribute IDs"
         description="Comma separated European taxa taxon list attribute IDs" />
+    <param name="north_american_country_ttl_attr_ids" datatype="string" display="North American TTL Attribute IDs"
+        description="Comma separated North American taxa taxon list attribute IDs" />
     <param name="south_american_country_ttl_attr_ids" datatype="string" display="South American TTL Attribute IDs"
         description="Comma separated South American taxa taxon list attribute IDs" />
+    <param name="african_country_ttl_attr_ids" datatype="string" display="African TTL Attribute IDs"
+        description="Comma separated African taxa taxon list attribute IDs" />
     <param name="asian_country_ttl_attr_ids" datatype="string" display="Asian TTL Attribute IDs"
         description="Comma separated Asian taxa taxon list attribute IDs" />
+    <param name="oceania_country_ttl_attr_ids" datatype="string" display="Oceania TTL Attribute IDs"
+        description="Comma separated Oceania taxa taxon list attribute IDs" />
     <param name="species_presence_filter" display="Species presence filter" datatype="lookup" emptyvalue="0"
         lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
     <param name="species_presence_termlist_id" display="Species presence termlist_id" datatype="int" />
@@ -63,7 +72,7 @@
           report:projects/ebms/ebms_countries_for_taxon_list_viewer_lookup:ttla_id:loc_name:species_presence_termlist_id=#species_presence_termlist_id#:countries_location_type_id=#countries_location_type_id#:taxon_list_ids=#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bimblebee_taxon_list_id#,#dragonfly_taxon_list_id#"
         description="Limit to continent, country or region." default="" />
     <param name="continent_short" display="Continent" datatype="lookup" 
-          lookup_values="eur:Europe,sam:South America,asi:Asia"
+          lookup_values="eur:Europe,nam:North America,sam:South America,afr:Africa,asi:Asia,oca:Oceania"
         description="Limit to continent" emptyvalue="all" />
     <param name="countries_location_type_id" display="Countries location type ID" datatype="int" />
   </params>
