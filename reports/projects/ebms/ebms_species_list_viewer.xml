@@ -21,6 +21,9 @@
     LEFT JOIN taxa_taxon_list_attributes ttla on ttla.id = ttlav.taxa_taxon_list_attribute_id
       AND ttla.termlist_id = #species_presence_termlist_id#
       AND ttla.deleted=false
+    LEFT JOIN taxon_media tm on 
+      tm.taxon_meaning_id = cttl.taxon_meaning_id
+      AND tm.deleted=false
     WHERE cttl.taxon_list_id in 
       (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
       AND cttl.allow_data_entry = true
@@ -101,5 +104,6 @@
             THEN 'Dragonfly'
             ELSE cttl.taxon_group END
             " datatype="text" />
+     <column name='path' display='Images' sql="tm.path" img='true' />
   </columns>
 </report>
