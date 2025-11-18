@@ -10,6 +10,7 @@
     JOIN cache_taxa_taxon_lists cttl on cttl.language_iso = l.iso
       AND cttl.taxon_list_id in (251,260,261,265)
     WHERE l.deleted=false
+    AND l.id != 2
     ORDER BY id
   </query>
   <columns>
