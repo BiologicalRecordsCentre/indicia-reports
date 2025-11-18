@@ -72,12 +72,12 @@
     <param name="species_presence_termlist_id" display="Species presence termlist_id" datatype="int" />
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
           population_call="
-          report:projects/ebms/ebms_countries_for_taxon_list_viewer_lookup:ttla_id:loc_name:species_presence_termlist_id=#species_presence_termlist_id#:countries_location_type_id=#countries_location_type_id#:taxon_list_ids=#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bimblebee_taxon_list_id#,#dragonfly_taxon_list_id#"
+          report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:ttla_id:loc_name:species_presence_termlist_id=#species_presence_termlist_id#:countries_regions_location_type_ids=#countries_regions_location_type_ids#:taxon_list_ids=#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bimblebee_taxon_list_id#,#dragonfly_taxon_list_id#"
         description="Limit to continent, country or region." default="" />
     <param name="continent_short" display="Continent" datatype="lookup" 
           lookup_values="eur:Europe,nam:North America,sam:South America,afr:Africa,asi:Asia,oca:Oceania"
         description="Limit to continent" emptyvalue="all" />
-    <param name="countries_location_type_id" display="Countries location type ID" datatype="int" />
+    <param name="countries_regions_location_type_ids" display="Countries location type ID" datatype="int" />
   </params>
   <columns>
     <column name='id' display='ID'
