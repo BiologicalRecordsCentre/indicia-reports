@@ -45,6 +45,7 @@
            ('#continent_short#' = 'asi' and ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
            ('#continent_short#' = 'oca' and ttlav.taxa_taxon_list_attribute_id in (#oceania_country_ttl_attr_ids#)) OR
            '#continent_short#' = 'all')
+      AND (ttla.id = #country_region_ttl_attr_id# OR #country_region_ttl_attr_id# = 0)
   </query>
   <order_bys>
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
@@ -82,7 +83,7 @@
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
           population_call="
           report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:ttla_id:loc_name:species_presence_termlist_id=#species_presence_termlist_id#:countries_regions_location_type_ids=#countries_regions_location_type_ids#:taxon_list_ids=#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bimblebee_taxon_list_id#,#dragonfly_taxon_list_id#"
-        description="Limit to continent, country or region." default="" />
+        description="Country or region." emptyvalue="0"/>
     <param name="continent_short" display="Continent" datatype="lookup" 
           lookup_values="eur:Europe,nam:North America,sam:South America,afr:Africa,asi:Asia,oca:Oceania"
         description="Limit to continent" emptyvalue="all" />
