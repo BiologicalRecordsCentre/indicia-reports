@@ -3,7 +3,20 @@
     description="Report that populates the counties and regions in the taxon list viewer."
 >
   <query>
-    SELECT distinct #columns#
+    SELECT id, name 
+    FROM
+    (VALUES 
+      (-6, 'Europe'),
+      (-5, 'North America'),
+      (-4, 'South America'),
+      (-3, 'Africa'),
+      (-2, 'Asia'),
+      (-1, 'Oceania')
+    ) as continent(id ,name)
+    UNION
+    SELECT 
+      ttla.id as id,
+      coalesce(l.name, ttla.caption) as name
     FROM taxa_taxon_list_attributes ttla
     JOIN taxon_lists_taxa_taxon_list_attributes tlttla 
       ON tlttla.taxa_taxon_list_attribute_id = ttla.id
@@ -18,7 +31,7 @@
     AND ttla.deleted = false
   </query>
   <columns>
-    <column name='ttla_id' display='Taxa taxon list attribute ID' sql='ttla.id' datatype="int" />
-    <column name='loc_name' display='Location name' sql='coalesce(l.name, ttla.caption)' datatype="text" />
+    <column name='id' datatype="int" />
+    <column name='name' datatype="text" />
   </columns>
 </report>
