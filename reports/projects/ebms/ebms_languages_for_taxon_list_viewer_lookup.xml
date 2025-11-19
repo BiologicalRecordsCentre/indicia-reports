@@ -11,11 +11,10 @@
       AND cttl.taxon_list_id in (251,260,261,265)
     WHERE l.deleted=false
     AND l.id != 2
-    ORDER BY id
   </query>
   <columns>
     <column name='id' display='Language ID' sql='l.id' datatype="int" />
     <column name='iso' display='ISO' sql='l.iso' datatype="text" />
-    <column name='name' display='Language' sql='l.language' datatype="text" />
+    <column name='language' display='Language' sql='l.language' datatype="text" />
   </columns>
 </report>
