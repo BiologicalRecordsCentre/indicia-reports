@@ -35,6 +35,12 @@
       AND tm.deleted=false
     WHERE cttl.taxon_list_id in 
       (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
+      AND
+        (#taxon_list_filter# = 0 OR
+        (#taxon_list_filter# = 251 AND cttl.taxon_list_id = 251) OR
+        (#taxon_list_filter# = 260 AND cttl.taxon_list_id = 260) OR
+        (#taxon_list_filter# = 261 AND cttl.taxon_list_id = 261) OR
+        (#taxon_list_filter# = 265 AND cttl.taxon_list_id = 265))
       AND cttl.allow_data_entry = true
       AND cttl.preferred = true
       AND (ttlav.int_value = #species_presence_filter# OR #species_presence_filter# = 0)
@@ -51,6 +57,10 @@
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
   </order_bys>
   <params>
+    <param name="taxon_list_filter" display="Taxon group"
+      datatype="lookup" emptyvalue="0"
+      lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies" 
+      description="Choose from butterflies, moths, bumblebees, or dragonflies."/>
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
       population_call="
       report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
@@ -81,11 +91,6 @@
     <param name="moth_taxon_list_id" display="ID of the moth species list" datatype="int" />
     <param name="bumblebee_taxon_list_id" display="ID of the bumblebee species list" datatype="int" />
     <param name="dragonfly_taxon_list_id" display="ID of the dragonfly species list" datatype="int" />
-    <param name="taxon_list_id" datatype="lookup" display="Taxon group" default=""
-        description="Butterflies, Moths, Bumblebees, or Dragonflies"
-        lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies">
-      <where>cttl.taxon_list_id = #taxon_list_id#</where>
-    </param>
   </params>
   <columns>
     <column name='id' display='ID'
