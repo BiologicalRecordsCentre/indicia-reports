@@ -60,11 +60,17 @@
         lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies">
       <where>cttl.taxon_list_id = #taxon_list_id#</where>
     </param>
+    <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
+      population_call="
+      report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
+      description="Continent, country or region." emptyvalue="0"/>
+    <param name="species_presence_filter" display="Species presence filter" datatype="lookup" emptyvalue="0"
+      lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
+    <param name="common_names_language" datatype="lookup" display="Include common names?"
+      description="Limit common names language" 
+      population_call="report:projects/ebms/ebms_languages_for_taxon_list_viewer_lookup:iso:language:orderby=id" />
     <param name="include_synonyms" datatype="checkbox" display="Include synonyms?" 
         description="Include synonyms in results?" />
-    <param name="common_names_language" datatype="lookup" display="Include common names?"
-        description="Limit common names language" 
-        population_call="report:projects/ebms/ebms_languages_for_taxon_list_viewer_lookup:iso:language:orderby=id" />
     <param name="european_country_ttl_attr_ids" datatype="string" display="European TTL Attribute IDs"
         description="Comma separated European taxa taxon list attribute IDs" />
     <param name="north_american_country_ttl_attr_ids" datatype="string" display="North American TTL Attribute IDs"
@@ -77,13 +83,7 @@
         description="Comma separated Asian taxa taxon list attribute IDs" />
     <param name="oceania_country_ttl_attr_ids" datatype="string" display="Oceania TTL Attribute IDs"
         description="Comma separated Oceania taxa taxon list attribute IDs" />
-    <param name="species_presence_filter" display="Species presence filter" datatype="lookup" emptyvalue="0"
-        lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
     <param name="species_presence_termlist_id" display="Species presence termlist_id" datatype="int" />
-    <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
-          population_call="
-          report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
-        description="Continent, country or region." emptyvalue="0"/>
     <param name="countries_regions_location_type_ids" display="Countries location type IDs" datatype="int" />
   </params>
   <columns>
