@@ -51,20 +51,12 @@
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
   </order_bys>
   <params>
-    <param name="butterfly_taxon_list_id" display="ID of the butterfly species list" datatype="int" />
-    <param name="moth_taxon_list_id" display="ID of the moth species list" datatype="int" />
-    <param name="bumblebee_taxon_list_id" display="ID of the bumblebee species list" datatype="int" />
-    <param name="dragonfly_taxon_list_id" display="ID of the dragonfly species list" datatype="int" />
-    <param name="taxon_list_id" datatype="lookup" display="Taxon group" default=""
-        description="Butterflies, Moths, Bumblebees, or Dragonflies"
-        lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies">
-      <where>cttl.taxon_list_id = #taxon_list_id#</where>
-    </param>
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
       population_call="
       report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
       description="Continent, country or region." emptyvalue="0"/>
-    <param name="species_presence_filter" display="Species presence filter" datatype="lookup" emptyvalue="0"
+    <param name="species_presence_filter" display="Filter based on species presence" description='Change to "all" if you wish to return any presence status.' 
+      datatype="lookup" emptyvalue="0"
       lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
     <param name="common_names_language" datatype="lookup" display="Include common names?"
       description="Limit common names language" 
@@ -85,6 +77,15 @@
         description="Comma separated Oceania taxa taxon list attribute IDs" />
     <param name="species_presence_termlist_id" display="Species presence termlist_id" datatype="int" />
     <param name="countries_regions_location_type_ids" display="Countries location type IDs" datatype="int" />
+    <param name="butterfly_taxon_list_id" display="ID of the butterfly species list" datatype="int" />
+    <param name="moth_taxon_list_id" display="ID of the moth species list" datatype="int" />
+    <param name="bumblebee_taxon_list_id" display="ID of the bumblebee species list" datatype="int" />
+    <param name="dragonfly_taxon_list_id" display="ID of the dragonfly species list" datatype="int" />
+    <param name="taxon_list_id" datatype="lookup" display="Taxon group" default=""
+        description="Butterflies, Moths, Bumblebees, or Dragonflies"
+        lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies">
+      <where>cttl.taxon_list_id = #taxon_list_id#</where>
+    </param>
   </params>
   <columns>
     <column name='id' display='ID'
