@@ -121,6 +121,7 @@
             THEN 'Dragonfly'
             ELSE cttl.taxon_group END
             " datatype="text" />
+    <column name='taxon_rank' display='Taxon rank' sql='cttl.taxon_rank' datatype="text" />
      <column name='path' display='Images' sql="tm.path" img='true' />
   </columns>
 </report>
