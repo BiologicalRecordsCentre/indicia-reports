@@ -52,6 +52,8 @@
            (#country_region_ttl_attr_id#= -3 AND ttlav.taxa_taxon_list_attribute_id in (#african_country_ttl_attr_ids#)) OR
            (#country_region_ttl_attr_id#= -2 AND ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
            (#country_region_ttl_attr_id#= -1 AND ttlav.taxa_taxon_list_attribute_id in (#oceania_country_ttl_attr_ids#)))
+      AND ('#include_higher_level_taxa#' = '1'
+        OR ('#include_higher_level_taxa#' = '0' AND cttl.taxon_rank_id in (2,10,26,38,49,64)))
   </query>
   <order_bys>
     <order_by>cttl.family_taxon, cttl.taxon</order_by>
@@ -61,6 +63,8 @@
       datatype="lookup" emptyvalue="0"
       lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies" 
       description="Choose from butterflies, moths, bumblebees, or dragonflies."/>
+    <param name="include_higher_level_taxa" display="Include higher level taxa?"
+      datatype="checkbox" description="Include higher level taxa? (above species aggregate)."/>
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
       population_call="
       report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
