@@ -15,6 +15,10 @@
         description="Limit to the list with this ID.">
       <where>cttl.taxon_list_id=#taxon_list_id#</where>
     </param>
+    <param name="taxa_taxon_list_ids_list" datatype="integer[]" display="Taxa Taxon List IDs" default=""
+        description="Comma separated list of Taxa Taxon List IDs to limit to.">
+      <where>cttl.id in (#taxa_taxon_list_ids_list#)</where>
+    </param>
     <param name="taxon_group_list" datatype="integer[]" display="Taxon Group IDs" default=""
         description="Comma separated list of IDs of taxon groups to limit to.">
       <where>cttl.taxon_group_id in (#taxon_group_list#)</where>
