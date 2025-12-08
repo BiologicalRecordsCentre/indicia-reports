@@ -2,26 +2,26 @@
 <report 
   title="Counts per record with group and flower" 
   description="Filtered for UK (with IOM) only, April-Sept inclusive.
-  New version of report designed to fix some problems
-  and can be compared to the original report."
+  New version of report designed to fix some problems and can be compared to the original report."
 >
   <query>
-    SELECT csf.id as sample,
-    cttl.preferred_taxon as taxon,
-    csn.attrs_json -&gt;&gt; '1050' as flower,
-    coalesce((con.attrs_json -&gt;&gt; '666')::int, 0) as pomscount
-    FROM cache_samples_functional csf
-      JOIN cache_samples_nonfunctional csn on csn.id = csf.id
-      LEFT JOIN cache_occurrences_functional cof on cof.sample_id = csn.id
-        AND cof.training = false
-      LEFT JOIN cache_occurrences_nonfunctional con on con.id = cof.id
-      LEFT JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
-        AND cttl.preferred_taxa_taxon_list_id in 
-        (418854,418855,418856,418857,418858,418859,418860,418861,419001,419076)
-    WHERE csf.survey_id in (636,641,637) 
-      AND extract(month from csf.date_end) &gt; 3 
-      AND extract(month from csf.date_end) &lt; 10 
-      AND array[214127, 1612, 1606, 1605, 1614] &amp;&amp; csf.location_ids = true 
+    WITH filtered_samples AS (
+    SELECT csf.id, csf.date_end, csf.location_ids   
+    FROM cache_samples_functional csf   
+    WHERE csf.survey_id IN (636, 641, 637)
+      AND EXTRACT(MONTH FROM csf.date_end) BETWEEN 4 AND 9
       AND csf.training = false
+      AND csf.location_ids &amp;&amp; ARRAY[214127, 1612, 1606, 1605, 1614])
+    SELECT csf.id AS sample,
+      cttl.preferred_taxon AS taxon,
+      csn.attrs_json -&gt;&gt; '1050' AS flower,
+      COALESCE((con.attrs_json -&gt;&gt; '666')::int, 0) AS pomscount
+    FROM filtered_samples csf
+    JOIN cache_samples_nonfunctional csn ON csn.id = csf.id
+    LEFT JOIN cache_occurrences_functional cof ON cof.sample_id = csn.id AND cof.training = false
+    LEFT JOIN cache_occurrences_nonfunctional con ON con.id = cof.id
+    LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id = cof.taxa_taxon_list_id
+      AND cttl.preferred_taxa_taxon_list_id IN
+      (418854,418855,418856,418857,418858,418859,418860,418861,419001,419076);
   </query>
 </report>
