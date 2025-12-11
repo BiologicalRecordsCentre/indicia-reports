@@ -46,12 +46,12 @@
       AND (ttlav.int_value = #species_presence_filter# OR #species_presence_filter# = 0)
       AND (#country_region_ttl_attr_id# = ttla.id  OR
            #country_region_ttl_attr_id#= 0 OR
-           (#country_region_ttl_attr_id#= -6 AND ttlav.taxa_taxon_list_attribute_id in (#european_country_ttl_attr_ids#)) OR
-           (#country_region_ttl_attr_id#= -5 AND ttlav.taxa_taxon_list_attribute_id in (#north_american_country_ttl_attr_ids#)) OR
-           (#country_region_ttl_attr_id#= -4 AND ttlav.taxa_taxon_list_attribute_id in (#south_american_country_ttl_attr_ids#)) OR
-           (#country_region_ttl_attr_id#= -3 AND ttlav.taxa_taxon_list_attribute_id in (#african_country_ttl_attr_ids#)) OR
-           (#country_region_ttl_attr_id#= -2 AND ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
-           (#country_region_ttl_attr_id#= -1 AND ttlav.taxa_taxon_list_attribute_id in (#oceania_country_ttl_attr_ids#)))
+           (#country_region_ttl_attr_id#= -1 AND ttlav.taxa_taxon_list_attribute_id in (#european_country_ttl_attr_ids#)) OR
+           (#country_region_ttl_attr_id#= -2 AND ttlav.taxa_taxon_list_attribute_id in (#north_american_country_ttl_attr_ids#)) OR
+           (#country_region_ttl_attr_id#= -3 AND ttlav.taxa_taxon_list_attribute_id in (#south_american_country_ttl_attr_ids#)) OR
+           (#country_region_ttl_attr_id#= -4 AND ttlav.taxa_taxon_list_attribute_id in (#african_country_ttl_attr_ids#)) OR
+           (#country_region_ttl_attr_id#= -5 AND ttlav.taxa_taxon_list_attribute_id in (#asian_country_ttl_attr_ids#)) OR
+           (#country_region_ttl_attr_id#= -6 AND ttlav.taxa_taxon_list_attribute_id in (#oceania_country_ttl_attr_ids#)))
       AND ('#include_higher_level_taxa#' = '1'
         OR ('#include_higher_level_taxa#' = '0' AND cttl.taxon_rank_id in (2,10,26,38,49,64)))
   </query>

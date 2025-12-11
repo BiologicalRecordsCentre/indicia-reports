@@ -3,20 +3,37 @@
     description="Report that populates the counties and regions in the taxon list viewer."
 >
   <query>
-    SELECT id, name 
+    SELECT id, name, orderby_name
     FROM
     (VALUES 
-      (-6, 'Europe'),
-      (-5, 'North America'),
-      (-4, 'South America'),
-      (-3, 'Africa'),
-      (-2, 'Asia'),
-      (-1, 'Oceania')
-    ) as continent(id ,name)
+      (-1, 'Europe', '-1'),
+      (-2, 'North America', '-2'),
+      (-3, 'South America', '-3'),
+      (-4, 'Africa', '-4'),
+      (-5, 'Asia', '-5'),
+      (-6, 'Oceania', '-6')
+    ) as continent(id ,name, orderby_name)
     UNION
     SELECT 
       ttla.id as id,
-      coalesce(l.name, ttla.caption) as name
+      CASE 
+        WHEN ttla.caption = 'PT: AZ' THEN 'Azores'
+        WHEN ttla.caption = 'PT: MA' THEN 'Madeira Islands'
+        WHEN ttla.caption = 'ES: CA' THEN 'Canary Islands'
+        WHEN ttla.caption = 'SH: HL' THEN 'Saint Helena'
+        WHEN ttla.caption = 'TR' THEN 'Turkey (European)'
+        WHEN ttla.caption = 'TRA' THEN 'Turkey (Asian)'
+      ELSE coalesce(l.name, ttla.caption) END as name,
+      CASE 
+        WHEN ttla.caption = 'PT' THEN 'Portugal 1'
+        WHEN ttla.caption = 'PT: AZ' THEN 'Portugal 2'
+        WHEN ttla.caption = 'PT: MA' THEN 'Portugal 3'
+        WHEN ttla.caption = 'ES' THEN 'Spain 1'
+        WHEN ttla.caption = 'ES: CA' THEN 'Spain 2'
+        WHEN ttla.caption = 'SH: HL' THEN 'Saint Helena'
+        WHEN ttla.caption = 'TR' THEN 'Turkey (European)'
+        WHEN ttla.caption = 'TRA' THEN 'Turkey (Asian)'
+      ELSE coalesce(l.name, ttla.caption) END as orderby_name
     FROM taxa_taxon_list_attributes ttla
     JOIN taxon_lists_taxa_taxon_list_attributes tlttla 
       ON tlttla.taxa_taxon_list_attribute_id = ttla.id
@@ -29,9 +46,11 @@
       AND l.deleted = false and l.location_type_id in (16516,16517)
     WHERE ttla.termlist_id = 816
     AND ttla.deleted = false
+    ORDER BY orderby_name
   </query>
   <columns>
     <column name='id' datatype="int" />
     <column name='name' datatype="text" />
+    <column name='orderby_name' datatype="text" />
   </columns>
 </report>
