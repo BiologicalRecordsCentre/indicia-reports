@@ -46,7 +46,6 @@
       AND l.deleted = false and l.location_type_id in (16516,16517)
     WHERE ttla.termlist_id = 816
     AND ttla.deleted = false
-    ORDER BY orderby_name
   </query>
   <columns>
     <column name='id' datatype="int" />

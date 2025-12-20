@@ -67,7 +67,7 @@
       datatype="checkbox" description="Include higher level taxa? (above species aggregate)."/>
     <param name="country_region_ttl_attr_id" display="Continent/country/region" datatype="lookup"
       population_call="
-      report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=id"
+      report:projects/ebms/ebms_countries_regions_for_taxon_list_viewer_lookup:id:name:orderby=orderby_name"
       description="Continent, country or region." emptyvalue="0"/>
     <param name="species_presence_filter" display="Filter based on species presence" description='Change to "all" if you wish to return any presence status.' 
       datatype="lookup" emptyvalue="0"
