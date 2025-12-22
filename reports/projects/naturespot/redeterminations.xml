@@ -15,7 +15,8 @@
     <order_by>o.id, d.id desc, ocv.id desc</order_by>
   </order_bys>
   <columns>
-    <column name="occurrence_id" display="Occurrence ID" datatype="integer" sql="o.id" />
+    <column name="occurrence_id" display="Record ID" datatype="integer" sql="o.id" />
+    <column name="created_on" display="Date submitted" datatype="date" sql="o.created_on" />
     <column name="current_determination" display="Current determination" datatype="text" sql="cttl.taxon" />
     <column name="current_determination_date" display="Current determination date" datatype="text" sql="case
       when d.updated_on=d.created_on then
@@ -28,9 +29,29 @@
     end" />
     <column name="last_determination" display="Last determination" datatype="text" sql="cttld.taxon" />
     <column name="last_determination_date" display="Last determination date" datatype="date" sql="d.created_on" />
-    <column name="current_status" display="Current status" datatype="text" sql="o.record_status || coalesce(o.record_substatus::text, '')" />
+    <column name="current_status" display="Current status" datatype="text" sql="
+      CASE o.record_status || coalesce(o.record_substatus::text, '')
+        WHEN 'V' THEN 'accepted'
+        WHEN 'V1' THEN 'accepted as correct'
+        WHEN 'V2' THEN 'accepted as considered correct'
+        WHEN 'C' THEN 'pending'
+        WHEN 'R' THEN 'rejected'
+        WHEN 'R4' THEN 'rejected as unable to verify'
+        WHEN 'R5' THEN 'rejected as incorrect'
+        ELSE o.record_status || coalesce(o.record_substatus::text, '')
+      END" />
     <column name="current_verification_date" display="Current verification date" datatype="date" sql="o.verified_on" />
-    <column name="previous_status" display="Previous status" datatype="text" sql="ocv.record_status || coalesce(ocv.record_substatus::text, '')" />
+    <column name="previous_status" display="Previous status" datatype="text" sql="
+      CASE ocv.record_status || coalesce(ocv.record_substatus::text, '')
+        WHEN 'V' THEN 'accepted'
+        WHEN 'V1' THEN 'accepted as correct'
+        WHEN 'V2' THEN 'accepted as considered correct'
+        WHEN 'C' THEN 'pending'
+        WHEN 'R' THEN 'rejected'
+        WHEN 'R4' THEN 'rejected as unable to verify'
+        WHEN 'R5' THEN 'rejected as incorrect'
+        ELSE ocv.record_status || coalesce(ocv.record_substatus::text, '')
+      END" />
     <column name="previous_verification_date" display="Previous verification date" datatype="date" sql="ocv.created_on" />
   </columns>
 </report>
