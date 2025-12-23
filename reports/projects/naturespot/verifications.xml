@@ -15,6 +15,7 @@
   <columns>
     <column name="occurrence_id" display="Record ID" datatype="integer" sql="o.id" />
     <column name="created_on" display="Date submitted" datatype="date" sql="o.created_on" />
+    <column name="input_year" display="Year submitted" datatype="integer" sql="extract(year from o.created_on)" />
     <column name="current_determination" display="Current determination" datatype="text" sql="cttl.taxon" />
     <column name="current_status" display="Current status" datatype="text" sql="
       CASE o.record_status || coalesce(o.record_substatus::text, '')
