@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report 
+  title="Counts per record with group and flower" 
+  description="Filtered for UK (with IOM) only, April-Sept inclusive.
+  Experimental version of report puts samples count on a separate row."
+>
+  <query>
+    SELECT 
+      0 as sample,
+      '' as taxon,
+      '' as flower,
+      0 as pomscount,
+      count(csf.id) + 26336 as totalsamples
+    FROM cache_samples_functional csf   
+    WHERE csf.survey_id IN (636, 641, 637)
+      AND EXTRACT(MONTH FROM csf.date_end) BETWEEN 4 AND 9
+      AND csf.training = false
+      AND csf.location_ids &amp;&amp; ARRAY[214127, 1612, 1606, 1605, 1614]
+      AND csf.created_on &gt; '2025-12-22'
+    UNION
+      SELECT csn.id as sample,
+      cttl.taxon as taxon,
+      csn.attrs_json -&gt;&gt; '1050' as flower,
+      coalesce((con.attrs_json -&gt;&gt; '666')::int, 0) as pomscount,
+      0 as totalsamples
+    FROM cache_occurrences_functional cof
+    JOIN cache_occurrences_nonfunctional con on con.id = cof.id
+    JOIN cache_samples_nonfunctional csn on cof.sample_id = csn.id
+    JOIN cache_samples_functional csf on csf.id = csn.id
+      AND array[214127, 1612, 1606, 1605, 1614] &amp;&amp; csf.location_ids = true
+      AND csf.training = false
+    JOIN cache_taxa_taxon_lists cttl on cttl.id = cof.taxa_taxon_list_id
+      AND cttl.preferred_taxa_taxon_list_id IN
+      (418854,418855,418856,418857,418858,418859,418860,418861,419001,419076)
+    WHERE cof.survey_id in (636, 641, 637)
+      AND EXTRACT(MONTH FROM cof.date_end) BETWEEN 4 AND 9
+      AND cof.training = false
+  </query>
+</report>
