@@ -13,6 +13,7 @@
       count(csf.id) + 26336 as totalsamples
     FROM cache_samples_functional csf   
     WHERE csf.survey_id IN (636, 641, 637)
+      AND csf.website_id IN (134,136)
       AND EXTRACT(MONTH FROM csf.date_end) BETWEEN 4 AND 9
       AND csf.training = false
       AND csf.location_ids &amp;&amp; ARRAY[214127, 1612, 1606, 1605, 1614]
@@ -30,6 +31,7 @@
       AND cttl.preferred_taxa_taxon_list_id IN
       (418854,418855,418856,418857,418858,418859,418860,418861,419001,419076)
     WHERE cof.survey_id in (636, 641, 637)
+      AND cof.website_id IN (134,136)
       AND EXTRACT(MONTH FROM cof.date_end) BETWEEN 4 AND 9
       AND cof.training = false
       AND array[214127, 1612, 1606, 1605, 1614] &amp;&amp; cof.location_ids = true
