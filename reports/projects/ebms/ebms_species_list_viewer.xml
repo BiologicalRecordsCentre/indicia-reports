@@ -11,7 +11,7 @@
       AND cttl_syn.taxon_list_id in 
         (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
     LEFT JOIN cache_taxa_taxon_lists cttl_com on cttl_com.taxon_meaning_id = cttl.taxon_meaning_id AND
-      cttl_com.preferred = false AND
+      cttl_com.language_iso != 'lat' AND cttl_com.preferred = false AND
       (cttl_com.language_iso = '#common_names_language#' OR '#common_names_language#' = 'all')
       AND cttl_com.taxon_list_id in 
         (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
@@ -106,9 +106,9 @@
     <column name='taxon' display='Taxon name'
             sql="cttl.taxon" datatype="text" />
     <column name='common' display='Common names'
-            sql="string_agg(distinct cttl_com.taxon,', ')" datatype="text" aggregate="true" />
+            sql="string_agg(distinct cttl_com.taxon,', ' order by cttl_com.taxon)" datatype="text" aggregate="true" />
     <column name='synonyms' display='Synonyms'
-            sql="string_agg(distinct cttl_syn.taxon,', ')" datatype="text" aggregate="true" />
+            sql="string_agg(distinct cttl_syn.taxon,', ' order by cttl_syn.taxon)" datatype="text" aggregate="true" />
     <column name='taxon_group' display='Taxon group'
             sql="
             CASE WHEN cttl.taxon_list_id = #butterfly_taxon_list_id#
