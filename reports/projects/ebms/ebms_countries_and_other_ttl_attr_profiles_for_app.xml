@@ -33,13 +33,14 @@
     ttla.id as id,
     'location' as type,
     ttla.caption as location_code,
-    CASE WHEN l.name IS NOT NULL THEN l.name
+    CASE
       WHEN ttla.caption = 'Europe' THEN 'Europe'
       WHEN ttla.caption = 'PT' THEN 'Portugal mainland'
       WHEN ttla.caption = 'PT: AZ' THEN 'Azores'
       WHEN ttla.caption = 'PT: MA' THEN 'Madeira Islands'
       WHEN ttla.caption = 'ES' THEN 'Spain mainland'
       WHEN ttla.caption = 'ES: CA' THEN 'Canary Islands'
+      WHEN l.name IS NOT NULL THEN l.name
     END as name,
     ttla.description as description,
     CASE WHEN centroid_sref LIKE '%N %' OR centroid_sref LIKE '%S %' THEN
