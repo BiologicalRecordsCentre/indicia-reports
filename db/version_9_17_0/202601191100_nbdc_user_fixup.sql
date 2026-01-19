@@ -17,13 +17,17 @@ BEGIN
   INSERT INTO nbdc_ireland.cms_user_mappings
   SELECT l.old_cms_user_id, param_cms_user_id, param_website_id
   FROM nbdc_ireland.old_cms_user_id_lookup l
-  WHERE l.new_user_id=param_user_id;
+  LEFT JOIN nbdc_ireland.cms_user_mappings exist
+    ON exist.old_cms_user_id=l.old_cms_user_id
+    AND exist.website_id=param_website_id
+  WHERE l.new_user_id=param_user_id
+  AND exist.old_cms_user_id IS NULL;
 
   UPDATE location_attribute_values ilav
   SET location_attribute_id=234,
-    int_value=m.cms_user_id
+    int_value=m.new_cms_user_id
   FROM nbdc_ireland.cms_user_mappings m, locations il
-  WHERE il.iid=ilav.location_id
+  WHERE il.id=ilav.location_id
   AND ilav.int_value=m.old_cms_user_id
   AND ilav.location_attribute_id=389
   AND ((il.location_type_id IN (777, 778) AND m.website_id=118)
