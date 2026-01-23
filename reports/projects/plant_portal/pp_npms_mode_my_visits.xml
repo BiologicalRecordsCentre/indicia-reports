@@ -29,9 +29,11 @@
     <param name="wildflower_survey_id" display="Wildflower survey ID" description="ID of Wildflower Survey." datatype="int"/>
     <param name="indicator_survey_id" display="Indicator survey ID" description="ID of Indicator Survey." datatype="int"/>
     <param name="inventory_survey_id" display="Inventory survey ID" description="ID of Inventory Survey." datatype="int"/>
+    <param name="legacy_tti_survey_id" display="Old TTI survey ID" description="ID for the old Tracking The Imact survey which is now an NPMS+ project." datatype="int" default='0'/>
     <param name="wildflower_data_entry_path" display="Wildflower data entry form path" description="Relative path of Wildflower form." datatype="text"/>
     <param name="indicator_data_entry_path" display="Indicator data entry form path" description="Relative path of Indicator form." datatype="text"/>
     <param name="inventory_data_entry_path" display="Inventory data entry form path" description="Relative path of Inventory form." datatype="text"/>  
+    <param name="legacy_tti_data_entry_path" display="Legacy TTI data entry form path" description="Relative path of an entry form that handles old Tracking The Impact data." datatype="text" default=''/>  
     <param name="survey_not_found_page_path" display="Survey not found page path" 
       description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />  
   </params>
@@ -54,6 +56,7 @@
         WHEN csf.input_form IS NULL AND csf.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
         WHEN csf.input_form IS NULL AND csf.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
         WHEN csf.input_form IS NULL AND csf.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
+        WHEN csf.input_form IS NULL AND csf.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
       ELSE 
         '#survey_not_found_page_path#'
       END"
