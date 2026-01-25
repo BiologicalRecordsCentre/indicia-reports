@@ -51,11 +51,11 @@
     <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN s.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
     <column name='input_form' visible="false" sql="
       CASE 
-        WHEN s.input_form IS NOT NULL THEN s.input_form
+        WHEN s.input_form IS NOT NULL AND s.survey_id != #legacy_tti_survey_id# THEN s.input_form
         WHEN s.input_form IS NULL AND s.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
         WHEN s.input_form IS NULL AND s.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
         WHEN s.input_form IS NULL AND s.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
-        WHEN s.input_form IS NULL AND s.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
+        WHEN s.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
       ELSE 
         '#survey_not_found_page_path#'
       END"

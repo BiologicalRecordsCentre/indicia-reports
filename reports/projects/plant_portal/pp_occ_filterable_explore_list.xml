@@ -81,12 +81,12 @@
     <column name='images' display='Images' sql='onf.media' img='true' />
     <column name='input_form' visible="false" sql="
       CASE 
-        WHEN o.input_form IS NOT NULL THEN o.input_form
+        WHEN o.input_form IS NOT NULL AND o.survey_id != #legacy_tti_survey_id# THEN o.input_form
         WHEN o.input_form IS NULL AND o.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
         WHEN o.input_form IS NULL AND o.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
         WHEN o.input_form IS NULL AND o.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
         WHEN o.input_form IS NULL AND o.survey_id = #standard_mode_survey_id# THEN '#standard_mode_data_entry_path#'
-        WHEN o.input_form IS NULL AND o.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
+        WHEN o.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
       ELSE 
         '#survey_not_found_page_path#'
       END"
