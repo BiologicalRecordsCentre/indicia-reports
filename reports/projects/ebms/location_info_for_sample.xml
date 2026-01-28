@@ -1,0 +1,27 @@
+<report
+    title="Location information for a sample"
+    description="Obtain location name and country for a sample."
+>
+  <query website_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    JOIN location_attribute_values v ON v.location_id=l.id AND v.deleted=false AND v.location_attribute_id=233
+    JOIN locations c ON c.id=v.int_value
+    -- Find the matching taxon attribute for the country location code.
+    JOIN taxa_taxon_list_attributes ttla ON ttla.caption=c.code AND ttla.deleted=false
+    -- Need to confirm this is a country attribute for EBMS, in case other attributes have same caption.
+    JOIN taxon_lists_taxa_taxon_list_attributes tlttla ON tlttla.taxa_taxon_list_attribute_id=ttla.id AND tlttla.deleted=false
+    JOIN taxon_lists tl ON tl.id=tlttla.taxon_list_id AND tl.deleted=false AND tl.title like 'EBMS%'
+    WHERE l.id=#location_id#
+    AND l.deleted=false
+  </query>
+<params>
+  <param name="location_id" display="Location ID" datatype="integer" description="The ID of the location for which to retrieve information."/>
+</params>
+<columns>
+  <column name="location_name" sql="l.name" datatype="text" />
+  <column name="country_name" sql="c.name" datatype="text" />
+  <column name="country_code" sql="c.code" datatype="text" />
+  <column name="taxa_taxon_list_attribute_id" sql="ttla.id" datatype="integer" />
+</columns>
+</report>
