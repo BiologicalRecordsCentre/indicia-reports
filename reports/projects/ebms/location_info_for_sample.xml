@@ -22,6 +22,6 @@
   <column name="location_name" sql="l.name" datatype="text" />
   <column name="country_name" sql="c.name" datatype="text" />
   <column name="country_code" sql="c.code" datatype="text" />
-  <column name="taxa_taxon_list_attribute_id" sql="ttla.id" datatype="integer" />
+  <column name="country_filter_attribute_id" sql="ttla.id" datatype="integer" />
 </columns>
 </report>
