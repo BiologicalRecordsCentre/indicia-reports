@@ -277,7 +277,7 @@ function get_beachtrack_badges_query() {
     UNION ALL
     /********/
     SELECT s.created_by_id,
-      'Clean Consience',
+      'Clean Conscience',
       'Recorded at least 15 clean beach conditions',
       SUM(CASE WHEN s.attrs_json->>'1722' IN ('Spotless', 'Mostly Clean') THEN 1 ELSE 0 END),
       'Number of times a clean beach has been recorded',
