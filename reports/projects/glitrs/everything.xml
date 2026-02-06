@@ -34,7 +34,7 @@
   LEFT JOIN sample_attribute_values sav1 ON sav1.sample_id = o.sample_id and sav1.sample_attribute_id = #sample_plot_id# and sav1.deleted=false
   LEFT JOIN sample_attribute_values sav2 ON sav2.sample_id = o.sample_id and sav2.sample_attribute_id = #sample_effort_reported_id# and sav2.deleted=false
   LEFT JOIN cache_termlists_terms ctt6 ON ctt6.id = sav2.int_value
-  LEFT JOIN sample_attribute_values sav3 ON sav3.sample_id = o.sample_id and sav3.sample_attribute_id = #sample_effort_id# and sav3.deleted=false
+  LEFT JOIN sample_attribute_values sav3 ON sav3.sample_id = o.sample_id and sav3.sample_attribute_id = #sample_effort_1_id# and sav3.deleted=false
   LEFT JOIN sample_attribute_values sav4 ON sav4.sample_id = o.sample_id and sav4.sample_attribute_id = #sample_realm_id# and sav4.deleted=false
   LEFT JOIN cache_termlists_terms ctt7 ON ctt7.id = sav4.int_value
   LEFT JOIN sample_attribute_values sav5 ON sav5.sample_id = o.sample_id and sav5.sample_attribute_id = #sample_data_purpose_id# and sav5.deleted=false
@@ -143,7 +143,7 @@
       display="ID of Sample Effort Reported sample attribute" 
       datatype="integer"
     />
-    <param name="sample_effort_id" 
+    <param name="sample_effort_1_id" 
       display="ID of Sample Effort sample attribute" 
       datatype="integer"
     />
@@ -254,7 +254,7 @@
     <column name="date_type" sql="o.date_type" visible="false" />
     <column name="date" display="Sample Date" datatype="date" />
     <column name="sample_effort_reported" display="Sample Effort Reported" sql="coalesce(ctt6.term, 'NA')" datatype="text" />
-    <column name="sample_effort" display="Sample Effort" sql="coalesce(sav3.text_value, 'NA')" datatype="text" />
+    <column name="sample_effort_1" display="Sample Effort 1" sql="coalesce(sav3.text_value, 'NA')" datatype="text" />
     <column name="sample_realm" display="Sample Realm" sql="coalesce(ctt7.term, 'NA')" datatype="text" />
     <column name="sample_data_purpose" display="Sample Data Purpose" sql="coalesce(ctt8.term, 'NA')" datatype="text" />
     <column name="sample_data_purpose_info" display="Sample Data Purpose Information" sql="coalesce(sav6.text_value, 'NA')" datatype="text" />
