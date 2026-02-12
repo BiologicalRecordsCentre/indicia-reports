@@ -13,8 +13,7 @@
       cttl.taxon_list_id,
       cttl.taxon_group,
       cttl.taxon_rank,
-      cttl.taxon_rank_id,
-      cttl.family_taxon
+      cttl.taxon_rank_id
     FROM cache_taxa_taxon_lists cttl
     WHERE cttl.taxon_list_id IN (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
       AND cttl.allow_data_entry = true
@@ -110,7 +109,7 @@
           #asian_country_ttl_attr_ids#,
           #oceania_country_ttl_attr_ids#)
     )
-    SELECT #columns#
+    SELECT distinct #columns#
     FROM preferred_insect_taxa pix
     LEFT JOIN insect_taxa_synonyms cttl_syn on cttl_syn.taxon_meaning_id = pix.taxon_meaning_id
     LEFT JOIN insect_taxa_common_names cttl_com on cttl_com.taxon_meaning_id = pix.taxon_meaning_id
@@ -138,7 +137,7 @@
         (#country_region_ttl_attr_id#= -6 AND profiles.id in (#oceania_country_ttl_attr_ids#)))
   </query>
   <order_bys>
-    <order_by>pix.family_taxon, pix.taxon</order_by>
+    <order_by>taxon_group, pix.taxon</order_by>
   </order_bys>
   <params>
     <param name="taxon_list_filter" display="Taxon group"
