@@ -137,7 +137,7 @@
         (#country_region_ttl_attr_id#= -6 AND profiles.id in (#oceania_country_ttl_attr_ids#)))
   </query>
   <order_bys>
-    <order_by>taxon_group, pix.taxon</order_by>
+    <order_by>pix.taxon_list_id, pix.taxon</order_by>
   </order_bys>
   <params>
     <param name="taxon_list_filter" display="Taxon group"
@@ -204,6 +204,7 @@
             THEN 'Dragonfly'
             ELSE pix.taxon_group END
             " datatype="text" />
+    <column name='taxon_list_id' display='Taxon list ID' sql='pix.taxon_list_id' visible="false" datatype="integer" />
     <column name='taxon_rank' display='Taxon rank' sql='pix.taxon_rank' datatype="text" />
      <column name='path' display='Images' sql="tm.path" img='true' />
   </columns>
