@@ -39,7 +39,7 @@
           false
         ELSE 
           true 
-        END" />
+        END" visible="false" />
         <column name='show_plot_edit_control' display='Show Plot Edit Control' sql="
         CASE WHEN 
           (#admin_mode# = false AND l.created_by_id = #current_user#) 
@@ -51,7 +51,7 @@
           true 
         ELSE 
           false 
-        END" />
+        END" visible="false" />
         <column name='group_id' display='Group ID' sql="#group_id#"  datatype="int" visible="false" />
   </columns>
 </report>
