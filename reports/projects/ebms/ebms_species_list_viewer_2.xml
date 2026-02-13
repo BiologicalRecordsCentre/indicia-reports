@@ -1,7 +1,7 @@
 <report
-    title="EBMS species list viewer"
+    title="EBMS species list viewer 2"
     description="Based on /reports/library/taxa/taxon_list, with enhancements such as a country/region filter.
-    Test version of report that is complete, and will overwrite original report if performance etc is okay."
+    Version 2 includes speed improvements, and also a better way of displaying common names."
 >
   <query website_filter_field="pix.website_id">
     WITH preferred_insect_taxa AS (
@@ -22,7 +22,7 @@
     insect_taxa_synonyms AS (
     SELECT
       taxon_meaning_id,
-      string_agg(DISTINCT taxon, ', ' ORDER BY taxon) AS synonyms
+      string_agg(DISTINCT taxon, ',' ORDER BY taxon) AS synonyms
     FROM cache_taxa_taxon_lists
     WHERE taxon_list_id IN (#butterfly_taxon_list_id#,#moth_taxon_list_id#,#bumblebee_taxon_list_id#,#dragonfly_taxon_list_id#)
       AND language_iso = 'lat' and preferred = false
@@ -39,13 +39,14 @@
               cttl_commons.taxon IS NULL
             THEN '' 
             ELSE cttl_commons.taxon
-            END,', ' order by lang.id
+            END,',' order by lang.id
           )
         ELSE
           ''
         END AS common_names
     FROM cache_taxa_taxon_lists cttl_all_taxon_meanings
     JOIN languages lang ON lang.id != 2 AND lang.deleted=false
+      AND (lang.iso = '#common_names_language#' OR '#common_names_language#' = 'all')
     LEFT JOIN cache_taxa_taxon_lists cttl_commons on cttl_commons.taxon_meaning_id = cttl_all_taxon_meanings.taxon_meaning_id
       AND cttl_commons.preferred = false
       AND (cttl_commons.language_iso = '#common_names_language#' OR '#common_names_language#' = 'all')
