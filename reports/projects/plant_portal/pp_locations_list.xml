@@ -19,6 +19,9 @@
       <param name="location_type_ids" display="Location type(s)" datatype="text"/>  
       <param name="parent_id" default="" datatype="integer" description="ID of the parent site to filter to" />
       <param name="admin_mode" description="Should user be able to edit plots user didn't create" datatype="boolean" default="false" emptyvalue="false"/>
+      <param name="group_id"
+        description="Recording group ID, passed directly to report output so it is available in URL params"
+        datatype="int" default="0" emptyvalue="0"/>
   </params>
   <columns>
         <column name="id" visible="false" sql="l.id" datatype="integer" in_count="true"/>
@@ -35,7 +38,7 @@
           false
         ELSE 
           true 
-        END" visible="false" aggregate="true"/>
+        END" visible="false" />
         <column name='show_plot_edit_control' display='Show Plot Edit Control' sql="
         CASE WHEN 
           (#admin_mode# = false AND l.created_by_id = #current_user#) 
@@ -47,6 +50,7 @@
           true 
         ELSE 
           false 
-        END" visible="false" aggregate="true"/>
+        END" visible="false" />
+        <column name='group_id' display='Group ID' sql="#group_id#"  datatype="int" visible="false" />
   </columns>
 </report>
