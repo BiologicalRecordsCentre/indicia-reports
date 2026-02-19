@@ -11,7 +11,7 @@
       JOIN locations square ON square.id = plot.parent_id AND square.deleted=false
       JOIN cache_termlists_terms cache_ttPlotType on cache_ttPlotType.id = plot.location_type_id
       #agreements_join#
-      WHERE #sharing_filter# 
+      WHERE #sharing_filter#
       AND csf.created_by_id=#current_user#
       AND csf.survey_id in (#survey_ids#)
       AND csf.website_id in (#website_ids#)
@@ -36,6 +36,8 @@
     <param name="legacy_tti_data_entry_path" display="Legacy TTI data entry form path" description="Relative path of an entry form that handles old Tracking The Impact data." datatype="text" default=''/>  
     <param name="survey_not_found_page_path" display="Survey not found page path" 
       description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />  
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data on the latest Plant Portal NPMS+ forms." datatype="int" default='1641'  />  
+    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />  
   </params>
   <columns>
     <column name='id' sql='csf.id' display='ID' in_count="true" datatype="integer"/>
@@ -49,6 +51,7 @@
     <column name='date_type' sql='csf.date_type' visible="false"/>
     <column name='date' display='Date' datatype="date"/>
     <column name='recorder' display='Recorder' sql="csnf.recorders" datatype="text" />
+    <column name='habitat' display='Habitat' sql="coalesce((csnf.attrs_json->>'#habitat_smp_attr_id#')::text, (csnf.attrs_json->>'#legacy_tti_habitat_smp_attr_id#')::text)" datatype="text" visible="false" />
     <column name='geom' visible='false' mappable="true" sql='st_astext(csf.public_geom)' />
     <column name='input_form' visible="false" sql="
       CASE 
