@@ -1,0 +1,66 @@
+<report
+    title="Explore samples using standard filters"
+    description="Based on library/samples/filterable_explore_list_2 but includes enhancements
+    such as being able to direct the user to different data entry forms even when input_form is null."
+>
+  <query website_filter_field="s.website_id" standard_params="samples"
+         created_by_field="s.created_by_id">
+  SELECT #columns#
+  FROM cache_samples_functional s
+  JOIN cache_samples_nonfunctional snf ON snf.id=s.id
+  LEFT JOIN locations l on l.id=s.location_id and l.deleted=false
+  #agreements_join#
+  #joins#
+  WHERE #sharing_filter#
+  #idlist#
+  </query>
+  <order_bys>
+    <order_by>s.id DESC</order_by>
+  </order_bys>
+  <params>
+    <param name='smpattrs' display='Sample attribute list' datatype='smpattrs' default=''
+           description='Comma separated list of sample attribute IDs to include as columns in the report' />
+    <param name="wildflower_survey_id" display="Wildflower survey ID" description="ID of Wildflower Survey." datatype="int" />
+    <param name="indicator_survey_id" display="Indicator survey ID" description="ID of Indicator Survey." datatype="int" />
+    <param name="inventory_survey_id" display="Inventory survey ID" description="ID of Inventory Survey." datatype="int" />
+    <param name="legacy_tti_survey_id" display="Old TTI survey ID" description="ID for the old Tracking The Imact survey which is now an NPMS+ project." datatype="int" default='0'/>
+    <param name="wildflower_data_entry_path" display="Wildflower data entry form path" description="Relative path of Wildflower form." datatype="text" />
+    <param name="indicator_data_entry_path" display="Indicator data entry form path" description="Relative path of Indicator form." datatype="text" />
+    <param name="inventory_data_entry_path" display="Inventory data entry form path" description="Relative path of Inventory form." datatype="text" />  
+    <param name="legacy_tti_data_entry_path" display="Legacy TTI data entry form path" description="Relative path of an entry form that handles old Tracking The Impact data." datatype="text" default=''/>  
+    <param name="survey_not_found_page_path" display="Survey not found page path" 
+      description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" /> 
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data on the latest Plant Portal NPMS+ forms." datatype="int" default='1641'  />  
+    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />  
+  </params>
+  <columns>
+    <column name='sample_id' display='ID' sql='s.id' datatype="integer"
+        template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
+    <column name='source' display='Source' datatype="text"
+        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
+    <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
+    <column name='location_code' display='Site code' sql='l.code' datatype="text" />
+    <column name='location_sref' display='Site grid ref' sql='l.centroid_sref' datatype="text" />
+    <column name='entered_sref' display='Grid ref' sql="snf.public_entered_sref" datatype="text" />
+    <column name='date_start' sql='s.date_start' visible='false' />
+    <column name='date_end' sql='s.date_end' visible='false' />
+    <column name='date_type' sql='s.date_type' visible='false' />
+    <column name='date' display='Date' datatype="date" />
+    <column name='recorder' display='Recorder' sql="snf.recorders" datatype="text" />
+    <column name='habitat' display='Habitat' sql="coalesce((attrs_json->>'#habitat_smp_attr_id#')::text, (attrs_json->>'#legacy_tti_habitat_smp_attr_id#')::text)" datatype="text" />
+    <column name='created_by_id' visible='false' sql='s.created_by_id' datatype="integer" />
+    <column name='record_status' display='State' sql='s.record_status' visible="false" />
+    <column name='belongs_to_user' display='Belongs to user' sql="CASE WHEN CAST(s.created_by_id AS character varying) = '#user_id#' AND s.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
+    <column name='belongs_to_site' display='Belongs to site' sql="CASE WHEN s.website_id IN (#website_ids#) THEN true ELSE false END" visible="false" />
+    <column name='input_form' visible="false" sql="
+      CASE 
+        WHEN s.input_form IS NOT NULL AND s.survey_id != #legacy_tti_survey_id# THEN s.input_form
+        WHEN s.input_form IS NULL AND s.survey_id = #wildflower_survey_id# THEN '#wildflower_data_entry_path#'
+        WHEN s.input_form IS NULL AND s.survey_id = #indicator_survey_id# THEN '#indicator_data_entry_path#'
+        WHEN s.input_form IS NULL AND s.survey_id = #inventory_survey_id# THEN '#inventory_data_entry_path#'
+        WHEN s.survey_id = #legacy_tti_survey_id# THEN '#legacy_tti_data_entry_path#'
+      ELSE 
+        '#survey_not_found_page_path#'
+      END"
+    />  </columns>
+</report>
