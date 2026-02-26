@@ -9,6 +9,7 @@
   LEFT JOIN taxa_taxon_list_attribute_values ttlav
     ON ttlav.taxa_taxon_list_id = cttl_meaning.id
     AND ((ttlav.taxa_taxon_list_attribute_id = #id# and '#type#' = 'location')
+      OR '#type#' = 'project'
       OR ttlav.taxa_taxon_list_attribute_id = 0)
     AND ttlav.int_value in (16407,16408,16409,16410)
     AND ttlav.deleted = false
@@ -20,7 +21,41 @@
   cttl.taxon_list_id in (251,260,261,265) AND
   (
     (lower('#type#') = 'list' AND cttl.taxon_list_id = #id#) 
-    OR (lower('#type#') = 'location' AND ttla.id = #id#) 
+    OR (lower('#type#') = 'location' AND ttla.id = #id#)
+    OR (
+      lower('#type#') = 'project' 
+      AND (
+      (#id# = 2713 and ttla.id in (
+        84,84,175,88,87,89,86,121,91,92,97,93,94,119,195,95,96,
+        124,98,90,99,101,100,102,104,105,106,103,109,110,107,108,
+        111,112,113,125,126,114,116,115,120,118,117,122,123  
+      )) OR
+      (#id# = 2715 and ttla.caption in ('AT','DE')) OR
+      (#id# = 2963 and ttla.id in (
+        84,84,175,88,87,89,86,121,91,92,97,93,94,119,195,95,96,
+        124,98,90,99,101,100,102,104,105,106,103,109,110,107,108,
+        111,112,113,125,126,114,116,115,120,118,117,122,123  
+      )) OR
+      (#id# = 2964 and ttla.caption in ('DE')) OR
+      (#id# = 2965 and ttla.caption in ('DE','HU','RS')) OR
+      (#id# = 3022 and ttla.caption in ('CH')) OR
+      (#id# = 3078 and ttla.caption in ('ZA')) OR
+      (#id# = 3127 and ttla.caption in ('ES')) OR
+      (#id# = 3128 and ttla.caption in ('CH')) OR
+      (#id# = 3133 and ttla.caption in ('ES')) OR
+      (#id# = 3148 and ttla.caption in ('ES')) OR
+      (#id# = 3158 and ttla.caption in ('FR')) OR
+      (#id# = 3160 and ttla.caption in ('ES')) OR
+      (#id# = 3214 and ttla.caption in ('ES')) OR
+      (#id# = 3322 and ttla.caption in ('ES')) OR
+      (#id# = 3324 and ttla.caption in ('ES')) OR
+      (#id# = 3388 and ttla.caption in ('ES')) OR
+      (#id# = 3412 and ttla.caption in ('AT')) OR
+      (#id# = 3557 and ttla.caption in ('IT')) OR
+      (#id# = 3594 and ttla.caption in ('CZ')) OR
+      (#id# = 3599 and ttla.caption in ('HU'))
+      )
+    ) 
     OR #id# = 0
     OR '#type#' = ''
   )
