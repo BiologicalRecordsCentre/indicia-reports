@@ -97,7 +97,76 @@
       AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
       AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
       GROUP BY ttla.id, ttla.caption, l.name, ttla.description, l.centroid_sref,l.boundary_geom,l.centroid_geom
-      ORDER BY dist, name
+
+  UNION
+
+  SELECT 
+    g.id  as  id,
+    'project'  as  type,
+    null  as  location_code,
+    g.title  as  name,
+    g.description  as  description,
+    null  as  coordinates,
+    count(distinct ttl.taxon_meaning_id)  as  taxa_count,
+    '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']'  as  species_groups,
+    max(ttl.updated_on)  as  updated_on,
+    null  as  dist
+  FROM  groups g
+  LEFT JOIN taxa_taxon_list_attributes ttla on
+    (
+      (g.id = 2713 and ttla.id in (
+        84,84,175,88,87,89,86,121,91,92,97,93,94,119,195,95,96,
+        124,98,90,99,101,100,102,104,105,106,103,109,110,107,108,
+        111,112,113,125,126,114,116,115,120,118,117,122,123  
+      )) OR
+      (g.id = 2715 and ttla.caption in ('AT','DE')) OR
+      (g.id = 2963 and ttla.id in (
+        84,84,175,88,87,89,86,121,91,92,97,93,94,119,195,95,96,
+        124,98,90,99,101,100,102,104,105,106,103,109,110,107,108,
+        111,112,113,125,126,114,116,115,120,118,117,122,123  
+      )) OR
+      (g.id = 2964 and ttla.caption in ('DE')) OR
+      (g.id = 2965 and ttla.caption in ('DE','HU','RS')) OR
+      (g.id = 3022 and ttla.caption in ('CH')) OR
+      (g.id = 3078 and ttla.caption in ('ZA')) OR
+      (g.id = 3127 and ttla.caption in ('ES')) OR
+      (g.id = 3128 and ttla.caption in ('CH')) OR
+      (g.id = 3133 and ttla.caption in ('ES')) OR
+      (g.id = 3148 and ttla.caption in ('ES')) OR
+      (g.id = 3158 and ttla.caption in ('FR')) OR
+      (g.id = 3160 and ttla.caption in ('ES')) OR
+      (g.id = 3214 and ttla.caption in ('ES')) OR
+      (g.id = 3322 and ttla.caption in ('ES')) OR
+      (g.id = 3324 and ttla.caption in ('ES')) OR
+      (g.id = 3388 and ttla.caption in ('ES')) OR
+      (g.id = 3412 and ttla.caption in ('AT')) OR
+      (g.id = 3557 and ttla.caption in ('IT')) OR
+      (g.id = 3594 and ttla.caption in ('CZ')) OR
+      (g.id = 3599 and ttla.caption in ('HU'))
+    )
+    AND ttla.deleted=false
+    AND ttla.termlist_id=816
+  LEFT JOIN taxon_lists_taxa_taxon_list_attributes tlttla
+    ON
+    tlttla.taxon_list_id in (251,260,261,265)
+    AND tlttla.taxa_taxon_list_attribute_id = ttla.id
+    AND tlttla.deleted=false
+  LEFT JOIN taxa_taxon_list_attribute_values ttlav on
+    ttlav.taxa_taxon_list_attribute_id = ttla.id
+    AND ttlav.int_value in (16407,16408,16409,16410)
+    AND ttlav.deleted = false
+  LEFT JOIN taxa_taxon_lists ttl on ttl.id = ttlav.taxa_taxon_list_id
+    AND ttl.deleted = false
+    AND ttl.allow_data_entry = true
+  LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
+  WHERE g.website_id = 118 AND g.deleted = false
+    AND (ttla.caption = '#location_code_filter#' OR '#location_code_filter#' = '')
+    AND (g.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
+    AND (g.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
+    AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
+    AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
+  GROUP BY g.id, g.title, g.description
+  ORDER BY dist, type, name
   </query>
   <params>
     <param name='location_code_filter' display='Location code filter' description='Location code filter - exact match.' datatype='string'/>
