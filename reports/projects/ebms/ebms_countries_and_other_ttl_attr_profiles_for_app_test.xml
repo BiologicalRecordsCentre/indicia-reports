@@ -86,11 +86,11 @@
 
     SELECT
       sl.id,
-      'custom_list' as type,
-      null as location_code,
-      sl.title as name,
-      sl.description as description,
-      null as coordinates,
+      'custom_list' AS type,
+      null AS location_code,
+      sl.title AS name,
+      sl.description AS description,
+      null AS coordinates,
       COUNT(DISTINCT cttl.taxon_meaning_id) AS taxa_count,
       '[' || STRING_AGG(DISTINCT cttl.taxon_group_id::text, ', ') || ']' AS species_groups,
       MAX(cttl.cache_updated_on) AS updated_on,
@@ -102,7 +102,7 @@
             ST_SetSRID(ST_MakePoint(#lon#, #lat#), 4326),
             ST_Transform(COALESCE(l.boundary_geom, l.centroid_geom),4326)
           )
-      END) as dist,
+      END) AS dist,
       '[' || STRING_AGG(DISTINCT l.id::text, ', ') || ']' AS locations,
       '[' || STRING_AGG(DISTINCT g.id::text, ', ') || ']' AS projects
 
@@ -120,7 +120,7 @@
       AND (sl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (cttl.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
       AND (cttl.cache_updated_on &gt;= '#updated_on_filter#'::timestamp)
-    GROUP BY sl.id, sl.location_code, sl.title, sl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
+    GROUP BY sl.id, sl.title, sl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
 
     ORDER BY dist, type, name
   </query>
