@@ -18,23 +18,20 @@
       tl.title as name,
       tl.description as description,
       null as coordinates,
-      count(distinct ttl.taxon_meaning_id) as taxa_count,
-      '[' || string_agg(distinct t.taxon_group_id::text, ', ') || ']' as species_groups,
-      max(ttl.updated_on) as updated_on,
+      count(distinct cttl.taxon_meaning_id) as taxa_count,
+      '[' || string_agg(distinct cttl.taxon_group_id::text, ', ') || ']' as species_groups,
+      max(cttl.cache_updated_on) as updated_on,
       null as dist,
       null AS locations,
       null AS projects
     FROM taxon_lists tl
-    LEFT JOIN taxa_taxon_lists ttl on ttl.taxon_list_id = tl.id
-      AND ttl.deleted = false
-      AND ttl.allow_data_entry = true
-    LEFT JOIN taxa t on t.id = ttl.taxon_id AND t.deleted=false
+    LEFT JOIN cache_taxa_taxon_lists cttl on cttl.taxon_list_id = tl.id
+      AND cttl.allow_data_entry = true
     WHERE tl.id in (251,260,261,265)
       AND ('#location_code_filter#' = '')
       AND (tl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
-      AND (tl.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
-      AND (t.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
-      AND (ttl.updated_on &gt;= '#updated_on_filter#'::timestamp)
+      AND (cttl.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
+      AND (cttl.cache_updated_on &gt;= '#updated_on_filter#'::timestamp)
     GROUP BY tl.id, tl.title, tl.description
 
     UNION
@@ -73,12 +70,11 @@
       (l.code='PT3' AND rl.location_code='PT: MA'))
       AND l.deleted = false and l.location_type_id in (16516, 16517)
     LEFT JOIN scratchpad_list_entries sle ON sle.scratchpad_list_id = rl.id AND sle.deleted=false
-    LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id=sle.entry_id
+    LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id=sle.entry_id AND cttl.allow_data_entry=true
     WHERE
       (rl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
-      AND (rl.description ILIKE '%' || '#description_filter#' || '%' OR '#description_filter#' = '')
       AND (cttl.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
-      AND (cttl.cache_updated_on &gt;= '#updated_on_filter#'::timestamp)
+      AND GREATEST(cttl.cache_updated_on, sle.updated_on) &gt;= '#updated_on_filter#'::timestamp
       AND (rl.location_code = '#location_code_filter#' OR '#location_code_filter#' = '')
     GROUP BY rl.id, rl.location_code, rl.title, rl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
 
@@ -112,14 +108,14 @@
     LEFT JOIN groups_scratchpad_lists gsl on gsl.scratchpad_list_id = sl.id AND gsl.deleted=false
     LEFT JOIN groups g on g.id = gsl.group_id AND g.deleted=false
     LEFT JOIN scratchpad_list_entries sle ON sle.scratchpad_list_id = sl.id AND sle.deleted=false
-    LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id=sle.entry_id
+    LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id=sle.entry_id AND cttl.allow_data_entry=true
     WHERE sl.website_id=118
       AND sl.deleted=false
       AND sl.scratchpad_type_id=22150
       AND (l.id IS NOT NULL OR g.id IS NOT NULL)
       AND (sl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (cttl.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
-      AND (cttl.cache_updated_on &gt;= '#updated_on_filter#'::timestamp)
+      AND GREATEST(cttl.cache_updated_on, sle.updated_on) &gt;= '#updated_on_filter#'::timestamp
     GROUP BY sl.id, sl.title, sl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
 
     ORDER BY dist, type, name
