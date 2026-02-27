@@ -49,7 +49,7 @@
       ] AS coordinates,
       COUNT(DISTINCT cttl.taxon_meaning_id) AS taxa_count,
       '[' || STRING_AGG(DISTINCT cttl.taxon_group_id::text, ', ') || ']' AS species_groups,
-      MAX(cttl.cache_updated_on) AS updated_on,
+      GREATEST(MAX(cttl.cache_updated_on), MAX(sle.updated_on)) AS updated_on,
       CASE
         WHEN '#lon#' = '1000' OR '#lat#' = '1000' THEN
           null
@@ -89,7 +89,7 @@
       null AS coordinates,
       COUNT(DISTINCT cttl.taxon_meaning_id) AS taxa_count,
       '[' || STRING_AGG(DISTINCT cttl.taxon_group_id::text, ', ') || ']' AS species_groups,
-      MAX(cttl.cache_updated_on) AS updated_on,
+      GREATEST(MAX(cttl.cache_updated_on), MAX(sle.updated_on)) AS updated_on,
       MIN(CASE
         WHEN '#lon#' = '1000' OR '#lat#' = '1000' THEN
           null
