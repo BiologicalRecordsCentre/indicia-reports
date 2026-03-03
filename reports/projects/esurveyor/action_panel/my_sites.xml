@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report
+  title="e-Surveyor: My Sites"
+  description="Report for a user's sites selector in e-Surveyor">
+
+  <query>
+    SELECT #columns#
+    FROM samples s
+    JOIN cache_samples_nonfunctional snf on snf.id=s.id
+    LEFT JOIN sample_attribute_values hab ON hab.sample_id=s.id AND hab.sample_attribute_id=1866 AND hab.deleted=false
+    LEFT JOIN cache_termlists_terms habt ON habt.id=hab.int_value
+    LEFT JOIN sample_attribute_values habother ON habother.sample_id=s.id AND habother.sample_attribute_id=1867 AND habother.deleted=false
+    WHERE s.survey_id=#survey_id#
+    AND s.created_by_id=#user_id#
+  </query>
+  <order_bys>
+    <order_by>snf.output_sref ASC</order_by>
+  </order_bys>
+
+  <params>
+    <param name="survey_id" display="Survey ID" datatype="integer" />
+    <param name="user_id" display="User ID" datatype="integer" />
+  </params>
+  <columns>
+    <column name="site_name" sql="snf.output_sref" display="Site name" in_count="true" />
+    <column name="first_year" sql="min(extract(year from s.created_on))" display="First Sample Year" aggregate="true"/>
+    <column name="habitat_type" sql="COALESCE(habother.text_value, habt.term)" display="Habitat Type" />
+  </columns>
+
+</report>
