@@ -41,7 +41,9 @@
     <param name="standard_mode_data_entry_path" display="Standard Mode data entry form path" description="Relative path of Standard Mode Data Entry form." datatype="text" default=''/>  
     <param name="legacy_tti_data_entry_path" display="Legacy TTI data entry form path" description="Relative path of an entry form that handles old Tracking The Impact data." datatype="text" default=''/>  
     <param name="survey_not_found_page_path" display="Survey not found page path" 
-      description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />  
+      description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />
+    <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data on the latest Plant Portal NPMS+ forms." datatype="int" default='1641'  />  
+    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />  
   </params>
   <columns>
     <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
@@ -70,6 +72,7 @@
     <column name='cache_updated_on' sql="to_char(o.updated_on,'DD/MM/YYYY HH24:MI')" display='Last updated' visible="false" orderby="cache_updated_on_raw" />
     <column name='cache_updated_on_raw' sql="o.updated_on" display='Last updated unformatted' visible="false" />
     <column name='recorder' display='Recorder' sql="CASE WHEN (TRIM(snf.recorders) !~ ' ' AND LENGTH(snf.recorders)>30) THEN 'Recorder' ELSE snf.recorders END" datatype="text" />
+    <column name='habitat' display='Habitat' sql="coalesce((snf.attrs_json->>'#habitat_smp_attr_id#')::text, (snf.attrs_json->>'#legacy_tti_habitat_smp_attr_id#')::text)" datatype="text" />
     <column name='zero_abundance' display='Zero abundance' sql='o.zero_abundance' visible="false" />
     <column name='created_by_id' visible='false' sql='o.created_by_id' datatype="integer" />
     <column name='record_status' display='State' sql='o.record_status' visible="false" />
