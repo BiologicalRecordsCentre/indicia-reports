@@ -31,13 +31,14 @@
     <param name="survey_not_found_page_path" display="Survey not found page path" 
       description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" /> 
     <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data on the latest Plant Portal NPMS+ forms." datatype="int" default='1641'  />  
-    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />  
+    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />
+    <param name="legacy_tti_survey_level_smp_attr_id" display="Legacy TTI survey level sample attribute ID" description="ID of the sample attribute that holds the survey level data for legacy TTI samples." datatype="int" default='1508' />   
   </params>
   <columns>
     <column name='sample_id' display='ID' sql='s.id' datatype="integer"
         template='&lt;div class="status-{record_status}"&gt;&lt;div class="record-id"&gt;{sample_id}&lt;/div&gt;&lt;/div&gt;'  />
-    <column name='source' display='Source' datatype="text"
-        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
+    <column name='survey_level' display='Survey level' datatype="text"
+        sql="coalesce((snf.attrs_json->>'#legacy_tti_survey_level_smp_attr_id#')::text, snf.survey_title)" />
     <column name='location_name' display='Site name' sql='s.location_name' datatype="text" />
     <column name='location_code' display='Site code' sql='l.code' datatype="text" />
     <column name='location_sref' display='Site grid ref' sql='l.centroid_sref' datatype="text" />
