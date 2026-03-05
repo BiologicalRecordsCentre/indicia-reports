@@ -79,6 +79,7 @@
       LEFT JOIN sample_attribute_values sav_project on sav_project.sample_id = csnf.id 
           AND sav_project.sample_attribute_id = #project_smp_attr_id#
           AND sav_project.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_project on ctt_project.id = sav_project.int_value
 
       LEFT JOIN occurrence_attribute_values oav on oav.occurrence_id = cof.id 
         AND occurrence_attribute_id = #insect_abund_occ_id# AND oav.deleted = false
@@ -150,6 +151,7 @@
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="project" display='Project' sql="ctt_project.term" datatype="text" />
     <column name='survey_id' sql='s.survey_id' display='Survey ID' visible="false" datatype="integer"/>
     <column name='survey_title' sql="
       case s.survey_id

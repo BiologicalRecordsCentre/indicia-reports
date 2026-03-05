@@ -60,6 +60,7 @@
       LEFT JOIN sample_attribute_values sav_project on sav_project.sample_id = csnf.id 
           AND sav_project.sample_attribute_id = #project_smp_attr_id#
           AND sav_project.deleted = false
+      LEFT JOIN cache_termlists_terms ctt_project on ctt_project.id = sav_project.int_value
 
       #agreements_join#
       WHERE #sharing_filter# 
@@ -114,6 +115,7 @@
   </params>
   <columns>
     <column name='sample_id' sql='s.id' display='ID' in_count="true" datatype="integer"/>
+    <column name="project" display='Project' sql="ctt_project.term" datatype="text" />
     <column name="beetles" display='Beetles' sql="
         sum(case when cof.taxon_meaning_id = #beetles_taxon_meaning_id# then (conf.attrs_json->>('#abundance_attr_id#'))::integer else 0 end)" datatype="integer" aggregate="true"/>
     <column name="bumblebees" display='Bumblebees' sql="
