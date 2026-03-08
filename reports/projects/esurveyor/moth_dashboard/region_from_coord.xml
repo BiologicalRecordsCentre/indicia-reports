@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report
+  title="e-Surveyor: Region from Coordinates"
+  description="Convert a coordinate to a NUTS 3 region location ID in e-Surveyor">
+
+  <query>
+    SELECT #columns#
+    FROM locations l
+    WHERE l.location_type_id=18062
+    AND ST_Contains(l.boundary_geom, ST_Transform(ST_SetSRID(ST_MakePoint(#lon#, #lat#), 4326), 900913))
+    AND l.deleted=false
+  </query>
+
+
+  <params>
+    <param name="lon" display="Longitude" datatype="float" />
+    <param name="lat" display="Latitude" datatype="float" />
+  </params>
+  <columns>
+    <column name="location_id" sql="l.id" display="Location ID" in_count="true" />
+  </columns>
+
+</report>
