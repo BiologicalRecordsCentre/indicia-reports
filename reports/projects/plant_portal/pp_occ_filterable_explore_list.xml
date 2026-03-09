@@ -43,16 +43,14 @@
     <param name="survey_not_found_page_path" display="Survey not found page path" 
       description="A page to display as fallback if the correct survey cannot be determined when the input_form missing." datatype="text" />
     <param name="habitat_smp_attr_id" display="Habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data on the latest Plant Portal NPMS+ forms." datatype="int" default='1641'  />  
-    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />  
+    <param name="legacy_tti_habitat_smp_attr_id" display="Legacy TTI habitat sample attribute ID" description="ID of the sample attribute that holds the habitat data for legacy TTI samples." datatype="int" default='565' />
+    <param name="legacy_tti_survey_level_smp_attr_id" display="Legacy TTI survey level sample attribute ID" description="ID of the sample attribute that holds the survey level data for legacy TTI samples." datatype="int" default='1508' />  
   </params>
   <columns>
     <column name='occurrence_id' display='ID' sql='o.id' datatype="integer"
         template='&lt;span class="status-icon status-{record_status} release-{release_status} substatus-{record_substatus} query-{query} certainty-{certainty}" title="{status_hint}"&gt;&lt;/span&gt;&lt;span class="record-id"&gt;{occurrence_id}&lt;/span&gt;'  />
-    <column name='source' display='Source' datatype="text"
-        sql="snf.website_title || ' | ' || case when substring(snf.survey_title from 1 for length(snf.website_title)) = snf.website_title then trim(substring(snf.survey_title from length(snf.website_title)+1)) else snf.survey_title end" />
-    <column name='source_id' display='Source ID' datatype="text" visible="false"
-            sql="o.website_id::varchar || '|' || o.survey_id::varchar"
-            template="&lt;span title=&quot;{source}&quot;&gt;{source_id}&lt;/span&gt;" />
+    <column name='survey_level' display='Survey level' datatype="text"
+        sql="coalesce((snf.attrs_json->>'#legacy_tti_survey_level_smp_attr_id#')::text, snf.survey_title)" />
     <column name='sample_id' visible='false' sql='o.sample_id' datatype="integer" />
     <column name='taxon' display='Species' datatype="species" sql="cttl.preferred_taxon" template='&lt;span class="zero-{zero_abundance}"&gt;{taxon}&lt;/span&gt;' />
     <column name='common' display='Common name' datatype="text" sql="cttl.default_common_name" template='&lt;span class="zero-{zero_abundance}"&gt;{common}&lt;/span&gt;' />
