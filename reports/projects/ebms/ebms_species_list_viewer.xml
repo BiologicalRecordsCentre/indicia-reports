@@ -150,6 +150,7 @@
     AND ('#include_higher_level_taxa#' = '1'
       OR ('#include_higher_level_taxa#' = '0' AND pix.taxon_rank_id in (2,10,26,38,49,64)))
     AND (profiles.taxon_meaning_id IS NOT NULL OR (#country_region_ttl_attr_id# = 0 AND #species_presence_filter# = 0))
+    AND (day_attrs.taxon_meaning_id IS NOT NULL OR '#day_active_moths#' = '')
   </query>
   <order_bys>
     <order_by>pix.taxon_list_id, pix.taxon</order_by>
@@ -159,7 +160,7 @@
       datatype="lookup" emptyvalue="0"
       lookup_values="251:Butterflies,260:Moths,261:Bumblebees,265:Dragonflies" 
       description="Choose from butterflies, moths, bumblebees, or dragonflies."/>
-    <param name="day_active_moths" display="Day active? (moths only)" description='Filter based on whether moths are day active (leave blank for all).' 
+    <param name="day_active_moths" display="Day active? (moths only)" description='Filter on whether moths are day active (leave blank for all).' 
       datatype="lookup" emptyvalue="all"
       lookup_values="day_active:Day active moths only,day_active_excluded:Day active moths excluded" />  
     <param name="day_active_ttl_attr_id" display="ID of the day active attribute" datatype="int" />
