@@ -127,7 +127,7 @@
       (
         '#day_active_moths#' = '' OR
         ('#day_active_moths#' = 'day_active' AND ttlav.int_value = 1) OR
-        ('#day_active_moths#' = 'day_active_excluded' AND ttlav.int_value = 0)
+        ('#day_active_moths#' = 'day_active_excluded' AND (ttlav.int_value = 0 OR ttlav.int_value IS NULL))
       )
     )
     SELECT #columns#
