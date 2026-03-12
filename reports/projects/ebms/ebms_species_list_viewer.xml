@@ -116,19 +116,15 @@
         (#country_region_ttl_attr_id#= -6 AND ttla.id in (#oceania_country_ttl_attr_ids#)))
     ),
     day_moths AS (
-      SELECT distinct ttl.taxon_meaning_id
+      SELECT distinct ttl.taxon_meaning_id, ttlav.int_value
       FROM taxa_taxon_list_attributes ttla
       LEFT JOIN taxa_taxon_list_attribute_values ttlav on ttla.id = ttlav.taxa_taxon_list_attribute_id
         AND ttlav.deleted = false
       LEFT JOIN taxa_taxon_lists ttl on ttl.id = ttlav.taxa_taxon_list_id
       WHERE
       ttla.id = #day_active_ttl_attr_id#
-      AND 
-      (
-        '#day_active_moths#' = '' OR
-        ('#day_active_moths#' = 'day_active' AND ttlav.int_value = 1) OR
-        ('#day_active_moths#' = 'day_active_excluded' AND (ttlav.int_value = 0 OR ttlav.int_value IS NULL))
-      )
+      AND ttla.deleted=false
+      AND ttl.taxon_list_id = #moth_taxon_list_id#
     )
     SELECT #columns#
     FROM preferred_insect_taxa pix
@@ -150,7 +146,12 @@
     AND ('#include_higher_level_taxa#' = '1'
       OR ('#include_higher_level_taxa#' = '0' AND pix.taxon_rank_id in (2,10,26,38,49,64)))
     AND (profiles.taxon_meaning_id IS NOT NULL OR (#country_region_ttl_attr_id# = 0 AND #species_presence_filter# = 0))
-    AND (day_attrs.taxon_meaning_id IS NOT NULL OR '#day_active_moths#' = '')
+    AND 
+      (
+        '#day_active_moths#' = '' OR
+        ('#day_active_moths#' = 'day_active' AND day_attrs.int_value = 1) OR
+        ('#day_active_moths#' = 'day_active_excluded' AND (day_attrs.int_value = 0 OR day_attrs.int_value IS NULL))
+      )
   </query>
   <order_bys>
     <order_by>pix.taxon_list_id, pix.taxon</order_by>
