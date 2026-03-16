@@ -148,7 +148,7 @@
     AND (profiles.taxon_meaning_id IS NOT NULL OR (#country_region_ttl_attr_id# = 0 AND #species_presence_filter# = 0))
     AND 
       (
-        '#day_active_moths#' = '' OR
+        '#day_active_moths#' = 'all' OR
         ('#day_active_moths#' = 'day_active' AND day_attrs.int_value = 1) OR
         ('#day_active_moths#' = 'day_active_excluded' AND (day_attrs.int_value = 0 OR day_attrs.int_value IS NULL))
       )
