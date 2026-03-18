@@ -18,6 +18,7 @@
           END
       END || ' You are being notified because you are a member of ' || g.title || '.' as event,
       string_agg(gu.user_id::text, ',') as notify_user_ids,
+      2 as escalate_email_priority,
       CASE
         WHEN wm.id IS NULL THEN NULL
         ELSE 'Notification sent to ' || STRING_AGG(COALESCE(p.first_name || ' ', '') || p.surname, ', ') || ': ' || CASE
@@ -73,6 +74,7 @@
         AND vc.name NOT LIKE '%+%'
         AND vc.id = ANY(o.location_ids))" />
     <column name="notify_user_ids" />
+    <column name="escalate_email_priority" />
     <column name="log_comment" />
     <column name="occurrence_id" />
     <column name="website_id" visible="false" />
