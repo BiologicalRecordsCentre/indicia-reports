@@ -338,13 +338,13 @@ WHERE #sharing_filter#
     <column name='date_last_edited' display='Date last edited' sql="s.updated_on" datatype="date"/>
     <column name='habitat' display='Habitat' sql="
     CASE
-      WHEN sav_hab.int_value = #habitat_smp_id#
+      WHEN sav_hab.int_value = #other_habitat_tt_id#
         THEN 'Other (' || sav_other_hab.text_value || ')'
       ELSE ctt_hab_lang.term
     END" datatype="text"/> 
     <column name='target' display='Target flower' sql="
     CASE
-      WHEN sav_target.int_value = #target_smp_id#
+      WHEN sav_target.int_value = #other_target_tt_id#
         THEN 'Other (' || sav_other_target.text_value || ')'
       ELSE ctt_target_lang.term
     END" datatype="text"/> 
