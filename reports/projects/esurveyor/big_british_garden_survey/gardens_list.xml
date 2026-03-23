@@ -10,8 +10,6 @@
     LEFT JOIN location_attribute_values lav ON lav.location_id=l.id AND lav.location_attribute_id=429 and lav.deleted=false
     JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
-    #agreements_join#
-    #joins#
     WHERE #website_filter#
     AND l.deleted=false
     AND l.location_type_id=24469
