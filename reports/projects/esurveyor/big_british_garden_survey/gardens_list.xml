@@ -1,0 +1,31 @@
+<report
+    title="Big British Garden Survey Gardens list"
+    description="A list of gardens registered for the Big British Garden Survey."
+>
+  <query website_filter_field="lw.website_id" training_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+    LEFT JOIN cache_termlists_terms ttype ON ttype.id=l.location_type_id
+    LEFT JOIN location_attribute_values lav ON lav.location_id=l.id AND lav.attribute_id=429 and lav.deleted=false
+    JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
+      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    #agreements_join#
+    #joins#
+    WHERE #sharing_filter#
+    AND l.deleted=false
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="auth_user_id" datatype="integer" default="-1" />
+  </params>
+  <columns>
+    <column name="location_id" display="ID" sql="l.id" />
+    <column name="name" display="Name" sql="l.name" />
+    <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />
+    <column name="area" display="Area (m2)" sql="round(st_area(st_transform(l.boundary_geom, 27700)))" />
+    <column name="email" display="Email" sql="lav.value" datatype="text" decrypt="true" />
+  </columns>
+</report>
