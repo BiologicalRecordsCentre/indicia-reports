@@ -25,6 +25,6 @@
     <column name="name" display="Name" sql="l.name" />
     <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />
     <column name="area" display="Area (m2)" sql="round(st_area(st_transform(l.boundary_geom, 27700)))" />
-    <column name="email" display="Email" sql="lav.value" datatype="text" decrypt="true" />
+    <column name="email" display="Email" sql="lav.text_value" datatype="text" decrypt="true" />
   </columns>
 </report>
