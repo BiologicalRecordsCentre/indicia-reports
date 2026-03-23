@@ -12,8 +12,9 @@
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
     #agreements_join#
     #joins#
-    WHERE #sharing_filter#
+    WHERE #website_filter#
     AND l.deleted=false
+    AND l.location_type_id=24469
   </query>
   <order_bys>
     <order_by>l.name ASC</order_by>
