@@ -21,7 +21,7 @@ WITH taxon_sum AS (
 
   FROM cache_occurrences_functional cof
   JOIN cache_occurrences_nonfunctional conf ON conf.id = cof.id
-  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false
+  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false AND s.training = false
   LEFT JOIN sample_attribute_values sav_project
     ON sav_project.sample_id = cof.sample_id
     AND sav_project.sample_attribute_id = #project_smp_attr_id#
@@ -39,7 +39,8 @@ WITH taxon_sum AS (
     #solitary_bee_taxon_meaning_id#,
     #wasp_taxon_meaning_id#
   )
-  AND #sharing_filter# 
+  AND #sharing_filter#
+  AND cof.training = false
   AND s.survey_id in (
     #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
   )
@@ -60,7 +61,7 @@ occurrence_totals AS (
     cof.sample_id,
     SUM(oav.int_value) AS number_insects
   FROM cache_occurrences_functional cof
-  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false
+  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false AND s.training = false
   JOIN occurrence_attribute_values oav
        ON oav.occurrence_id = cof.id
       AND oav.occurrence_attribute_id = #abundance_attr_id#
@@ -83,6 +84,7 @@ occurrence_totals AS (
       #solitary_bee_taxon_meaning_id#,
       #wasp_taxon_meaning_id#
     )
+    AND cof.training = false
     AND #sharing_filter#
     AND s.survey_id in (
       #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
@@ -238,7 +240,8 @@ LEFT JOIN sample_attribute_values sav_project
 LEFT JOIN cache_termlists_terms ctt_project
   ON ctt_project.id = sav_project.int_value
 #agreements_join#
-WHERE #sharing_filter# 
+WHERE #sharing_filter#
+  AND s.training = false
   AND s.survey_id in (
     #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
   )
