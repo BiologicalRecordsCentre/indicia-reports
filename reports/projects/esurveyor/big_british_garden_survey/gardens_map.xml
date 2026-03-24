@@ -7,8 +7,8 @@
     FROM (
       SELECT n.id AS nuts_id, COUNT(g.id) AS garden_count
       FROM locations n
-      JOIN locations g ON St_Intersects(g.boundary_geom, n.boundary_geom) AND g.location_type_id=24469 AND g.deleted=false
-      WHERE n.location_type_id=18062 AND n.deleted=false
+      JOIN locations g ON St_Intersects(g.boundary_geom, n.boundary_geom) AND /*g.location_type_id=24469 AND*/ g.deleted=false
+      WHERE n.location_type_id=15 AND n.deleted=false
       GROUP BY n.id
     ) AS agg
     JOIN locations n ON n.id=agg.nuts_id
@@ -21,5 +21,36 @@
     <column name="name" display="NUTS Name" sql="n.name" />
     <column name="boundary_geom" display="NUTS Boundary" sql="st_astext(n.boundary_geom)" mappable="true" />
     <column name="garden_count" display="Garden Count" sql="agg.garden_count" />
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="CASE
+      WHEN MAX(agg.garden_count) OVER () = MIN(agg.garden_count) OVER () THEN 0.6
+      ELSE 0.5 + 0.2 * (
+        (agg.garden_count - MIN(agg.garden_count) OVER ())::float /
+        NULLIF((MAX(agg.garden_count) OVER () - MIN(agg.garden_count) OVER ()), 0)
+      )
+    END" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="
+      '#' ||
+      LPAD(TO_HEX(ROUND(255 + (
+        CASE
+          WHEN MAX(agg.garden_count) OVER () = MIN(agg.garden_count) OVER () THEN 0.5
+          ELSE (agg.garden_count - MIN(agg.garden_count) OVER ())::float /
+            NULLIF((MAX(agg.garden_count) OVER () - MIN(agg.garden_count) OVER ()), 0)
+        END
+      ) * (189 - 255))::int), 2, '0') ||
+      LPAD(TO_HEX(ROUND(255 + (
+        CASE
+          WHEN MAX(agg.garden_count) OVER () = MIN(agg.garden_count) OVER () THEN 0.5
+          ELSE (agg.garden_count - MIN(agg.garden_count) OVER ())::float /
+            NULLIF((MAX(agg.garden_count) OVER () - MIN(agg.garden_count) OVER ()), 0)
+        END
+      ) * (0 - 255))::int), 2, '0') ||
+      LPAD(TO_HEX(ROUND(178 + (
+        CASE
+          WHEN MAX(agg.garden_count) OVER () = MIN(agg.garden_count) OVER () THEN 0.5
+          ELSE (agg.garden_count - MIN(agg.garden_count) OVER ())::float /
+            NULLIF((MAX(agg.garden_count) OVER () - MIN(agg.garden_count) OVER ()), 0)
+        END
+      ) * (38 - 178))::int), 2, '0')
+    " />
   </columns>
 </report>
