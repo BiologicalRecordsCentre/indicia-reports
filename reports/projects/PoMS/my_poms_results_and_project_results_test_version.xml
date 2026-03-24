@@ -1,8 +1,7 @@
 <report
-    title="My PoMS Results And Project Results - TEST VERSION"
+    title="My PoMS Results And Project Results"
     description="PomS results in detail on My Records or My Projects page. Includes full detail location data.
-    Doesn't use cache attributes so we have multi-lingual support.
-    Experimental version to test optmisations."
+    Doesn't use cache attributes so we have multi-lingual support."
 >
   <query website_filter_field="" training_filter_field="" >
 WITH taxon_sum AS (
@@ -22,7 +21,7 @@ WITH taxon_sum AS (
 
   FROM cache_occurrences_functional cof
   JOIN cache_occurrences_nonfunctional conf ON conf.id = cof.id
-  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false
+  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false AND s.training = false
   LEFT JOIN sample_attribute_values sav_project
     ON sav_project.sample_id = cof.sample_id
     AND sav_project.sample_attribute_id = #project_smp_attr_id#
@@ -40,7 +39,8 @@ WITH taxon_sum AS (
     #solitary_bee_taxon_meaning_id#,
     #wasp_taxon_meaning_id#
   )
-  AND #sharing_filter# 
+  AND #sharing_filter#
+  AND cof.training = false
   AND s.survey_id in (
     #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
   )
@@ -59,9 +59,9 @@ WITH taxon_sum AS (
 occurrence_totals AS (
   SELECT
     cof.sample_id,
-    SUM(oav.int_value) AS number_insects
+    CASE WHEN SUM(oav.int_value) IS NULL THEN 0 ELSE SUM(oav.int_value) END AS number_insects
   FROM cache_occurrences_functional cof
-  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false
+  JOIN samples s ON s.id = cof.sample_id AND s.deleted=false AND s.training = false
   JOIN occurrence_attribute_values oav
        ON oav.occurrence_id = cof.id
       AND oav.occurrence_attribute_id = #abundance_attr_id#
@@ -71,7 +71,21 @@ occurrence_totals AS (
     AND sav_project.sample_attribute_id = #project_smp_attr_id#
     AND sav_project.deleted = false
   #agreements_join#
-  WHERE #sharing_filter# 
+  WHERE 
+    cof.taxon_meaning_id IN (
+      #beetles_taxon_meaning_id#,
+      #bumblebee_taxon_meaning_id#,
+      #butterflies_moths_taxon_meaning_id#,
+      #honeybee_taxon_meaning_id#,
+      #hoverflies_taxon_meaning_id#,
+      #other_flies_taxon_meaning_id#,
+      #other_insects_taxon_meaning_id#,
+      #small_insects_taxon_meaning_id#,
+      #solitary_bee_taxon_meaning_id#,
+      #wasp_taxon_meaning_id#
+    )
+    AND cof.training = false
+    AND #sharing_filter#
     AND s.survey_id in (
       #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
     )
@@ -92,7 +106,7 @@ SELECT
 
 FROM samples s
 
-JOIN taxon_sum ts ON ts.sample_id = s.id
+LEFT JOIN taxon_sum ts ON ts.sample_id = s.id
 LEFT JOIN occurrence_totals ot ON ot.sample_id = s.id
 
 JOIN cache_samples_functional csf ON csf.id = s.id
@@ -226,7 +240,8 @@ LEFT JOIN sample_attribute_values sav_project
 LEFT JOIN cache_termlists_terms ctt_project
   ON ctt_project.id = sav_project.int_value
 #agreements_join#
-WHERE #sharing_filter# 
+WHERE #sharing_filter#
+  AND s.training = false
   AND s.survey_id in (
     #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
   )
@@ -259,7 +274,7 @@ WHERE #sharing_filter#
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
     <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
-      lookup_values='636:FIT Count,637:FIT Count 1km,641:FIT Count App' />
+      lookup_values='636:FIT Count,641:FIT Count App' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
     <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
     <param name = "cover_within_patch_attr_id" display="Cover within patch sample attr ID" description = "ID of the sample attribute that holds the cover within patch." datatype="integer"/>
