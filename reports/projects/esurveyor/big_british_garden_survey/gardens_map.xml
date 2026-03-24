@@ -19,7 +19,7 @@
   <columns>
     <column name="location_id" display="NUTS location ID" sql="n.id" />
     <column name="name" display="NUTS Name" sql="n.name" />
-    <column name="boundary_geom" display="NUTS Boundary" sql="n.boundary_geom" />
+    <column name="boundary_geom" display="NUTS Boundary" sql="st_astext(n.boundary_geom)" mappable="true" />
     <column name="garden_count" display="Garden Count" sql="agg.garden_count" />
   </columns>
 </report>
