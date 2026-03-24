@@ -104,7 +104,7 @@ SELECT
 
 FROM samples s
 
-JOIN taxon_sum ts ON ts.sample_id = s.id
+LEFT JOIN taxon_sum ts ON ts.sample_id = s.id
 LEFT JOIN occurrence_totals ot ON ot.sample_id = s.id
 
 JOIN cache_samples_functional csf ON csf.id = s.id
