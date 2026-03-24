@@ -1,0 +1,25 @@
+<report
+    title="Big British Garden Survey Gardens map"
+    description="A map of gardens registered for the Big British Garden Survey. Low precision, NUTS 3 level."
+>
+  <query website_filter_field="lw.website_id" training_filter_field="">
+    SELECT #columns#
+    FROM (
+      SELECT n.id AS nuts_id, COUNT(g.id) AS garden_count
+      FROM locations n
+      JOIN locations g ON St_Intersects(g.boundary_geom, n.boundary_geom) AND g.location_type_id=24469 AND g.deleted=false
+      WHERE n.location_type_id=18062 AND n.deleted=false
+      GROUP BY n.id
+    ) AS agg
+    JOIN locations n ON n.id=agg.nuts_id
+  </query>
+  <order_bys>
+    <order_by>n.name ASC</order_by>
+  </order_bys>
+  <columns>
+    <column name="location_id" display="NUTS location ID" sql="n.id" />
+    <column name="name" display="NUTS Name" sql="n.name" />
+    <column name="boundary_geom" display="NUTS Boundary" sql="n.boundary_geom" />
+    <column name="garden_count" display="Garden Count" sql="agg.garden_count" />
+  </columns>
+</report>
