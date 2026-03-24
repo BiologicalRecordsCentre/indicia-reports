@@ -7,7 +7,7 @@
     FROM (
       SELECT n.id AS nuts_id, COUNT(g.id) AS garden_count
       FROM locations n
-      JOIN locations g ON St_Intersects(g.boundary_geom, n.boundary_geom) AND g.location_type_id=24469 AND g.deleted=false
+      JOIN locations g ON St_Intersects(g.centroid_geom, n.boundary_geom) AND g.location_type_id=24469 AND g.deleted=false
       WHERE n.location_type_id=18062 AND n.deleted=false
       GROUP BY n.id
     ) AS agg
