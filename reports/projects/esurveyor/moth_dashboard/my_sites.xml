@@ -25,6 +25,8 @@
     <column name="site_name" sql="snf.output_sref" display="Site name" in_count="true" />
     <column name="first_year" sql="MIN(extract(year from s.created_on))" display="First Sample Year" aggregate="true"/>
     <column name="habitat_type" sql="STRING_AGG(DISTINCT COALESCE(habother.text_value, habt.term), ', ')" display="Habitat Type" aggregate="true"/>
+    <column name="lat" sql="st_x(st_transform(st_centroid(s.geom), 4326))" display="Latitude" />
+    <column name="lon" sql="st_y(st_transform(st_centroid(s.geom), 4326))" display="Longitude" />
   </columns>
 
 </report>
