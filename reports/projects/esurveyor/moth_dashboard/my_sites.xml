@@ -14,7 +14,7 @@
     AND s.created_by_id=#user_id#
   </query>
   <order_bys>
-    <order_by>snf.output_sref ASC</order_by>
+    <order_by>coalesce(s.location_name, snf.output_sref) ASC</order_by>
   </order_bys>
 
   <params>
