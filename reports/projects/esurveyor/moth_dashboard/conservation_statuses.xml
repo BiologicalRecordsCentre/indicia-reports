@@ -5,24 +5,54 @@
 
   <query>
     SELECT #columns#
-    FROM samples s
-
-    WHERE s.survey_id=#survey_id#
-    AND s.created_by_id=#user_id#
+    FROM cache_occurrences_functional o
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
+    JOIN taxa_taxon_designations ttd ON ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+    JOIN taxon_designations td ON td.id=ttd.taxon_designation_id
+    JOIN cache_termlists_terms cat ON cat.id=td.category_id
+    WHERE o.survey_id=#survey_id#
+    AND td.category_id IN (7666, 7667) -- GB Status or GB Red List
+    AND td.abbreviation IN ('Extinct', 'Na', 'Nb', 'Notable', 'NR', 'NS', 'RDB 1', 'RDB 2', 'RDB 3', 'RE', 'CR', 'CR(PE)', 'EN', 'NR', 'NT', 'RE', 'VU')
   </query>
   <order_bys>
-    <order_by>snf.output_sref ASC</order_by>
+    <order_by>cat.term, COUNT(distinct cttl.taxon_meaning_id) DESC</order_by>
   </order_bys>
 
   <params>
     <param name="survey_id" display="Survey ID" datatype="integer" />
-    <param name="user_id" display="User ID" datatype="integer" />
+    <param name="user_id" display="User ID" datatype="integer" default="">
+      <where>o.created_by_id=#user_id#</where>
+    </param>
     <param name="site_name" display="Site Name" datatype="string" default="">
-      <where>s.entered_sref='#site_name#'</where>
+      <where>(o.entered_sref='#site_name#' or o.location_name='#site_name#')</where>
+    </param>
+    <param name="region_id" display="Region" datatype="integer" default="">
+      <where>#region_id# = ANY(o.location_ids)</where>
     </param>
   </params>
-  <columns>
 
+  <columns>
+    <column name="category" sql="cat.term" display="Category" in_count="true" />
+    <column name="designation" sql="case td.abbreviation
+      when 'Na' then 'Notable'
+      when 'Nb' then 'Notable'
+      when 'NR' then 'Nationally Rare'
+      when 'NS' then 'Nationally Scarce'
+      when 'RDB 1' then 'Endangered'
+      when 'RDB 2' then 'Vulnerable'
+      when 'RDB 3' then 'Rare'
+      when 'RE' then 'Regionally Extinct'
+      when 'CR' then 'Critically Endangered'
+      when 'CR(PE)' then 'Critically Endangered'
+      when 'EN' then 'Endangered'
+      when 'NR' then 'Nationally Rare'
+      when 'NT' then 'Near Threatened'
+      when 'RE' then 'Regionally Extinct'
+      when 'VU' then 'Vulnerable'
+      else td.abbreviation
+      end" display="Designation" in_count="true" />
+    <column name="occurrence_count" sql="COUNT(distinct cttl.taxon_meaning_id)" display="Occurrence count" aggregate="true" />
+    <column name="species_count" sql="COUNT(distinct cttl.taxon_meaning_id)" display="Taxon count" aggregate="true" />
   </columns>
 
 </report>
