@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report
+  title="e-Surveyor: Ecological Roles"
+  description="Report for a user's species data ecological roles in e-Surveyor">
+
+  <query>
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+    JOIN taxa_taxon_list_attribute_values v ON v.taxa_taxon_list_id=o.taxa_taxon_list_id AND v.taxa_taxon_list_attribute_id=18 AND v.deleted=false
+    JOIN cache_termlists_terms t ON t.id=v.int_value
+    WHERE o.survey_id=#survey_id#
+  </query>
+  <order_bys>
+    <order_by>t.term</order_by>
+  </order_bys>
+  <params>
+    <param name="survey_id" display="Survey ID" datatype="integer" />
+    <param name="user_id" display="User ID" datatype="integer">
+      <where>o.created_by_id=#user_id#</where>
+    </param>
+    <param name="site_name" display="Site Name" datatype="string" default="">
+      <where>(o.entered_sref='#site_name#' or o.location_name='#site_name#')</where>
+    </param>
+    <param name="region_id" display="Region" datatype="integer" default="">
+      <where>#region_id# = ANY(o.location_ids)</where>
+    </param>
+  </params>
+  <columns>
+    <column name="ecological_role" sql="t.term" display="Ecological Role" in_count="true" />
+    <column name="occurrence_count" sql="COUNT(DISTINCT o.id)" display="Occurrence count" aggregate="true" />
+    <column name="species_count" sql="COUNT(DISTINCT o.taxon_meaning_id)" display="Taxon count" aggregate="true" />
+  </columns>
+</report>
