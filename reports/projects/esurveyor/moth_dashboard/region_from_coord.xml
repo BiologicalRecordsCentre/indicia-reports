@@ -18,6 +18,8 @@
   </params>
   <columns>
     <column name="location_id" sql="l.id" display="Location ID" in_count="true" />
+    <column name="location_name" sql="l.name" display="Location name" />
+    <column name="boundary_geom" sql="l.boundary_geom" display="Boundary geometry" />
   </columns>
 
 </report>
