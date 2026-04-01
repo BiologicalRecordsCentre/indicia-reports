@@ -35,7 +35,7 @@
 
   <columns>
     <column name="category" sql="cat.term" display="Category" in_count="true" />
-    <column name="designation" sql="case td.abbreviation
+    <column name="designation" sql="case
       when td.abbreviation is null then 'None'
       when td.abbreviation='Extinct' then 'Extinct'
       when td.abbreviation='Na' then 'Notable'
