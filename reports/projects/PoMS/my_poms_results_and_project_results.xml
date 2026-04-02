@@ -1,6 +1,6 @@
 <report
     title="My PoMS Results And Project Results"
-    description="PomS results in detail on My Records or My Projects page. Includes full detail location data.
+    description="PomS results for My Records or My Projects page grid/map/download. Includes full detail location data.
     Doesn't use cache attributes so we have multi-lingual support."
 >
   <query website_filter_field="" training_filter_field="" >
@@ -39,14 +39,14 @@ WITH taxon_sum AS (
     #solitary_bee_taxon_meaning_id#,
     #wasp_taxon_meaning_id#
   )
-  AND #sharing_filter#
+  AND #sharing_filter# 
   AND cof.training = false
   AND s.survey_id in (
     #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
   )
   AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
   AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
-  AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+  AND (s.survey_id = #filtered_survey_id# OR #filtered_survey_id#=0)
   AND 
   (
     (s.created_by_id=#current_user_id# AND #project_id# = 0) 
@@ -59,7 +59,7 @@ WITH taxon_sum AS (
 occurrence_totals AS (
   SELECT
     cof.sample_id,
-    SUM(oav.int_value) AS number_insects
+    CASE WHEN SUM(oav.int_value) IS NULL THEN 0 ELSE SUM(oav.int_value) END AS number_insects
   FROM cache_occurrences_functional cof
   JOIN samples s ON s.id = cof.sample_id AND s.deleted=false AND s.training = false
   JOIN occurrence_attribute_values oav
@@ -85,13 +85,13 @@ occurrence_totals AS (
       #wasp_taxon_meaning_id#
     )
     AND cof.training = false
-    AND #sharing_filter#
+    AND #sharing_filter# 
     AND s.survey_id in (
       #public_fit_count_survey_id#,#1km_fit_count_survey_id#,#fit_count_app_survey_id#
     )
     AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
     AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
-    AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+    AND (s.survey_id = #filtered_survey_id# OR #filtered_survey_id#=0)
     AND 
     (
     (s.created_by_id=#current_user_id# AND #project_id# = 0) 
@@ -247,7 +247,7 @@ WHERE #sharing_filter#
   )
   AND ((trim('#year_sort_order#') = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_end &gt;= CAST((0-(#year_sort_order#)::int)::text || '-01-01' as date))
   AND (trim('#year_sort_order#')  = '0' OR '#year_sort_order#'='&lt;please select&gt;' OR s.date_start &lt;= CAST((0-(#year_sort_order#)::int)::text || '-12-31' as date)))
-  AND (CAST(s.survey_id AS character varying) = '#filtered_survey_id#' OR '#filtered_survey_id#'='')
+  AND (s.survey_id = #filtered_survey_id# OR #filtered_survey_id#=0)
   AND 
   (
     (s.created_by_id=#current_user_id# AND #project_id# = 0) 
@@ -274,7 +274,7 @@ WHERE #sharing_filter#
     <param name = "1km_fit_count_survey_id" display="1km fit count survey ID" description = "ID of the 1km fit count survey." datatype="integer"/>  
     <param name = "fit_count_app_survey_id" display="Fit count app survey ID" description = "ID of the fit count app survey." datatype="integer"/>  
     <param name = 'filtered_survey_id' display='Survey' description='Select the survey to return data for' datatype='lookup'
-      lookup_values='636:FIT Count,641:FIT Count App' />
+      lookup_values='636:FIT Count,641:FIT Count App' emptyvalue='0' />
     <param name='idlist' display='List of IDs' description='Comma separated list of sample IDs to filter to.' datatype='idlist' fieldname='s.id' alias='sample_id' />
     <param name = "start_time_attr_id" display="Start time sample attr ID" description = "ID of the sample attribute that holds the start time." datatype="integer"/>
     <param name = "cover_within_patch_attr_id" display="Cover within patch sample attr ID" description = "ID of the sample attribute that holds the cover within patch." datatype="integer"/>
@@ -386,5 +386,17 @@ WHERE #sharing_filter#
         sql="s.survey_id IN (#public_fit_count_survey_id#,#fit_count_app_survey_id#)" visible="false" />
     <column name='show_1km_fit_count_edit_icon' display='Show 1km fit count edit icon' 
         sql="s.survey_id = #1km_fit_count_survey_id#" visible="false" />
+    <column name="fo" visible="false" feature_style="fillOpacity" sql="0.2+sqrt(count(s.id)::float-1)/20" aggregate="true" />
+    <column name="sc" visible="false" feature_style="strokeColor" sql="
+      case s.record_status 
+        when 'C' then 'blue'
+        when 'V' then 'green'
+        when 'D' then 'orange'
+        when 'R' then '#800000'
+        else 'black' end" internal_sql="s.record_status" />
+    <column name="fc" visible="false" feature_style="fillColor" sql="case s.record_status when 'V' then 'green' when 'D' then 'orange' when 'R' then '#800000' else 'blue' end"
+        internal_sql="s.record_status"/>
+    <column name="geom" visible="false" mappable="true" sql="st_astext(s.geom)" />
+    <column name="language" display = "Preferred language" sql="case when '#language#' = 'cym' then 'cym' else 'eng' end" datatype="text" visible="false" />
   </columns>
 </report>
