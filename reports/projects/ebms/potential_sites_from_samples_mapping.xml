@@ -14,7 +14,6 @@
       #filters#
     LEFT JOIN locations l2 ON l2.id = s2.location_id AND l2.deleted=false
     WHERE s.parent_sample_id IS NULL
-    AND s.survey_id=#survey_id#
     AND s.location_id IS NULL
     AND s.private = false
     AND s.sensitive = false
