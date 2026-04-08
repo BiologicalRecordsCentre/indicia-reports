@@ -1,0 +1,43 @@
+<report
+    title="Samples at a potential site"
+    description="Samples at a potential site from samples with no location"
+>
+  <query website_filter_field="s.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    JOIN cache_samples_nonfunctional snf ON snf.id = s.id
+    WHERE s.parent_sample_id IS NULL
+    AND s.location_id IS NULL
+    AND s.private = false
+    AND s.sensitive = false
+    AND ROUND(ST_y(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6) = #lat#
+    AND ROUND(ST_x(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6) = #lon#
+    AND s.website_id IN (#website_ids#)
+    #filters#
+  </query>
+<order_bys>
+  <order_by>s.id ASC</order_by>
+</order_bys>
+<params>
+  <param name="survey_id" display="Survey ID" datatype="integer" default="">
+    <where>s.survey_id=#survey_id#</where>
+  </param>
+  <param name="group_id" display="Group ID" datatype="integer" default="">
+    <where>s.group_id=#group_id#</where>
+  </param>
+  <param name="tolerance" display="Tolerance (m)" datatype="integer" default="10" />
+  <param name="lat" display="Latitude" datatype="float" />
+  <param name="lon" display="Longitude" datatype="float" />
+</params>
+<columns>
+  <column name="id" sql="s.id" datatype="integer" display="Sample ID" in_count="true" />
+  <column name="survey_title" sql="snf.survey_title" datatype="text" display="Survey" />
+  <column name="lat" sql="ROUND(ST_y(ST_Transform(ST_Centroid(s.public_geom), 4326))::numeric, 6)" datatype="float" display="Latitude" in_count="true" />
+  <column name="lon" sql="ROUND(ST_x(ST_Transform(ST_Centroid(s.public_geom), 4326))::numeric, 6)" datatype="float" display="Longitude" in_count="true" />
+  <column name="date_start" sql="s.date_start" visible="false" />
+  <column name="date_end" sql="s.date_end" visible="false" />
+  <column name="date_type" sql="s.date_type" visible="false" />
+  <column name="date" display="Date" datatype="date" />
+  <column name="recorder" sql="snf.recorders" datatype="text" display="Recorder" />
+</columns>
+</report>

@@ -1,0 +1,57 @@
+<report
+    title="Potential sites mapping"
+    description="Potential sites from samples with no location - mapping version"
+>
+  <query website_filter_field="s.website_id">
+    SELECT #columns#
+    FROM cache_samples_functional s
+    LEFT JOIN cache_samples_functional s2 ON ST_SnapToGrid(ST_Centroid(s2.public_geom), 10) = ST_SnapToGrid(ST_Centroid(s.public_geom), 10)
+      AND s2.parent_sample_id IS NULL
+      AND s2.location_id IS NOT NULL
+      AND s2.private = false
+      AND s2.sensitive = false
+      AND s2.website_id IN (#website_ids#)
+      #filters#
+    LEFT JOIN locations l2 ON l2.id = s2.location_id AND l2.deleted=false
+    WHERE s.parent_sample_id IS NULL
+    AND s.survey_id=#survey_id#
+    AND s.location_id IS NULL
+    AND s.private = false
+    AND s.sensitive = false
+    AND s.website_id IN (#website_ids#)
+    #filters#
+    #group_bys#
+    HAVING count(*) > 1
+  </query>
+  <count_query website_filter_field="">
+    SELECT COUNT(*) FROM (
+      SELECT #columns#
+      FROM cache_samples_functional s
+      WHERE s.parent_sample_id IS NULL
+        AND s.location_id IS NULL
+        AND s.private = false
+        AND s.sensitive = false
+        AND s.website_id IN (#website_ids#)
+        #filters#
+      GROUP BY ROUND(ST_y(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), 10), 4326))::numeric, 6), ROUND(ST_x(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), 10), 4326))::numeric, 6)
+      HAVING count(*) > 1
+    ) AS subquery
+  </count_query>
+<order_bys>
+  <order_by>count(*) DESC</order_by>
+</order_bys>
+<params>
+  <param name="survey_id" display="Survey ID" datatype="integer" default="">
+    <where>s.survey_id=#survey_id#</where>
+  </param>
+  <param name="group_id" display="Group ID" datatype="integer" default="">
+    <where>s.group_id=#group_id#</where>
+  </param>
+  <param name="tolerance" display="Tolerance (m)" datatype="integer" default="10" />
+</params>
+<columns>
+  <column name="geom" sql="ST_AsText(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#))" mappable="true" in_count="true" />
+  <column name="count" sql="count(*)" datatype="integer" aggregate="true" />
+  <column name="suggested_locations" sql="string_agg(DISTINCT l2.name, '; ')" datatype="text" aggregate="true" />
+</columns>
+</report>
