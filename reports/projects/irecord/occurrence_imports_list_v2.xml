@@ -22,7 +22,7 @@
     <param name="hide_zeros" display="Hide imports with zero records" datatype="checkbox" emptyvalue="0">
       <where value="1">i.inserted + i.updated &gt; 0</where>
     </param>
-    <param name="import_guid" display="Import ID" datatype="text" emptyvalue="">
+    <param name="import_guid" display="Import ID" datatype="text">
       <where>i.import_guid='#import_guid#'</where>
     </param>
     <param name="training" display="Training" datatype="boolean" emptyvalue="f" />
