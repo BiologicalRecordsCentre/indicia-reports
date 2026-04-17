@@ -27,7 +27,6 @@
   <columns>
     <column name="id" sql="i.id" in_count="true" visible="false" datatype="integer" />
     <column name="website_id" sql="i.website_id" visible="false" datatype="integer"  />
-    <column name="import_guid" sql="i.import_guid" visible="false" datatype="text" />
     <column name="website_title" display="Imported into" datatype="text"
       sql="case w.id
         when 23 then 'Public data'
@@ -39,6 +38,7 @@
     <column name="imported_by" display="Imported by" sql="coalesce(p.first_name || ' ', '') || p.surname" datatype="text" />
     <column name="records" display="# Records" sql="i.inserted + i.updated" datatype="integer" />
     <column name="description" display="Import metadata" sql="i.description" datatype="text" />
+    <column name="import_guid" display="Import ID" sql="i.import_guid" datatype="text" />
     <column name="is_shared" visible="false" sql="i.website_id&lt;&gt;152" datatype="boolean" />
     <column name="is_unshared" visible="false" sql="i.website_id=152" datatype="boolean" />
     <column name="reversible" visible="false" sql="i.reversible" datatype="boolean" />
