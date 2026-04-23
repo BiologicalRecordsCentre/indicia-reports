@@ -10,6 +10,7 @@
     LEFT JOIN location_attribute_values lav ON lav.location_id=l.id AND lav.location_attribute_id=429 and lav.deleted=false
     JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
       AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id AND vchk.location_attribute_id=433 and vchk.deleted=false
     WHERE #website_filter#
     AND l.deleted=false
     AND l.location_type_id=24469
@@ -26,5 +27,12 @@
     <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />
     <column name="area" display="Area (m2)" sql="round(st_area(st_transform(l.boundary_geom, 27700)))" />
     <column name="email" display="Email" sql="lav.text_value" datatype="text" decrypt="true" />
+    <column name="vchk" display="QC" sql="CASE
+      WHEN vchk.int_value IS NULL OR vchk.int_value=24627 THEN 'unchecked'
+      WHEN vchk.int_value=24628 THEN 'checked'
+      WHEN vchk.int_value=24629 THEN 'invalid'
+      ELSE '-'
+    END" datatype="text" />
+    <column name="checked_value_id" visible="false" sql="vchk.id" />
   </columns>
 </report>
