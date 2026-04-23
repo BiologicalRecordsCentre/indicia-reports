@@ -32,7 +32,7 @@
       WHEN vchk.int_value=24628 THEN 'checked'
       WHEN vchk.int_value=24629 THEN 'invalid'
       ELSE '-'
-    END" datatype="text" />
+    END" datatype="text" template="&lt;span data-value-id=&quot;{checked_value_id}&quot; data-location-id=&quot;{location_id}&quot;&gt;{vchk}&lt;/span&gt;" />
     <column name="checked_value_id" visible="false" sql="vchk.id" />
   </columns>
 </report>
