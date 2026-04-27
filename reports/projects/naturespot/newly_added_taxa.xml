@@ -28,7 +28,7 @@
     <order_by>a.taxon_group, a.preferred_taxon</order_by>
   </order_bys>
   <params>
-    <param name="rank" datatype="lookup" lookup_values="all:All,species:Species,speciesAndLower:Species and Lower" default="">
+    <param name="rank" datatype="lookup" lookup_values="all:All,species:Species,speciesAndLower:Species and Lower">
       <where value="species" operator="equal">a.taxon_rank_sort_order=300</where>
       <where value="speciesAndLower" operator="equal">a.taxon_rank_sort_order &gt;= 300</where>
     </param>
