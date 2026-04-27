@@ -1,5 +1,5 @@
 <report
-    title="Big British Garden Survey Gardens list"
+    title="Big British Garden Survey Gardens list - full details"
     description="A list of gardens registered for the Big British Garden Survey."
 >
   <query website_filter_field="lw.website_id" training_filter_field="">
