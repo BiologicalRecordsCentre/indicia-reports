@@ -1,0 +1,107 @@
+<report
+    title="Big British Garden Survey Gardens list"
+    description="A list of gardens registered for the Big British Garden Survey."
+>
+  <query website_filter_field="lw.website_id" training_filter_field="">
+    SELECT #columns#
+    FROM locations l
+    LEFT JOIN locations_websites lw on lw.location_id=l.id AND lw.deleted=false
+    LEFT JOIN cache_termlists_terms ttype ON ttype.id=l.location_type_id
+    LEFT JOIN location_attribute_values vemail ON vemail.location_id=l.id AND vemail.location_attribute_id=429 and vemail.deleted=false
+    JOIN users_websites accesscheck on accesscheck.website_id=lw.website_id
+      AND accesscheck.user_id=#auth_user_id# AND accesscheck.site_role_id&lt;3
+    LEFT JOIN location_attribute_values vloctype on vloctype.location_id=l.id AND vloctype.location_attribute_id=418 and vloctype.deleted=false
+    LEFT JOIN cache_termlists_terms tloctype on tloctype.id=vloctype.int_value
+    LEFT JOIN location_attribute_values vpollfriendly on vpollfriendly.location_id=l.id AND vpollfriendly.location_attribute_id=391 and vpollfriendly.deleted=false
+    LEFT JOIN location_attribute_values vpollfriendlytiming on vpollfriendlytiming.location_id=l.id AND vpollfriendlytiming.location_attribute_id=414 and vpollfriendlytiming.deleted=false
+    LEFT JOIN location_attribute_values vberries on vberries.location_id=l.id AND vberries.location_attribute_id=393 and vberries.deleted=false
+    LEFT JOIN location_attribute_values vnuts on vnuts.location_id=l.id AND vnuts.location_attribute_id=417 and vnuts.deleted=false
+    LEFT JOIN location_attribute_values vmaturetrees on vmaturetrees.location_id=l.id AND vmaturetrees.location_attribute_id=395 and vmaturetrees.deleted=false
+    LEFT JOIN cache_termlists_terms tmaturetrees on tmaturetrees.id=vmaturetrees.int_value
+    LEFT JOIN location_attribute_values vgrasspatch on vgrasspatch.location_id=l.id AND vgrasspatch.location_attribute_id=396 and vgrasspatch.deleted=false
+    LEFT JOIN cache_termlists_terms tgrasspatch on tgrasspatch.id=vgrasspatch.int_value
+    LEFT JOIN location_attribute_values vpond on vpond.location_id=l.id AND vpond.location_attribute_id=415 and vpond.deleted=false
+    LEFT JOIN location_attribute_values vbirdboxes on vbirdboxes.location_id=l.id AND vbirdboxes.location_attribute_id=399 and vbirdboxes.deleted=false
+    LEFT JOIN location_attribute_values vbatboxes on vbatboxes.location_id=l.id AND vbatboxes.location_attribute_id=400 and vbatboxes.deleted=false
+    LEFT JOIN location_attribute_values vbeehotels on vbeehotels.location_id=l.id AND vbeehotels.location_attribute_id=401 and vbeehotels.deleted=false
+    LEFT JOIN location_attribute_values votherinsecthotels on votherinsecthotels.location_id=l.id AND votherinsecthotels.location_attribute_id=402 and votherinsecthotels.deleted=false
+    LEFT JOIN location_attribute_values vfencehole on vfencehole.location_id=l.id AND vfencehole.location_attribute_id=403 and vfencehole.deleted=false
+    LEFT JOIN location_attribute_values vhedgehogbox on vhedgehogbox.location_id=l.id AND vhedgehogbox.location_attribute_id=404 and vhedgehogbox.deleted=false
+    LEFT JOIN location_attribute_values vdeadwood on vdeadwood.location_id=l.id AND vdeadwood.location_attribute_id=405 and vdeadwood.deleted=false
+    LEFT JOIN location_attribute_values vdrystonewall on vdrystonewall.location_id=l.id AND vdrystonewall.location_attribute_id=406 and vdrystonewall.deleted=false
+    LEFT JOIN cache_termlists_terms tdrystonewall on tdrystonewall.id=vdrystonewall.int_value
+    LEFT JOIN location_attribute_values vdrystonepile on vdrystonepile.location_id=l.id AND vdrystonepile.location_attribute_id=416 and vdrystonepile.deleted=false
+    LEFT JOIN cache_termlists_terms tdrystonepile on tdrystonepile.id=vdrystonepile.int_value
+    LEFT JOIN location_attribute_values vcompostheap on vcompostheap.location_id=l.id AND vcompostheap.location_attribute_id=407 and vcompostheap.deleted=false
+    LEFT JOIN location_attribute_values vgreenroof on vgreenroof.location_id=l.id AND vgreenroof.location_attribute_id=408 and vgreenroof.deleted=false
+    LEFT JOIN location_attribute_values vbirdfood on vbirdfood.location_id=l.id AND vbirdfood.location_attribute_id=412 and vbirdfood.deleted=false
+    LEFT JOIN cache_termlists_terms tbirdfood on tbirdfood.id=vbirdfood.int_value
+    LEFT JOIN location_attribute_values vmammalfood on vmammalfood.location_id=l.id AND vmammalfood.location_attribute_id=413 and vmammalfood.deleted=false
+    LEFT JOIN cache_termlists_terms tmammalfood on tmammalfood.id=vmammalfood.int_value
+    LEFT JOIN location_attribute_values vwildlifeseen on vwildlifeseen.location_id=l.id AND vwildlifeseen.location_attribute_id=431 and vwildlifeseen.deleted=false
+    LEFT JOIN location_attribute_values vmanagement on vmanagement.location_id=l.id AND vmanagement.location_attribute_id=419 and vmanagement.deleted=false
+    LEFT JOIN location_attribute_values vvisitedopengarden on vvisitedopengarden.location_id=l.id AND vvisitedopengarden.location_attribute_id=420 and vvisitedopengarden.deleted=false
+    LEFT JOIN location_attribute_values vopenedgarden on vopenedgarden.location_id=l.id AND vopenedgarden.location_attribute_id=421 and vopenedgarden.deleted=false
+    LEFT JOIN location_attribute_values vtermsconfirm on vtermsconfirm.location_id=l.id AND vtermsconfirm.location_attribute_id=261 and vtermsconfirm.deleted=false
+    LEFT JOIN location_attribute_values vfollowupconsent on vfollowupconsent.location_id=l.id AND vfollowupconsent.location_attribute_id=430 and vfollowupconsent.deleted=false
+    LEFT JOIN location_attribute_values vsubscribe on vsubscribe.location_id=l.id AND vsubscribe.location_attribute_id=422 and vsubscribe.deleted=false
+    LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id AND vchk.location_attribute_id=433 and vchk.deleted=false
+    WHERE #website_filter#
+    AND l.deleted=false
+    AND l.location_type_id=24469
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name="auth_user_id" datatype="integer" default="-1" />
+  </params>
+  <columns>
+    <column name="location_id" display="ID" sql="l.id" />
+    <column name="name" display="Name" sql="l.name" />
+    <column name="centroid_sref" display="Centroid" sql="l.centroid_sref" />
+    <column name="centroid_sref_system" display="Centroid type" sql="l.centroid_sref_system" />
+    <column name="area" display="Area (m2)" sql="round(st_area(st_transform(l.boundary_geom, 27700)))" />
+    <column name="email" display="Email" sql="vemail.text_value" datatype="text" decrypt="true" />
+    <column name="comment" display="1. Garden and surroundings" sql="l.comment" datatype="text" />
+    <column name="location_type" display="1. Location type" sql="tloctype.term" datatype="text" />
+    <column name="pollinator_friendly" display="2. Pollinator friendly flowers" sql="vpollfriendly.int_value" datatype="boolean" />
+    <column name="pollinator_friendly_timing" display="2. Pollinator friendly timing" sql="vpollfriendlytiming.int_value" datatype="boolean" />
+    <column name="pollinator_friendly_timing_terms" display="2. Pollinator friendly timing terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=392 AND lav.deleted=false)" datatype="text" />
+    <column name="berry_bearing_plants" display="2. Berry bearing plants" sql="vberries.int_value" datatype="boolean" />
+    <column name="nut_bearing_plants" display="2. Nut bearing plants" sql="vnuts.int_value" datatype="boolean" />
+    <column name="hedging_terms" display="2. Hedging terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=394 AND lav.deleted=false)" datatype="text" />
+    <column name="mature_trees" display="2. Mature trees" sql="tmaturetrees.term" datatype="text" />
+    <column name="grass_patch" display="2. Grass patch" sql="tgrasspatch.term" datatype="text" />
+    <column name="pond" display="2. Pond" sql="vpond.int_value" datatype="boolean" />
+    <column name="water_feature_terms" display="2. Water feature terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=398 AND lav.deleted=false)" datatype="text" />
+    <column name="bird_boxes" display="2. Bird boxes" sql="vbirdboxes.int_value" datatype="integer" />
+    <column name="bat_boxes" display="2. Bat boxes" sql="vbatboxes.int_value" datatype="integer" />
+    <column name="bee_hotels" display="2. Bee hotels" sql="vbeehotels.int_value" datatype="integer" />
+    <column name="other_insect_hotels" display="2. Other insect hotels" sql="votherinsecthotels.int_value" datatype="integer" />
+    <column name="fence_hole" display="2. Fence hole" sql="vfencehole.int_value" datatype="integer" />
+    <column name="hedgehog_box" display="2. Hedgehog box" sql="vhedgehogbox.int_value" datatype="integer" />
+    <column name="deadwood" display="2. Deadwood" sql="vdeadwood.int_value" datatype="integer" />
+    <column name="dry_stone_wall" display="2. Dry stone wall" sql="tdrystonewall.term" datatype="text" />
+    <column name="dry_stone_pile" display="2. Dry stone pile" sql="tdrystonepile.term" datatype="text" />
+    <column name="compost_heap" display="2. Compost heap" sql="vcompostheap.int_value" datatype="integer" />
+    <column name="green_roof" display="2. Green roof" sql="vgreenroof.int_value" datatype="integer" />
+    <column name="bird_food" display="3. Bird food" sql="tbirdfood.term" datatype="text" />
+    <column name="mammal_food" display="3. Mammal food" sql="tmammalfood.term" datatype="text" />
+    <column name="gardening_terms" display="4. Gardening terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=409 AND lav.deleted=false)" datatype="text" />
+    <column name="citizen_science_terms" display="5. Citizen science terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=410 AND lav.deleted=false)" datatype="text" />
+    <column name="wildlife_seen" display="6. Wildlife seen" sql="vwildlifeseen.text_value" datatype="text" />
+    <column name="management" display="7. Management" sql="vmanagement.text_value" datatype="text" />
+    <column name="visited_open_garden" display="8. Visited Open Garden" sql="vvisitedopengarden.int_value" datatype="integer" />
+    <column name="opened_garden" display="8. Opened Garden" sql="vopenedgarden.int_value" datatype="integer" />
+    <column name="terms_confirmed" display="Terms confirmed" sql="vtermsconfirm.int_value" datatype="integer" />
+    <column name="follow_up_consent" display="Follow up consent" sql="vfollowupconsent.int_value" datatype="integer" />
+    <column name="subscribed" display="Subscribed" sql="vsubscribe.int_value" datatype="integer" />
+    <column name="vchk" display="QC" sql="CASE
+      WHEN vchk.int_value IS NULL OR vchk.int_value=24627 THEN 'unchecked'
+      WHEN vchk.int_value=24628 THEN 'checked'
+      WHEN vchk.int_value=24629 THEN 'invalid'
+      ELSE '-'
+    END" datatype="text" />
+  </columns>
+</report>
