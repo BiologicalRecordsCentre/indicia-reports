@@ -44,7 +44,9 @@
     LEFT JOIN location_attribute_values vopenedgarden on vopenedgarden.location_id=l.id AND vopenedgarden.location_attribute_id=421 and vopenedgarden.deleted=false
     LEFT JOIN location_attribute_values vtermsconfirm on vtermsconfirm.location_id=l.id AND vtermsconfirm.location_attribute_id=261 and vtermsconfirm.deleted=false
     LEFT JOIN location_attribute_values vfollowupconsent on vfollowupconsent.location_id=l.id AND vfollowupconsent.location_attribute_id=430 and vfollowupconsent.deleted=false
+    LEFT JOIN cache_termlists_terms tfollowupconsent on tfollowupconsent.id=vfollowupconsent.int_value
     LEFT JOIN location_attribute_values vsubscribe on vsubscribe.location_id=l.id AND vsubscribe.location_attribute_id=422 and vsubscribe.deleted=false
+    LEFT JOIN cache_termlists_terms tsubscribe on tsubscribe.id=vsubscribe.int_value
     LEFT JOIN location_attribute_values vchk on vchk.location_id=l.id AND vchk.location_attribute_id=433 and vchk.deleted=false
     WHERE #website_filter#
     AND l.deleted=false
@@ -94,9 +96,9 @@
     <column name="management" display="7. Management" sql="vmanagement.text_value" datatype="text" />
     <column name="visited_open_garden" display="8. Visited Open Garden" sql="vvisitedopengarden.int_value" datatype="integer" />
     <column name="opened_garden" display="8. Opened Garden" sql="vopenedgarden.int_value" datatype="integer" />
-    <column name="terms_confirmed" display="Terms confirmed" sql="vtermsconfirm.int_value" datatype="integer" />
-    <column name="follow_up_consent" display="Follow up consent" sql="vfollowupconsent.int_value" datatype="integer" />
-    <column name="subscribed" display="Subscribed" sql="vsubscribe.int_value" datatype="integer" />
+    <column name="terms_confirmed" display="Terms confirmed" sql="termsconfirm.int_value" datatype="integer" />
+    <column name="follow_up_consent" display="Follow up consent" sql="tfollowupconsent.term" datatype="text" />
+    <column name="subscribed" display="Subscribed" sql="tsubscribe.term" datatype="text" />
     <column name="vchk" display="QC" sql="CASE
       WHEN vchk.int_value IS NULL OR vchk.int_value=24627 THEN 'unchecked'
       WHEN vchk.int_value=24628 THEN 'checked'
