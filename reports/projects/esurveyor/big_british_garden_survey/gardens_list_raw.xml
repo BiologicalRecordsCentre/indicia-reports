@@ -96,7 +96,7 @@
     <column name="management" display="7. Management" sql="vmanagement.text_value" datatype="text" />
     <column name="visited_open_garden" display="8. Visited Open Garden" sql="vvisitedopengarden.int_value" datatype="integer" />
     <column name="opened_garden" display="8. Opened Garden" sql="vopenedgarden.int_value" datatype="integer" />
-    <column name="terms_confirmed" display="Terms confirmed" sql="termsconfirm.int_value" datatype="integer" />
+    <column name="terms_confirmed" display="Terms confirmed" sql="vtermsconfirm.int_value" datatype="integer" />
     <column name="follow_up_consent" display="Follow up consent" sql="tfollowupconsent.term" datatype="text" />
     <column name="subscribed" display="Subscribed" sql="tsubscribe.term" datatype="text" />
     <column name="vchk" display="QC" sql="CASE
