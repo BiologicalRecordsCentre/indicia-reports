@@ -35,7 +35,8 @@
     <param name='locattrs' 
         display='Location attribute list' 
         description='Comma separated list of location attribute IDs to include' 
-        datatype='locattrs' />
+        datatype='locattrs' 
+        default=''/>
   </params>
   <columns>
     <column name="id" sql="l.id" />
