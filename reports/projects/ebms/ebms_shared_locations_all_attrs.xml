@@ -11,8 +11,8 @@
     AND lw.deleted=false
     AND lw.website_id=118
   WHERE l.deleted=false
-  AND (0=#location_type_id# OR l.location_type_id=#location_type_id#)
-  AND (0=#parent_id# OR l.parent_id=#parent_id#)
+  AND (l.location_type_id=#location_type_id# OR #location_type_id#=0)
+  AND (l.parent_id=#parent_id# OR #parent_id#=0)
   #order_by#
   </query>
   <order_bys>
