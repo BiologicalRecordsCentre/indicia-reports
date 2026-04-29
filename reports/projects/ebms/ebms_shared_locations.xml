@@ -22,13 +22,15 @@
   <params>
     <param name='location_type_id' 
         display='Location type id' 
-        description='Select the location type, or leave blank to not filter by location type.' 
+        description='The location type id, or leave blank to not filter by location type.' 
         datatype='integer' 
+        default='0'
         emptyvalue='0' />
     <param name='parent_id'
         display='Parent id'
         description='The parent location id, or leave blank to not filter by parent location'
         datatype='integer' 
+        'default'='0'
         emptyvalue='0' />
     <param name='locattrs' 
         display='Location attribute list' 
