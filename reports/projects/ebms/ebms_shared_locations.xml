@@ -30,7 +30,7 @@
         display='Parent id'
         description='The parent location id, or leave blank to not filter by parent location'
         datatype='integer' 
-        'default'='0'
+        default='0'
         emptyvalue='0' />
     <param name='locattrs' 
         display='Location attribute list' 
