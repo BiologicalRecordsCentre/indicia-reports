@@ -50,8 +50,8 @@
     <column name="updated_by_id" sql="l.updated_by_id" />
     <column name="comment" sql="l.comment" />
     <column name="external_key" sql="l.external_key" />
-    <column name="centroid_geom" sql="l.centroid_geom" />
-    <column name="boundary_geom" sql="l.boundary_geom" />
+    <column name="centroid_geom" sql="st_astext(l.centroid_geom)" />
+    <column name="boundary_geom" sql="st_astext(l.boundary_geom)" />
     <column name="location_type_id" sql="l.location_type_id" />
     <column name="public" sql="l.public" />
     <column name="lat" sql="st_y(st_transform(l.centroid_geom, 4326))" />
