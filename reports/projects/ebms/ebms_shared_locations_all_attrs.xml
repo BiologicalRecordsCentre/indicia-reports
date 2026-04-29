@@ -1,0 +1,70 @@
+<report
+    title="Shared locations list with all attributes"
+    description="A list for locations set up by one but used by another.
+    Includes a list of all attributes."
+>
+  <query>
+  SELECT #columns#
+  FROM locations l
+  JOIN locations_websites lw 
+    ON lw.location_id=l.id 
+    AND lw.deleted=false
+    AND lw.website_id=118
+  WHERE l.deleted=false
+  AND (0=#location_type_id# OR l.location_type_id=#location_type_id#)
+  AND (0=#parent_id# OR l.parent_id=#parent_id#)
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name ASC</order_by>
+  </order_bys>
+  <params>
+    <param name='location_type_id' 
+        display='Location type id' 
+        description='Select the location type, or leave blank to not filter by location type.' 
+        datatype='integer' 
+        emptyvalue='0' />
+    <param name='parent_id'
+        display='Parent id'
+        description='The parent location id, or leave blank to not filter by parent location'
+        datatype='integer' 
+        emptyvalue='0' />
+  </params>
+  <columns>
+    <column name="id" sql="l.id" />
+    <column name="name" sql="l.name" />
+    <column name="code" sql="l.code" />
+    <column name="parent_id" sql="l.parent_id" />
+    <column name="centroid_sref" sql="l.centroid_sref" />
+    <column name="centroid_sref_system" sql="l.centroid_sref_system" />
+    <column name="created_on" sql="l.created_on" />
+    <column name="created_by_id" sql="l.created_by_id" />
+    <column name="updated_on" sql="l.updated_on" />
+    <column name="updated_by_id" sql="l.updated_by_id" />
+    <column name="comment" sql="l.comment" />
+    <column name="external_key" sql="l.external_key" />
+    <column name="centroid_geom" sql="l.centroid_geom" />
+    <column name="boundary_geom" sql="l.boundary_geom" />
+    <column name="location_type_id" sql="l.location_type_id" />
+    <column name="public" sql="l.public" />
+    <column name="lat" sql="st_y(st_transform(l.centroid_geom, 4326))" />
+    <column name="lon" sql="st_x(st_transform(l.centroid_geom, 4326))" />
+    <column name="locattrs" sql="coalesce(
+      (select json_agg(attrs) from (
+        select 
+          llav.location_attribute_id as attribute_id,
+          llav.id as value_id,
+          llav.caption,
+          la.data_type,
+          la.multi_value,
+          llav.value,
+          llav.raw_value,
+          llav.upper_value
+        from list_location_attribute_values llav
+        join location_attributes la
+	        on la.id = llav.location_attribute_id and la.deleted = false
+        where llav.location_id = l.id ) attrs),
+      '[]'::json
+    )" />
+  </columns>
+</report>
