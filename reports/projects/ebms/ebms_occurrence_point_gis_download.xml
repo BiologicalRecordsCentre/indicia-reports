@@ -8,6 +8,7 @@
       JOIN cache_taxa_taxon_lists cttl on cttl.id=o.taxa_taxon_list_id
       #joins#
       WHERE o.survey_id=#survey_id#
+      AND o.training = #training#
     </query>
     <order_bys>
       <order_by>o.id</order_by>

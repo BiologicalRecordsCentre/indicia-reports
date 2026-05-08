@@ -9,6 +9,7 @@
       #joins#
       WHERE o.survey_id=#survey_id#
       AND o.created_by_id=#user_id#
+      AND o.training = #training#
     </query>
     <order_bys>
       <order_by>o.id</order_by>

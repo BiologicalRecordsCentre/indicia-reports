@@ -8,6 +8,7 @@
       WHERE s.deleted=false
       AND s.survey_id=#survey_id#
       AND s.parent_id IS NULL
+      AND s.training = #training#
     </query>
     <order_bys>
         <order_by>s.id</order_by>
