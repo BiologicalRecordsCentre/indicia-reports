@@ -21,7 +21,7 @@
     </param>
     <param name="site_name" display="Site Name" datatype="string" default="">
       <join>JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id</join>
-      <where>(snf.public_entered_sref='#site_name#' or snf.location_name='#site_name#')</where>
+      <where>(snf.public_entered_sref='#site_name#' or o.location_name='#site_name#')</where>
     </param>
     <param name="region_id" display="Region" datatype="integer" default="">
       <where>#region_id# = ANY(o.location_ids)</where>

@@ -28,6 +28,7 @@
         AND td.abbreviation IN ('Extinct', 'Na', 'Nb', 'Notable', 'NR', 'NS', 'RDB 1', 'RDB 2', 'RDB 3', 'RE')
       JOIN cache_termlists_terms cat ON cat.id=td.category_id
     ) ON ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+    #joins#
     WHERE o.survey_id=#survey_id#
     #filters#
     GROUP BY 1, 2
@@ -53,6 +54,7 @@
         AND td.abbreviation IN ('CR', 'CR(PE)', 'EN', 'NR', 'NT', 'RE', 'VU')
       JOIN cache_termlists_terms cat ON cat.id=td.category_id
     ) ON ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+    #joins#
     WHERE o.survey_id=#survey_id#
     #filters#
     GROUP BY 1, 2
@@ -67,7 +69,8 @@
       <where>o.created_by_id=#user_id#</where>
     </param>
     <param name="site_name" display="Site Name" datatype="string" default="">
-      <where>(o.entered_sref='#site_name#' or o.location_name='#site_name#')</where>
+      <join>JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id</join>
+      <where>(snf.public_entered_sref='#site_name#' or o.location_name='#site_name#')</where>
     </param>
     <param name="region_id" display="Region" datatype="integer" default="">
       <where>#region_id# = ANY(o.location_ids)</where>
