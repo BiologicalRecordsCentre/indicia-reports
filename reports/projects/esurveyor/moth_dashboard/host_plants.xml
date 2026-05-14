@@ -43,10 +43,9 @@
       SUM(occurrence_count) AS occurrence_count,
       SUM(species_count) AS species_count
     FROM ranked
-    GROUP BY 1
   </query>
   <order_bys>
-    <order_by>3 desc</order_by>
+    <order_by>species_count desc</order_by>
   </order_bys>
   <params>
     <param name="survey_id" display="Survey ID" datatype="integer" />
@@ -62,8 +61,8 @@
     </param>
   </params>
   <columns>
-    <column name="host_plant" sql="mt.host_plants" display="Host Plant" in_count="true" />
-    <column name="occurrence_count" sql="COUNT(DISTINCT o.id)" display="Occurrence count" aggregate="true" />
-    <column name="species_count" sql="COUNT(DISTINCT o.taxon_meaning_id)" display="Taxon count" aggregate="true" />
+    <column name="host_plant" sql="host_plant" display="Host Plant" in_count="true" />
+    <column name="occurrence_count" display="Occurrence count" aggregate="true" />
+    <column name="species_count" display="Taxon count" aggregate="true" />
   </columns>
 </report>
