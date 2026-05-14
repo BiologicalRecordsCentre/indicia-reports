@@ -20,8 +20,8 @@
     ranked AS (
       SELECT
         CASE
-          WHEN host_plant_count > 10
-            AND host_plant_rank > 9 THEN 'Other'
+          WHEN host_plant_count > 7
+            AND host_plant_rank > 6 THEN 'Other'
           ELSE host_plant
         END AS host_plant,
         occurrence_count,
