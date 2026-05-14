@@ -4,30 +4,16 @@
   description="Report for a user's species data conservation statuses in e-Surveyor">
 
   <query>
-    SELECT 'GB Status' AS category,
-      case
-        when td.abbreviation is null then 'None'
-        when td.abbreviation='Extinct' then 'Extinct'
-        when td.abbreviation='Na' then 'Notable'
-        when td.abbreviation='Nb' then 'Notable'
-        when td.abbreviation='NR' then 'Nationally Rare'
-        when td.abbreviation='NS' then 'Nationally Scarce'
-        when td.abbreviation='RDB 1' then 'Endangered'
-        when td.abbreviation='RDB 2' then 'Vulnerable'
-        when td.abbreviation='RDB 3' then 'Rare'
-        when td.abbreviation='RE' then 'Regionally Extinct'
-        else td.abbreviation
-      end AS designation,
+    --    category designation occurrence_count species_count
+
+    SELECT 'Your area' AS category,
+      lr.local_rarity as designation,
       COUNT(distinct o.id) AS occurrence_count,
       COUNT(distinct cttl.taxon_meaning_id) AS species_count
     FROM cache_occurrences_functional o
     JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
-    LEFT JOIN (taxa_taxon_designations ttd
-      JOIN taxon_designations td ON td.id=ttd.taxon_designation_id
-        AND td.category_id = 7666
-        AND td.abbreviation IN ('Extinct', 'Na', 'Nb', 'Notable', 'NR', 'NS', 'RDB 1', 'RDB 2', 'RDB 3', 'RE')
-      JOIN cache_termlists_terms cat ON cat.id=td.category_id
-    ) ON ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+    LEFT JOIN esurveyor.local_rarity lr ON lr.tvk=cttl.external_key
+      AND lr.sq00km='#sq100km#'
     #joins#
     WHERE o.survey_id=#survey_id#
     #filters#
@@ -75,6 +61,7 @@
     <param name="region_id" display="Region" datatype="integer" default="">
       <where>#region_id# = ANY(o.location_ids)</where>
     </param>
+    <param name="sq100km" display="100km square code" datatype="text" default="" />
   </params>
 
   <columns>
