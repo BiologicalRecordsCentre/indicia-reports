@@ -4,31 +4,62 @@
   description="Report for a user's species data conservation statuses in e-Surveyor">
 
   <query>
-    --    category designation occurrence_count species_count
-
-    SELECT 'Your area' AS category,
-      lr.local_rarity as designation,
-      COUNT(distinct o.id) AS occurrence_count,
-      COUNT(distinct cttl.taxon_meaning_id) AS species_count
-    FROM cache_occurrences_functional o
-    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
-    LEFT JOIN esurveyor.local_rarity lr ON lr.tvk=cttl.external_key
-      AND lr.sq100km='#sq100km#'
-    #joins#
-    WHERE o.survey_id=#survey_id#
-    #filters#
-    GROUP BY 1, 2
-    UNION
-    SELECT 'GB' AS category,
-      national_rarity as designation,
-      COUNT(distinct o.id) AS occurrence_count,
-      COUNT(distinct cttl.taxon_meaning_id) AS species_count
-    FROM cache_occurrences_functional o
-    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
-    LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
-    #joins#
-    WHERE o.survey_id=#survey_id#
-    #filters#
+    WITH base AS (
+      SELECT 'Your area' AS category,
+        lr.local_rarity AS designation,
+        COUNT(distinct o.id) AS occurrence_count,
+        COUNT(distinct cttl.taxon_meaning_id) AS species_count
+      FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
+      LEFT JOIN esurveyor.local_rarity lr ON lr.tvk=cttl.external_key
+        AND lr.sq100km='#sq100km#'
+      #joins#
+      WHERE o.survey_id=#survey_id#
+      #filters#
+      GROUP BY 1, 2
+      UNION ALL
+      SELECT 'GB' AS category,
+        mt.national_rarity AS designation,
+        COUNT(distinct o.id) AS occurrence_count,
+        COUNT(distinct cttl.taxon_meaning_id) AS species_count
+      FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
+      LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
+      #joins#
+      WHERE o.survey_id=#survey_id#
+      #filters#
+      GROUP BY 1, 2
+    ),
+    ranked AS (
+      SELECT
+        category,
+        CASE
+          WHEN category_count > 5
+            AND category_rank > 4 THEN 'Other'
+          ELSE designation
+        END AS designation,
+        occurrence_count,
+        species_count
+      FROM (
+        SELECT
+          category,
+          designation,
+          occurrence_count,
+          species_count,
+          ROW_NUMBER() OVER (
+            PARTITION BY category
+            ORDER BY species_count DESC, designation
+          ) AS category_rank,
+          COUNT(*) OVER (PARTITION BY category) AS category_count
+        FROM base
+      ) s
+    )
+    SELECT
+      category,
+      designation,
+      SUM(occurrence_count) AS occurrence_count,
+      SUM(species_count) AS species_count
+    FROM ranked
     GROUP BY 1, 2
   </query>
   <order_bys>
