@@ -4,12 +4,46 @@
   description="Report for a user's species data host plants in e-Surveyor">
 
   <query>
-    SELECT #columns#
-    FROM cache_occurrences_functional o
-    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
-    LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
-    #joins#
-    WHERE o.survey_id=#survey_id#
+    WITH base AS (
+      SELECT
+        mt.host_plants AS host_plant,
+        COUNT(DISTINCT o.id) AS occurrence_count,
+        COUNT(DISTINCT o.taxon_meaning_id) AS species_count
+      FROM cache_occurrences_functional o
+      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
+      LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
+      #joins#
+      WHERE o.survey_id=#survey_id#
+      #filters#
+      GROUP BY 1
+    ),
+    ranked AS (
+      SELECT
+        CASE
+          WHEN host_plant_count > 10
+            AND host_plant_rank > 9 THEN 'Other'
+          ELSE host_plant
+        END AS host_plant,
+        occurrence_count,
+        species_count
+      FROM (
+        SELECT
+          host_plant,
+          occurrence_count,
+          species_count,
+          ROW_NUMBER() OVER (
+            ORDER BY species_count DESC, host_plant
+          ) AS host_plant_rank,
+          COUNT(*) OVER () AS host_plant_count
+        FROM base
+      ) s
+    )
+    SELECT
+      host_plant,
+      SUM(occurrence_count) AS occurrence_count,
+      SUM(species_count) AS species_count
+    FROM ranked
+    GROUP BY 1
   </query>
   <order_bys>
     <order_by>3 desc</order_by>
