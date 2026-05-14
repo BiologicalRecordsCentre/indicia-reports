@@ -19,27 +19,13 @@
     #filters#
     GROUP BY 1, 2
     UNION
-    SELECT 'GB Red List' AS category,
-      case
-        when td.abbreviation is null then 'None'
-        when td.abbreviation IN ('CR', 'CR(PE)') then 'Critically Endangered'
-        when td.abbreviation='EN' then 'Endangered'
-        when td.abbreviation='NR' then 'Nationally Rare'
-        when td.abbreviation='NT' then 'Near Threatened'
-        when td.abbreviation='RE' then 'Regionally Extinct'
-        when td.abbreviation='VU' then 'Vulnerable'
-        else td.abbreviation
-      end AS designation,
+    SELECT 'GB' AS category,
+      national_rarity as designation,
       COUNT(distinct o.id) AS occurrence_count,
       COUNT(distinct cttl.taxon_meaning_id) AS species_count
     FROM cache_occurrences_functional o
     JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
-    LEFT JOIN (taxa_taxon_designations ttd
-      JOIN taxon_designations td ON td.id=ttd.taxon_designation_id
-        AND td.category_id = 7667
-        AND td.abbreviation IN ('CR', 'CR(PE)', 'EN', 'NR', 'NT', 'RE', 'VU')
-      JOIN cache_termlists_terms cat ON cat.id=td.category_id
-    ) ON ttd.taxon_id=cttl.taxon_id and ttd.deleted=false
+    LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
     #joins#
     WHERE o.survey_id=#survey_id#
     #filters#
