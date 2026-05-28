@@ -134,5 +134,6 @@
     <column name="comment" sql="onf.comment" datatype="text" />
     <column name="transect_comment" sql="spnf.comment" datatype="text" />
     <column name="flower_visited" sql="onf.attrs_json->>'149'" datatype="text" />
+    <column name="warehouse_user_id" sql="s.created_by_id" datatype="integer" />
   </columns>
 </report>
