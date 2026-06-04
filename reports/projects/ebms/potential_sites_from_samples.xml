@@ -49,6 +49,7 @@
   <param name="tolerance" display="Tolerance (m)" datatype="integer" default="10" />
 </params>
 <columns>
+  <column name="row_uniq_id" sql="md5(ROUND(ST_y(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6)::text || ',' || ROUND(ST_x(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6)::text)" datatype="text" display="Site ID" in_count="true" />
   <column name="lat" sql="ROUND(ST_y(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6)" datatype="float" display="Latitude" in_count="true" />
   <column name="lon" sql="ROUND(ST_x(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6)" datatype="float" display="Longitude" in_count="true" />
   <column name="count" sql="count(*)" datatype="integer" display="Visits count" aggregate="true" />
