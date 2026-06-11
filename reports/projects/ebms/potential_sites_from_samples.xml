@@ -54,5 +54,7 @@
   <column name="lon" sql="ROUND(ST_x(ST_Transform(ST_SnapToGrid(ST_Centroid(s.public_geom), #tolerance#), 4326))::numeric, 6)" datatype="float" display="Longitude" in_count="true" />
   <column name="count" sql="count(*)" datatype="integer" display="Visits count" aggregate="true" />
   <column name="suggested_locations" sql="string_agg(DISTINCT l2.name, '; ')" datatype="text" display="Suggested site name(s)" aggregate="true" />
+  <column name="filtered_group_id" sql="'#group_id#'" datatype="text" visible="false" />
+  <column name="filtered_survey_id" sql="'#survey_id#'" datatype="text" visible="false" />
 </columns>
 </report>
