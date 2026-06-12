@@ -7,15 +7,14 @@
     #joins#
     WHERE (s.website_id in (#website_ids#) or s.website_id is null)
     AND s.deleted=false
+    s.created_by_id=#created_by_id#
   </query>
   <order_bys>
     <order_by>s.title ASC</order_by>
   </order_bys>
   <params>
     <param name="created_by_id" display="Creator's User ID" description="Warehouse user ID of the filter creator"
-           datatype="text" emptyvalue="0" default="0">
-      <where>s.created_by_id=#created_by_id#</where>
-    </param>
+           datatype="text" emptyvalue="0" default="0" />
     <param name="entity" display="Entity" description="Filter to lists for a given entity"
            datatype="text" default="">
       <where>s.entity='#entity#'</where>
