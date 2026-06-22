@@ -214,17 +214,19 @@
     <column name='synonyms' display='Synonyms'
             sql="cttl_syn.synonyms" datatype="text" />
     <column name='taxon_group' display='Taxon group'
+            sql="pix.taxon_group" datatype="text" />
+    <column name='input_form' display='Input form'
             sql="
             CASE WHEN pix.taxon_list_id = #butterfly_taxon_list_id#
-            THEN 'Butterfly'
+            THEN 'edit-butterfly'
             WHEN pix.taxon_list_id = #moth_taxon_list_id#
-            THEN 'Moth'
+            THEN 'edit-moth'
             WHEN pix.taxon_list_id = #bumblebee_taxon_list_id#
-            THEN 'Bumblebee'
+            THEN 'edit-bumblebee'
             WHEN pix.taxon_list_id = #dragonfly_taxon_list_id#
-            THEN 'Dragonfly'
-            ELSE pix.taxon_group END
-            " datatype="text" />
+            THEN 'edit-dragonfly'
+            ELSE 'unknown-taxon-group' END
+            " datatype="text" visible="false" />
     <column name='taxon_list_id' display='Taxon list ID' sql='pix.taxon_list_id' visible="false" datatype="integer" />
     <column name='taxon_rank' display='Taxon rank' sql='pix.taxon_rank' datatype="text" />
      <column name='path' display='Images' sql="tm.path" img='true' />
