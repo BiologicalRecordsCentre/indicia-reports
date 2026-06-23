@@ -23,7 +23,7 @@
         COUNT(distinct o.id) AS occurrence_count,
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
-      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id
+      JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id AND cttl.taxon_rank_sort_order IN (290, 300)
       LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
       #joins#
       WHERE o.survey_id=#survey_id#
