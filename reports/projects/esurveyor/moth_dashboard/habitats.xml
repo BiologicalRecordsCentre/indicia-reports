@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report
+  title="e-Surveyor: Habitats"
+  description="Report for habitats for moths in e-Surveyor">
+
+  <query>
+    SELECT #columns#
+    FROM cache_occurrences_functional o
+    JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id AND cttl.taxon_rank_sort_order IN (290, 300)
+    AND cttl.family_taxon IN (
+      'Arctiidae',
+      'Castniidae',
+      'Cossidae',
+      'Drepanidae',
+      'Endromidae',
+      'Erebidae',
+      'Geometridae',
+      'Hepialidae',
+      'Lasiocampidae',
+      'Limacodidae',
+      'Noctuidae',
+      'Nolidae',
+      'Notodontidae',
+      'Saturniidae',
+      'Sesiidae',
+      'Sphingidae',
+      'Zygaenidae'
+    )
+    JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
+    #joins#
+    WHERE o.survey_id=#survey_id#
+    #filters#
+  </query>
+  <order_bys>
+    <order_by></order_by>
+  </order_bys>
+  <params>
+    <param name="survey_id" display="Survey ID" datatype="integer" />
+    <param name="user_id" display="User ID" datatype="integer" default="">
+      <where>o.created_by_id=#user_id#</where>
+    </param>
+    <param name="site_name" display="Site Name" datatype="string" default="">
+      <join>JOIN cache_samples_nonfunctional snf ON snf.id=o.sample_id</join>
+      <where>(snf.public_entered_sref='#site_name#' or o.location_name='#site_name#')</where>
+    </param>
+    <param name="region_id" display="Region" datatype="integer" default="">
+      <where>#region_id# = ANY(o.location_ids)</where>
+    </param>
+  </params>
+  <columns>
+    <column name="coastal" sql="COUNT(DISTINCT CASE WHEN mt.habitat_coastal THEN cttl.external_key ELSE null END)" display="Coastal" />
+    <column name="grassland" sql="COUNT(DISTINCT CASE WHEN mt.habitat_grassland THEN cttl.external_key ELSE null END)" display="Grassland" />
+    <column name="heathland_moorland" sql="COUNT(DISTINCT CASE WHEN mt.habitat_heathland_moorland THEN cttl.external_key ELSE null END)" display="Heathland/Moorland" />
+    <column name="montane_upland" sql="COUNT(DISTINCT CASE WHEN mt.habitat_montane_upland THEN cttl.external_key ELSE null END)" display="Montane/Upland" />
+    <column name="wetland" sql="COUNT(DISTINCT CASE WHEN mt.habitat_wetland THEN cttl.external_key ELSE null END)" display="Wetland" />
+    <column name="woodland" sql="COUNT(DISTINCT CASE WHEN mt.habitat_woodland THEN cttl.external_key ELSE null END)" display="Woodland" />
+    <column name="other" sql="COUNT(DISTINCT CASE WHEN mt.habitat_other THEN cttl.external_key ELSE null END)" display="Other" />
+    <column name="generalist" sql="COUNT(DISTINCT CASE WHEN mt.habitat_generalist THEN cttl.external_key ELSE null END)" display="Generalist" />
+  </columns>
+</report>
