@@ -6,7 +6,12 @@
   <query>
     WITH base AS (
       SELECT 'Your area' AS category,
-        case when lr.local_rarity IS NOT NULL THEN lr.local_rarity ELSE 'Rare' END AS designation,
+        CASE WHEN lr.local_rarity IS NOT NULL THEN lr.local_rarity ELSE 'Rare' END AS designation,
+        CASE
+          WHEN lr.local_rarity='Common' THEN 1
+          WHEN lr.local_rarity='Uncommon' THEN 2
+          WHEN lr.local_rarity IS NOT NULL OR lr.local_rarity='Rare' THEN 3
+        END AS designation_sort_order,
         COUNT(distinct o.id) AS occurrence_count,
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
@@ -41,6 +46,17 @@
       UNION ALL
       SELECT 'GB' AS category,
         mt.national_rarity AS designation,
+        CASE
+          WHEN mt.national_rarity='Increasing' THEN 1
+          WHEN mt.national_rarity='Widespread' THEN 2
+          WHEN mt.national_rarity='Widespread, No trend' THEN 3
+          WHEN mt.national_rarity='No trend' THEN 4
+          WHEN mt.national_rarity='Widespread, Declining' THEN 5
+          WHEN mt.national_rarity='Near Threatened' THEN 6
+          WHEN mt.national_rarity='Threatened' THEN 7
+          WHEN mt.national_rarity='Regionally extinct' THEN 8
+          WHEN mt.national_rarity='Not assessed' THEN 100
+        END AS designation_sort_order,
         COUNT(distinct o.id) AS occurrence_count,
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
@@ -79,12 +95,19 @@
             AND category_rank > 4 THEN 'Other'
           ELSE designation
         END AS designation,
+        -- Other goes at the end of the list, so give it a high sort order.
+        CASE
+          WHEN category_count > 5
+            AND category_rank > 4 THEN 1000
+          ELSE designation_sort_order
+        END AS designation_sort_order,
         occurrence_count,
         species_count
       FROM (
         SELECT
           category,
           designation,
+          designation_sort_order,
           occurrence_count,
           species_count,
           ROW_NUMBER() OVER (
@@ -98,13 +121,14 @@
     SELECT
       category,
       designation,
+      designation_sort_order,
       SUM(occurrence_count) AS occurrence_count,
       SUM(species_count) AS species_count
     FROM ranked
-    GROUP BY 1, 2
+    GROUP BY 1, 2, 3
   </query>
   <order_bys>
-    <order_by>1, 3 DESC</order_by>
+    <order_by>1, 3</order_by>
   </order_bys>
 
   <params>
