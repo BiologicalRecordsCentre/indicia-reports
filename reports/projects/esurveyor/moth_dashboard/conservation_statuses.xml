@@ -42,7 +42,7 @@
       WHERE o.survey_id=#survey_id#
       AND '#sq100km#'&lt;&gt;''
       #filters#
-      GROUP BY 1, 2
+      GROUP BY 1, 2, 3
       UNION ALL
       SELECT 'GB' AS category,
         mt.national_rarity AS designation,
@@ -85,7 +85,7 @@
       #joins#
       WHERE o.survey_id=#survey_id#
       #filters#
-      GROUP BY 1, 2
+      GROUP BY 1, 2, 3
     ),
     ranked AS (
       SELECT
