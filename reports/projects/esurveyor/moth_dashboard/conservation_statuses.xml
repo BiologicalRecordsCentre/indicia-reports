@@ -11,10 +11,31 @@
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
       JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id AND cttl.taxon_rank_sort_order IN (290, 300)
+      -- Macro moths
+      AND cttl.family_taxon IN (
+        'Arctiidae',
+        'Castniidae',
+        'Cossidae',
+        'Drepanidae',
+        'Endromidae',
+        'Erebidae',
+        'Geometridae',
+        'Hepialidae',
+        'Lasiocampidae',
+        'Limacodidae',
+        'Noctuidae',
+        'Nolidae',
+        'Notodontidae',
+        'Saturniidae',
+        'Sesiidae',
+        'Sphingidae',
+        'Zygaenidae'
+      )
       LEFT JOIN esurveyor.local_rarity lr ON lr.tvk=cttl.external_key
         AND lr.sq100km='#sq100km#'
       #joins#
       WHERE o.survey_id=#survey_id#
+      AND '#sq100km#'&lt;&gt;''
       #filters#
       GROUP BY 1, 2
       UNION ALL
@@ -24,6 +45,26 @@
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
       JOIN cache_taxa_taxon_lists cttl ON cttl.id=o.preferred_taxa_taxon_list_id AND cttl.taxon_rank_sort_order IN (290, 300)
+      -- Macro moths
+      AND cttl.family_taxon IN (
+        'Arctiidae',
+        'Castniidae',
+        'Cossidae',
+        'Drepanidae',
+        'Endromidae',
+        'Erebidae',
+        'Geometridae',
+        'Hepialidae',
+        'Lasiocampidae',
+        'Limacodidae',
+        'Noctuidae',
+        'Nolidae',
+        'Notodontidae',
+        'Saturniidae',
+        'Sesiidae',
+        'Sphingidae',
+        'Zygaenidae'
+      )
       LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
       #joins#
       WHERE o.survey_id=#survey_id#
