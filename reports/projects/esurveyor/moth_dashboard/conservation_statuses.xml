@@ -6,7 +6,7 @@
   <query>
     WITH base AS (
       SELECT 'Your area' AS category,
-        lr.local_rarity AS designation,
+        case when lr.local_rarity IS NOT NULL THEN lr.local_rarity ELSE 'Rare' END AS designation,
         COUNT(distinct o.id) AS occurrence_count,
         COUNT(distinct cttl.taxon_meaning_id) AS species_count
       FROM cache_occurrences_functional o
