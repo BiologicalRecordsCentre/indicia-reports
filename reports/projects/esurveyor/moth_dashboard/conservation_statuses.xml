@@ -92,17 +92,8 @@
     ranked AS (
       SELECT
         category,
-        CASE
-          WHEN category_count > 5
-            AND category_rank > 4 THEN 'Other'
-          ELSE designation
-        END AS designation,
-        -- Other goes at the end of the list, so give it a high sort order.
-        CASE
-          WHEN category_count > 5
-            AND category_rank > 4 THEN 1000
-          ELSE designation_sort_order
-        END AS designation_sort_order,
+        designation,
+        designation_sort_order,
         occurrence_count,
         species_count
       FROM (
