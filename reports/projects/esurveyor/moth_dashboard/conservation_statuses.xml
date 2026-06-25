@@ -40,6 +40,7 @@
         AND lr.sq100km='#sq100km#'
       #joins#
       WHERE o.survey_id=#survey_id#
+      AND o.record_status&lt;&gt;'R'
       AND '#sq100km#'&lt;&gt;''
       #filters#
       GROUP BY 1, 2, 3
@@ -84,6 +85,7 @@
       LEFT JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
       #joins#
       WHERE o.survey_id=#survey_id#
+      AND o.record_status&lt;&gt;'R'
       #filters#
       GROUP BY 1, 2, 3
     ),

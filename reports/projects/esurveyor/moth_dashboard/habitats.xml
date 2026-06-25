@@ -29,6 +29,7 @@
     JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
     #joins#
     WHERE o.survey_id=#survey_id#
+    AND o.record_status&lt;&gt;'R'
     #filters#
   </query>
   <order_bys>

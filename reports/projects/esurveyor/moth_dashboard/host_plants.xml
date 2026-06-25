@@ -14,6 +14,7 @@
       JOIN esurveyor.moth_traits mt ON mt.tvk=cttl.external_key
       #joins#
       WHERE o.survey_id=#survey_id#
+      AND o.record_status&lt;&gt;'R'
       AND mt.host_plants IS NOT NULL
       #filters#
       GROUP BY 1
