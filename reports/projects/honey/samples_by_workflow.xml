@@ -42,12 +42,8 @@
     <column name="workflow_status" display="Workflow status" sql="tlt.term" />
     <column name="record_status" display="Data entry"
       sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
-    <column name="edit" display="Action"
-          sql="'&lt;a href=''/indicia/honey-sample-submission?sample_id=' ||
-            s.id ||
-            '''&gt; Edit &lt;/a&gt; &lt;br/&gt; &lt;a href=''/indicia/honey-sample-results-submission?sample_id=' ||
-            s.id ||
-            '''&gt; Enter results &lt;/a&gt;'" />
+    <column name="edit" display="Action" sql="s.id" datatype="integer"
+          template="&lt;a href=''/indicia/honey-sample-submission?sample_id={edit}'&gt; Edit &lt;/a&gt; &lt;br/&gt; &lt;a href=''/indicia/honey-sample-results-submission?sample_id={edit}'&gt; Enter results &lt;/a&gt;" />
     <column name="created_by_id" visible="false" sql="s.created_by_id" />
     <column name="workflow_attr_id"  visible="false" sql="sav.id" />
   </columns>
