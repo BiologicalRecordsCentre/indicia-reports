@@ -105,8 +105,8 @@
               FROM cache_taxa_taxon_lists ht
               WHERE ht.taxon_meaning_id=ANY(ctp.path)
               AND ht.preferred=true
-              AND ht.taxon_rank IN (#taxon_ranks#))
-              AND ht.taxon_list_id=#taxon_list_id#"
+              AND ht.taxon_rank IN (#taxon_ranks#)
+              AND ht.taxon_list_id=#taxon_list_id#)"
             datatype="json" />
   </columns>
 </report>
