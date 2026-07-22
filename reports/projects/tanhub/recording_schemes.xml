@@ -1,0 +1,27 @@
+<report
+    title="UKSI recording schemes for TanHub"
+    description="A list of UKSI recording schemes for TanHub."
+>
+  <query website_filter_field="">
+    SELECT #columns#
+    FROM recording_schemes rs
+    WHERE rs.deleted=false
+  </query>
+  <order_bys>
+    <order_by>rs.id</order_by>
+  </order_bys>
+  <columns>
+    <column name="id"
+            sql="rs.id"
+            datatype="integer" />
+    <column name="external_key"
+            sql="rs.external_key"
+            datatype="text"/>
+    <column name="title"
+            sql="rs.title"
+            datatype="text" />
+    <column name="description"
+            sql="rs.description"
+            datatype="text" />
+  </columns>
+</report>

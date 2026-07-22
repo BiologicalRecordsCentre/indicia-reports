@@ -1,0 +1,93 @@
+<report
+    title="2km OSGB DINTY grid squares for TanHub regions"
+    description="All 2km OSGB DINTY squares intersecting selected regions."
+>
+  <query website_filter_field="lw.website_id">
+    WITH regions AS (
+      SELECT
+        l.id AS location_id,
+        l.code as location_code,
+        ST_Transform(COALESCE(l.boundary_geom, l.centroid_geom), 27700) AS geom_27700
+      FROM locations l
+      JOIN cache_termlists_terms t ON t.id = l.location_type_id
+      LEFT JOIN locations_websites lw ON lw.location_id = l.id AND lw.deleted = false
+      WHERE l.deleted = false
+        AND t.term = '#location_type#'
+        AND l.name IN (#geographic_regions#)
+        AND COALESCE(l.boundary_geom, l.centroid_geom) IS NOT NULL
+    ),
+    bounds AS (
+      SELECT
+        FLOOR(MIN(ST_XMin(geom_27700)) / 2000.0)::int * 2000 AS min_e,
+        FLOOR(MIN(ST_YMin(geom_27700)) / 2000.0)::int * 2000 AS min_n,
+        CEIL(MAX(ST_XMax(geom_27700)) / 2000.0)::int * 2000 AS max_e,
+        CEIL(MAX(ST_YMax(geom_27700)) / 2000.0)::int * 2000 AS max_n
+      FROM regions
+    ),
+    grid AS (
+      SELECT
+        e AS west_e,
+        n AS south_n,
+        ST_MakeEnvelope(e, n, e + 2000, n + 2000, 27700) AS geom_27700
+      FROM bounds b
+      JOIN LATERAL generate_series(b.min_e, b.max_e - 2000, 2000) e ON true
+      JOIN LATERAL generate_series(b.min_n, b.max_n - 2000, 2000) n ON true
+    ),
+    hits AS (
+      SELECT
+        r.location_id,
+        r.location_code,
+        g.west_e + 1000 AS centre_easting,
+        g.south_n + 1000 AS centre_northing,
+        NOT ST_CoveredBy(g.geom_27700, r.geom_27700) AS partial,
+        ST_X(ST_Transform(ST_Centroid(g.geom_27700), 4326)) AS centre_lon,
+        ST_Y(ST_Transform(ST_Centroid(g.geom_27700), 4326)) AS centre_lat
+      FROM regions r
+      JOIN grid g
+        ON g.geom_27700 &amp;&amp; r.geom_27700
+       AND ST_Intersects(g.geom_27700, r.geom_27700)
+    )
+    SELECT #columns#
+    FROM hits h
+  </query>
+
+  <order_bys>
+    <order_by>h.location_id</order_by>
+    <order_by>convert_east_north_to_osgb(h.centre_easting, h.centre_northing, 2000)</order_by>
+  </order_bys>
+
+  <params>
+    <param name="geographic_regions"
+           display="Geographic region location names"
+           datatype="text[]"
+           description="Names of the locations to include in the report, single quoted CSV." />
+    <param name="location_type"
+           display="Location type"
+           datatype="text"
+           description="Location type to limit the report to." />
+  </params>
+
+  <columns>
+    <column name="higher_geography_identifier"
+            sql="h.location_code"
+            datatype="text" />
+    <column name="square"
+            sql="convert_east_north_to_osgb(h.centre_easting, h.centre_northing, 2000)"
+            datatype="text" />
+    <column name="centre_easting"
+            sql="h.centre_easting"
+            datatype="integer" />
+    <column name="centre_northing"
+            sql="h.centre_northing"
+            datatype="integer" />
+        <column name="partial"
+            sql="h.partial"
+            datatype="boolean" />
+    <column name="centre_lon"
+            sql="h.centre_lon"
+            datatype="float" />
+    <column name="centre_lat"
+            sql="h.centre_lat"
+            datatype="float" />
+  </columns>
+</report>

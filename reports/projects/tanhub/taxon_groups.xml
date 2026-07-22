@@ -1,0 +1,46 @@
+<report
+    title="UKSI taxon groups for TanHub"
+    description="A list of UKSI taxon groups for TanHub."
+>
+  <query website_filter_field="">
+    SELECT #columns#
+    FROM taxon_groups tg
+    -- Only groups used in the list and from our list of configured groups,
+    -- or a parent of something in one of those groups.
+    JOIN cache_taxa_taxon_lists cttl ON cttl.taxon_group_id=tg.id AND cttl.taxon_list_id=#taxon_list_id#
+    JOIN cache_taxon_paths ctp ON cttl.taxon_meaning_id = any(ctp.path)
+    JOIN cache_taxa_taxon_lists cttlc ON cttlc.taxon_meaning_id=ctp.taxon_meaning_id AND cttlc.taxon_list_id=#taxon_list_id#
+      AND cttlc.taxon_group IN (#taxon_groups#)
+      AND cttlc.allow_data_entry=true
+    #joins#
+    WHERE tg.deleted=false
+  </query>
+  <order_bys>
+    <order_by>tg.id</order_by>
+  </order_bys>
+  <params>
+    <param name="taxon_list_id"
+           display="Taxon List ID"
+           datatype="integer"
+           description="ID of the taxon list to load taxon groups for." />
+    <param name="taxon_groups"
+           display="Taxon Groups"
+           datatype="text[]"
+           description="Taxon groups of the taxa to load, quoted CSV." />
+  </params>
+  <columns>
+    <column name="id"
+            sql="tg.id"
+            datatype="integer"
+            distincton="true" />
+    <column name="external_key"
+            sql="tg.external_key"
+            datatype="text" />
+    <column name="title"
+            sql="tg.title"
+            datatype="text" />
+    <column name="implied"
+            sql="tg.title NOT IN (#taxon_groups#)"
+            datatype="boolean" />
+  </columns>
+</report>

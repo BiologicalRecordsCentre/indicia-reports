@@ -1,0 +1,41 @@
+<report
+    title="UKSI taxon ranks for TanHub"
+    description="A list of UKSI taxon ranks for TanHub."
+>
+  <query website_filter_field="cttl.website_id">
+    SELECT #columns#
+    FROM locations l
+    JOIN cache_termlists_terms t on t.id=l.location_type_id
+    WHERE l.deleted=false
+    AND t.term = '#location_type#'
+    and l.name in (#geographic_regions#)
+  </query>
+  <order_bys>
+    <order_by>l.id</order_by>
+  </order_bys>
+  <params>
+    <param name="geographic_regions"
+           display="Geographic region location names"
+           datatype="text[]"
+           description="Names of the locations to include in the report, single quoted CSV." />
+    <param name="location_type"
+           display="Location type"
+           datatype="text"
+           description="Location type to limit the report to." />
+  </params>
+  <columns>
+    <column name="id"
+            sql="l.id"
+            datatype="integer"
+            distincton="true" />
+    <column name="higher_geography"
+            sql="l.name"
+            datatype="text"/>
+    <column name="higher_geography_identifier"
+            sql="l.code"
+            datatype="text" />
+    <column name="footprint_geometry"
+            sql="st_astext(st_transform(l.boundary_geom, 4326))"
+            datatype="text" />
+  </columns>
+</report>

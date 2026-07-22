@@ -1,0 +1,109 @@
+<report
+    title="UKSI taxa for TanHub"
+    description="A list of UKSI taxa for TanHub."
+>
+  <query website_filter_field="">
+    -- We want to return all taxa, for the correct list, that are preferred, allow data entry and in one of the configured ranks.
+    -- Include taxa for any taxon group, as long as it is a parent of one of the taxa for one of the configured groups.
+    WITH all_ttlids AS (
+      SELECT DISTINCT cttl.id
+      FROM cache_taxa_taxon_lists cttlc
+      JOIN cache_taxon_paths ctp ON ctp.taxon_meaning_id=cttlc.taxon_meaning_id
+      JOIN cache_taxa_taxon_lists cttl ON cttl.taxon_meaning_id=ANY(ctp.path)
+        AND cttl.taxon_list_id=#taxon_list_id#
+        AND cttl.preferred=true
+        AND cttl.allow_data_entry=true
+        AND cttl.taxon_rank IN (#taxon_ranks#)
+      WHERE cttlc.taxon_list_id=#taxon_list_id#
+      AND cttlc.allow_data_entry=true
+      #filters#
+    )
+    SELECT #columns#
+    FROM cache_taxa_Taxon_lists cttl
+    JOIN taxon_groups tg ON tg.id=cttl.taxon_group_id
+      AND tg.deleted=false
+    JOIN cache_taxon_paths ctp ON ctp.taxon_meaning_id=cttl.taxon_meaning_id
+    LEFT JOIN (cache_taxa_taxon_lists cttlp
+      JOIN recording_scheme_taxa rst ON rst.organism_key=cttlp.organism_key AND rst.deleted=false
+      JOIN recording_schemes rs ON rs.id=rst.recording_scheme_id AND rs.deleted=false
+    ) ON cttlp.taxon_meaning_id=ANY(ctp.path)
+      AND cttlp.preferred=true
+    LEFT JOIN (taxa_taxon_designations ttd
+      JOIN taxon_designations td ON td.id=ttd.taxon_designation_id AND td.deleted=false
+      JOIN cache_termlists_terms t ON t.id=td.category_id AND t.term='GB Red List'
+    ) ON ttd.taxon_id=cttl.taxon_id AND ttd.deleted=false
+    WHERE cttl.id IN (SELECT id FROM all_ttlids)
+  </query>
+  <order_bys>
+    <order_by>cttl.taxon_rank_sort_order, cttl.id</order_by>
+  </order_bys>
+  <params>
+    <param name="taxon_list_id"
+           display="Taxon List ID"
+           datatype="integer"
+           description="ID of the taxon list to load taxa for." />
+    <param name="taxon_ranks"
+           display="Taxon Ranks"
+           datatype="text[]"
+           description="Ranks of the taxa to load, quoted CSV." />
+    <param name="taxon_group_ids"
+           display="Taxon Group IDs"
+           datatype="integer[]"
+           description="Optional taxon groups of the taxa to load, comma separated IDs."
+           default="" >
+        <where>
+          cttlc.taxon_group_id IN (#taxon_group_ids#)
+        </where>
+    </param>
+  </params>
+  <columns>
+    <column name="taxon_rank_sort_order"
+            sql="cttl.taxon_rank_sort_order"
+            datatype="integer"
+            distincton="true" />
+    <column name="id"
+            sql="cttl.id"
+            datatype="integer"
+            distincton="true" />
+    <column name="taxon_identifier"
+            sql="cttl.organism_key"
+            datatype="text" />
+    <column name="scientific_name_identifier"
+            sql="cttl.search_code"
+            datatype="text" />
+    <column name="scientific_name"
+            sql="cttl.taxon"
+            datatype="text" />
+    <column name="scientific_name_authorship"
+            sql="cttl.authority"
+            datatype="text" />
+    <column name="vernacular_name"
+            sql="cttl.default_common_name"
+            datatype="text" />
+    <column name="taxon_group"
+            sql="tg.title"
+            datatype="text" />
+    <column name="taxon_group_external_key"
+            sql="tg.external_key"
+            datatype="text" />
+    <column name="recording_scheme"
+            sql="rs.title"
+            datatype="text" />
+    <column name="recording_scheme_external_key"
+            sql="rs.external_key"
+            datatype="text" />
+    <column name="conservation_status"
+            sql="td.abbreviation"
+            datatype="text" />
+    <column name="taxon_rank"
+            sql="cttl.taxon_rank"
+            datatype="text" />
+    <column name="higher_taxa"
+            sql="(select json_agg(json_build_object('organism_key', ht.organism_key, 'taxon', ht.taxon, 'taxon_rank', ht.taxon_rank) order by ht.taxon_rank_sort_order, ht.id)
+              FROM cache_taxa_taxon_lists ht
+              WHERE ht.taxon_meaning_id=ANY(ctp.path)
+              AND ht.preferred=true
+              AND ht.taxon_rank IN (#taxon_ranks#))"
+            datatype="json" />
+  </columns>
+</report>
