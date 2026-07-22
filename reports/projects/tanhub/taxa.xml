@@ -9,6 +9,7 @@
       SELECT DISTINCT cttl.id
       FROM cache_taxa_taxon_lists cttlc
       JOIN cache_taxon_paths ctp ON ctp.taxon_meaning_id=cttlc.taxon_meaning_id
+        AND ctp.taxon_list_id=#taxon_list_id#
       JOIN cache_taxa_taxon_lists cttl ON cttl.taxon_meaning_id=ANY(ctp.path)
         AND cttl.taxon_list_id=#taxon_list_id#
         AND cttl.preferred=true
@@ -23,6 +24,7 @@
     JOIN taxon_groups tg ON tg.id=cttl.taxon_group_id
       AND tg.deleted=false
     JOIN cache_taxon_paths ctp ON ctp.taxon_meaning_id=cttl.taxon_meaning_id
+      AND ctp.taxon_list_id=#taxon_list_id#
     LEFT JOIN (cache_taxa_taxon_lists cttlp
       JOIN recording_scheme_taxa rst ON rst.organism_key=cttlp.organism_key AND rst.deleted=false
       JOIN recording_schemes rs ON rs.id=rst.recording_scheme_id AND rs.deleted=false
@@ -103,7 +105,8 @@
               FROM cache_taxa_taxon_lists ht
               WHERE ht.taxon_meaning_id=ANY(ctp.path)
               AND ht.preferred=true
-              AND ht.taxon_rank IN (#taxon_ranks#))"
+              AND ht.taxon_rank IN (#taxon_ranks#))
+              AND ht.taxon_list_id=#taxon_list_id#"
             datatype="json" />
   </columns>
 </report>
