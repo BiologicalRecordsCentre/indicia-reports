@@ -17,6 +17,11 @@
     SELECT 
       ttla.id as id,
       CASE 
+        WHEN ttla.caption = 'FR' THEN 'France mainland'
+        WHEN ttla.caption = 'FR: GP' THEN 'Guadeloupe'
+        WHEN ttla.caption = 'FR: MQ' THEN 'Martinique'
+        WHEN ttla.caption = 'FR: BL' THEN 'Saint-Barthélémy'
+        WHEN ttla.caption = 'FR: MF' THEN 'Saint-Martin'
         WHEN ttla.caption = 'PT' THEN 'Portugal mainland'
         WHEN ttla.caption = 'PT: AZ' THEN 'Azores'
         WHEN ttla.caption = 'PT: MA' THEN 'Madeira Islands'
@@ -28,7 +33,12 @@
         WHEN ttla.caption = 'GB' THEN 'United Kingdom'
         WHEN ttla.caption = 'GR' THEN 'Greece'
       ELSE coalesce(l.name, ttla.caption) END as name,
-      CASE 
+      CASE
+        WHEN ttla.caption = 'FR' THEN 'France 1'
+        WHEN ttla.caption = 'FR: GP' THEN 'France 2'
+        WHEN ttla.caption = 'FR: MQ' THEN 'France 3'
+        WHEN ttla.caption = 'FR: BL' THEN 'France 4'
+        WHEN ttla.caption = 'FR: MF' THEN 'France 5'
         WHEN ttla.caption = 'PT' THEN 'Portugal 1'
         WHEN ttla.caption = 'PT: AZ' THEN 'Portugal 2'
         WHEN ttla.caption = 'PT: MA' THEN 'Portugal 3'

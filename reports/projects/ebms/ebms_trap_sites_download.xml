@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="EBMS Trap Sites Download" description="Based on ebms_sites_download_2 but with alterations to customise for bait-traps.">
+  <query website_filter_field="l.website_id">
+  SELECT #columns#
+  FROM locations l
+  JOIN locations_websites lw ON lw.location_id=l.id AND lw.website_id IN (#website_ids#)
+  JOIN cache_termlists_terms ctt ON ctt.id=l.location_type_id
+  #joins#
+  WHERE l.deleted=false
+  #filters#
+  #order_by#
+  </query>
+  <order_bys>
+    <order_by>l.name</order_by>
+  </order_bys>
+  <params>
+    <param name="locattrs" display="Location attribute list" description="Comma separated list of location attribute IDs to include" datatype="locattrs" />
+    <param name="location_type_id" display="Location Type ID" description="Enter the type of location" datatype="lookup"
+            population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
+      <where>l.location_type_id=#location_type_id#</where>
+    </param>
+    <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
+      <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, l.centroid_geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
+    </param>
+  </params>
+  <columns>
+    <column name="site_id" sql="l.id" display="Trap Site ID" />
+    <column name="site_name" sql="l.name" display="Trap Site Name" />
+    <column name="centroid_sref" sql="l.centroid_sref" display="Spatial Reference" />
+    <column name="centroid_sref_system" sql="l.centroid_sref_system" display="Spatial Reference System" />
+  </columns>
+</report>
