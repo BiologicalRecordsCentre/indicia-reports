@@ -176,7 +176,7 @@
       lookup_values="16407:P,16408:P?,16406:A,16409:M,16410:I,16411:Ex" />
     <param name="common_names_language" datatype="lookup" display="Include common names?"
       description="Limit common names language" 
-      population_call="report:projects/ebms/ebms_languages_for_taxon_list_viewer_lookup:iso:language:orderby=id" />
+      population_call="report:projects/ebms/ebms_languages_for_taxon_list_viewer_lookup:iso:language:orderby=language" />
     <param name="include_synonyms" datatype="checkbox" display="Include synonyms?" 
         description="Include synonyms in results?" />
     <param name="one_common_name_per_language" datatype="checkbox" display="Display one common name per language?" 
