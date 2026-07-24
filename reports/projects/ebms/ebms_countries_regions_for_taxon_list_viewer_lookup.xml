@@ -3,17 +3,6 @@
     description="Report that populates the counties and regions in the taxon list viewer."
 >
   <query>
-    SELECT id, name, orderby_name
-    FROM
-    (VALUES 
-      (-1, 'Europe', '-1'),
-      (-2, 'North America', '-2'),
-      (-3, 'South America', '-3'),
-      (-4, 'Africa', '-4'),
-      (-5, 'Asia', '-5'),
-      (-6, 'Oceania', '-6')
-    ) as continent(id ,name, orderby_name)
-    UNION
     SELECT 
       ttla.id as id,
       CASE 
