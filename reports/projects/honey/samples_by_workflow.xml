@@ -16,19 +16,19 @@
          description="Status of sample."
          lookup_values="14412:Pack requested,14150:Pack sent,14151:Sample received,
           14413:Sugar results added,17630:Habitat and crop results ready,14415:Species results added,
-          17630:Sample not returned,14683:Sample discounted">
+          17630:Sample not returned,14683:Sample discounted" default="">
       <where>#workflow_status# = sav.int_value</where>
     </param>
     <param name="record_status" display="Record status" datatype="lookup"
         description="Status of data entry."
         lookup_values=":All,I:Incomplete,C:Complete"
-        emptyvalue="0">
+        emptyvalue="0" default="0">
       <where>'#record_status#' = s.record_status</where>
     </param>
     <param name="year" display="Year" datatype="lookup"
          description="Year of sample."
          population_call="report:projects/honey/years_list:year:year"
-         emptyvalue="0">
+         emptyvalue="0" default="">
       <where>extract(year from s.created_on)=#year#</where>
     </param>
   </params>
@@ -43,7 +43,7 @@
     <column name="record_status" display="Data entry"
       sql="CASE WHEN s.record_status = 'I' THEN 'Incomplete' WHEN s.record_status = 'C' THEN 'Complete' END" />
     <column name="edit" display="Action" sql="s.id" datatype="integer"
-          template="&lt;a href=''/indicia/honey-sample-submission?sample_id={edit}'&gt; Edit &lt;/a&gt; &lt;br/&gt; &lt;a href=''/indicia/honey-sample-results-submission?sample_id={edit}'&gt; Enter results &lt;/a&gt;" />
+          template="&lt;a href=&quot;/indicia/honey-sample-submission?sample_id={edit}&quot;&gt; Edit &lt;/a&gt; &lt;br/&gt; &lt;a href=&quot;/indicia/honey-sample-results-submission?sample_id={edit}&quot;&gt; Enter results &lt;/a&gt;" />
     <column name="created_by_id" visible="false" sql="s.created_by_id" />
     <column name="workflow_attr_id"  visible="false" sql="sav.id" />
   </columns>
