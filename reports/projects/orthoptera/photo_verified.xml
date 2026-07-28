@@ -26,6 +26,6 @@ description="Grid provided for verified record.">
     <order_by>co.date_start DESC</order_by>
   </order_bys>
   <columns>
-    <column name='path' display='Photo' />
+    <column name='path' display='Photo' datatype="text" sql="oi.path" template="(path)" />
    </columns>
 </report>
