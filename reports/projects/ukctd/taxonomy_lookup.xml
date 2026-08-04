@@ -1,0 +1,35 @@
+<report
+    title="Taxonomic info for UKCTD"
+    description="Looks up taxonomic information for a taxon meaning ID selected by the user when adding a species to a project.">
+  <query >
+    SELECT #columns#
+    FROM cache_taxa_taxon_lists cttl
+    LEFT JOIN cache_taxon_paths ctp ON ctp.taxon_meaning_id=cttl.taxon_meaning_id
+    LEFT JOIN cache_taxa_taxon_lists cttlphy ON cttlphy.taxon_meaning_id=ANY(ctp.path)
+      AND cttlphy.taxon_list_id=15
+      AND cttlphy.preferred=true
+      AND cttlphy.allow_data_entry=true
+      AND cttlphy.taxon_rank='Phylum'
+    WHERE cttl.taxon_meaning_id=#taxon_meaning_id#
+    AND cttl.allow_data_entry=true
+    AND cttl.taxon_list_id=15
+  </query>
+  <order_bys>
+    <order_by>cttl.preferred desc, cttl.language_iso='lat' desc, cttl.language_iso='eng' desc, cttl.taxon</order_by>
+  </order_bys>
+  <params>
+    <param name="taxon_meaning_id" display="Taxon meaning_id ID" description="Filter to a taxonomic concept" datatype="integer"/>
+  </params>
+  <columns>
+    <column name="taxon" sql="cttl.taxon" datatype="text" />
+    <column name="preferred" sql="cttl.preferred" datatype="boolean" />
+    <column name="preferred_taxon" sql="cttl.preferred_taxon" datatype="text" />
+    <column name="authority" sql="cttl.authority" datatype="text" />
+    <column name="kingdom_taxon" sql="cttl.kingdom_taxon" datatype="text" />
+    <column name="phylum_taxon" sql="cttlphy.taxon" datatype="text" />
+    <column name="order_taxon" sql="cttl.order_taxon" datatype="text" />
+    <column name="family_taxon" sql="cttl.family_taxon" datatype="text" />
+    <column name="default_common_name" sql="cttl.default_common_name" datatype="text" />
+    <column name="language_iso" sql="cttl.language_iso" datatype="text" />
+  </columns>
+</report>
