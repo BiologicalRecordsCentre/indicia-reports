@@ -14,9 +14,9 @@ description='List of the submitted survey' row_class='biota'>
   GROUP BY tc.taxon,tpref.taxon,ttl.taxon_meaning_id 
   ORDER BY commonname</query>
   <columns>
-    <column name="taxon" display="Common name" datatype="text" sql="tc.taxon" />
-    <column name="sciname" display="Scientific name" datatype="text" sql="sciname" template="&lt;i&gt;(sciname)&lt;/i&gt;"  />
-    <column name="total_rec" display="Total records" datatype="integer" sql="total_rec" />
-    <column name="tid" display="On the map" datatype="integer" sql="ttl.taxon_meaning_id" template="&lt;a href=&quote;/surveymap?taxon=(tid)&quote;&gt;(taxon)&lt;/a&gt;" />
+    <column name="taxon" display="Common name" datatype="text" />
+    <column name="sciname" display="Scientific name" />
+    <column name="total_rec" display="Total records" datatype="integer" />
+    <column name="tid" display="On the map" datatype="integer" />
   </columns>
 </report>
