@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <report title='Orthoptera Summary'
 description='List of the submitted survey' row_class='biota'>
-  <query>SELECT tc.taxon, tpref.taxon
+  <query>SELECT tc.taxon as commonname, tpref.taxon
    as sciname , count(s.id) as total_rec, ttl.taxon_meaning_id 
   FROM samples s 
   JOIN occurrences o ON o.sample_id=s.id AND o.deleted = false 
