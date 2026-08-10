@@ -62,7 +62,7 @@
         (#taxon_list_filter# = #bumblebee_taxon_list_id# AND cttl_all_taxon_meanings.taxon_list_id = #bumblebee_taxon_list_id#) OR
         (#taxon_list_filter# = #dragonfly_taxon_list_id# AND cttl_all_taxon_meanings.taxon_list_id = #dragonfly_taxon_list_id#))
       AND ('#include_higher_level_taxa#' = '1'
-        OR ('#include_higher_level_taxa#' = '0' AND cttl_all_taxon_meanings.taxon_rank_id in (2,10,26,38,49,64)))
+        OR ('#include_higher_level_taxa#' = '0' AND cttl_all_taxon_meanings.taxon_rank_id in (2,10,26,38,46,49,64)))
       AND cttl_all_taxon_meanings.allow_data_entry = true
       AND cttl_all_taxon_meanings.preferred = true
       AND lang.iso IN
@@ -131,7 +131,7 @@
       (#taxon_list_filter# = 261 AND pix.taxon_list_id = #bumblebee_taxon_list_id#) OR
       (#taxon_list_filter# = 265 AND pix.taxon_list_id = #dragonfly_taxon_list_id#))
     AND ('#include_higher_level_taxa#' = '1'
-      OR ('#include_higher_level_taxa#' = '0' AND pix.taxon_rank_id in (2,10,26,38,49,64)))
+      OR ('#include_higher_level_taxa#' = '0' AND pix.taxon_rank_id in (2,10,26,38,46,49,64)))
     AND (profiles.taxon_meaning_id IS NOT NULL OR (#country_region_ttl_attr_id# = 0 AND #species_presence_filter# = 0))
     AND 
       (
