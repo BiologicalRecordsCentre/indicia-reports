@@ -1,6 +1,6 @@
 <report
-    title="2km OSGB DINTY grid squares for TanHub regions"
-    description="All 2km OSGB DINTY squares intersecting selected regions."
+    title="2km OSGB DINTY grid squares for tanhub regions"
+    description="All 2km OSGB DINTY squares intersecting selected tanhub regions."
 >
   <query website_filter_field="lw.website_id">
     WITH regions AS (

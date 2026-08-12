@@ -1,6 +1,6 @@
 <report
-    title="UKSI recording schemes for TanHub"
-    description="A list of UKSI recording schemes for TanHub."
+    title="UKSI recording schemes for tanhub"
+    description="A list of UKSI recording schemes for tanhub."
 >
   <query website_filter_field="">
     SELECT #columns#

@@ -1,6 +1,6 @@
 <report
-    title="UKSI taxon groups for TanHub"
-    description="A list of UKSI taxon groups for TanHub."
+    title="UKSI taxon groups for tanhub"
+    description="A list of UKSI taxon groups for tanhub."
 >
   <query website_filter_field="">
     SELECT #columns#

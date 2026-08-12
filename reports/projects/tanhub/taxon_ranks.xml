@@ -1,14 +1,13 @@
 <report
-    title="UKSI taxon ranks for TanHub"
-    description="A list of UKSI taxon ranks for TanHub."
+    title="UKSI taxon ranks for tanhub"
+    description="A list of UKSI taxon ranks for tanhub."
 >
   <query website_filter_field="cttl.website_id">
     SELECT #columns#
     FROM taxon_ranks tr
-    -- Limit to ranks used in the list.
+    -- Return every rank used by the imported hierarchy.
     JOIN cache_taxa_taxon_lists cttl ON tr.id=cttl.taxon_rank_id AND cttl.taxon_list_id=#taxon_list_id#
     WHERE tr.deleted=false
-    AND tr.rank in (#taxon_ranks#)
   </query>
   <order_bys>
     <order_by>tr.id</order_by>
@@ -18,10 +17,6 @@
            display="Taxon List ID"
            datatype="integer"
            description="ID of the taxon list to load higher taxa for." />
-    <param name="taxon_ranks"
-           display="Taxon Ranks"
-           datatype="text[]"
-           description="Ranks of the taxa to load higher taxa for, quoted CSV." />
   </params>
   <columns>
     <column name="id"

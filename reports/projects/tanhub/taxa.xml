@@ -1,10 +1,9 @@
 <report
-    title="UKSI taxa for TanHub"
-    description="A list of UKSI taxa for TanHub."
+    title="UKSI taxa for tanhub"
+    description="A list of UKSI taxa for tanhub."
 >
   <query website_filter_field="">
-    -- We want to return all taxa, for the correct list, that are preferred, allow data entry and in one of the configured ranks.
-    -- Include taxa for any taxon group, as long as it is a parent of one of the taxa for one of the configured groups.
+    -- Return all preferred, data-entry-enabled taxa in the configured groups and their accepted hierarchy.
     WITH all_ttlids AS (
       SELECT DISTINCT cttl.id
       FROM cache_taxa_taxon_lists cttlc
@@ -14,7 +13,6 @@
         AND cttl.taxon_list_id=#taxon_list_id#
         AND cttl.preferred=true
         AND cttl.allow_data_entry=true
-        AND cttl.taxon_rank IN (#taxon_ranks#)
       WHERE cttlc.taxon_list_id=#taxon_list_id#
       AND cttlc.allow_data_entry=true
       #filters#
@@ -46,10 +44,10 @@
            display="Taxon List ID"
            datatype="integer"
            description="ID of the taxon list to load taxa for." />
-    <param name="taxon_ranks"
-           display="Taxon Ranks"
-           datatype="text[]"
-           description="Ranks of the taxa to load, quoted CSV." />
+        <param name="reporting_taxon_ranks"
+          display="Reporting Taxon Ranks"
+          datatype="text[]"
+          description="Configured reporting ranks used for projection fields, quoted CSV." />
     <param name="taxon_group_ids"
            display="Taxon Group IDs"
            datatype="integer[]"
@@ -105,12 +103,23 @@
     <column name="taxon_rank"
             sql="cttl.taxon_rank"
             datatype="text" />
+    <column name="parent_taxon_identifier"
+            sql="(select parent.organism_key
+            from cache_taxa_taxon_lists parent
+            where parent.taxon_meaning_id=ANY(ctp.path)
+            and parent.taxon_list_id=#taxon_list_id#
+            and parent.preferred=true
+            and parent.allow_data_entry=true
+            and parent.taxon_rank_sort_order &lt; cttl.taxon_rank_sort_order
+            order by parent.taxon_rank_sort_order desc, parent.id desc
+            limit 1)"
+          datatype="text" />
     <column name="higher_taxa"
             sql="(select json_agg(json_build_object('organism_key', ht.organism_key, 'taxon', ht.taxon, 'taxon_rank', ht.taxon_rank) order by ht.taxon_rank_sort_order, ht.id)
               FROM cache_taxa_taxon_lists ht
               WHERE ht.taxon_meaning_id=ANY(ctp.path)
               AND ht.preferred=true
-              AND ht.taxon_rank IN (#taxon_ranks#)
+              AND ht.taxon_rank IN (#reporting_taxon_ranks#)
               AND ht.taxon_list_id=#taxon_list_id#)"
             datatype="json" />
   </columns>

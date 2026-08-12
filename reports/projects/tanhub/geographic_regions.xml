@@ -1,6 +1,6 @@
 <report
-    title="UKSI taxon ranks for TanHub"
-    description="A list of UKSI taxon ranks for TanHub."
+    title="UKSI taxon ranks for tanhub"
+    description="A list of UKSI taxon ranks for tanhub."
 >
   <query website_filter_field="cttl.website_id">
     SELECT #columns#
