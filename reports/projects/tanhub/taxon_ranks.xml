@@ -23,10 +23,10 @@
             sql="tr.id"
             datatype="integer"
             distincton="true" />
-    <column name="abbr"
+    <column name="rank"
             sql="tr.rank"
             datatype="text"/>
-    <column name="code"
+    <column name="abbr"
             sql="tr.short_name"
             datatype="text" />
     <column name="sort_order"
