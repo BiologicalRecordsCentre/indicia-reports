@@ -23,7 +23,7 @@
             sql="tr.id"
             datatype="integer"
             distincton="true" />
-    <column name="rank"
+    <column name="abbr"
             sql="tr.rank"
             datatype="text"/>
     <column name="code"
