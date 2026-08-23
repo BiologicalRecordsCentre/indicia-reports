@@ -93,6 +93,7 @@
   </order_bys>
   <params>
     <param name = "current_user_id" display="Current User ID" description="Current user's warehouse ID. Allows a column to be output indicating that the user owns the record." datatype="text" />
+    <param name = "project_smp_attr_id" display="Project sample attribute ID" description = "ID of sample attribute that holds the project." datatype="integer"/>
     <param name = "habitat_smp_id" display="Habitat sample attribute ID" description = "ID of sample attribute that holds the habitat." datatype="integer"/>
     <param name = "other_habitat_tt_id" display="Other habitat termlists_terms ID" description = "Termlists_terms ID of the Other habitat option." datatype="integer"/>
     <param name = "other_habitat_smp_id" display="Other habitat sample attribute ID" description = "ID of sample attribute that holds the other habitat." datatype="integer"/>
@@ -147,6 +148,7 @@
         when #fit_count_app_survey_id# then 'FIT Count App'
         else ''
         END" display='Survey' datatype="integer"/>
+    <column name='project' sql="csnf.attrs_json->>('#project_smp_attr_id#')" display='Project' datatype="text" />
     <column name='grid_ref' display='Grid ref' sql='s.entered_sref' datatype="text"/>
     <column name='entered_sref_system' display='Projection entered' sql="s.entered_sref_system" datatype="text"/>
     <!-- This is a version of cache_occurrences_nonfunctional column altered for samples only, also assumes 1000 privacy_precision -->
