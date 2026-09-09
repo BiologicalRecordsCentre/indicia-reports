@@ -42,7 +42,7 @@
     <column name="preferred_taxon" sql="cttl.preferred_taxon" />
     <column name="taxon_group_id" sql="cttl.taxon_group_id" />
     <column name="attributes" sql="
-    (select json_object_agg(CASE WHEN ttla.caption = 'EL' THEN 'GR' ELSE ttla.caption END, t.term order by ttla.caption)
+    (select json_object_agg(ttla.caption, t.term order by ttla.caption)
    from taxa_taxon_list_attributes ttla
    join taxa_taxon_list_attribute_values ttlav on ttlav.taxa_taxon_list_id=cttl.preferred_taxa_taxon_list_id and ttlav.taxa_taxon_list_attribute_id=ttla.id
    join cache_termlists_terms t on t.id=ttlav.int_value)
