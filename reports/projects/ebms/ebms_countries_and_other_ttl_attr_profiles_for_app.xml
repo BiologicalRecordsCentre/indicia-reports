@@ -83,7 +83,7 @@
     SELECT
       sl.id,
       'custom_list' AS type,
-      null AS location_code,
+      l.code AS location_code,
       sl.title AS name,
       sl.description AS description,
       null AS coordinates,
@@ -113,10 +113,11 @@
       AND sl.deleted=false
       AND sl.scratchpad_type_id=22150
       AND (l.id IS NOT NULL OR g.id IS NOT NULL)
+      AND (l.code = '#location_code_filter#' OR '#location_code_filter#' = '')
       AND (sl.title ILIKE '%' || '#name_filter#' || '%' OR '#name_filter#' = '')
       AND (cttl.taxon_group_id in (#species_groups_filter#) OR '#species_groups_filter#' = '0')
       AND GREATEST(cttl.cache_updated_on, sle.updated_on) &gt;= '#updated_on_filter#'::timestamp
-    GROUP BY sl.id, sl.title, sl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
+    GROUP BY sl.id, l.code, sl.title, sl.description, l.centroid_sref, l.boundary_geom, l.centroid_geom
 
     ORDER BY dist, type, name
   </query>
