@@ -4,18 +4,67 @@
 >
   <query>
     WITH region_lists AS (
-      SELECT id, title, replace(title, 'EBMS Country List - ', '') as location_code, description
-      FROM scratchpad_lists
-      WHERE title ILIKE 'EBMS Country List - %'
-      AND deleted=false
-      AND website_id=118
+      SELECT sl.id, 
+      CASE WHEN replace(sl.title, 'EBMS Country List - ', '') = 'PT: MA' THEN
+        'Madeira Islands (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'ES: CA' THEN
+        'Canary Islands (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'FR: GP' THEN
+        'Guadeloupe (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'FR: MQ' THEN
+        'Martinique (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'FR: MF' THEN
+        'Saint-Martin (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'FR: BL' THEN
+        'Saint-Barthélémy (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'SH: HL' THEN
+        'Saint Helena (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'PT: AZ' THEN
+        'Azores (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'GR' THEN
+        'Greece (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'GB' THEN
+        'United Kingdom (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'BQ: BO' THEN
+        'Bonaire (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'BQ: SA' THEN
+        'Saba (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'BQ: SE' THEN
+        'Sint Eustatius (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'TRA' THEN
+        'Turkey, Asia (butterflies)'
+      WHEN replace(sl.title, 'EBMS Country List - ', '') = 'Europe' THEN
+        'European (butterflies)'
+      ELSE
+        l.name || ' (butterflies)' 
+      END
+      as title, 
+      
+      replace(sl.title, 'EBMS Country List - ', '') as location_code, sl.description
+      FROM scratchpad_lists sl
+      LEFT JOIN locations l on l.code = replace(sl.title, 'EBMS Country List - ', '') 
+        and l.location_type_id in (16516, 16517, 14587)
+        and l.deleted = false
+      WHERE sl.title ILIKE 'EBMS Country List - %'
+      AND sl.deleted=false
+      AND sl.website_id=118
       )
     -- First, get data from taxon_lists appropriate to EBMS.
     SELECT
       tl.id,
       'list' as type,
       null as location_code,
-      tl.title as name,
+      CASE WHEN tl.id = 251 THEN 
+        'All (butterflies)'
+      WHEN tl.id = 260 THEN
+        'All (moths)'
+      WHEN tl.id = 261 THEN 
+        'All (bumblebees)'
+      WHEN tl.id = 265 THEN 
+        'All (dragonflies)'
+      ELSE
+        tl.title 
+      END as name,
       tl.description as description,
       null as coordinates,
       count(distinct cttl.taxon_meaning_id) as taxa_count,
@@ -67,8 +116,15 @@
       (l.code='UK' AND rl.location_code='GB') OR
       (l.code='SH' AND rl.location_code='SH: HL') OR
       (l.code='EL' AND rl.location_code='GR') OR
-      (l.code='PT3' AND rl.location_code='PT: MA'))
-      AND l.deleted = false and l.location_type_id in (16516, 16517)
+      (l.code='PT3' AND rl.location_code='PT: MA') OR
+      (l.code='FRY1' AND rl.location_code='FR: GP') OR
+      (l.code='FRY2' AND rl.location_code='FR: MQ') OR
+      (l.code='BL' AND rl.location_code='FR: BL') OR 
+      (l.code='BQ' AND rl.location_code='BQ: BO') OR 
+      (l.code='BQ' AND rl.location_code='BQ: SA') OR 
+      (l.code='BQ' AND rl.location_code='BQ: SE')
+      )
+      AND l.deleted = false and l.location_type_id in (16516, 16517, 14587)
     LEFT JOIN scratchpad_list_entries sle ON sle.scratchpad_list_id = rl.id AND sle.deleted=false
     LEFT JOIN cache_taxa_taxon_lists cttl ON cttl.id=sle.entry_id AND cttl.allow_data_entry=true
     WHERE
@@ -86,7 +142,10 @@
       l.code AS location_code,
       sl.title AS name,
       sl.description AS description,
-      null AS coordinates,
+      ARRAY[
+        ROUND(ST_Y(ST_Transform(l.centroid_geom, 4326))::numeric, 5),
+        ROUND(ST_X(ST_Transform(l.centroid_geom, 4326))::numeric, 5)
+      ] AS coordinates,
       COUNT(DISTINCT cttl.taxon_meaning_id) AS taxa_count,
       '[' || STRING_AGG(DISTINCT cttl.taxon_group_id::text, ', ') || ']' AS species_groups,
       GREATEST(MAX(cttl.cache_updated_on), MAX(sle.updated_on)) AS updated_on,
