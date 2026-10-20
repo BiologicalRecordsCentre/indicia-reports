@@ -1,11 +1,12 @@
 <report
-    title="UKSI taxon ranks for tanhub"
-    description="A list of UKSI taxon ranks for tanhub."
+    title="Geographic regions for tanhub"
+    description="A list of geographic regions for tanhub for a single location type."
 >
-  <query website_filter_field="cttl.website_id">
+  <query website_filter_field="lw.website_id">
     SELECT #columns#
     FROM locations l
     JOIN cache_termlists_terms t on t.id=l.location_type_id
+    LEFT JOIN locations_websites lw ON lw.location_id = l.id AND lw.deleted = false
     WHERE l.deleted=false
     AND t.term = '#location_type#'
     and l.name in (#geographic_regions#)
@@ -32,7 +33,7 @@
             sql="l.name"
             datatype="text"/>
     <column name="higher_geography_identifier"
-            sql="l.code"
+            sql="COALESCE(NULLIF(BTRIM(l.code), ''), l.id::text)"
             datatype="text" />
     <column name="footprint_geometry"
             sql="st_astext(st_transform(l.boundary_geom, 4326))"

@@ -6,7 +6,7 @@
     WITH regions AS (
       SELECT
         l.id AS location_id,
-        l.code as location_code,
+        COALESCE(NULLIF(BTRIM(l.code), ''), l.id::text) AS location_code,
         ST_Transform(COALESCE(l.boundary_geom, l.centroid_geom), 27700) AS geom_27700
       FROM locations l
       JOIN cache_termlists_terms t ON t.id = l.location_type_id
