@@ -18,6 +18,12 @@
       <param name="indexed_location_list_context" description="Location to filter to" datatype="integer[]" default="">
         <join>JOIN locations lcontext on st_intersects(lcontext.boundary_geom, s.geom) AND lcontext.id IN (#indexed_location_list_context#)</join>
       </param>
+      <param name='group_id' display='Group ID' description="EBMS project ID" datatype='integer' default='' >
+        <where>s.group_id=#group_id#</where>
+      </param>
+      <param name='indicia_user_id' display='Warehouse User ID' description="Warehouse ID" datatype='integer' default='' >
+        <where>s.created_by_id=#indicia_user_id#</where>
+      </param>
     </params>
     <columns>
       <column name="visit_sample_id" display="Visit Sample ID" sql="s.id" datatype="integer" />
