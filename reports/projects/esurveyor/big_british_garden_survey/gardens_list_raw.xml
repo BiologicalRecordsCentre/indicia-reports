@@ -76,6 +76,7 @@
     <column name="mature_trees" display="2. Mature trees" sql="tmaturetrees.term" datatype="text" />
     <column name="grass_patch" display="2. Grass patch" sql="tgrasspatch.term" datatype="text" />
     <column name="pond" display="2. Pond" sql="vpond.int_value" datatype="boolean" />
+    <column name="pond_type_terms" display="2. Pond type terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=397 AND lav.deleted=false)" datatype="text" />
     <column name="water_feature_terms" display="2. Water feature terms" sql="(SELECT string_agg(DISTINCT t.term, '; ' ORDER BY t.term) FROM location_attribute_values lav JOIN cache_termlists_terms t ON t.id=lav.int_value WHERE lav.location_id=l.id AND lav.location_attribute_id=398 AND lav.deleted=false)" datatype="text" />
     <column name="bird_boxes" display="2. Bird boxes" sql="vbirdboxes.int_value" datatype="integer" />
     <column name="bat_boxes" display="2. Bat boxes" sql="vbatboxes.int_value" datatype="integer" />
