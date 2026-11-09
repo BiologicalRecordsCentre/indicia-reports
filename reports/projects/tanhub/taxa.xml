@@ -30,16 +30,57 @@
       JOIN recording_schemes rs ON rs.id=rst.recording_scheme_id AND rs.deleted=false
     ) ON cttlp.taxon_meaning_id=ANY(ctp.path)
       AND cttlp.preferred=true
-    LEFT JOIN (taxa_taxon_designations ttd
+    -- Aggregate before joining so designation multiplicity cannot multiply report rows.
+    -- JSON preserves abbreviation boundaries for delimiter validation by the importer.
+    LEFT JOIN (
+      SELECT ttd.taxon_id,
+        json_agg(DISTINCT btrim(td.abbreviation) ORDER BY btrim(td.abbreviation))
+          FILTER (WHERE t.term='GB Red List') AS gb_red_list,
+        json_agg(DISTINCT btrim(td.abbreviation) ORDER BY btrim(td.abbreviation))
+          FILTER (WHERE t.term='GB Status') AS gb_status
+      FROM taxa_taxon_designations ttd
       JOIN taxon_designations td ON td.id=ttd.taxon_designation_id AND td.deleted=false
-      JOIN cache_termlists_terms t ON t.id=td.category_id AND t.term='GB Red List'
-    ) ON ttd.taxon_id=cttl.taxon_id AND ttd.deleted=false
+      JOIN cache_termlists_terms t ON t.id=td.category_id AND t.term IN ('GB Red List', 'GB Status')
+      WHERE ttd.deleted=false AND NULLIF(btrim(td.abbreviation), '') IS NOT NULL
+      GROUP BY ttd.taxon_id
+    ) designations ON designations.taxon_id=cttl.taxon_id
+    -- Cardinality is resolved across all entries for this meaning before JSON aggregation.
+    -- Selecting by value-row ID tolerates conflicting singleton assignments without duplicating taxa.
+    LEFT JOIN LATERAL (
+      SELECT json_build_object('version', 1, 'attributes', COALESCE(json_agg(
+        json_build_object('id', a.id, 'data_type', a.data_type, 'multi_value', a.multi_value,
+          'termlist_id', a.termlist_id, 'values', COALESCE(selected.values, '[]'::json))
+        ORDER BY a.id), '[]'::json)) AS payload
+      FROM taxa_taxon_list_attributes a
+      LEFT JOIN LATERAL (
+        SELECT json_agg(json_build_object('value', chosen.int_value, 'label', terms.term)
+          ORDER BY chosen.id) AS values
+        FROM (
+          SELECT DISTINCT ON (CASE WHEN a.multi_value THEN v.int_value ELSE v.id END)
+            v.id, v.int_value
+          FROM taxa_taxon_list_attribute_values v
+          JOIN cache_taxa_taxon_lists entries ON entries.id=v.taxa_taxon_list_id
+            AND entries.taxon_list_id=#taxon_list_id#
+            AND entries.taxon_meaning_id=cttl.taxon_meaning_id
+          WHERE v.taxa_taxon_list_attribute_id=a.id AND v.deleted=false
+          ORDER BY CASE WHEN a.multi_value THEN v.int_value ELSE v.id END, v.id
+          LIMIT CASE WHEN a.multi_value THEN NULL ELSE 1 END
+        ) chosen
+        LEFT JOIN cache_termlists_terms terms ON a.data_type='L' AND terms.id=chosen.int_value
+      ) selected ON true
+      WHERE a.deleted=false AND a.id=ANY(ARRAY[#taxon_attribute_ids#]::integer[])
+    ) attributes ON true
     WHERE cttl.id IN (SELECT id FROM all_ttlids)
   </query>
   <order_bys>
     <order_by>cttl.taxon_rank_sort_order, cttl.id</order_by>
   </order_bys>
   <params>
+    <param name="taxon_attribute_ids"
+           display="Taxon attribute IDs"
+           datatype="integer[]"
+           default="0"
+           description="Configured taxa_taxon_list_attribute IDs, comma separated." />
     <param name="taxon_list_id"
            display="Taxon List ID"
            datatype="integer"
@@ -59,6 +100,9 @@
     </param>
   </params>
   <columns>
+    <column name="taxon_attributes"
+            sql="attributes.payload"
+            datatype="json" />
     <column name="taxon_rank_sort_order"
             sql="cttl.taxon_rank_sort_order"
             datatype="integer"
@@ -94,9 +138,12 @@
     <column name="recording_scheme_external_key"
             sql="rs.external_key"
             datatype="text" />
-    <column name="conservation_status"
-            sql="td.abbreviation"
-            datatype="text" />
+    <column name="gb_red_list"
+            sql="designations.gb_red_list"
+            datatype="json" />
+    <column name="gb_status"
+            sql="designations.gb_status"
+            datatype="json" />
     <column name="id_difficulty"
             sql="cts.identification_difficulty"
             datatype="integer" />
