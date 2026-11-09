@@ -44,6 +44,11 @@
             population_call="report:library/terms/terms_list:termlists_term_id:term:termlist_external_key=indicia:location_types,termlist_id=" >
       <where>l.location_type_id=#location_type_id#</where>
     </param>
+    <param name='location_type_ids' display='Location types to report on' description='Comma separated list of location types for report to cover.
+        Can be used in conjunction with location_type_id param to create a report covering several location types with a user selectable param
+        for a single location type too.' datatype='text' default=''>
+      <where>l.location_type_id in (#location_type_ids#)</where>
+    </param>
     <param name='location_ids' display='List of Location IDs' description='Comma separated list of location IDs to filter to.'
       datatype='idlist' fieldname='l.id' alias='location_id' default="" />
   </params>
