@@ -139,10 +139,10 @@
             sql="rs.external_key"
             datatype="text" />
     <column name="gb_red_list"
-            sql="designations.gb_red_list"
+            sql="COALESCE(designations.gb_red_list, '[]'::json)"
             datatype="json" />
     <column name="gb_status"
-            sql="designations.gb_status"
+            sql="COALESCE(designations.gb_status, '[]'::json)"
             datatype="json" />
     <column name="id_difficulty"
             sql="cts.identification_difficulty"
