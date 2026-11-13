@@ -74,7 +74,7 @@
      <column name='corrected_termlist_species_name_id' display='Correction' datatype="text" sql="corrected_termlist_species_term.term || '-' || sav_corrected_termlist_species.int_value" />
     <column name='corrected_freetext_species_sav_id' display='Corrected freetext species sample_attribute_value_id' datatype="text" sql="
       case when sav_corrected_freetext_species.id  IS NULL THEN 0 ELSE sav_corrected_freetext_species.id END" visible = "false" />
-    <column name='corrected_freetext_species_name' display='Corrected freetext species name' datatype="text" sql="sav_corrected_freetext_species.text_value" />
+    <column name='corrected_freetext_species_name' display='Corrected Other name (freetext)' datatype="text" sql="sav_corrected_freetext_species.text_value" />
     <column name='images' display='Images' sql='csnf.media' img='true' />
   </columns>
 </report>
